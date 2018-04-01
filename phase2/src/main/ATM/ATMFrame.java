@@ -4,12 +4,17 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+import org.controlsfx.control.textfield.TextFields;
+
+import static ATM.ATM.userManager;
 
 public class ATMFrame extends Application {
 
@@ -33,17 +38,16 @@ public class ATMFrame extends Application {
         Tutorial: https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
          */
         window = primaryStage;
-        window.setTitle("CSC207 Banking Services");
+        window.setTitle("CSC-Bank ATM");
 
         GridPane gridPane = createUserFormPane();
         addUIControls(gridPane);
         welcomeScreen = new Scene(gridPane, 300, 275);
+//        welcomeScreen = new Scene(gridPane);
         // Apply styles
-        welcomeScreen.getStylesheets().add(ATM.class.getResource("Login.css").toExternalForm());
+        welcomeScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         window.setScene(welcomeScreen);
-        window.setResizable(false);
         window.show();
-
     }
 
     private GridPane createUserFormPane() {
@@ -63,20 +67,24 @@ public class ATMFrame extends Application {
      * @param grid layout
      */
     private void addUIControls(GridPane grid) {
-        Text sceneTitle = new Text("Welcome");
+        Text sceneTitle = new Text("Welcome!");
         grid.add(sceneTitle, 0, 0, 2, 1);
         sceneTitle.setId("welcome-text");
 
         Label userName = new Label("Username:");
         grid.add(userName, 0, 1);
         TextField userTextField = new TextField();
+        TextFields.bindAutoCompletion(userTextField, userManager.user_map.keySet());
         userTextField.setPromptText("username");
+
+        userName.setId("login");
         grid.add(userTextField, 1, 1);
 
         Label pw = new Label("Password:");
         grid.add(pw, 0, 2);
         PasswordField pwBox = new PasswordField();
         pwBox.setPromptText("password");
+        pw.setId("login");
         grid.add(pwBox, 1, 2);
 
         Button btn = new Button("Sign in");
@@ -88,10 +96,7 @@ public class ATMFrame extends Application {
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
         actionTarget.setId("actionTarget");
-
-        btn.setOnAction(event -> {
-            buttonHandler(userTextField, pwBox, actionTarget);
-        });
+        btn.setOnAction(event -> buttonHandler(userTextField, pwBox, actionTarget));
 
     }
 
@@ -105,26 +110,17 @@ public class ATMFrame extends Application {
             actionTarget.setText("Please enter your password");
         } else {
 
-            boolean authResult = ATM.userManager.auth(username, password);
+            boolean authResult = userManager.auth(username, password);
 
             if (!authResult) {
                 actionTarget.setText("Login attempt failed");
+                System.err.println("Login attempt failed");
             } else {
-                User user = ATM.userManager.getUser(username);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Login Successful!",
-                        "Hi " + username);
+                actionTarget.setText("");
+                User user = userManager.getUser(username);
                 window.setScene(user.createOptionsScreen(window, welcomeScreen));
             }
         }
-    }
-
-    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
     }
 
 }

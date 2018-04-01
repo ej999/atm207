@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static ATM.ATM.*;
+
 /**
  * Youth account is qualified to people under 20 years old (age 19 or below).
  * A youth account has a limited number of transactions of 20 and a transfer limit of $250.
@@ -30,8 +32,46 @@ class Youth extends Account implements AccountTransferable, Observer {
         this(id, Collections.singletonList(username));
     }
 
-    private boolean makeTransfer(double amount) {
-        return transferTotal + amount <= transferLimit;
+    @SuppressWarnings("unused")
+    public int getTransactions() {
+        return transactions;
+    }
+
+    @SuppressWarnings("unused")
+    public int getMaxTransactions() {
+        return maxTransactions;
+    }
+
+    /**
+     * Sets the monthly Transactions that a Student Account has.
+     *
+     * @param transactionsAmount the set amount of transactions
+     */
+    void setMaxTransactions(int transactionsAmount) {
+        maxTransactions = transactionsAmount;
+    }
+
+    @SuppressWarnings("unused")
+    public int getTransferLimit() {
+        return transferLimit;
+    }
+
+//    private boolean makeTransfer(double amount) {
+//        return transferTotal + amount <= transferLimit;
+//    }
+
+    /**
+     * Sets the monthly amount that a Student Account has for allowance of transfers.
+     *
+     * @param transferLimitAmount the set amount of transfers
+     */
+    void setTransferLimit(int transferLimitAmount) {
+        transferLimit = transferLimitAmount;
+    }
+
+    @SuppressWarnings("unused")
+    public int getTransferTotal() {
+        return transferTotal;
     }
 
     @Override
@@ -44,14 +84,14 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
-                ATM.banknoteManager.isThereEnoughBankNote(withdrawalAmount) && (transactions < maxTransactions);
+                banknoteManager.isThereEnoughBankNote(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     @Override
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             setBalance(getBalance() - withdrawalAmount);
-            ATM.banknoteManager.banknoteWithdrawal(withdrawalAmount);
+            banknoteManager.banknoteWithdrawal(withdrawalAmount);
             transactions += 1;
             getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, getType()));
         }
@@ -80,30 +120,11 @@ class Youth extends Account implements AccountTransferable, Observer {
         transactions -= 1;
     }
 
-    /**
-     * Sets the monthly Transactions that a Student Account has.
-     *
-     * @param transactionsAmount the set amount of transactions
-     */
-    void setMaxTransactions(int transactionsAmount) {
-        maxTransactions = transactionsAmount;
-    }
-
-    /**
-     * Sets the monthly amount that a Student Account has for allowance of transfers.
-     *
-     * @param transferLimitAmount the set amount of transfers
-     */
-    void setTransferLimit(int transferLimitAmount) {
-        transferLimit = transferLimitAmount;
-    }
-
-
     @Override
     void undoWithdrawal(double withdrawalAmount) {
         setBalance(getBalance() + withdrawalAmount);
         transactions -= 1;
-        ATM.banknoteManager.banknoteWithdrawal(-withdrawalAmount);
+        banknoteManager.banknoteWithdrawal(-withdrawalAmount);
     }
 
     @Override
@@ -172,7 +193,7 @@ class Youth extends Account implements AccountTransferable, Observer {
     }
 
     private boolean validTransfer(double transferAmount, String username, Account account) {
-        Customer customer = (Customer) ATM.userManager.getUser(username);
+        Customer customer = (Customer) userManager.getUser(username);
         return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && customer.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
@@ -205,7 +226,7 @@ class Youth extends Account implements AccountTransferable, Observer {
                     } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
                     } else if (transaction.getTransactionType().equals("Transfer")) {
-                        undoTransfer(transaction.getAmount(), ATM.accountManager.getAccount(transaction.getAccountId()));
+                        undoTransfer(transaction.getAmount(), accountManager.getAccount(transaction.getAccountId()));
                     } else if (type.equals("PayBill")) {
                         undoPayBill(transaction.getAmount());
                     }

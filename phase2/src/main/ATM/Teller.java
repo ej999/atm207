@@ -3,7 +3,7 @@ package ATM;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Teller extends UserEmployee {
+class Teller extends UserEmployee {
 
     private static final String type = Teller.class.getName();
 
@@ -12,6 +12,7 @@ public class Teller extends UserEmployee {
 
     }
 
+    @SuppressWarnings("unused")
     public String getType() {
         return type;
     }

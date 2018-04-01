@@ -13,15 +13,17 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
+import static ATM.ATM.*;
+
 /**
  * An class that operate serialization in JSON, save and retrieve data to FireBase real-time database.
  * To import or export JSON.
  */
 final class ManagersSerialization {
-    private FireBaseDBAccess fbDb;
+    private final FireBaseDBAccess fbDb;
 
     ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess("/");
+        this.fbDb = new FireBaseDBAccess();
     }
 
     void deleteDatabase() {
@@ -35,83 +37,125 @@ final class ManagersSerialization {
         deserializeBills();
         deserializeETransfers();
         deserializeRequests();
+        deserializeBuyOffer();
+        deserializeSellOffer();
     }
 
-    // Deserialize JSON from FireBase /Users directory, and assign it to ATM.userManager.user_map
+    // Deserialize JSON from FireBase /Users directory, and assign it to userManager.user_map
     private void deserializeUsers() {
 
-        ATM.userManager.user_map = fbDb.retrieveMap("Users", true);
+        userManager.user_map = fbDb.retrieveMap("Users", true);
 
         /*
         FireBase does not saving empty array, so we re-create them:
         https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
         */
-        for (String username : ATM.userManager.user_map.keySet()) {
-            User user = ATM.userManager.getUser(username);
+        for (String username : userManager.user_map.keySet()) {
+            User user = userManager.getUser(username);
             if (user instanceof Customer && ((Customer) user).getAccountIDs() == null) {
-                ((Customer) user).accountIDs = new ArrayList<>();
+                ((Customer) user).setAccountIDs(new ArrayList<>());
+            }
+
+            if (user instanceof Customer && ((Customer) user).getInventory() == null) {
+                ((Customer) user).setInventory(new Inventory());
             }
         }
 
-        Logger.getLogger("").info("Deserialize ATM.userManager.user_map = " + ATM.userManager.user_map);
+        Logger.getLogger("").info("Deserialize userManager.user_map = " + userManager.user_map);
     }
 
-    // Deserialize JSON from FireBase /Accounts directory, and assign it to ATM.userManager.account_map
+    // Deserialize JSON from FireBase /Accounts directory, and assign it to userManager.account_map
     private void deserializeAccounts() {
-        ATM.accountManager.account_map = fbDb.retrieveMap("Accounts", true);
+        accountManager.account_map = fbDb.retrieveMap("Accounts", true);
 
-        for (String id : ATM.accountManager.account_map.keySet()) {
-            Account account = ATM.accountManager.getAccount(id);
+        for (String id : accountManager.account_map.keySet()) {
+            Account account = accountManager.getAccount(id);
+            assert account != null;
             if (account.getTransactionHistory() == null) {
                 account.setTransactionHistory(new Stack<>());
             }
         }
 
-        Logger.getLogger("").info("Deserialize ATM.accountManager.account_map = " + ATM.accountManager.account_map);
+        Logger.getLogger("").info("Deserialize accountManager.account_map = " + accountManager.account_map);
     }
 
-    // Deserialize JSON from FireBase /Bills directory, and assign it to ATM.banknoteManager.banknotes
+    // Deserialize JSON from FireBase /Bills directory, and assign it to banknoteManager.banknotes
     private void deserializeBills() {
-        ATM.banknoteManager.banknotes = fbDb.retrieveMap("Bills", false);
+        HashMap<String, Integer> bills;
+        bills = fbDb.retrieveMap("Bills", false);
+        banknoteManager.banknotes = bills;
 
-        Logger.getLogger("").info("Deserialize ATM.banknoteManager.banknotes = " + ATM.banknoteManager.banknotes);
+        Logger.getLogger("").info("Deserialize banknoteManager.banknotes = " + banknoteManager.banknotes);
     }
 
-    // Deserialize JSON from FireBase /ETransfers directory to a List of Integer, and assign it to ATM.eTransferManager.allTransfers
+    // Deserialize JSON from FireBase /ETransfers directory to a List of Integer, and assign it to eTransferManager.allTransfers
     private void deserializeETransfers() {
-        ATM.eTransferManager.allTransfers = fbDb.retrieveList("ETransfers", true);
+        eTransferManager.allTransfers = fbDb.retrieveList();
 
-        Logger.getLogger("").info("Deserialize ATM.eTransferManager.allTransfers = " + ATM.eTransferManager.allTransfers);
+        Logger.getLogger("").info("Deserialize eTransferManager.allTransfers = " + eTransferManager.allTransfers);
     }
 
     // Deserialize JSON from FireBase /Requests directory, and assign it to ATN.eTransferManager.requests
     private void deserializeRequests() {
-        ATM.eTransferManager.requests = fbDb.retrieveMap("Requests", false);
+        eTransferManager.requests = fbDb.retrieveMap("Requests", false);
 
-        Logger.getLogger("").info("Deserialize ATM.eTransferManager.requests = " + ATM.eTransferManager.requests);
+        Logger.getLogger("").info("Deserialize eTransferManager.requests = " + eTransferManager.requests);
     }
 
+    private void deserializeBuyOffer() {
+        HashMap<String, ArrayList<HashMap>> hashMap = fbDb.retrieveMap("Trading/BuyOffer", false);
+        HashMap<String, ArrayList<TradeOffer>> return_hashMap = new HashMap<>();
+        for (String item : hashMap.keySet()) {
+            ArrayList<TradeOffer> offerLists = new ArrayList<>();
+            for (HashMap x : hashMap.get(item)) {
+                Gson gson = new Gson();
+                offerLists.add(gson.fromJson(x.toString(), TradeOffer.class));
+            }
+            return_hashMap.put(item, offerLists);
+        }
+        tradingSystem.buy_offers = return_hashMap;
+
+        Logger.getLogger("").info("Deserialize tradingSystem.buy_offers = " + tradingSystem.buy_offers);
+    }
+
+    private void deserializeSellOffer() {
+        HashMap<String, ArrayList<HashMap>> hashMap = fbDb.retrieveMap("Trading/SellOffer", false);
+        HashMap<String, ArrayList<TradeOffer>> return_hashMap = new HashMap<>();
+        for (String item : hashMap.keySet()) {
+            ArrayList<TradeOffer> offerLists = new ArrayList<>();
+            for (HashMap x : hashMap.get(item)) {
+                Gson gson = new Gson();
+                offerLists.add(gson.fromJson(x.toString(), TradeOffer.class));
+            }
+            return_hashMap.put(item, offerLists);
+        }
+        tradingSystem.sell_offers = return_hashMap;
+
+        Logger.getLogger("").info("Deserialize tradingSystem.sell_offers = " + tradingSystem.sell_offers);
+    }
 
     void serializeAll() {
-        fbDb.saveMap(ATM.userManager.user_map, "Users");
-        fbDb.saveMap(ATM.accountManager.account_map, "Accounts");
-        fbDb.saveMap(ATM.banknoteManager.banknotes, "Bills");
+        fbDb.saveMap(userManager.user_map, "Users");
+        fbDb.saveMap(accountManager.account_map, "Accounts");
+        fbDb.saveMap(banknoteManager.banknotes, "Bills");
         // Remove the current List before pushing a new one.
         fbDb.delete("ETransfers");
-        fbDb.saveList(ATM.eTransferManager.allTransfers, "ETransfers");
-        fbDb.saveMap(ATM.eTransferManager.requests, "Requests");
+        fbDb.saveList(eTransferManager.allTransfers);
+        fbDb.saveMap(eTransferManager.requests, "Requests");
+        fbDb.saveMap(tradingSystem.sell_offers, "Trading/BuyOffer");
+        fbDb.saveMap(tradingSystem.buy_offers, "Trading/SellOffer");
     }
 
     /**
      * A helper class that performs read and write to FireBase project.
      */
     final class FireBaseDBAccess {
-        private DatabaseReference databaseRef;
+        private final DatabaseReference databaseRef;
 
-        FireBaseDBAccess(String path) {
+        FireBaseDBAccess() {
             initFireBase();
             // Get a reference to our database.
-            databaseRef = FirebaseDatabase.getInstance().getReference(path);
+            databaseRef = FirebaseDatabase.getInstance().getReference("/");
         }
 
         private void initFireBase() {
@@ -133,7 +177,7 @@ final class ManagersSerialization {
         }
 
         // To remove a child reference.
-        <T extends Serializable> void delete(String child) {
+        void delete(String child) {
             CountDownLatch latch = new CountDownLatch(1);
 
             // Get existing child or new child will be created.
@@ -155,7 +199,6 @@ final class ManagersSerialization {
             CountDownLatch latch = new CountDownLatch(1);
             if (item_map != null) {
                 // Get existing child or new child will be created.
-                // TODO: 2019-03-29 unwrap t variable into common type before serializing, and vise versa.
                 DatabaseReference childRef = databaseRef.child(child);
                 childRef.setValueAsync(item_map);
 
@@ -170,11 +213,11 @@ final class ManagersSerialization {
         }
 
         // To serialize and save a List of T
-        <T extends Serializable> void saveList(List<T> item_list, String child) {
+        <T extends Serializable> void saveList(List<T> item_list) {
             CountDownLatch latch = new CountDownLatch(1);
             if (item_list != null) {
                 // Get existing child or new child will be created.
-                DatabaseReference childRef = databaseRef.child(child);
+                DatabaseReference childRef = databaseRef.child("ETransfers");
 
 //                childRef.removeValueAsync();
 
@@ -182,7 +225,7 @@ final class ManagersSerialization {
                     childRef.push().setValueAsync(item);
                 }
 
-                Logger.getLogger("").info(child + " is serialized and saved");
+                Logger.getLogger("").info("ETransfers" + " is serialized and saved");
                 latch.countDown();
                 try {
                     latch.await();
@@ -209,8 +252,7 @@ final class ManagersSerialization {
                                 // Convert JSON to class
                                 @SuppressWarnings("unchecked")
                                 Class<T> classOfObj = (Class<T>) Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
-                                Gson gson = new Gson();
-                                T t = gson.fromJson(childSnapshot.getValue().toString(), classOfObj);
+                                T t = Json2Object(childSnapshot.getValue().toString(), classOfObj);
                                 t_map.put(childSnapshot.getKey(), t);
                             } else {
                                 @SuppressWarnings("unchecked")
@@ -238,9 +280,9 @@ final class ManagersSerialization {
         }
 
         // Return a List of all the child items as T in database
-        <T extends Serializable> List<T> retrieveList(String child, boolean toClass) {
+        <T extends Serializable> List<T> retrieveList() {
             // Get existing child or will bee created new child.
-            DatabaseReference childRef = databaseRef.child(child);
+            DatabaseReference childRef = databaseRef.child("ETransfers");
             CountDownLatch latch = new CountDownLatch(1);
             List<T> t_list = new ArrayList<>();
 
@@ -249,15 +291,9 @@ final class ManagersSerialization {
                 public void onDataChange(DataSnapshot snapshot) {
                     for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                         try {
-                            if (toClass) {
-                                @SuppressWarnings("unchecked")
-                                Class<T> classOfT = (Class<T>) Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
-                                t_list.add(Json2Object(childSnapshot.getValue().toString().replace(" ", ""), classOfT));
-                            } else {
-                                @SuppressWarnings("unchecked")
-                                T t = (T) childSnapshot.getValue();
-                                t_list.add(t);
-                            }
+                            @SuppressWarnings("unchecked")
+                            Class<T> classOfT = (Class<T>) Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
+                            t_list.add(Json2Object(childSnapshot.getValue().toString().replace(" ", ""), classOfT));
                         } catch (ClassNotFoundException e) {
                             e.getStackTrace();
                         }

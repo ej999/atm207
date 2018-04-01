@@ -11,32 +11,37 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static ATM.ATM.accountManager;
+
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
 class Customer extends User implements Observer {
 
     private static final String type = Customer.class.getName();
+    private final int age;
     /*
      * We store account info by its unique IDs. Note that we cannot store Customer object here,
      * otherwise JSON will be nested recursively and infinitely. https://imgur.com/a/5mxY6Yf
      */
-    List<String> accountIDs;
+    private List<String> accountIDs;
     private String primaryAccount;
-    private Inventory goods = new Inventory();
     private double netTotal;
-
     private String dob;
-    private int age;
-
+    private Inventory inventory;
 
     public Customer(String username, String password) {
         super(username, password);
         this.accountIDs = new ArrayList<>();
+        this.inventory = new Inventory();
+        this.dob = null;
+        this.age = 0;
     }
 
     public Customer(String username, String password, LocalDate dob) {
-        this(username, password);
+        super(username, password);
+        this.accountIDs = new ArrayList<>();
+        this.inventory = new Inventory();
         this.dob = dob.toString();
         this.age = (int) dob.until(LocalDate.now(), ChronoUnit.YEARS);
     }
@@ -49,7 +54,6 @@ class Customer extends User implements Observer {
     void setDob(String dob) {
         this.dob = dob;
     }
-
 
     /**
      * @return the age according to the dob; if dob is null, return 0.
@@ -66,6 +70,11 @@ class Customer extends User implements Observer {
     @SuppressWarnings("WeakerAccess")
     public List<String> getAccountIDs() {
         return accountIDs;
+    }
+
+    @SuppressWarnings("unused")
+    void setAccountIDs(List<String> accountIDs) {
+        this.accountIDs = accountIDs;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -89,8 +98,12 @@ class Customer extends User implements Observer {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public Inventory getGoods() {
-        return goods;
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 
     // An adult is considered as age 20 or above.
@@ -103,6 +116,7 @@ class Customer extends User implements Observer {
         }
     }
 
+    @SuppressWarnings("unused")
     public String getType() {
         return type;
     }
@@ -113,13 +127,13 @@ class Customer extends User implements Observer {
         return gui.createOptionsScreen();
     }
 
-    /**
-     * It should observe today's date and get called when necessary.
-     */
+    //    /**
+//     * It should observe today's date and get called when necessary.
+//     */
     @Override
     public void update(Observable o, Object arg) {
 //        if ((boolean) arg) {
-//            List<Account> accounts = ATM.accountManager.getListOfAccounts(getUsername());
+//            List<Account> accounts = accountManager.getListOfAccounts(getUsername());
 //            for (Account a : accounts) {
 //                if (a instanceof AccountDebt) {
 //                    if (a.balance <= 0) {
@@ -149,7 +163,7 @@ class Customer extends User implements Observer {
 
     boolean hasAccount(Account account) {
         for (String a : this.accountIDs) {
-            if (ATM.accountManager.getAccount(a).equals(account)) {
+            if (Objects.equals(accountManager.getAccount(a), account)) {
                 return true;
             }
 
@@ -157,25 +171,28 @@ class Customer extends User implements Observer {
         return false;
     }
 
-    boolean hasMoreThanOneChequing() {
-        int i = 0;
-        for (String a : this.accountIDs) {
-            if (ATM.accountManager.getAccount(a) instanceof Chequing) {
-                i++;
-            }
-        }
-        return i > 1;
-    }
-    // TODO: 2019-03-30 add observer to setNetTotal
+//    boolean hasMoreThanOneChequing() {
+//        int i = 0;
+//        for (String a : this.accountIDs) {
+//            if (accountManager.getAccount(a) instanceof Chequing) {
+//                i++;
+//            }
+//        }
+//        return i > 1;
+//    }
+
+
     // The total of their debt account balances subtracted from the total of their asset account balances.
 
+    @SuppressWarnings("WeakerAccess")
     public void setNetTotal() {
         double sum = 0;
         for (String a : this.accountIDs) {
-            Account acc = ATM.accountManager.getAccount(a);
+            Account acc = accountManager.getAccount(a);
             if (acc instanceof AccountDebt) {
                 sum -= acc.getBalance();
             } else {
+                assert acc != null;
                 sum += acc.getBalance();
             }
         }

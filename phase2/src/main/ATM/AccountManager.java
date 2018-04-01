@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import static ATM.ATM.userManager;
+
 /**
  * A class that manage all Bank Accounts.
  * <p>
@@ -39,22 +41,19 @@ final class AccountManager {
      * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving
      * @param ownersUsername list of username of owners
      */
-    //TODO GIC has unique parameter
     private Account createAccount(String typeSimpleName, List<String> ownersUsername) {
         try {
             // Creating a new instance by getting the proper constructor
             String className = AccountManager.class.getPackage().getName() + "." + typeSimpleName;
             Class<?> clazz = Class.forName(className);
-            // The constructor has to be declared public, otherwise ...........
-            // TODO: 2019-03-30 overloading constructor
+            // The constructor has to be declared public in order to get its constructor.
             Constructor<?> cTor = clazz.getConstructor(String.class, List.class);
 
             String id = idGenerator();
             Account newAccount = (Account) cTor.newInstance(id, ownersUsername);
             account_map.put(newAccount.getId(), newAccount);
-            //TODO observer
 //            if (newAccount instanceof Saving) {
-//                ATM.addObserver((Saving) newAccount);
+//                addObserver((Saving) newAccount);
 //            }
 
             System.out.println("A " + typeSimpleName + " is successfully created: \"" + newAccount + "\"");
@@ -67,7 +66,12 @@ final class AccountManager {
     }
 
     Account getAccount(String id) {
-        return account_map.get(id);
+        if (id != null) {
+            return account_map.get(id);
+        } else {
+            System.err.println("Cannot find the corresponding account by ID");
+            return null;
+        }
     }
 
     List<Account> getListOfAccounts(String username) {
@@ -80,16 +84,11 @@ final class AccountManager {
         return accountsOwned;
     }
 
-    boolean isPresent(String id) {
-        Account account = account_map.get(id);
-        return account != null;
-    }
-
     void addAccount(String accountType, List<String> ownersUsername) {
         Account account = createAccount(accountType, ownersUsername);
         if (account != null) {
             for (String username : ownersUsername) {
-                Customer owner = (Customer) ATM.userManager.getUser(username);
+                Customer owner = (Customer) userManager.getUser(username);
                 owner.addAccount(account);
                 System.out.println("A " + accountType + " account is successfully created for " + username);
             }
@@ -124,8 +123,8 @@ final class AccountManager {
         return id;
     }
 
-    public Collection<Account> allAccounts() {
-        return this.account_map.values();
-
-    }
+//    public Collection<Account> allAccounts() {
+//        return this.account_map.values();
+//
+//    }
 }

@@ -5,10 +5,7 @@ import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class that manage all User.
@@ -21,7 +18,7 @@ final class UserManager {
     final Collection<String> USER_TYPE_NAMES;
 
     // A mapping of Username to the User.
-    HashMap<String, User> user_map = new HashMap<>();
+    Map<String, User> user_map = new HashMap<>();
 
     UserManager() {
         // By using Reflections, all the actual (non-abstract) User types are automatically added to the List even when we implement a new one.
@@ -36,6 +33,24 @@ final class UserManager {
             }
         }
         USER_TYPE_NAMES = types_of_users;
+    }
+
+
+    /**
+     * @param <T> a generic T type of User
+     * @return HashMap of all T type of Users.
+     */
+    <T extends User> Map<String, T> getSubType_map() {
+        Map<String, T> t_map = new HashMap<>();
+        for (String username : user_map.keySet()) {
+            User user = getUser(username);
+            if (user instanceof Customer) {
+                @SuppressWarnings("unchecked")
+                T customer = (T) user;
+                t_map.put(username, customer);
+            }
+        }
+        return t_map;
     }
 
     /**
@@ -78,16 +93,6 @@ final class UserManager {
 
     boolean auth(String username, String password) {
         User user = user_map.get(username);
-        if (isPresent(username) && user.getPassword().equals(password)) {
-            return true;
-        } else {
-            System.err.println("Wrong username or password. Please try again");
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                System.err.println("Ouch!");
-            }
-            return false;
-        }
+        return isPresent(username) && user.getPassword().equals(password);
     }
 }

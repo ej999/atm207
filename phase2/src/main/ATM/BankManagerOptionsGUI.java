@@ -9,19 +9,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static ATM.ATM.accountManager;
+import static ATM.ATM.*;
 
 /**
  * A GUI for Bank Manager.
  */
-public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
+class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
     BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
@@ -68,7 +70,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         Label userType = new Label("User Type:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        for (String type : ATM.userManager.USER_TYPE_NAMES) {
+        for (String type : userManager.USER_TYPE_NAMES) {
             choiceBox.getItems().add(type);
         }
 
@@ -94,26 +96,27 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         gridPane.add(hbBtn, 1, 3);
 
         // I'm not gonna check the validity of password
-
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String typeSimpleName = choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
-            boolean created = ATM.userManager.createAccount(typeSimpleName, username, password);
+            boolean created = userManager.createAccount(typeSimpleName, username, password);
 
             if (created && typeSimpleName.equals(Customer.class.getSimpleName())) {
                 createDOBScreen(username);
             } else if (created) {
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new user has been created.");
+                showAlert(Alert.AlertType.INFORMATION, window, "Success!", "A new user has been created.", true);
                 window.setScene(optionsScreen);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created", true);
                 window.setScene(optionsScreen);
             }
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void createDOBScreen(String username) {
@@ -150,18 +153,19 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                 System.out.println(username);
                 try {
                     String dob = LocalDate.parse(_dob).toString();
-                    ((Customer) ATM.userManager.getUser(username)).setDob(dob);
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob);
+                    ((Customer) userManager.getUser(username)).setDob(dob);
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob, true);
                 } catch (DateTimeException e) {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?", true);
                 } finally {
                     window.setScene(optionsScreen);
                 }
             });
         });
 
-        window.setScene(new Scene(gridPane, 400, 200));
-
+        Scene scene = new Scene(gridPane, 400, 200);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void restockATMScreen() {
@@ -178,7 +182,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         HashMap<Integer, TextField> textField = new HashMap<>();
 
-        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
+        for (Integer d : banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Enter amount of $" + d + " dollar bill: ");
             grid.add(dLabel, 0, rowIndex);
@@ -202,36 +206,29 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + ATM.banknoteManager.banknotes);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Restocking success! The current stock is " + banknoteManager.banknotes, true);
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void clearBankDataScreen() {
-        GridPane grid = createFormPane();
-
-        Label warningLbl = new Label("WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");
-        Button proceed = new Button("Proceed");
-        Button cancel = new Button("Cancel");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(cancel);
-        hbBtn.getChildren().add(proceed);
-
-        grid.add(warningLbl, 0, 0);
-        grid.add(hbBtn, 1, 1);
-
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        proceed.setOnAction(event -> {
-            ATM.serialization.deleteDatabase();
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Cleared", "Data has been cleared. Good Luck!");
+        Optional<ButtonType> result = showAlert(Alert.AlertType.CONFIRMATION, window, "WARNING",
+                "Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence! " +
+                        "Click OK to proceed...", true);
+        if (!result.isPresent()) {
+            window.setScene(optionsScreen);
+        } else if (result.get() == ButtonType.OK) {
+            serialization.deleteDatabase();
+            showAlert(Alert.AlertType.INFORMATION, window, "Cleared", "Data has been cleared. Good Luck!", true);
             window.close();
             System.exit(0);
-        });
-
-        window.setScene(new Scene(grid));
+        } else if (result.get() == ButtonType.CANCEL) {
+            window.setScene(optionsScreen);
+        }
     }
 
     private void setYouthTransactionsScreen() {
@@ -239,6 +236,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         Label youthLabel = new Label("Choose User with Youth Account:");
         TextField youthUser = new TextField();
+        TextFields.bindAutoCompletion(youthUser, userManager.getSubType_map().keySet());
         Label transactionLabel = new Label("Choose Number of Max Transactions:");
         TextField transactions = new TextField();
         Button set = new Button("Set");
@@ -258,21 +256,23 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         set.setOnAction(event -> {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
-            if (ATM.userManager.isPresent(youthAccount)) {
+            if (userManager.isPresent(youthAccount)) {
                 List<Account> AccountIDList = accountManager.getListOfAccounts(youthAccount);
                 for (Account accounts : AccountIDList) {
                     if (accounts instanceof Youth) {
-                        ((BankManager) this.user).setMaxTransactions((Youth) accounts, amount);
-                        showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit Set");
+                        ((Youth) accounts).setMaxTransactions(amount);
+                        showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit Set", true);
                     }
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit Failed: No Youth Account Found");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit Failed: No Youth Account Found", true);
             }
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
 
@@ -281,6 +281,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         Label youthLabel = new Label("Choose User with Youth Account:");
         TextField youthUser = new TextField();
+        TextFields.bindAutoCompletion(youthUser, userManager.getSubType_map().keySet());
         Label transactionLabel = new Label("Choose Transfer Limit:");
         TextField transactions = new TextField();
         Button set = new Button("Set");
@@ -300,20 +301,22 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         set.setOnAction(event -> {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
-            if (ATM.userManager.isPresent(youthAccount)) {
+            if (userManager.isPresent(youthAccount)) {
                 List<Account> AccountIDList = accountManager.getListOfAccounts(youthAccount);
                 for (Account accounts : AccountIDList) {
                     if (accounts instanceof Youth) {
-                        ((BankManager) this.user).setTransferLimit((Youth) accounts, amount);
-                        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
+                        ((Youth) accounts).setTransferLimit(amount);
+                        showAlert(Alert.AlertType.INFORMATION, window, "Success", "Transfer Limit has been set", true);
                     }
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit failed: No Youth Account Found");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit failed: No Youth Account Found", true);
             }
             window.setScene(optionsScreen);
         });
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void ManageGICScreen() {
@@ -348,7 +351,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int id = Integer.valueOf(index.getText());
             if (GICDeals.gicDeals.size() - 1 >= id && GICDeals.gicDeals.get(id) != null) {
                 GICDeals.removeDeal(id);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "GIC deal removed");
+                showAlert(Alert.AlertType.INFORMATION, window, "Success!", "GIC deal removed", true);
                 window.setScene(optionsScreen);
             }
         });
@@ -356,21 +359,21 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int id = Integer.valueOf(index.getText());
             int month = Integer.valueOf(period.getText());
             double interest = Double.valueOf(rate.getText());
-            GICDeals deals = new GICDeals(month, interest, id);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "New GIC deal created");
+            new GICDeals(month, interest, id);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success!", "New GIC deal created", true);
             window.setScene(optionsScreen);
         });
-        view.setOnAction(event -> {
-            viewGICDeals();
-        });
+        view.setOnAction(event -> viewGICDeals());
 
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
 
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
-    void viewGICDeals() {
+    private void viewGICDeals() {
         ListView<String> listView = new ListView<>();
 
         Button goBack = new Button("Go Back");
@@ -384,11 +387,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             listView.getItems().add(deal.toString());
         }
 
-
         VBox vBox = new VBox();
         vBox.getChildren().add(listView);
         vBox.getChildren().add(hbBtn);
-        window.setScene(new Scene(vBox, 400, 350));
+        Scene scene = new Scene(vBox, 400, 350);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void skipTimeScreen() {
@@ -428,10 +432,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                     ((Saving) a).timeSkipTo(y, m, d);
                 }
             }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "You successfully time skipped");
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "You successfully time skipped", true);
         });
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
 

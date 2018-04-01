@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.EmptyStackException;
 import java.util.List;
 
+import static ATM.ATM.*;
+
 /**
  * Asset accounts include Chequing and Savings Accounts.
  */
@@ -48,7 +50,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
-                ATM.banknoteManager.isThereEnoughBankNote(withdrawalAmount);
+                banknoteManager.isThereEnoughBankNote(withdrawalAmount);
     }
 
     /**
@@ -60,7 +62,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     void withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && condition) {
             setBalance(getBalance() - withdrawalAmount);
-            ATM.banknoteManager.banknoteWithdrawal(withdrawalAmount);
+            banknoteManager.banknoteWithdrawal(withdrawalAmount);
             getTransactionHistory().push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
@@ -68,7 +70,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     @Override
     void undoWithdrawal(double withdrawalAmount) {
         setBalance(getBalance() + withdrawalAmount);
-        ATM.banknoteManager.banknoteWithdrawal(-withdrawalAmount);
+        banknoteManager.banknoteWithdrawal(-withdrawalAmount);
     }
 
     @Override
@@ -113,7 +115,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
             } else {
                 account.setBalance(account.getBalance() - transferAmount);
             }
-//            if (user == ATM.userManager.getUser(getPrimaryOwner())) {
+//            if (user == userManager.getUser(getPrimaryOwner())) {
 //                getTransactionHistory().push(new Transaction("TransferBetweenAccounts", transferAmount, account));
 //            } else {
 //                getTransactionHistory().push(new Transaction("TransferToAnotherUser", transferAmount, account));
@@ -136,7 +138,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     }
 
     private boolean validTransfer(double transferAmount, String username, Account account) {
-        Customer customer = (Customer) ATM.userManager.getUser(username);
+        Customer customer = (Customer) userManager.getUser(username);
         return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && customer.hasAccount(account);
     }
 
@@ -163,7 +165,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
                     } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
                     } else if (transaction.getTransactionType().equals("Transfer")) {
-                        undoTransfer(transaction.getAmount(), ATM.accountManager.getAccount(transaction.getAccountId()));
+                        undoTransfer(transaction.getAmount(), accountManager.getAccount(transaction.getAccountId()));
                     } else if (type.equals("PayBill")) {
                         undoPayBill(transaction.getAmount());
                     }
