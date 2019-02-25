@@ -1,0 +1,26 @@
+STep by step:
+
+User wants to deposit money
+1)User approaches -> Login screen. ATM class asks for login/password, after user inputs, this gets
+fed to UserManager, which returns the User.
+
+2) They get all of the options from the ATM class, this is determined from the user's specific account class itself
+ (b/c some classes don't have certain options)
+
+ 3) User wants to deposit money:
+
+
+Want to create a new account
+
+
+
+Passage of time:
+
+In the main function, can check for date every few minutes, and update interest accordingly.
+
+Account - David and Jason
+Employee - Eric and Zarif
+User - Truman and Leon
+System and Main afterwards
+
+Finish by Sunday noon, work on latter two classes after
