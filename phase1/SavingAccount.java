@@ -1,0 +1,2 @@
+class SavingAccount extends AssetAccount {
+}

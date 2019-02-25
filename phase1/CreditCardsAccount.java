@@ -1,0 +1,2 @@
+class CreditCardsAccount extends DebtAccount{
+}

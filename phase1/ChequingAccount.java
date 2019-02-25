@@ -1,0 +1,2 @@
+class ChequingAccount extends AssetAccount {
+}

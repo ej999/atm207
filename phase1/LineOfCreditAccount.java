@@ -1,0 +1,2 @@
+class LineOfCreditAccount extends DebtAccount {
+}
