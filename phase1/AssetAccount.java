@@ -1,2 +1,2 @@
-class AssetAccount implements Acc {
+class AssetAccount implements Account {
 }
