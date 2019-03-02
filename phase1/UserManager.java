@@ -1,15 +1,25 @@
 import java.util.ArrayList;
 
+/* A class to manage users*
+ */
+
 public class UserManager {
-    // Manage Users
     private  static ArrayList<User> users;
 
     public UserManager() {
         users = new ArrayList<>();
     }
 
-    public static void addAccount(User user){
+    public static void addUser(User user){
         users.add(user);
     }
 
+    public static boolean checkUser(String username) {
+        for (User user: users) {
+            if (user.getUsername() == username) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

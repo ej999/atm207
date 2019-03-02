@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class User {
-    /* A class that stores User information including:
+    /* A class that stores, sets, gets User information including:
     * username
     * password
     * user's account(s)
