@@ -2,19 +2,18 @@ package phase1;
 import java.util.ArrayList;
 
 
-public class User {
+class User {
     /* A class that stores, sets, gets User information including:
     * username
     * password
     * user's account(s)
     * their net total (The total of their debt account balances subtracted from the total of their asset account balances.)
     */
-    // A class to create new users with username and password,
     private String password;
 //    can not be empty
-    private String username;
+    private final String username;
 //    username should be unique
-    private ArrayList<Account> accounts;
+    private final ArrayList<Account> accounts;
 
     public User(String username, String password){
         this.username = username;

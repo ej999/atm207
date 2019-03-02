@@ -1,3 +1,5 @@
+package phase1;
+
 class LineOfCreditAccount extends DebtAccount {
     /*
      * A line of credit account allows you to transfer money in our out. But it also displays a positive balance

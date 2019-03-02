@@ -1,10 +1,10 @@
 package phase1;
 import java.util.ArrayList;
 
-/* A class to manage users*
+/* A class to manage users.
  */
 
-public class UserManager {
+class UserManager {
     private  static ArrayList<User> users;
 
     public UserManager() {
@@ -17,7 +17,7 @@ public class UserManager {
 
     public static boolean checkUser(String username) {
         for (User user: users) {
-            if (user.getUsername() == username) {
+            if (user.getUsername().equals(username)) {
                 return true;
             }
         }

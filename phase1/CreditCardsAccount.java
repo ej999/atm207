@@ -1,3 +1,5 @@
+package phase1;
+
 public class CreditCardsAccount extends DebtAccount{
     /*
      * These are accounts that display a positive balance when the user owes a money and a negative balance

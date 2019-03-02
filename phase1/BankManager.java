@@ -1,7 +1,7 @@
 package phase1;
 import java.util.HashMap;
 import java.util.Map;
-import java.util Account;
+//import java.util Account;
 import phase1.User;
 import phase1.UserManager;
 //Import ATM
@@ -36,7 +36,7 @@ public class BankManager extends Employees {
 
     //Add functionality to add starting balance
     public void addAccount(Account account, User user){
-        user.addAccount(Account);
+        user.addAccount(account);
     }
 
 }
