@@ -1,7 +1,7 @@
 package phase1;
 import java.util.HashMap;
 import java.util.Map;
-//import java.util Account;
+import java.util Account;
 import phase1.User;
 import phase1.UserManager;
 //Import ATM
@@ -15,6 +15,10 @@ public class BankManager extends Employees {
         this.username = username;
         this.password = password;
 
+    }
+
+    public void setPassword(String new_pass){
+        this.password = new_pass;
     }
 
     //Assume ATM stores bills as HashMap
@@ -36,7 +40,7 @@ public class BankManager extends Employees {
 
     //Add functionality to add starting balance
     public void addAccount(Account account, User user){
-        user.addAccount(account);
+        user.addAccount(Account);
     }
 
 }
