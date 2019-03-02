@@ -1,13 +1,13 @@
 package phase1;
 import java.util.HashMap;
 import java.util.Map;
-import java.util Account;
+import java.util.Account;
 import phase1.User;
 import phase1.UserManager;
 //Import ATM
 
 
-public class BankManager extends Employees {
+public class BankManager extends Employees implements Login  {
     String username;
     String password;
 
@@ -19,6 +19,15 @@ public class BankManager extends Employees {
 
     public void setPassword(String new_pass){
         this.password = new_pass;
+    }
+
+    public void setUsername(String new_user){
+        this.password = new_user;
+    }
+
+    @Override
+    public boolean verifyLogin(String u, String p) {
+        return this.username.equals(u) && this.password.equals(p);
     }
 
     //Assume ATM stores bills as HashMap
