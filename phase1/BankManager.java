@@ -17,6 +17,10 @@ public class BankManager extends Employees {
 
     }
 
+    public void setPassword(String new_pass){
+        this.password = new_pass;
+    }
+
     //Assume ATM stores bills as HashMap
     public void addToTill(HashMap<Integer, Integer> bills, HashMap<Integer, Integer> ATM){
         for (Map.Entry<Integer, Integer> denom : bills.entrySet()) {

@@ -11,4 +11,8 @@ public abstract class Employees {
         this.username = username;
         this.password = password;
     }
+
+    public String getUsername(){
+        return this.username;
+    }
 }
