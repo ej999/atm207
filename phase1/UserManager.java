@@ -1,7 +1,9 @@
+import java.util.ArrayList;
+
 public class UserManager {
     // Manage Users
     private String password;
     public  String username;
-    private User[] login;
+    private ArrayList<User> login;
 
 }
