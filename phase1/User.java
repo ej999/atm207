@@ -1,4 +1,6 @@
+package phase1;
 import java.util.ArrayList;
+
 
 public class User {
     /* A class that stores, sets, gets User information including:

@@ -1,3 +1,4 @@
+package phase1;
 import java.util.ArrayList;
 
 /* A class to manage users*
