@@ -9,7 +9,9 @@ public class User {
     */
     // A class to create new users with username and password,
     private String password;
+//    can not be empty
     private String username;
+//    username should be unique
     private ArrayList<Account> accounts;
 
     public User(String username, String password){
