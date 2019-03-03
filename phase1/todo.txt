@@ -1,4 +1,4 @@
-STep by step:
+Step by step:
 
 User wants to deposit money
 1)User approaches -> Login screen. ATM class asks for login/password, after user inputs, this gets
