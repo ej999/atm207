@@ -11,26 +11,35 @@ class LineOfCreditAccount extends DebtAccount {
      */
 
     /** LineOfCreditAccount Balance */
-    private double loCreditBalance;
+    private double accountBalance;
 
     public LineOfCreditAccount() {
-        this.loCreditBalance = 0.00;
+        this.accountBalance = 0.00;
     }
 
-    public void withdrawal(int withdrawalAmount) {
-        loCreditBalance -= withdrawalAmount;
+    public double withdraw(double withdrawalAmount) {
+        accountBalance -= withdrawalAmount;
+        return withdrawalAmount;
     }
 
     public void deposit(double depositAmount) {
-        loCreditBalance += depositAmount;
+        accountBalance += depositAmount;
     }
 
     public String viewBalance() {
-        String stringBalance = Double.toString(-loCreditBalance);
+        String stringBalance = Double.toString(-accountBalance);
         stringBalance = "$" + stringBalance;
         return stringBalance;
     }
 
     public void transfer(double transferAmount, Account transferAccount, User transferUser) {
+        for (int i : (transferUser.accounts).length) {
+            if (transferUser.accounts(i) == transferAccount) {
+                accountBalance -= transferAmount;
+                (transferUser.accounts(i)).accountBalance += transferAmount;
+            }
+        }
+
+
     }
 }

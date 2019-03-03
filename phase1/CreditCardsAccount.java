@@ -15,29 +15,30 @@ public class CreditCardsAccount extends DebtAccount{
      */
 
     /** CreditCardsAccount Balance */
-    private double creditCardBalance;
+    private double accountBalance;
 
     /**
      * Constructs a new Credit Card Account.
      */
     public CreditCardsAccount() {
-        this.creditCardBalance = 0.00;
+        this.accountBalance = 0.00;
     }
 
     public void setBalance(double initialBalance) {
-        creditCardBalance = initialBalance;
+        accountBalance = initialBalance;
     }
 
-    public void withdrawal(int withdrawalAmount) {
-        creditCardBalance -= withdrawalAmount;
+    public double withdraw(double withdrawalAmount) {
+        accountBalance -= withdrawalAmount;
+        return withdrawalAmount;
     }
 
     public void deposit(double depositAmount) {
-        creditCardBalance += depositAmount;
+        accountBalance += depositAmount;
     }
 
     public String viewBalance() {
-        String stringBalance = Double.toString(-creditCardBalance);
+        String stringBalance = Double.toString(-accountBalance);
         stringBalance = "$" + stringBalance;
         return stringBalance;
     }

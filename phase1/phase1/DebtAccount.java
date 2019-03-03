@@ -1,7 +1,8 @@
 package phase1;
 
 public abstract class DebtAccount implements Account {
-    abstract void withdrawal(int withdrawalAmount);
+
+    abstract double withdraw(double withdrawalAmount);
 
     abstract void deposit(double depositAmount);
 
