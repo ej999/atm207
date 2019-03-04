@@ -7,11 +7,11 @@ import java.util.Map;
 //Import ATM
 
 
-public class BankManager extends Employees implements Login  {
-    String username;
-    String password;
+class Login_Employee_BankManager extends Login_Employee {
+    private String username;
+    private String password;
 
-    public BankManager(String username, String password){
+    Login_Employee_BankManager(String username, String password){
         this.username = username;
         this.password = password;
 
@@ -39,16 +39,16 @@ public class BankManager extends Employees implements Login  {
 
     public void createUser(String username, String password, String user_type){
         if (user_type.equals("Customer")) {
-            User newUser = new User(username, password);
-            UserManager.addUser(newUser);
+            Login_User newUser = new Login_User(username, password);
+            LoginManager_User.addLogin(newUser);
         }
-        else if (user_type.equals("Bank Manager")){
-            BankManager newManager = new BankManager(username, password);
+        else if (user_type.equals("Bank LoginManager")){
+            Login_Employee_BankManager newManager = new Login_Employee_BankManager(username, password);
         }
     }
 
     //Add functionality to add starting balance
-    public void addAccount(Account account, User user){
+    public void addAccount(Account account, Login_User user){
         user.addAccount(account);
     }
 
