@@ -10,15 +10,16 @@ class ChequingAccount extends AssetAccount {
     Otherwise, one of the chequing accounts should be selected as a "primary"
     account. Perhaps a ChequingAccountManager?
      */
-    private boolean isPrimary;
+//    private boolean isPrimary; may not be needed
 
-    ChequingAccount() {
+    ChequingAccount(Login_User owner) {
         this.accountBalance = 0.00;
+        this.accountOwner = owner;
     }
 
     @Override
-    double withdraw(double withdrawalAmount) {
-        if (accountBalance > 0 && (accountBalance - withdrawalAmount >= -100)) {
+    int withdraw(int withdrawalAmount) {
+        if (validWithdrawal(withdrawalAmount) && (accountBalance - withdrawalAmount >= -100)) {
             accountBalance -= withdrawalAmount;
             return withdrawalAmount;
         }
