@@ -17,11 +17,13 @@ class Login_User implements Login {
 
     // username should be unique
     private final ArrayList<Account> accounts;
+    private ArrayList<Account> primary;
 
     Login_User(String username, String password){
         this.username = username;
         this.password = password;
         this.accounts = new ArrayList<>();
+        this.primary = new ArrayList<>();
     }
 
     @Override
@@ -52,9 +54,26 @@ class Login_User implements Login {
 
     void addAccount(Account account){
         this.accounts.add(account);
+        if(this.primary.isEmpty()){
+            this.primary.add(account);
+        }
+    }
+
+    void setPrimary(Account primary) {
+        this.primary.set(0,primary);
     }
 
     ArrayList<Account> getAccounts() {
         return accounts;
+    }
+
+    boolean hasAccount(Account account){
+        for(Account a: this.accounts){
+            if(a.equals(account)){
+                return true;
+            }
+
+        }
+        return false;
     }
 }

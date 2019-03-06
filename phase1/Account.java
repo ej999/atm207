@@ -51,7 +51,7 @@ abstract class Account {
     }
 
 
-    abstract int withdraw(int withdrawalAmount);
+    abstract double withdraw(double withdrawalAmount);
     abstract String viewBalance();
 
     /**
