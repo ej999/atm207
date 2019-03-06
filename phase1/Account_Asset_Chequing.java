@@ -14,7 +14,7 @@ class Account_Asset_Chequing extends Account_Asset {
      */
 //    private boolean isPrimary; may not be needed
 
-    Account_Asset_Chequing(Login_User owner) {
+    Account_Asset_Chequing(Login_Customer owner) {
         this.accountBalance = 0.00;
         this.accountOwner = owner;
         this.dateOfCreation = new Date();

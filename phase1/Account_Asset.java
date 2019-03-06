@@ -55,7 +55,7 @@ abstract class Account_Asset extends Account {
         return transferToAnotherUser(transferAmount, accountOwner, account);
     }
 
-    boolean transferToAnotherUser(double transferAmount, Login_User user, Account account) {
+    boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             accountBalance -= transferAmount;
             account.accountBalance += transferAmount;
@@ -76,7 +76,7 @@ abstract class Account_Asset extends Account {
         accountBalance += depositAmount;
     }
 
-    private boolean validTransfer(double transferAmount, Login_User user, Account account) {
+    private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {
         return transferAmount > 0 && (accountBalance - transferAmount) >= 0 && user.hasAccount(account);
     }
 }

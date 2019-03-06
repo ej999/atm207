@@ -1,21 +1,7 @@
 package phase1;
 
-abstract class Login_Employee implements Login {
-    private String username;
-    private String password;
-
-    Login_Employee(){
-
-    }
+abstract class Login_Employee extends Login {
     public Login_Employee(String username, String password){
-        this.username = username;
-        this.password = password;
-    }
-
-    public String getUsername(){
-        return this.username;
-    }
-    public String getPassword() {
-        return this.password;
+        super(username, password, "Employee");
     }
 }

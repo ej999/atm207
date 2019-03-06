@@ -7,7 +7,7 @@ import java.util.Date;
  */
 class Account_Asset_Saving extends Account_Asset {
 
-    Account_Asset_Saving(Login_User owner) {
+    Account_Asset_Saving(Login_Customer owner) {
         accountOwner = owner;
         accountBalance = 0.00;
         dateOfCreation = new Date();

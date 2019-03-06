@@ -11,7 +11,7 @@ abstract class Account {
     * There are two main types of accounts: Debt and Asset.
     */
     double accountBalance;
-    Login_User accountOwner;
+    Login_Customer accountOwner;
     Date dateOfCreation;
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     static final String outputFilePath = "/outgoing.txt";
