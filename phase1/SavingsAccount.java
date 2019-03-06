@@ -1,13 +1,17 @@
 package phase1;
 
+import java.util.Date;
+import java.util.Observer;
+
 /**
  * A savings account.
  */
-class SavingsAccount extends AssetAccount {
+class SavingsAccount extends AssetAccount implements Observer {
 
     SavingsAccount(Login_User owner) {
         accountOwner = owner;
         accountBalance = 0.00;
+        dateOfCreation = new Date();
     }
 
     @Override
@@ -27,6 +31,7 @@ class SavingsAccount extends AssetAccount {
      * This method should be automatically invoked on the first of every month.
      * It should observe today's date and get called when necessary.
      */
+    @Override
     void update() {
         accountBalance += 0.001 * accountBalance;
     }

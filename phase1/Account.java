@@ -1,4 +1,10 @@
 package phase1;
+import java.util.Date;
+import java.io.BufferedReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.io.IOException;
 
 abstract class Account {
     /*
@@ -6,7 +12,16 @@ abstract class Account {
     */
     double accountBalance;
     Login_User accountOwner;
-//    dateOfCreation;  figure out how to work with Time in Java
+    Date dateOfCreation;
+    private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
+    static final String outputFilePath = "/outgoing.txt";
+//    String mostRecentTransaction; // not sure if needed. e.g. "Withdraw: $20"
+
+    /*
+    What if we had a Transaction class that has all the undo methods?
+    Plus it can have other methods share by Line of Credit and Asset accounts e.g. payBill, transfers
+    These methods could be static...
+     */
 
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
@@ -19,6 +34,35 @@ abstract class Account {
     The real deposit method reads individual lines from an input file called <deposits.txt>
      */
 
+    /**
+     * Deposit money into their account by entering a cheque or cash into the machine
+     * @throws IOException
+     */
+    void depositMoney() throws IOException {
+        Path path = Paths.get(inputFilePath);
+        try (BufferedReader fileInput = Files.newBufferedReader(path)) {
+            String line = fileInput.readLine();
+            while (line != null) { // Reading from a file will produce null at the end.
+                double amountToDeposit = Double.valueOf(line.substring(1));
+                deposit(amountToDeposit);
+                line = fileInput.readLine();
+            }
+        }
+    }
+
+
     abstract int withdraw(int withdrawalAmount);
     abstract String viewBalance();
+
+    /**
+     * A string representation of this account.
+     * @return nice string rep.
+     */
+    @Override
+    public String toString() {
+        /*
+        TODO: Include things like: most recent transaction, date of creation, account balance, username
+         */
+        return "";
+    }
 }
