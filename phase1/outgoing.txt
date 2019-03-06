@@ -1,1 +1,0 @@
-Something like "User <username> paid <amount> to <non-user's account name> on <date and time>"

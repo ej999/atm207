@@ -1,5 +1,7 @@
 package phase1;
 
+import java.util.Date;
+
 /**
  * A chequing account.
  */
@@ -15,6 +17,7 @@ class ChequingAccount extends AssetAccount {
     ChequingAccount(Login_User owner) {
         this.accountBalance = 0.00;
         this.accountOwner = owner;
+        this.dateOfCreation = new Date();
     }
 
     @Override
