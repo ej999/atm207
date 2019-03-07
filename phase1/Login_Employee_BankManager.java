@@ -8,48 +8,53 @@ import java.util.Map;
 
 
 class Login_Employee_BankManager extends Login_Employee {
-    private String username;
-    private String password;
 
     Login_Employee_BankManager(String username, String password){
-        this.username = username;
-        this.password = password;
-
+        super(username, password, "BankManager");
     }
 
-    public void setPassword(String new_pass){
-        this.password = new_pass;
-    }
-
-    public void setUsername(String new_user){
-        this.password = new_user;
-    }
-
-    @Override
-    public boolean verifyLogin(String u, String p) {
-        return this.username.equals(u) && this.password.equals(p);
-    }
-
-    //Assume ATM stores bills as HashMap
-    public void addToTill(HashMap<Integer, Integer> bills, HashMap<Integer, Integer> ATM){
+    // Assume ATM stores bills as HashMap
+    public void addToBill(HashMap<Integer, Integer> bills, HashMap<Integer, Integer> ATM){
         for (Map.Entry<Integer, Integer> denom : bills.entrySet()) {
             ATM.replace(denom.getKey(), denom.getValue() + ATM.get(denom.getKey()));
         }
     }
 
-    public void createUser(String username, String password, String user_type){
-        if (user_type.equals("Customer")) {
-            Login_Customer newUser = new Login_Customer(username, password);
-            LoginManager_Customer.addLogin(newUser);
-        }
-        else if (user_type.equals("Bank LoginManager")){
-            Login_Employee_BankManager newManager = new Login_Employee_BankManager(username, password);
+    /** Only a bank manager can create and set the initial password for a user. */
+    public void createLogin(String username, String password){
+        Login_Customer newUser = new Login_Customer(username, password);
+        LoginManager.addLogin(newUser);
+    }
+
+    /** Create an account for a Customer. */
+    void addAccount(String accountType, Login_Customer username, double amount){
+        switch (accountType) {
+            case "Chequing": {
+                Account_Asset_Chequing newAccount = new Account_Asset_Chequing(amount, username);
+                username.addAccount(newAccount);
+                break;
+            }
+            case "Saving": {
+                Account_Asset_Saving newAccount = new Account_Asset_Saving(amount, username);
+                username.addAccount(newAccount);
+                break;
+            }
+            case "CreditCard": {
+                Account_Debt_CreditCard newAccount = new Account_Debt_CreditCard(amount, username);
+                username.addAccount(newAccount);
+                break;
+            }
+            case "ChequingAccount": {
+                Account_Asset_Chequing newAccount = new Account_Asset_Chequing(amount, username);
+                username.addAccount(newAccount);
+                break;
+            }
         }
     }
 
-    //Add functionality to add starting balance
-    public void addAccount(Account account, Login_Customer user){
-        user.addAccount(account);
+    /** Create an account for a Customer. Amount is not initialized here. */
+    void addAccount(String accountType, Login_Customer username){
+        this.addAccount(accountType, username, 0);
     }
 
 }

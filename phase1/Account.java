@@ -1,17 +1,18 @@
 package phase1;
-import java.util.Date;
+
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.Files;
-import java.io.IOException;
+import java.util.Date;
 
 abstract class Account {
     /*
     * There are two main types of accounts: Debt and Asset.
     */
-    double accountBalance;
-    Login_Customer accountOwner;
+    double balance;
+    Login_Customer owner;
     Date dateOfCreation;
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     static final String outputFilePath = "/outgoing.txt";
@@ -23,14 +24,27 @@ abstract class Account {
     These methods could be static...
      */
 
+    public Account(double balance, Login_Customer owner) {
+        this.balance = balance;
+        this.owner = owner;
+
+        Date date = new Date();
+        this.dateOfCreation = date;
+    }
+
+    public Account(Login_Customer owner) {
+        this(0, owner);
+    }
+
     void deposit(double depositAmount) {
+        // TODO what happen if depositAmount <= 0? Does the customer get a feedback?
         if (depositAmount > 0) {
-            accountBalance += depositAmount;
+            balance += depositAmount;
         }
     }
 
     void undoDeposit(double depositAmount) {
-        accountBalance -= depositAmount;
+        balance -= depositAmount;
     }
 
     /*
@@ -54,12 +68,20 @@ abstract class Account {
         }
     }
 
-
+    /**
+     * Withdraw money from an account (This will decrease <balance>)
+     * TODO: notify the Cash class about this withdrawal
+     * @param withdrawalAmount amount to be withdrawn
+     * @return withdrawalAmount, otherwise 0.
+     */
     abstract double withdraw(double withdrawalAmount);
     void undoWithdrawal(double withdrawalAmount) {
-        accountBalance += withdrawalAmount;
+        balance += withdrawalAmount;
     }
-    abstract String viewBalance();
+
+    public double getBalance() {
+        return balance;
+    }
 
     /**
      * A string representation of this account.
@@ -73,5 +95,8 @@ abstract class Account {
         return "";
     }
 
-//    abstract void undoMostRecentTransaction(); // TODO: figure out how to work with most recent transactions
+    public Login_Customer getOwner() {
+        return owner;
+    }
+    //    abstract void undoMostRecentTransaction(); // TODO: figure out how to work with most recent transactions
 }

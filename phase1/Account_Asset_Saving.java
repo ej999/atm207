@@ -1,26 +1,21 @@
 package phase1;
 
-import java.util.Date;
-
 /**
  * A savings account.
  */
 class Account_Asset_Saving extends Account_Asset {
 
-    Account_Asset_Saving(Login_Customer owner) {
-        accountOwner = owner;
-        accountBalance = 0.00;
-        dateOfCreation = new Date();
+    public Account_Asset_Saving(Login_Customer owner) {
+        super(owner);
     }
 
-    @Override
-    public String viewBalance() {
-        return "$" + accountBalance;
+    public Account_Asset_Saving(double balance, Login_Customer owner) {
+        super(balance, owner);
     }
 
     @Override
     double withdraw(double withdrawalAmount) {
-        if (validWithdrawal(withdrawalAmount) && (accountBalance - withdrawalAmount) >= 0) {
+        if (validWithdrawal(withdrawalAmount) && (balance - withdrawalAmount) >= 0) {
             return withdrawalAmount;
         }
         return 0;
@@ -31,7 +26,7 @@ class Account_Asset_Saving extends Account_Asset {
      * It should observe today's date and get called when necessary.
      */
     void update() {
-        accountBalance += 0.001 * accountBalance;
+        balance += 0.001 * balance;
     }
 
 }

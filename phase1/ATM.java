@@ -27,26 +27,51 @@ public class ATM {
 
      */
     public static void main(String[] args) {
+        Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
+        LoginManager.addLogin(jen);
+        jen.createLogin("steve", "1234");
+
+        Login_Customer steve = LoginManager.getLogin("steve");
+        jen.addAccount("Chequing", steve);
+
+
         System.out.println("Welcome to 207 Banking Service.");
 
         Scanner reader = new Scanner(System.in);
-
         boolean logined = false;
+        int loginAttempt = 0;
 
-        while (!logined) {
-            System.out.println("Please enter your username: ");
+        while (!logined & loginAttempt < 5) {
+            System.out.print("Please enter your username: ");
             String username = reader.next();
-            System.out.println("Please enter your password: ");
+            System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            logined = (LoginManager_Customer.checkUser(username, password))
-                    ? LoginManager_Customer.checkUser(username, password)
-                    : LoginManager_Employee.checkUser(username, password);
+            logined = LoginManager.verifyLogin(username, password);
+
+            loginAttempt++;
+            if (!logined & loginAttempt < 5) {
+                System.out.println();
+                System.out.println("Oops! Something's not right. Please double-check your username and password.");
+            }
         }
+
+        if (!logined & loginAttempt >= 5) {
+            System.out.println();
+            System.out.println("Sorry, you have 5 failed attempts of signing in. Please visit any of our branches " +
+                    "to have one of our helpful managers assist you.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("How can we help you today?");
+
 
 
 
         reader.close();
+
+
 
     }
 }

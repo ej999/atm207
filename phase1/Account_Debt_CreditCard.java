@@ -1,6 +1,6 @@
 package phase1;
 
-class Account_Debt_CreditCards extends Account_Debt {
+class Account_Debt_CreditCard extends Account_Debt {
     /*
      * These are accounts that display a positive balance when the user owes a money and a negative balance
      * when the user overpays. It is not possible to transfer money out of a credit account.
@@ -11,15 +11,15 @@ class Account_Debt_CreditCards extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_CreditCards() {
-        this(0.00);
+    public Account_Debt_CreditCard(Login_Customer owner) {
+        super(owner);
     }
 
-    Account_Debt_CreditCards(double initialBalance) {
-        this.accountBalance = initialBalance;
+    public Account_Debt_CreditCard(double balance, Login_Customer owner) {
+        super(balance, owner);
     }
 
     void setBalance(double initialBalance) {
-        accountBalance = initialBalance;
+        balance = initialBalance;
     }
 }

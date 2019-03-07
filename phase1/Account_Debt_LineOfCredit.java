@@ -9,18 +9,19 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_LineOfCredit() {
-        this(0.00);
+    public Account_Debt_LineOfCredit(Login_Customer owner) {
+        super(owner);
     }
 
-    Account_Debt_LineOfCredit(double initialBalance) {
-        this.accountBalance = initialBalance;
+    public Account_Debt_LineOfCredit(double balance, Login_Customer owner) {
+        super(balance, owner);
     }
+
 
     void transfer(double transferAmount, Account transferAccount, Login_Customer transferUser) {
         for (Account i : transferUser.getAccounts()) {
             if (i == transferAccount) {
-                accountBalance -= transferAmount;
+                balance -= transferAmount;
                 i.deposit(transferAmount);
             }
         }
