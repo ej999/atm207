@@ -39,8 +39,8 @@ public class ATM {
             System.out.println("Please enter your password: ");
             String password = reader.next();
 
-            logined = (LoginManager_User.checkUser(username, password))
-                    ? LoginManager_User.checkUser(username, password)
+            logined = (LoginManager_Customer.checkUser(username, password))
+                    ? LoginManager_Customer.checkUser(username, password)
                     : LoginManager_Employee.checkUser(username, password);
         }
 

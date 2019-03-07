@@ -11,7 +11,7 @@ abstract class Account {
     * There are two main types of accounts: Debt and Asset.
     */
     double accountBalance;
-    Login_User accountOwner;
+    Login_Customer accountOwner;
     Date dateOfCreation;
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     static final String outputFilePath = "/outgoing.txt";
@@ -27,6 +27,10 @@ abstract class Account {
         if (depositAmount > 0) {
             accountBalance += depositAmount;
         }
+    }
+
+    void undoDeposit(double depositAmount) {
+        accountBalance -= depositAmount;
     }
 
     /*
@@ -51,7 +55,10 @@ abstract class Account {
     }
 
 
-    abstract int withdraw(int withdrawalAmount);
+    abstract double withdraw(double withdrawalAmount);
+    void undoWithdrawal(double withdrawalAmount) {
+        accountBalance += withdrawalAmount;
+    }
     abstract String viewBalance();
 
     /**
@@ -65,4 +72,6 @@ abstract class Account {
          */
         return "";
     }
+
+//    abstract void undoMostRecentTransaction(); // TODO: figure out how to work with most recent transactions
 }

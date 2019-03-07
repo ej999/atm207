@@ -16,7 +16,7 @@ class Account_Debt_CreditCards extends Account_Debt {
     }
 
     Account_Debt_CreditCards(double initialBalance) {
-        this.accountBalance = 0.00;
+        this.accountBalance = initialBalance;
     }
 
     void setBalance(double initialBalance) {

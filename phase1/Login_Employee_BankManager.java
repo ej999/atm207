@@ -39,8 +39,8 @@ class Login_Employee_BankManager extends Login_Employee {
 
     public void createUser(String username, String password, String user_type){
         if (user_type.equals("Customer")) {
-            Login_User newUser = new Login_User(username, password);
-            LoginManager_User.addLogin(newUser);
+            Login_Customer newUser = new Login_Customer(username, password);
+            LoginManager_Customer.addLogin(newUser);
         }
         else if (user_type.equals("Bank LoginManager")){
             Login_Employee_BankManager newManager = new Login_Employee_BankManager(username, password);
@@ -48,7 +48,7 @@ class Login_Employee_BankManager extends Login_Employee {
     }
 
     //Add functionality to add starting balance
-    public void addAccount(Account account, Login_User user){
+    public void addAccount(Account account, Login_Customer user){
         user.addAccount(account);
     }
 

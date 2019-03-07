@@ -1,6 +1,6 @@
 package phase1;
 
-abstract class Account_Debt implements Account {
+abstract class Account_Debt extends Account {
     /** Account_Debt Balance */
     double accountBalance;
 
@@ -9,7 +9,6 @@ abstract class Account_Debt implements Account {
         accountBalance += depositAmount;
     }
 
-    @Override
     public double withdraw(double withdrawalAmount) {
         accountBalance -= withdrawalAmount;
         return withdrawalAmount;
