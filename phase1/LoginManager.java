@@ -15,9 +15,9 @@ class LoginManager {
         login_map.putIfAbsent(user.getUsername(), user);
     }
 
-    /** Get a Customer's login account by its username. */
-    static Login_Customer getLogin(String username) {
-        return (Login_Customer) login_map.get(username);
+    /** Get a Login account by its username. */
+    static Login getLogin(String username) {
+        return login_map.get(username);
     }
 
 
