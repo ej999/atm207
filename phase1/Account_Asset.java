@@ -64,16 +64,9 @@ abstract class Account_Asset extends Account {
         return false;
     }
 
-    @Override
-    public String viewBalance() {
-        String stringBalance = Double.toString(-accountBalance);
-        stringBalance = "$" + stringBalance;
-        return stringBalance;
-    }
-
-    @Override
-    public void deposit(double depositAmount) {
-        accountBalance += depositAmount;
+    void undoTransferToAnotherUser(double transferAmount, Account account) {
+        accountBalance += transferAmount;
+        account.accountBalance -= transferAmount;
     }
 
     private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {

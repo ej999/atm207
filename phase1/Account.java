@@ -29,6 +29,10 @@ abstract class Account {
         }
     }
 
+    void undoDeposit(double depositAmount) {
+        accountBalance -= depositAmount;
+    }
+
     /*
     The above deposit method is more like a helper method.
     The real deposit method reads individual lines from an input file called <deposits.txt>
@@ -52,6 +56,9 @@ abstract class Account {
 
 
     abstract double withdraw(double withdrawalAmount);
+    void undoWithdrawal(double withdrawalAmount) {
+        accountBalance += withdrawalAmount;
+    }
     abstract String viewBalance();
 
     /**
@@ -65,4 +72,6 @@ abstract class Account {
          */
         return "";
     }
+
+//    abstract void undoMostRecentTransaction(); // TODO: figure out how to work with most recent transactions
 }
