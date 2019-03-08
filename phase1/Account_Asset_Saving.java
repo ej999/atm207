@@ -16,6 +16,9 @@ class Account_Asset_Saving extends Account_Asset {
     @Override
     double withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount) && (balance - withdrawalAmount) >= 0) {
+            recentTransaction.put("Type", "Withdrawal");
+            recentTransaction.put("Amount", withdrawalAmount);
+            recentTransaction.put("Account", null);
             return withdrawalAmount;
         }
         return 0;
