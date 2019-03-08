@@ -79,19 +79,39 @@ class Login_Customer extends Login {
                         i += 1;
                     }
                 Scanner reader = new Scanner(System.in);
-                int account = reader.nextInt();
-                selectAccount(account);
+                int accountNumber = reader.nextInt();
+                selectAccount(option.get(accountNumber));
+                break;
 
 
             case 4:
                 System.out.println(netTotal());
+                break;
         }
     }
 
-    void selectAccount(int o){
-        switch(o){
+    void selectAccount(Account account){
+        System.out.println("1. Show account creation date.");
+        System.out.println("2. Show account balance.");
+        System.out.println("3. Show most recent transaction");
+        Scanner reader = new Scanner(System.in);
+        int choice = reader.nextInt();
+        switch(choice){
+            case 1:
+                System.out.println(account.dateOfCreation);
+                break;
+            case 2:
+                System.out.println(account.getBalance());
+                break;
+            case 3:
+                System.out.println("Type :" + account.recentTransaction.get("Type"));
+                System.out.println("Amount :" + account.recentTransaction.get("Amount"));
+                break;
 
         }
+
+
+
 
     }
 }
