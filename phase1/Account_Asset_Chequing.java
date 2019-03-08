@@ -25,6 +25,9 @@ class Account_Asset_Chequing extends Account_Asset {
         if (validWithdrawal(withdrawalAmount) && (balance - withdrawalAmount >= -100)) {
             balance -= withdrawalAmount;
             return withdrawalAmount;
+            recentTransaction.put("Type", "Withdrawal");
+            recentTransaction.put("Amount", withdrawalAmount);
+            recentTransaction.put("Account", null);
         }
         return 0;
     }

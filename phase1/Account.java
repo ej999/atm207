@@ -17,11 +17,11 @@ abstract class Account {
     Date dateOfCreation;
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     static final String outputFilePath = "/outgoing.txt";
-    HashMap<String, String> recentTransaction = new HashMap<String, String>() {
+    HashMap<String, Object> recentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
             put("Amount", "");
-            put("Account", "");
+            put("Account", null);
         }
     };
 //    String mostRecentTransaction; // not sure if needed. e.g. "Withdraw: $20"
@@ -49,8 +49,8 @@ abstract class Account {
         if (depositAmount > 0) {
             balance += depositAmount;
             recentTransaction.put("Type", "Deposit");
-            recentTransaction.put("Amount", Double.toString(depositAmount));
-            recentTransaction.put("Account", "");
+            recentTransaction.put("Amount", depositAmount);
+            recentTransaction.put("Account", null);
         }
     }
 
