@@ -1,5 +1,7 @@
 package phase1;
 
+import javafx.beans.binding.ObjectExpression;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +22,7 @@ abstract class Account {
     HashMap<String, Object> recentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
-            put("Amount", "");
+            put("Amount", 0.00);
             put("Account", null);
         }
     };
@@ -109,5 +111,12 @@ abstract class Account {
     public Login_Customer getOwner() {
         return owner;
     }
-    //    abstract void undoMostRecentTransaction(); // TODO: figure out how to work with most recent transactions
+     void undoMostRecentTransaction() {
+
+        if (recentTransaction.get("Type") == "Withdrawal") {
+            undoWithdrawal((Double) recentTransaction.get("Amount"));
+        } else if (recentTransaction.get("Type") == "Withdrawal") {
+            undoDeposit((Double) recentTransaction.get("Amount"));
+        }
+    }
 }
