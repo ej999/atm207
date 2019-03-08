@@ -61,7 +61,7 @@ public class ATM {
                 System.out.println();
                 System.out.println("Sorry, you have 5 failed attempts of signing in. Please visit any of our branches " +
                         "to have one of our helpful managers assist you.");
-                return;
+                System.exit(0);
             }
         }
 

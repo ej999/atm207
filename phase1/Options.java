@@ -40,7 +40,7 @@ class Options {
             //TODO move the Options-related methods from Login_customer to here.
             options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));
             options.put("View an account.", new Thread(this::createLoginPrompt));
-            options.put("See net worth.", new Thread(((Login_Customer) loginUser).netTotal()));
+//            options.put("See net worth.", new Thread(((Login_Customer) loginUser).netTotal()));
             options.put("Change password.", new Thread(this::createLoginPrompt));
         }
     }
