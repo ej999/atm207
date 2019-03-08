@@ -1,5 +1,9 @@
 package phase1;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -52,7 +56,22 @@ class Login_Customer extends Login {
         }
         return sum;
     }
+// add a line of request in the alert.text
+    void requestHelp(String s) throws IOException {
+        String content = s + "\n";
+        File file = new File("alert.txt");
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(content);
+        bw.close(); // Be sure to close BufferedWriter
 
+    }
+
+// add a line of string in alert that request for new account
+    void requestAccount(String accountType) throws IOException {
+         String n = "Requesting to create " + accountType + " Account." + "\n";
+         requestHelp(n);
+    }
     void displayOptions(){
         System.out.println("1. Show summary of all account balances");
         System.out.println("2. Show most recent transaction on any account");
