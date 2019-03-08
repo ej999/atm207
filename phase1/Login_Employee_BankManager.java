@@ -50,6 +50,9 @@ class Login_Employee_BankManager extends Login_Employee {
                 username.addAccount(newAccount);
                 break;
             }
+            default:
+                System.out.println("Invalid account type");
+                break;
         }
     }
 
@@ -61,21 +64,56 @@ class Login_Employee_BankManager extends Login_Employee {
     }
 
     void selectOptions(String option){
+        Scanner reader = new Scanner(System.in);
         switch (option){
-            case "1":
-                System.out.println("Creating Login...");
-                System.out.println("Enter username: ");
-                Scanner reader = new Scanner(System.in);
-                String username = reader.next();
-                System.out.println("Enter password: ");
-                String password = reader.next();
-                createLogin(username, password);
+            case "1": {
+                createLoginPrompt(reader);
                 break;
-            case "2":
-
-                System.out.println("Select account type:");
+            }
+            case "2": {
+                createAccountPrompt(reader);
+                break;
+                }
+            case "3":{
+                restockPrompt(reader);
+                break;
+            }
 
         }
+    }
+    private void createLoginPrompt(Scanner reader){
+        System.out.println("Creating Login...");
+        System.out.println("Enter username: ");
+        String username = reader.next();
+        System.out.println("Enter password: ");
+        String password = reader.next();
+        createLogin(username, password);
+    }
+    private void createAccountPrompt(Scanner reader){
+        System.out.println("Enter username: ");
+        String username = reader.next();
+        if (LoginManager.checkLoginExistence(username)) {
+            System.out.println("Enter account type : \n" +
+                    "Chequing \n Saving \n Credit Card \n Line of Credit ");
+        }
+        String account = reader.next();
+        addAccount(account, (Login_Customer) LoginManager.getLogin(username));
+    }
+    private void restockPrompt(Scanner reader){
+        System.out.println("Enter amount of 5 dollar bills: ");
+        int fives = reader.nextInt();
+        System.out.println("Enter amount of 10 dollar bills: ");
+        int tens = reader.nextInt();
+        System.out.println("Enter amount of 20 dollar bills: ");
+        int twenties = reader.nextInt();
+        System.out.println("Enter amount of 50 dollar bills: ");
+        int fifties = reader.nextInt();
+        HashMap<Integer, Integer> restock = new HashMap<Integer, Integer>();
+        restock.put(5, fives);
+        restock.put(10, tens);
+        restock.put(20, twenties);
+        restock.put(50, fifties);
+        //addToBill(restock, ); TODO: figure out how to access Cash: need to know where cash is stored
     }
 
 
