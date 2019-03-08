@@ -1,6 +1,8 @@
 package phase1;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * A customer's login account, with username, password, list of their accounts, primary account, and net total.
@@ -55,9 +57,8 @@ class Login_Customer extends Login {
 
     void displayOptions(){
         System.out.println("1. Show summary of all account balances");
-        System.out.println("2. Show most recent transaction on any account");
-        System.out.println("3. Show date of creation of an account");
-        System.out.println("4. See net worth.");
+        System.out.println("2. View an account.");
+        System.out.println("3. See net worth.");
     }
 
     void selectOption(int o){
@@ -65,9 +66,32 @@ class Login_Customer extends Login {
             case 1:
                 StringBuilder returnMessage = new StringBuilder();
                 for(Account account:accounts){
-                    System.out.println(account.getClass() + ": " + String.valueOf(account.getBalance()));
+                    System.out.println(account.getClass() + ": " + account.getBalance());
             }
+                break;
+            case 2:
+                System.out.println("Select the account you would like to work with:");
+                    HashMap<Integer, Account> option = new HashMap<>();
+                    int i = 1;
+                    for(Account account: accounts){
+                        System.out.println(i + ". " + account.toString());
+                        option.put(i, account);
+                        i += 1;
+                    }
+                Scanner reader = new Scanner(System.in);
+                int account = reader.nextInt();
+                selectAccount(account);
+
+
+            case 4:
+                System.out.println(netTotal());
+        }
+    }
+
+    void selectAccount(int o){
+        switch(o){
 
         }
+
     }
 }
