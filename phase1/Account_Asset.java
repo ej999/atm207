@@ -38,6 +38,9 @@ abstract class Account_Asset extends Account {
                 System.out.println("File has been written.");
             }
             balance -= amount;
+            recentTransaction.put("Type", "PayBill");
+            recentTransaction.put("Amount", amount);
+            recentTransaction.put("Account", accountName);
             return true;
         }
         return false;
@@ -58,6 +61,9 @@ abstract class Account_Asset extends Account {
             balance -= transferAmount;
             account.balance += transferAmount;
             return true;
+            recentTransaction.put("Type", "TransferToAnotherUser");
+            recentTransaction.put("Amount", transferAmount);
+            recentTransaction.put("Account", account);
         }
         return false;
     }
