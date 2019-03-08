@@ -78,16 +78,10 @@ public class ATM {
 
         boolean optionSelected = false;
         while (!optionSelected) {
-            if (getLoggedIn() instanceof Login_Customer) {
-                //TODO add options
-                System.out.println();
-            } else if (getLoggedIn() instanceof Login_Employee) {
-                // The bank manager is the only person who should be able to create a login and set the initial password for a user
-                System.out.println("1. Create a login for a user.");
-                System.out.println("2. Create a bank account for a user.");
-                System.out.println("3. Restock the ATM.");
-                System.out.println("4. Under the most recent transaction on a user's account.");
-            }
+            Login user = getLoggedIn();
+            user.displayOptions();
+            optionSelected = true;
+            //TODO: add something to update <optionSelected>
         }
 
 
