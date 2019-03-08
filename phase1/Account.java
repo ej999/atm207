@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
 
 abstract class Account {
     /*
@@ -16,6 +17,13 @@ abstract class Account {
     Date dateOfCreation;
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     static final String outputFilePath = "/outgoing.txt";
+    HashMap<String, String> recentTransaction = new HashMap<String, String>() {
+        {
+            put("Type", "");
+            put("Amount", "");
+            put("Account", "");
+        }
+    };
 //    String mostRecentTransaction; // not sure if needed. e.g. "Withdraw: $20"
 
     /*
@@ -40,6 +48,9 @@ abstract class Account {
         // TODO what happen if depositAmount <= 0? Does the customer get a feedback?
         if (depositAmount > 0) {
             balance += depositAmount;
+            recentTransaction.put("Type", "Deposit");
+            recentTransaction.put("Amount", Double.toString(depositAmount));
+            recentTransaction.put("Account", "");
         }
     }
 
