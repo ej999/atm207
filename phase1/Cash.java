@@ -1,5 +1,7 @@
 package phase1;
 
+import java.util.HashMap;
+
 /**
  * A class for handling cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
  *
@@ -12,29 +14,28 @@ package phase1;
  * the total of those denominations accordingly.
  */
 class Cash {
-    private int fiveDollarBill;
-    private int tenDollarBill;
-    private int twentyDollarBill;
-    private int fiftyDollarBill;
+    HashMap<String, Integer> bills;
 
     Cash(int fiveDollarBill, int tenDollarBill, int twentyDollarBill, int fiftyDollarBill) {
-        this.fiveDollarBill = fiveDollarBill;
-        this.tenDollarBill = tenDollarBill;
-        this.twentyDollarBill = twentyDollarBill;
-        this.fiftyDollarBill = fiftyDollarBill;
+        bills.put("five", fiveDollarBill);
+        bills.put("ten", tenDollarBill);
+        bills.put("twenty", twentyDollarBill);
+        bills.put("fifty", fiftyDollarBill);
     }
 
     void cashDeposit(int five, int ten, int twenty, int fifty) {
-        fiveDollarBill += five;
-        tenDollarBill += ten;
-        twentyDollarBill += twenty;
-        fiveDollarBill += fifty;
+        bills.put("five", bills.get("five") + five);
+        bills.put("ten", bills.get("ten") + ten);
+        bills.put("twenty", bills.get("twenty") + twenty);
+        bills.put("fifty", bills.get("fifty") + fifty);
     }
 
     boolean validCashWithdrawal(double amount) {
         double remainer = amount;
-
-        if (fiftyDollarBill >= Math.floor(remainer / 50)){
+        //TODO reimpement. the following is wrong.
+        fifty
+        if (bills.get("fifty") >= Math.floor(remainer / 50)){
+            bills.put("fifty", bills.get("fifty") - Math.floor(remainer / 50));
             remainer = remainer % 50;
         }
 

@@ -2,6 +2,7 @@ package phase1;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 //import java.util.Account;
 //Import ATM
@@ -44,8 +45,8 @@ class Login_Employee_BankManager extends Login_Employee {
                 username.addAccount(newAccount);
                 break;
             }
-            case "ChequingAccount": {
-                Account_Asset_Chequing newAccount = new Account_Asset_Chequing(amount, username);
+            case "LineOfCredit": {
+                Account_Debt_LineOfCredit newAccount = new Account_Debt_LineOfCredit(amount, username);
                 username.addAccount(newAccount);
                 break;
             }
@@ -59,6 +60,21 @@ class Login_Employee_BankManager extends Login_Employee {
         System.out.println("4. Under the most recent transaction on a user's account.");
     }
 
+    void selectOption(int o) {
+        switch (o) {
+            case 1:
+                System.out.println("Select the number associated to the account type you'd like to crete: 1. Chequing 2. Saving " +
+                        "3. Credit Card 4. Line of Credit");
+                Scanner reader = new Scanner(System.in);
+                int accountType = reader.nextInt();
+                createLogin();
+
+
+
+                break;
+
+        }
+    }
 
     /** Create an account for a Customer. Amount is not initialized here. */
     void addAccount(String accountType, Login_Customer username){
