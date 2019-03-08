@@ -12,7 +12,27 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     public Account_Debt_LineOfCredit(Login_Customer owner) {
         super(owner);
     }
+    /** LineOfCreditAccount Balance */
+    private double accountBalance;
 
+    public LineOfCreditAccount() {
+        this.accountBalance = 0.00;
+    }
+
+    public double withdraw(double withdrawalAmount) {
+        accountBalance -= withdrawalAmount;
+        return withdrawalAmount;
+    }
+
+    public void deposit(double depositAmount) {
+        accountBalance += depositAmount;
+    }
+
+    public String viewBalance() {
+        String stringBalance = Double.toString(-accountBalance);
+        stringBalance = "$" + stringBalance;
+        return stringBalance;
+    }
     public Account_Debt_LineOfCredit(double balance, Login_Customer owner) {
         super(balance, owner);
     }
@@ -26,6 +46,21 @@ class Account_Debt_LineOfCredit extends Account_Debt {
             }
         }
 
+    public void transferOut(double transferAmount, Account transferAccount, Login_Customer transferUser) {
+        for (int i : (transferUser.getAccounts())) {
+            if (transferUser.accounts(i) == transferAccount) {
+                accountBalance -= transferAmount;
+                (transferUser.accounts(i)).accountBalance += transferAmount;
+            }
+        }
+    }
 
+    public void transferBetween(double transferAmount, Account transferAccount) {
+        for (int i : ((this.user).accounts).length) {
+            if ((this.user).accounts(i) == transferAccount) {
+                accountBalance -= transferAmount;
+                ((this.user).accounts(i)).accountBalance += transferAmount;
+            }
+        }
     }
 }

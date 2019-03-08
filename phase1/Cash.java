@@ -1,5 +1,6 @@
 package phase1;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -9,104 +10,103 @@ import java.util.HashMap;
  * When the amount of any denomination goes below 20, your program should send an alert to a file called alerts.txt
  * that the real-life manager would read and handle by restocking the machine.
  *
- *TODO
- * When a user requests a withdrawal, your program will have to decide which bills to give to the user and decrease
- * the total of those denominations accordingly.
  */
 class Cash {
-    HashMap<String, Integer> bills;
+    private HashMap<String, Integer> bills;
 
-    Cash(int fiveDollarBill, int tenDollarBill, int twentyDollarBill, int fiftyDollarBill) {
-        bills.put("five", fiveDollarBill);
-        bills.put("ten", tenDollarBill);
-        bills.put("twenty", twentyDollarBill);
-        bills.put("fifty", fiftyDollarBill);
+    Cash(ArrayList<Integer> cashList) {
+        bills = new HashMap<>();
+        bills.put("five", cashList.get(0));
+        bills.put("ten", cashList.get(1));
+        bills.put("twenty", cashList.get(2));
+        bills.put("fifty", cashList.get(3));
     }
 
-    void cashDeposit(int five, int ten, int twenty, int fifty) {
-        bills.put("five", bills.get("five") + five);
-        bills.put("ten", bills.get("ten") + ten);
-        bills.put("twenty", bills.get("twenty") + twenty);
-        bills.put("fifty", bills.get("fifty") + fifty);
+    void cashDeposit(ArrayList<Integer> cashList) {
+        bills.put("five", bills.get("five") + cashList.get(0));
+        bills.put("ten", bills.get("ten") + cashList.get(1));
+        bills.put("twenty", bills.get("twenty") + cashList.get(2));
+        bills.put("fifty", bills.get("fifty") + cashList.get(3));
     }
 
-    boolean validCashWithdrawal(double amount) {
-        double remainer = amount;
-        //TODO reimpement. the following is wrong.
-        fifty
-        if (bills.get("fifty") >= Math.floor(remainer / 50)){
-            bills.put("fifty", bills.get("fifty") - Math.floor(remainer / 50));
-            remainer = remainer % 50;
-        }
+    /** return a List of cash that contains the number of bills that will be withdrawn
+     * according to the withdrawal amount and the inventory.
+     */
+    ArrayList<Integer> verifyCashWithdrawal(double amount) {
+        double remainder = amount;
+        ArrayList<Integer> cashList = new ArrayList<>();
 
-        if (twentyDollarBill >= Math.floor(remainer / 20)){
-            twentyDollarBill -= Math.floor(remainer / 10);
-            remainer = remainer % 20;
-        }
+        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
+        cashList.add(fiftyWithdrawn);
+        remainder -= fiftyWithdrawn * 50;
 
-        if (tenDollarBill >= Math.floor(remainer / 10)){
-            tenDollarBill -= Math.floor(remainer / 10);
-            remainer = remainer % 10;
-        }
+        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
+        cashList.add(twentyWithdrawn);
+        remainder -= twentyWithdrawn * 20;
 
-        if (fiveDollarBill >= Math.floor(remainer / 5)){
-            fiveDollarBill -= Math.floor(remainer / 5);
-        }
-        return true;
+        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
+        cashList.add(tenWithdrawn);
+        remainder -= tenWithdrawn * 10;
+
+        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
+        cashList.add(fiveWithdrawn);
+
+        return cashList;
     }
 
+    /** Cash withdrawal. The number of different bills are used in
+     * withdrawal depending on the withdrawal amount and the inventory.
+     */
     void cashWithdrawal(double amount) {
-        double remainer = amount;
+        double remainder = amount;
 
-        if (fiftyDollarBill >= Math.floor(remainer / 50)){
-            fiftyDollarBill -= Math.floor(remainer / 50);
-            remainer = remainer % 50;
-        }
+        // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
+        // specific bill that needed to be withdrawn or the inventory of that bill.
+        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
+        bills.put("fifty", bills.get("fifty") - fiftyWithdrawn);
+        remainder -= fiftyWithdrawn * 50;
 
-        if (twentyDollarBill >= Math.floor(remainer / 20)){
-            twentyDollarBill -= Math.floor(remainer / 10);
-            remainer = remainer % 20;
-        }
+        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
+        bills.put("twenty", bills.get("twenty") - twentyWithdrawn);
+        remainder -= twentyWithdrawn * 20;
 
-        if (tenDollarBill >= Math.floor(remainer / 10)){
-            tenDollarBill -= Math.floor(remainer / 10);
-            remainer = remainer % 10;
-        }
+        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
+        bills.put("ten", bills.get("ten") - tenWithdrawn);
+        remainder -= tenWithdrawn * 10;
 
-        if (fiveDollarBill >= Math.floor(remainer / 5)){
-            fiveDollarBill -= Math.floor(remainer / 5);
-        }
+        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
+        bills.put("five", bills.get("five") - fiveWithdrawn);
     }
 
     public int getFiveDollarBill() {
-        return fiveDollarBill;
+        return bills.get("five");
     }
 
     public void setFiveDollarBill(int fiveDollarBill) {
-        this.fiveDollarBill = fiveDollarBill;
+        bills.put("five", fiveDollarBill);
     }
 
     public int getTenDollarBill() {
-        return tenDollarBill;
+        return bills.get("ten");
     }
 
     public void setTenDollarBill(int tenDollarBill) {
-        this.tenDollarBill = tenDollarBill;
+        bills.put("ten", tenDollarBill);
     }
 
     public int getTwentyDollarBill() {
-        return twentyDollarBill;
+        return bills.get("twenty");
     }
 
     public void setTwentyDollarBill(int twentyDollarBill) {
-        this.twentyDollarBill = twentyDollarBill;
+        bills.put("twenty", twentyDollarBill);
     }
 
     public int getFiftyDollarBill() {
-        return fiftyDollarBill;
+        return bills.get("fifty");
     }
 
     public void setFiftyDollarBill(int fiftyDollarBill) {
-        this.fiftyDollarBill = fiftyDollarBill;
+        bills.put("fifty", fiftyDollarBill);
     }
 }
