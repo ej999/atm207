@@ -13,6 +13,7 @@ class LoginManager {
     static void addLogin(Login user) {
         // Username should be unique.
         login_map.putIfAbsent(user.getUsername(), user);
+
     }
 
     /** Get a Login account by its username. */

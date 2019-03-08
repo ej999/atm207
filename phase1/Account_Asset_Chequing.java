@@ -31,5 +31,4 @@ class Account_Asset_Chequing extends Account_Asset {
         }
         return 0;
     }
-
 }
