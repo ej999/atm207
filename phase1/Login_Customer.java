@@ -78,6 +78,7 @@ class Login_Customer extends Login {
         System.out.println("1. Show summary of all account balances");
         System.out.println("2. View an account.");
         System.out.println("3. See net worth.");
+        System.out.println("4. Change password.");
     }
 
     void selectOption(int o){
@@ -103,16 +104,22 @@ class Login_Customer extends Login {
                 break;
 
 
-            case 4:
+            case 3:
                 System.out.println(netTotal());
                 break;
+            case 4:
+                System.out.println("Please enter a new password: ");
+                Scanner reader2 = new Scanner(System.in);
+                String newPass = reader2.nextLine();
+                setPassword(newPass);
+
         }
     }
 
     void selectAccount(Account account){
         System.out.println("1. Show account creation date.");
         System.out.println("2. Show account balance.");
-        System.out.println("3. Show most recent transaction");
+        System.out.println("3. Show most recent transaction.");
         Scanner reader = new Scanner(System.in);
         int choice = reader.nextInt();
         switch(choice){
