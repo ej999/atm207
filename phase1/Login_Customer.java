@@ -54,7 +54,9 @@ class Login_Customer extends Login {
     }
 
     void displayOptions(){
-        //TODO add options
-        System.out.println();
+        System.out.println("1. Show summary of all account balances");
+        System.out.println("2. Show most recent transaction on any account");
+        System.out.println("3. Show date of creation of an account");
+        System.out.println("4. See net worth.");
     }
 }
