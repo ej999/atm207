@@ -59,4 +59,15 @@ class Login_Customer extends Login {
         System.out.println("3. Show date of creation of an account");
         System.out.println("4. See net worth.");
     }
+
+    void selectOption(int o){
+        switch(o) {
+            case 1:
+                StringBuilder returnMessage = new StringBuilder();
+                for(Account account:accounts){
+                    System.out.println(account.getClass() + ": " + String.valueOf(account.getBalance()));
+            }
+
+        }
+    }
 }
