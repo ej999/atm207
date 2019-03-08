@@ -1,23 +1,18 @@
 package phase1;
 
 abstract class Account_Debt extends Account {
-    /** Account_Debt Balance */
-    double accountBalance;
 
-    @Override
-    public void deposit(double depositAmount) {
-        accountBalance += depositAmount;
+    public Account_Debt(double balance, Login_Customer owner) {
+        super(balance, owner);
     }
+
+    public Account_Debt(Login_Customer owner) {
+        super(owner);
+    }
+
 
     public double withdraw(double withdrawalAmount) {
-        accountBalance -= withdrawalAmount;
+        balance -= withdrawalAmount;
         return withdrawalAmount;
-    }
-
-    @Override
-    public String viewBalance() {
-        String stringBalance = Double.toString(-accountBalance);
-        stringBalance = "$" + stringBalance;
-        return stringBalance;
     }
 }

@@ -1,15 +1,11 @@
 package phase1;
+
 import java.util.ArrayList;
 
+/**
+ * A customer's login account, with username, password, list of their accounts, primary account, and net total.
+ */
 class Login_Customer extends Login {
-    /*
-    * A class that stores, sets, gets Login_Customer information including:
-    * username
-    * password
-    * user's account(s)
-    * their net total (The total of their debt account balances subtracted from the total of their asset account balances.)
-    */
-
     private final ArrayList<Account> accounts;
     private Account primary;
 
@@ -27,7 +23,7 @@ class Login_Customer extends Login {
     }
 
     void setPrimary(Account primary) {
-        this.primary.set(0,primary);
+        this.primary = primary;
     }
 
     ArrayList<Account> getAccounts() {
@@ -35,12 +31,25 @@ class Login_Customer extends Login {
     }
 
     boolean hasAccount(Account account){
-        for(Account a: this.accounts){
+        for(Account a : this.accounts){
             if(a.equals(account)){
                 return true;
             }
 
         }
         return false;
+    }
+
+    // The total of their debt account balances subtracted from the total of their asset account balances.
+    double netTotal() {
+        double sum = 0;
+        for (Account a : this.accounts) {
+            if (a instanceof Account_Asset) {
+                sum += a.getBalance();
+            } else {
+                sum -= a.getBalance();
+            }
+        }
+        return sum;
     }
 }
