@@ -60,10 +60,10 @@ abstract class Account_Asset extends Account {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
             account.balance += transferAmount;
-            return true;
             recentTransaction.put("Type", "TransferToAnotherUser");
             recentTransaction.put("Amount", transferAmount);
             recentTransaction.put("Account", account);
+            return true;
         }
         return false;
     }
@@ -75,5 +75,17 @@ abstract class Account_Asset extends Account {
 
     private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
+    }
+    @Override
+     void undoMostRecentTransaction() {
+        super.undoMostRecentTransaction();
+        if (recentTransaction.get("Type") == "Withdrawal") {
+            undoWithdrawal((Double) recentTransaction.get("Amount"));
+        } else if (recentTransaction.get("Type") == "Withdrawal") {
+            undoDeposit((Double) recentTransaction.get("Amount"));
+        } else if (recentTransaction.get("Type") == "TransferToAnotherUser") {
+            undoTransferToAnotherUser((Double) recentTransaction.get("Amount"),
+                    (Account) recentTransaction.get("Account"));
+        }
     }
 }
