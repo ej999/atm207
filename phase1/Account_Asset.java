@@ -17,10 +17,6 @@ abstract class Account_Asset extends Account {
         super(owner);
     }
 
-    boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
-    }
-
     /**
      * Pay a bill by transferring money to a non-user's account
      *
@@ -39,9 +35,7 @@ abstract class Account_Asset extends Account {
                 System.out.println("File has been written.");
             }
             balance -= amount;
-            recentTransaction.put("Type", "PayBill");
-            recentTransaction.put("Amount", amount);
-            recentTransaction.put("Account", accountName);
+            updateMostRecentTransaction("PayBill",amount,null);
             return true;
         }
         return false;
@@ -62,15 +56,17 @@ abstract class Account_Asset extends Account {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
             account.balance += transferAmount;
-            recentTransaction.put("Type", "TransferToAnotherUser");
-            recentTransaction.put("Amount", transferAmount);
-            recentTransaction.put("Account", account);
+            if (user == getOwner()) {
+                updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
+            } else {
+                updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
+            }
             return true;
         }
         return false;
     }
 
-    void undoTransferToAnotherUser(double transferAmount, Account account) {
+    void undoTransfer(double transferAmount, Account account) {
         balance += transferAmount;
         account.balance -= transferAmount;
     }
@@ -82,13 +78,9 @@ abstract class Account_Asset extends Account {
     @Override
     void undoMostRecentTransaction() {
         super.undoMostRecentTransaction();
-        if (recentTransaction.get("Type") == "Withdrawal") {
-            undoWithdrawal((Double) recentTransaction.get("Amount"));
-        } else if (recentTransaction.get("Type") == "Withdrawal") {
-            undoDeposit((Double) recentTransaction.get("Amount"));
-        } else if (recentTransaction.get("Type") == "TransferToAnotherUser") {
-            undoTransferToAnotherUser((Double) recentTransaction.get("Amount"),
-                    (Account) recentTransaction.get("Account"));
+        if (mostRecentTransaction.get("Type").equals("TransferBetweenAccounts") ||
+                mostRecentTransaction.get("Type").equals("TransferToAnotherUser")) {
+            undoTransfer((Double) mostRecentTransaction.get("Amount"), (Account) mostRecentTransaction.get("Account"));
         }
     }
 }

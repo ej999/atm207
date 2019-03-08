@@ -13,23 +13,17 @@ class Account_Asset_Saving extends Account_Asset {
         super(balance, owner);
     }
 
-    @Override
     double withdraw(double withdrawalAmount) {
-        if (validWithdrawal(withdrawalAmount) && (balance - withdrawalAmount) >= 0) {
-            recentTransaction.put("Type", "Withdrawal");
-            recentTransaction.put("Amount", withdrawalAmount);
-            recentTransaction.put("Account", null);
-            return withdrawalAmount;
-        }
-        return 0;
+        return super.withdraw(withdrawalAmount, (balance - withdrawalAmount) >= 0);
     }
 
     /**
-     * This method should be automatically invoked on the first of every month.
+     * TODO: This method should be automatically invoked on the first of every month.
      * It should observe today's date and get called when necessary.
      */
     void update() {
-        balance += 0.001 * balance;
+        if (ATMFrame.checkMonth()) {
+            balance += 0.001 * balance;
+        }
     }
-
 }
