@@ -98,9 +98,9 @@ public class ATM {
 
     public static void main(String[] args) {
 
-        List<String> lines = Arrays.asList("The first line", "The second line");
-        Path file = Paths.get("user.txt");
-        Files.write(file, lines, Charset.forName("UTF-8"));
+//        List<String> lines = Arrays.asList("The first line", "The second line");
+//        Path file = Paths.get("user.txt");
+//        Files.write(file, lines, Charset.forName("UTF-8"));
         //Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");

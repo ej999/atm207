@@ -9,14 +9,14 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    public Account_Debt_LineOfCredit(Login_Customer owner) {
-        super(owner);
+    Account_Debt_LineOfCredit(Login_Customer owner, double amount) {
+        super(amount, owner);
     }
     /** LineOfCreditAccount Balance */
     private double accountBalance;
 
-    public LineOfCreditAccount() {
-        this.accountBalance = 0.00;
+    public Account_Debt_LineOfCredit(Login_Customer owner) {
+        this(owner, 0);
     }
 
     public double withdraw(double withdrawalAmount) {
@@ -45,22 +45,22 @@ class Account_Debt_LineOfCredit extends Account_Debt {
                 i.deposit(transferAmount);
             }
         }
-
-    public void transferOut(double transferAmount, Account transferAccount, Login_Customer transferUser) {
-        for (int i : (transferUser.getAccounts())) {
-            if (transferUser.accounts(i) == transferAccount) {
-                accountBalance -= transferAmount;
-                (transferUser.accounts(i)).accountBalance += transferAmount;
-            }
-        }
     }
 
-    public void transferBetween(double transferAmount, Account transferAccount) {
-        for (int i : ((this.user).accounts).length) {
-            if ((this.user).accounts(i) == transferAccount) {
-                accountBalance -= transferAmount;
-                ((this.user).accounts(i)).accountBalance += transferAmount;
-            }
-        }
-    }
+//    public void transferOut(double transferAmount, Account transferAccount, Login_Customer transferUser) {
+//        for (int i : (transferUser.getAccounts())) {
+//            if (transferUser.accounts(i) == transferAccount) {
+//                accountBalance -= transferAmount;
+//                (transferUser.accounts(i)).accountBalance += transferAmount;
+//            }
+//        }
+//    }
+//
+//    public void transferBetween(double transferAmount, Account transferAccount) {
+//        for (int i : ((this.user).accounts).length) {
+//            if ((this.user).accounts(i) == transferAccount) {
+//                accountBalance -= transferAmount;
+//                ((this.user).accounts(i)).accountBalance += transferAmount;
+//            }
+//        }
 }
