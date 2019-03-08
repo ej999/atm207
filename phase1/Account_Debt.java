@@ -13,6 +13,9 @@ abstract class Account_Debt extends Account {
 
     public double withdraw(double withdrawalAmount) {
         balance -= withdrawalAmount;
+        recentTransaction.put("Type", "Withdrawal");
+        recentTransaction.put("Amount", withdrawalAmount);
+        recentTransaction.put("Account", null);
         return withdrawalAmount;
     }
 }
