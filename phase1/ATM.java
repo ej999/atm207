@@ -1,12 +1,5 @@
 package phase1;
 
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 public class ATM {
@@ -75,25 +68,7 @@ public class ATM {
         setLoggedIn(LoginManager.getLogin(username));
         System.out.println();
         System.out.println("Login success. Hi " + getLoggedIn().getUsername() + "!");
-
-        reader.close();
-    }
-
-    private static void options() {
         System.out.println();
-        System.out.println("How can we help you today?");
-
-        boolean optionSelected = false;
-        while (!optionSelected) {
-            Login user = getLoggedIn();
-            user.displayOptions();
-            optionSelected = true;
-            //TODO: add something to update <optionSelected>
-        }
-
-
-
-
     }
 
     public static void main(String[] args) {
@@ -112,6 +87,8 @@ public class ATM {
 
 
         login();
-        options();
+
+        Options available = new Options(loggedInAccount);
+
     }
 }

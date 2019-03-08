@@ -6,7 +6,7 @@ public class ATMFrame {
     Date currentDate;
 
     void restart() {
-        
+
     }
 
 }
