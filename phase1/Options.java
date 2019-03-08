@@ -1,8 +1,10 @@
 package phase1;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
+
 
 /**
  * A class to provide the available options to the Login user base on their login account type, bank account balance,
@@ -16,7 +18,7 @@ class Options {
      */
     private LinkedHashMap<String, Thread> options;
 
-    Options(Login loginUser) {
+    Options(Login loginUser) throws IOException {
         this.loginUser = loginUser;
         this.options = new LinkedHashMap<>();
         createOptions();
@@ -29,7 +31,7 @@ class Options {
         }
     }
 
-    private void createOptions() {
+    private void createOptions() throws IOException{
         if (loginUser instanceof Login_Employee_BankManager) {
             options.put("Create a login for a user.", new Thread(this::createLoginPrompt));
             options.put("Create a bank account for a user.", new Thread(this::createAccountPrompt));
@@ -40,7 +42,7 @@ class Options {
             //TODO move the Options-related methods from Login_customer to here.
             options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));
             options.put("View an account.", new Thread(this::createLoginPrompt));
-            options.put("See net worth.", new Thread(((Login_Customer) loginUser).netTotal()));
+           // options.put("See net worth.", new Thread(((Login_Customer) loginUser).netTotal()));
             options.put("Change password.", new Thread(this::createLoginPrompt));
         }
     }
@@ -79,17 +81,23 @@ class Options {
         }
     }
 
-    private void createLoginPrompt() {
-        Scanner reader = new Scanner(System.in);
-        System.out.print("Creating Login...");
-        System.out.print("Enter username: ");
-        String username = reader.next();
-        System.out.print("Enter password: ");
-        String password = reader.next();
-        ((Login_Employee_BankManager) loginUser).createLogin(username, password);
-        System.out.println("Command runs successfully.");
-        System.out.println();
+    private void createLoginPrompt(){
+        try {
+            Scanner reader = new Scanner(System.in);
+            System.out.print("Creating Login...");
+            System.out.print("Enter username: ");
+            String username = reader.next();
+            System.out.print("Enter password: ");
+            String password = reader.next();
+            ((Login_Employee_BankManager) loginUser).createLogin(username, password);
+            System.out.println("Command runs successfully.");
+            System.out.println();
+        }
+
+     catch(IOException ie) {
+        ie.printStackTrace();
     }
+}
 
     private void createAccountPrompt() {
         Scanner reader = new Scanner(System.in);

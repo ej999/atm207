@@ -1,7 +1,10 @@
 package phase1;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileWriter;
+
 
 //import java.util.Account;
 //Import ATM
@@ -23,9 +26,13 @@ class Login_Employee_BankManager extends Login_Employee {
     /**
      * Only a bank manager can create and set the initial password for a user.
      */
-    public void createLogin(String username, String password) {
+    public void createLogin(String username, String password) throws IOException {
+
         Login_Customer newUser = new Login_Customer(username, password);
         LoginManager.addLogin(newUser);
+        FileWriter fileWriter = new FileWriter("login_credentials.txt");
+        fileWriter.write(username + " " + password + "/n");
+        fileWriter.close();
     }
 
     /**

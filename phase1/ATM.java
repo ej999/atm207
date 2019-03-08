@@ -1,5 +1,6 @@
 package phase1;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class ATM {
@@ -71,7 +72,7 @@ public class ATM {
         System.out.println();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 //        List<String> lines = Arrays.asList("The first line", "The second line");
 //        Path file = Paths.get("user.txt");
