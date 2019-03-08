@@ -9,7 +9,7 @@ class LoginManager {
     /**
      * A mapping of username to Login.
      */
-    private static HashMap<String, Login> login_map = new HashMap<>();
+     static HashMap<String, Login> login_map = new HashMap<>();
 
     /**
      * Add a login account.
