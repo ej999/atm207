@@ -9,4 +9,5 @@ abstract class Login_Employee extends Login {
     Login_Employee(String username, String password, String loginType){
         super(username, password, loginType);
     }
+
 }

@@ -40,4 +40,5 @@ abstract class Login {
     String getLoginType() {
         return loginType;
     }
+    abstract void displayOptions();
 }

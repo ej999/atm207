@@ -52,4 +52,9 @@ class Login_Customer extends Login {
         }
         return sum;
     }
+
+    void displayOptions(){
+        //TODO add options
+        System.out.println();
+    }
 }

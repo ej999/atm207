@@ -52,6 +52,14 @@ class Login_Employee_BankManager extends Login_Employee {
         }
     }
 
+    void displayOptions(){
+        System.out.println("1. Create a login for a user.");
+        System.out.println("2. Create a bank account for a user.");
+        System.out.println("3. Restock the ATM.");
+        System.out.println("4. Under the most recent transaction on a user's account.");
+    }
+
+
     /** Create an account for a Customer. Amount is not initialized here. */
     void addAccount(String accountType, Login_Customer username){
         this.addAccount(accountType, username, 0);
