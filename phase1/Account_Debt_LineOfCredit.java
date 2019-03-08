@@ -14,17 +14,20 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     }
 
     Account_Debt_LineOfCredit(double initialBalance) {
-        this.accountBalance = initialBalance;
+        this.accountBalance = 0.00;
     }
 
-    void transfer(double transferAmount, Account transferAccount, Login_Customer transferUser) {
-        for (Account i : transferUser.getAccounts()) {
+    void transfer(double transferAmount, Account transferAccount, Login_User transferUser) {
+        /*for (Account i : transferUser.getAccounts()) {
             if (i == transferAccount) {
                 accountBalance -= transferAmount;
                 i.deposit(transferAmount);
             }
         }
+        */
+        if (transferAccount.checkAccount(transferAccount)) {
 
+        }
 
     }
 }
