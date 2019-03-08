@@ -60,21 +60,24 @@ class Login_Employee_BankManager extends Login_Employee {
         System.out.println("4. Under the most recent transaction on a user's account.");
     }
 
-    void selectOption(int o) {
-        switch (o) {
-            case 1:
-                System.out.println("Select the number associated to the account type you'd like to crete: 1. Chequing 2. Saving " +
-                        "3. Credit Card 4. Line of Credit");
+    void selectOptions(String option){
+        switch (option){
+            case "1":
+                System.out.println("Creating Login...");
+                System.out.println("Enter username: ");
                 Scanner reader = new Scanner(System.in);
-                int accountType = reader.nextInt();
-                createLogin();
-
-
-
+                String username = reader.next();
+                System.out.println("Enter password: ");
+                String password = reader.next();
+                createLogin(username, password);
                 break;
+            case "2":
+
+                System.out.println("Select account type:");
 
         }
     }
+
 
     /** Create an account for a Customer. Amount is not initialized here. */
     void addAccount(String accountType, Login_Customer username){
