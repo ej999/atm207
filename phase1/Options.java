@@ -38,6 +38,10 @@ class Options {
             options.put("Logout", new Thread(() -> {System.exit(0);}));
         } else if (loginUser instanceof Login_Customer) {
             //TODO move the Options-related methods from Login_customer to here.
+            options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));
+            options.put("View an account.", new Thread(this::createLoginPrompt));
+            options.put("See net worth.", new Thread(((Login_Customer) loginUser).netTotal()));
+            options.put("Change password.", new Thread(this::createLoginPrompt));
         }
     }
 
@@ -97,6 +101,8 @@ class Options {
         }
         String account = reader.next();
         ((Login_Employee_BankManager) loginUser).addAccount(account, (Login_Customer) LoginManager.getLogin(username));
+        System.out.println("Command runs successfully.");
+        System.out.println();
     }
 
     private void restockPrompt() {

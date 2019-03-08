@@ -74,12 +74,6 @@ class Login_Customer extends Login {
          String n = "Requesting to create " + accountType + " Account." + "\n";
          requestHelp(n);
     }
-    void displayOptions(){
-        System.out.println("1. Show summary of all account balances");
-        System.out.println("2. View an account.");
-        System.out.println("3. See net worth.");
-        System.out.println("4. Change password.");
-    }
 
     void selectOption(int o){
         switch(o) {
@@ -135,9 +129,5 @@ class Login_Customer extends Login {
                 break;
 
         }
-
-
-
-
     }
 }
