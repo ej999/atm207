@@ -1,22 +1,18 @@
 package phase1;
 
-import java.util.ArrayList;
-
 /**
- * Login account, with username, password, login type, available options on an ATM.
+ * Login account, with username, password, login type on an ATM.
  */
 abstract class Login {
+    private final String loginType;
     private String username;
     private String password;
-    private final String loginType;
-    private ArrayList availableOption;
 
 
     Login(String username, String password, String loginType) {
         this.username = username;
         this.password = password;
         this.loginType = loginType;
-        this.availableOption = new ArrayList();
     }
 
     String getUsername() {
@@ -40,5 +36,4 @@ abstract class Login {
     String getLoginType() {
         return loginType;
     }
-    abstract void displayOptions();
 }

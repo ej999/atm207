@@ -9,10 +9,6 @@ import java.io.PrintWriter;
  * Asset accounts include Chequing and Savings Accounts.
  */
 abstract class Account_Asset extends Account {
-    boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
-    }
-
     public Account_Asset(double balance, Login_Customer owner) {
         super(balance, owner);
     }
@@ -21,15 +17,20 @@ abstract class Account_Asset extends Account {
         super(owner);
     }
 
+    boolean validWithdrawal(double withdrawalAmount) {
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
+    }
+
     /**
      * Pay a bill by transferring money to a non-user's account
-     * @param amount transfer amount
+     *
+     * @param amount      transfer amount
      * @param accountName non-user's account name
-     * @throws IOException
      * @return true if bill has been payed successfully
+     * @throws IOException
      */
     boolean payBill(double amount, String accountName) throws IOException {
-        if (amount > 0 && (balance -amount) >= 0) {
+        if (amount > 0 && (balance - amount) >= 0) {
             String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName;
             // TODO: add date and time to message
             // Open the file for writing and write to it.
@@ -48,8 +49,9 @@ abstract class Account_Asset extends Account {
 
     /**
      * Transfer money between accounts the user owns
+     *
      * @param transferAmount the amount to be transferred
-     * @param account another account the user owns
+     * @param account        another account the user owns
      * @return true if transfer was successful
      */
     boolean transferBetweenAccounts(double transferAmount, Account account) {
@@ -76,8 +78,9 @@ abstract class Account_Asset extends Account {
     private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
     }
+
     @Override
-     void undoMostRecentTransaction() {
+    void undoMostRecentTransaction() {
         super.undoMostRecentTransaction();
         if (recentTransaction.get("Type") == "Withdrawal") {
             undoWithdrawal((Double) recentTransaction.get("Amount"));

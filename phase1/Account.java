@@ -1,7 +1,5 @@
 package phase1;
 
-import javafx.beans.binding.ObjectExpression;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,14 +9,14 @@ import java.util.Date;
 import java.util.HashMap;
 
 abstract class Account {
+    static final String outputFilePath = "/outgoing.txt";
+    private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     /*
-    * There are two main types of accounts: Debt and Asset.
-    */
+     * There are two main types of accounts: Debt and Asset.
+     */
     double balance;
     Login_Customer owner;
     Date dateOfCreation;
-    private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
-    static final String outputFilePath = "/outgoing.txt";
     HashMap<String, Object> recentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
@@ -38,8 +36,7 @@ abstract class Account {
         this.balance = balance;
         this.owner = owner;
 
-        Date date = new Date();
-        this.dateOfCreation = date;
+        this.dateOfCreation = new Date();
     }
 
     public Account(Login_Customer owner) {
@@ -67,6 +64,7 @@ abstract class Account {
 
     /**
      * Deposit money into their account by entering a cheque or cash into the machine
+     *
      * @throws IOException
      */
     void depositMoney() throws IOException {
@@ -84,10 +82,12 @@ abstract class Account {
     /**
      * Withdraw money from an account (This will decrease <balance>)
      * TODO: notify the Cash class about this withdrawal
+     *
      * @param withdrawalAmount amount to be withdrawn
      * @return withdrawalAmount, otherwise 0.
      */
     abstract double withdraw(double withdrawalAmount);
+
     void undoWithdrawal(double withdrawalAmount) {
         balance += withdrawalAmount;
     }
@@ -96,8 +96,13 @@ abstract class Account {
         return balance;
     }
 
+    void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     /**
      * A string representation of this account.
+     *
      * @return nice string rep.
      */
     @Override
@@ -111,7 +116,8 @@ abstract class Account {
     public Login_Customer getOwner() {
         return owner;
     }
-     void undoMostRecentTransaction() {
+
+    void undoMostRecentTransaction() {
 
         if (recentTransaction.get("Type") == "Withdrawal") {
             undoWithdrawal((Double) recentTransaction.get("Amount"));

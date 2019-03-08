@@ -5,11 +5,10 @@ import java.util.HashMap;
 
 /**
  * A class for handling cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
- *
+ * <p>
  *TODO
  * When the amount of any denomination goes below 20, your program should send an alert to a file called alerts.txt
  * that the real-life manager would read and handle by restocking the machine.
- *
  */
 class Cash {
     private HashMap<String, Integer> bills;
@@ -29,7 +28,8 @@ class Cash {
         bills.put("fifty", bills.get("fifty") + cashList.get(3));
     }
 
-    /** return a List of cash that contains the number of bills that will be withdrawn
+    /**
+     * return a List of cash that contains the number of bills that will be withdrawn
      * according to the withdrawal amount and the inventory.
      */
     ArrayList<Integer> verifyCashWithdrawal(double amount) {
@@ -54,7 +54,8 @@ class Cash {
         return cashList;
     }
 
-    /** Cash withdrawal. The number of different bills are used in
+    /**
+     * Cash withdrawal. The number of different bills are used in
      * withdrawal depending on the withdrawal amount and the inventory.
      */
     void cashWithdrawal(double amount) {
