@@ -5,11 +5,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
 
+/**
+ * TODO: write description for this class
+ */
 public class ATMFrame extends Observable {
 
     /** check if today is the start of the month*/
     /*
-    Is there a way to call this method after a certain time duration? e.g. every day
+    TODO: this method should be called every night by ________
      */
     public void checkMonth(){
         Date today = new Date();

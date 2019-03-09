@@ -1,17 +1,27 @@
 package phase1;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * A class for handling cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
- * <p>
  *TODO
  * When the amount of any denomination goes below 20, your program should send an alert to a file called alerts.txt
  * that the real-life manager would read and handle by restocking the machine.
  */
 class Cash {
+    /*
+    Map denomination to quantity
+     */
     private HashMap<String, Integer> bills;
+    private static final String outputFilePath = "/alerts.txt";
 
     Cash(ArrayList<Integer> cashList) {
         bills = new HashMap<>();
@@ -21,8 +31,43 @@ class Cash {
         bills.put("fifty", cashList.get(3));
     }
 
+    /**
+     * Check the quantity of denominations
+     * @return true iff amount of any denomination goes below 20
+     */
+    private boolean isAmountBelowTwenty() {
+        for(int n: bills.values()) {
+            if (n < 20) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Send an alert to alerts.txt iff isAmountBelowTwenty
+     */
+    private void checkDenom() {
+        if (isAmountBelowTwenty()) {
+            try {
+                sendAlert();
+            } catch (IOException e) {
+                // do nothing?
+            }
+        }
+    }
+
+    private void sendAlert() throws IOException {
+        // Open the file for writing and write to it.
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
+            out.println(bills);
+            System.out.println("File has been written.");
+        }
+    }
+
     /*
     When bank manager restocks the machine
+    cashList: [fives, tens, twenties, fifties]
      */
     void cashDeposit(ArrayList<Integer> cashList) {
         bills.put("five", bills.get("five") + cashList.get(0));
@@ -34,6 +79,7 @@ class Cash {
     /**
      * return a List of cash that contains the number of bills that will be withdrawn
      * according to the withdrawal amount and the inventory.
+     * What is this method used for?
      */
     ArrayList<Integer> verifyCashWithdrawal(double amount) {
         double remainder = amount;
@@ -60,8 +106,9 @@ class Cash {
     /**
      * Cash withdrawal. The number of different bills are used in
      * withdrawal depending on the withdrawal amount and the inventory.
+     * Update quantity of denominations.
      */
-    void cashWithdrawal(double amount) {
+    public void cashWithdrawal(double amount) {
         double remainder = amount;
 
         // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
@@ -80,6 +127,7 @@ class Cash {
 
         int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
         bills.put("five", bills.get("five") - fiveWithdrawn);
+
     }
 
     public int getFiveDollarBill() {
