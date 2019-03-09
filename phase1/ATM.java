@@ -69,6 +69,7 @@ public class ATM {
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
         jen.createLogin("1", "1");
+        //Loading previously saved data
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManager.login_map = load_backup.returnFileBackup().login_map;
 

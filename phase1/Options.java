@@ -107,6 +107,7 @@ class Options {
         System.out.println("Have a nice day, " + this.loginUser.getUsername() + "!");
         System.out.println("===========================================================\n");
         LoginManagerBackup backUp = new LoginManagerBackup();
+        //Every time the user logs out, the LoginManager's contents will be serialized and saved.
         try {
             FileOutputStream fileOut =
                     new FileOutputStream("LoginManagerStorage.txt");

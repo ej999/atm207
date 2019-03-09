@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 
 public class LoginManagerBackup implements Serializable {
-    //static transient LoginManagerBackup backup;
+
     HashMap<String, Login> login_map = new HashMap<>();
 
     LoginManagerBackup() {
@@ -20,6 +20,7 @@ public class LoginManagerBackup implements Serializable {
             file.close();
             return backup;
         }
+        //For any exceptions, it will just return the same data as what the current LoginManager has
         catch (EOFException f){
             //f.printStackTrace();
             return new LoginManagerBackup();
