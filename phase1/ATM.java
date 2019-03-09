@@ -1,6 +1,6 @@
 package phase1;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -64,15 +64,13 @@ public class ATM {
         return loginUser;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // instantiate an Employee account here for basic functions here.
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
         jen.createLogin("1", "1");
-        //Loading previously saved data
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManager.login_map = load_backup.returnFileBackup().login_map;
-
 
         // TODO program should be shut down every night.
         //noinspection InfiniteLoopStatement

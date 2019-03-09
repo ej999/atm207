@@ -124,8 +124,8 @@ class Login_Customer extends Login implements Serializable {
                 System.out.println(account.getBalance());
                 break;
             case 3:
-                System.out.println("Type :" + account.recentTransaction.get("Type"));
-                System.out.println("Amount :" + account.recentTransaction.get("Amount"));
+                System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
+                System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
                 break;
 
         }

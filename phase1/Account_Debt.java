@@ -10,12 +10,42 @@ abstract class Account_Debt extends Account {
         super(owner);
     }
 
+    private boolean validWithdrawal(double withdrawalAmount) {
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0;
+    }
 
-    public double withdraw(double withdrawalAmount) {
-        balance -= withdrawalAmount;
-        recentTransaction.put("Type", "Withdrawal");
-        recentTransaction.put("Amount", withdrawalAmount);
-        recentTransaction.put("Account", null);
-        return withdrawalAmount;
+    /**
+     * Withdraw money from an account (This will increase <balance> since you owe money)
+     * TODO: notify the Cash class about this withdrawal
+     *
+     * @param withdrawalAmount amount to be withdrawn
+     * @return withdrawalAmount, otherwise 0.
+     */
+    @Override
+    double withdraw(double withdrawalAmount) {
+        if (validWithdrawal(withdrawalAmount)) {
+            balance += withdrawalAmount;
+            updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
+            return withdrawalAmount;
+        }
+        return 0;
+    }
+
+    /*
+    Depositing money onto a credit card decreases account balance (since you're paying back the bank)
+     */
+    @Override
+    void deposit(double depositAmount) {
+        if (depositAmount > 0) {
+            balance -= depositAmount;
+            updateMostRecentTransaction("Deposit", depositAmount, null);
+            System.out.println("valid deposit");
+        } else {
+            System.out.println("invalid deposit");
+        }
+    }
+
+    void undoDeposit(double depositAmount) {
+        balance += depositAmount;
     }
 }
