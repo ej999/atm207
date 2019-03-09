@@ -5,7 +5,8 @@ import java.util.HashMap;
 /**
  * A static class to manage the list of all types of login accounts.
  */
-class LoginManager {
+final class LoginManager {
+    private LoginManager(){}
     /**
      * A mapping of username to Login.
      */

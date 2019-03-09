@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * A customer's login account, with username, password, list of their accounts, primary account, and net total.
+ * A customer's login account, with username, password, list of their accounts, primary chequing account, and net total.
  */
 class Login_Customer extends Login implements Serializable {
     private final ArrayList<Account> accounts;
@@ -19,7 +19,10 @@ class Login_Customer extends Login implements Serializable {
     }
 
 
-
+    /**
+     * By default, first chequing account added is the primary account.
+     * @param account to be added
+     */
     void addAccount(Account account){
         this.accounts.add(account);
         // If a user has only one checking account, it will be the default destination for any deposits.
@@ -61,8 +64,8 @@ class Login_Customer extends Login implements Serializable {
 // add a line of request in the alert.text
     void requestHelp(String s) throws IOException {
         String content = s + "\n";
-        File file = new File("alert.txt");
-        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        File file = new File("alerts.txt");
+        FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(content);
         bw.close(); // Be sure to close BufferedWriter

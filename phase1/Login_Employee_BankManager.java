@@ -2,6 +2,7 @@ package phase1;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.FileWriter;
@@ -22,6 +23,23 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
         for (Map.Entry<Integer, Integer> denom : bills.entrySet()) {
             ATM.replace(denom.getKey(), denom.getValue() + ATM.get(denom.getKey()));
         }
+    }
+
+    /**
+     * Bank Manager has the ability to restock cash machine.
+     * @param cashList amount of denominations [fives, tens, twenties, fifties]
+     */
+    public void restockMachine(ArrayList<Integer> cashList) {
+        Cash.cashDeposit(cashList);
+    }
+
+    /**
+     * The manager has the ability to undo the most recent transaction on any asset or debt account,
+     * except for paying bills.
+     * @param account account involved
+     */
+    public void undoMostRecentTransaction(Account account) {
+        account.undoMostRecentTransaction();
     }
 
     /**

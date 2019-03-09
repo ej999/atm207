@@ -69,7 +69,7 @@ final class Cash {
 
     static private void sendAlert() throws IOException {
         // Open the file for writing and write to it.
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
             out.println(bills);
             System.out.println("File has been written.");
         }

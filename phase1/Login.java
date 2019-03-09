@@ -31,7 +31,9 @@ abstract class Login implements Serializable {
 
     void setPassword(String p) {
         // password should not be empty.
-        //TODO inform password is not changed if it is empty
+        if(p.equals("")) {
+            System.out.println("Your password has not been changed");
+        }
         password = p.equals("") ? password : p;
     }
 
