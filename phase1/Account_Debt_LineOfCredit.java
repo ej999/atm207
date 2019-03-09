@@ -26,12 +26,6 @@ class Account_Debt_LineOfCredit extends Account_Debt {
         balance += depositAmount;
     }
 
-    public String viewBalance() {
-        String stringBalance = Double.toString(-balance);
-        stringBalance = "$" + stringBalance;
-        return stringBalance;
-    }
-
 
     void transferOut(double transferAmount, Account transferAccount, Login_Customer transferUser) {
         for (Account i : transferUser.getAccounts()) {

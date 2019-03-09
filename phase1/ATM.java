@@ -1,6 +1,6 @@
 package phase1;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ATM {
@@ -28,68 +28,52 @@ public class ATM {
 
      */
 
-    private static Login loggedInAccount;
-
-    private static Login getLoggedIn() {
-        return loggedInAccount;
-    }
-
-    private static void setLoggedIn(Login loggedIn) {
-        ATM.loggedInAccount = loggedIn;
-    }
-
-    private static void login() {
-        System.out.println("Welcome to 207 Banking Service.");
+    private static Login login() {
+        System.out.println("Welcome to CSC207 Banking Service.");
 
         Scanner reader = new Scanner(System.in);
-        boolean logined = false;
+        boolean logged = false;
         int loginAttempt = 0;
 
         String username = null;
-        while (!logined) {
+        while (!logged) {
             System.out.print("Please enter your username: ");
             username = reader.next();
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            logined = LoginManager.verifyLogin(username, password);
+            logged = LoginManager.verifyLogin(username, password);
 
             loginAttempt++;
-            if (!logined & loginAttempt < 5) {
-                System.out.println();
-                System.out.println("Oops! Something's not right. Please double-check your username and password.");
-            } else if (!logined & loginAttempt >= 5) {
-                System.out.println();
-                System.out.println("Sorry, you have 5 failed attempts of signing in. Please visit any of our branches " +
+            if (!logged & loginAttempt < 5) {
+                System.out.println("\nOops! You have " + loginAttempt + " failed login attempts. Please double-check " +
+                        "your username and password.");
+            } else if (!logged & loginAttempt >= 5) {
+                System.out.println("\nSorry, you have 5 failed attempts of signing in. Please visit any of our branches " +
                         "to have one of our helpful managers assist you.");
-                return;
+                System.out.println("===========================================================\n");
+
+                // restart the login for next users\
+//                login();
+                return null;
             }
         }
-
-        setLoggedIn(LoginManager.getLogin(username));
-        System.out.println();
-        System.out.println("Login success. Hi " + getLoggedIn().getUsername() + "!");
-        System.out.println();
+        Login loginUser = LoginManager.getLogin(username);
+        System.out.println("\nLogin success. Hi " + loginUser.getUsername() + "!");
+        return loginUser;
     }
 
-    public static void main(String[] args) throws IOException {
-
-//        List<String> lines = Arrays.asList("The first line", "The second line");
-//        Path file = Paths.get("user.txt");
-//        Files.write(file, lines, Charset.forName("UTF-8"));
-        //Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
+    public static void main(String[] args) {
+        // instantiate an Employee account here for basic functions here.
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
-        jen.createLogin("steve", "1234");
+        jen.createLogin("1", "1");
 
-        Login_Customer steve = (Login_Customer) LoginManager.getLogin("steve");
-        jen.addAccount("Chequing", steve);
-
-
-        login();
-
-        Options available = new Options(loggedInAccount);
+        // TODO program should be shut down every night.
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            new Options(login());
+        }
 
     }
 }
