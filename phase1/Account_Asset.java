@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  * Asset accounts include Chequing and Savings Accounts.
  */
 abstract class Account_Asset extends Account {
+
     public Account_Asset(double balance, Login_Customer owner) {
         super(balance, owner);
     }
@@ -63,16 +64,22 @@ abstract class Account_Asset extends Account {
         return 0;
     }
 
+    @Override
+    void undoWithdrawal(double withdrawalAmount) {
+        balance += withdrawalAmount;
+    }
+
+    @Override
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
             balance += depositAmount;
             updateMostRecentTransaction("Deposit", depositAmount, null);
-            System.out.println("valid deposit");
         } else {
             System.out.println("invalid deposit");
         }
     }
 
+    @Override
     void undoDeposit(double depositAmount) {
         balance -= depositAmount;
     }
@@ -88,6 +95,13 @@ abstract class Account_Asset extends Account {
         return transferToAnotherUser(transferAmount, getOwner(), account);
     }
 
+    /**
+     * Transfer money from this account to another user's account (this will decrease their balance)
+     * @param transferAmount amount to transfer
+     * @param user receives transferAmount
+     * @param account of user
+     * @return true iff transfer is valid
+     */
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;

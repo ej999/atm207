@@ -31,6 +31,11 @@ abstract class Account_Debt extends Account {
         return 0;
     }
 
+    @Override
+    void undoWithdrawal(double amount) {
+        balance -= amount;
+    }
+
     /*
     Depositing money onto a credit card decreases account balance (since you're paying back the bank)
      */
@@ -45,6 +50,7 @@ abstract class Account_Debt extends Account {
         }
     }
 
+    @Override
     void undoDeposit(double depositAmount) {
         balance += depositAmount;
     }

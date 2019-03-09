@@ -11,11 +11,17 @@ import java.util.HashMap;
 
 abstract class Account implements Serializable {
     // TODO: verify these file paths actually work
-    static final String outputFilePath = "/outgoing.txt"; // pay bills
+    static final String outputFilePath = "/outgoing.txt";
     private static final String inputFilePath = "/deposits.txt";
+
     double balance;
-    Login_Customer owner;
+    private Login_Customer owner;
     Date dateOfCreation;
+
+    // TODO: make mostRecentTransaction private and create getters
+    /*
+    Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
+     */
     HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
@@ -40,11 +46,19 @@ abstract class Account implements Serializable {
         mostRecentTransaction.put("Account", account);
     }
 
+    void undoMostRecentTransaction() {
+        if (mostRecentTransaction.get("Type").equals("Withdrawal")) {
+            undoWithdrawal((Double) mostRecentTransaction.get("Amount"));
+        } else if (mostRecentTransaction.get("Type") == "Deposit") {
+            undoDeposit((Double) mostRecentTransaction.get("Amount"));
+        }
+    }
+
     abstract void deposit(double depositAmount);
     abstract void undoDeposit(double depositAmount);
 
     /**
-     * Deposit money into their account by entering a cheque or cash into the machine
+     * Deposit money into their account by reading individual lines from deposits.txt
      *
      * @throws IOException
      */
@@ -61,11 +75,7 @@ abstract class Account implements Serializable {
     }
 
     abstract double withdraw(double withdrawalAmount);
-
-
-    void undoWithdrawal(double withdrawalAmount) {
-        balance += withdrawalAmount;
-    }
+    abstract void undoWithdrawal(double withdrawalAmount);
 
     public double getBalance() {
         return balance;
@@ -82,19 +92,13 @@ abstract class Account implements Serializable {
      */
     @Override
     public String toString() {
-        return "Username: " + owner.getUsername() + "\nBalance: " + balance + "\nDate Created: " + dateOfCreation +
+        return "Username: " + owner.getUsername() + "\nBalance: " + balance + "\nAccount Type: " +
+                getClass().getName() + "\nDate Created: " + dateOfCreation +
                 "\nMost Recent Transaction: " + mostRecentTransaction;
     }
 
-    public Login_Customer getOwner() {
+    Login_Customer getOwner() {
         return owner;
     }
 
-    void undoMostRecentTransaction() {
-        if (mostRecentTransaction.get("Type").equals("Withdrawal")) {
-            undoWithdrawal((Double) mostRecentTransaction.get("Amount"));
-        } else if (mostRecentTransaction.get("Type") == "Deposit") {
-            undoDeposit((Double) mostRecentTransaction.get("Amount"));
-        }
-    }
 }

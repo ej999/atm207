@@ -7,10 +7,6 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 class Account_Debt_LineOfCredit extends Account_Debt {
-    /*
-     * TODO: A line of credit account allows you to transfer money in our out. But it also displays a positive balance
-     * when the user owes money and a negative balance when the user overpays
-     */
 
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
@@ -23,30 +19,6 @@ class Account_Debt_LineOfCredit extends Account_Debt {
         super(balance, owner);
     }
 
-//    public String viewBalance() {
-//        String stringBalance = Double.toString(-balance);
-//        stringBalance = "$" + stringBalance;
-//        return stringBalance;
-//    }
-//
-//
-//    void transferOut(double transferAmount, Account transferAccount, Login_Customer transferUser) {
-//        for (Account i : transferUser.getAccounts()) {
-//            if (i == transferAccount) {
-//                balance -= transferAmount;
-//                i.deposit(transferAmount);
-//            }
-//        }
-//    }
-//
-//    void transferBetween(double transferAmount, Account transferAccount) {
-//        for (Account i : owner.getAccounts()) {
-//            if (i == transferAccount) {
-//                balance -= transferAmount;
-//                i.setBalance(i.getBalance() + transferAmount);
-//            }
-//        }
-//    }
     /*
     Duplicate Code here. Is there a way around it?
      */
@@ -75,7 +47,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     }
 
     /**
-     * Transfer money between accounts the user owns
+     * Transfer money between accounts the user owns. This increases the balance.
      *
      * @param transferAmount the amount to be transferred
      * @param account        another account the user owns
@@ -85,6 +57,13 @@ class Account_Debt_LineOfCredit extends Account_Debt {
         return transferToAnotherUser(transferAmount, getOwner(), account);
     }
 
+    /**
+     * Transfer money to another user's account. This also increases the balance.
+     * @param transferAmount transfer amount
+     * @param user receiver of amount
+     * @param account user account
+     * @return true iff transfer was a success
+     */
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance += transferAmount;

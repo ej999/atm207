@@ -13,6 +13,7 @@ class Account_Asset_Chequing extends Account_Asset {
         super(balance, owner);
     }
 
+    @Override
     double withdraw(double withdrawalAmount) {
         return super.withdraw(withdrawalAmount,(balance - withdrawalAmount >= -100));
     }
