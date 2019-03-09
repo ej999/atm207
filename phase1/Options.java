@@ -172,4 +172,26 @@ class Options {
     }
 
 
+
+    private void undoPrompt(){
+        Scanner reader = new Scanner(System.in);
+        boolean validInput = false;
+        while (!validInput){
+            System.out.println("Enter username: ");
+            String username = reader.next();
+            if (LoginManager.checkLoginExistence(username)) {
+                Login customer = LoginManager.getLogin(username);
+                System.out.println("Which account to undo: ");
+                String account = reader.next();
+//                if (customer.checkLoginExistence(account)) {
+                // still working on it
+//
+//
+//                    validInput = true;
+//                }
+            }
+        }
+
+
+    }
 }
