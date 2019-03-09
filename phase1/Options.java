@@ -3,6 +3,7 @@ package phase1;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -45,7 +46,7 @@ class Options {
             options.put("Create a login for a user.", new Thread(this::createLoginPrompt));
             options.put("Create a bank account for a user.", new Thread(this::createAccountPrompt));
             options.put("Restock the ATM.", new Thread(this::restockPrompt));
-            options.put("Under the most recent transaction on a user's account.", new Thread(this::createLoginPrompt));
+            options.put("Undo the most recent transaction on a user's account.", new Thread(this::undoPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
 //            options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
@@ -182,16 +183,21 @@ class Options {
             if (LoginManager.checkLoginExistence(username)) {
                 Login customer = LoginManager.getLogin(username);
                 System.out.println("Which account to undo: ");
-                String account = reader.next();
-//                if (customer.checkLoginExistence(account)) {
-                // still working on it
-//
-//
-//                    validInput = true;
-//                }
+                ArrayList<Account> accounts = ((Login_Customer) customer).getAccounts();
+                int i = 1;
+                for (Account a: accounts){
+                    System.out.println("" + i + ". " + a);
+                }
+                try{
+                    Account account2undo = accounts.get(i);
+                    account2undo.undoMostRecentTransaction();
+                    validInput = true;
+                    System.out.println("Undo successful.");
+                } catch(ArrayIndexOutOfBoundsException f){
+                    System.out.println("invalid selection");
+                }
             }
+            else System.out.println("User not found. ");
         }
-
-
     }
 }
