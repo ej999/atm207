@@ -50,4 +50,9 @@ class LoginManager {
             return false;
         }
     }
+
+    //To be used when restarting the program, to get the backup
+    static void loadLoginManager(LoginManagerBackup backup){
+        login_map = backup.login_map;
+    }
 }

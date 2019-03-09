@@ -1,9 +1,11 @@
 package phase1;
 
+import java.io.Serializable;
+
 /**
  * Login account, with username, password, login type on an ATM.
  */
-abstract class Login {
+abstract class Login implements Serializable {
     private final String loginType;
     private String username;
     private String password;

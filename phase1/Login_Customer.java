@@ -1,9 +1,6 @@
 package phase1;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -11,14 +8,17 @@ import java.util.Scanner;
 /**
  * A customer's login account, with username, password, list of their accounts, primary account, and net total.
  */
-class Login_Customer extends Login {
+class Login_Customer extends Login implements Serializable {
     private final ArrayList<Account> accounts;
     private Account primary;
+
 
     Login_Customer(String username, String password){
         super(username, password, "Customer");
         this.accounts = new ArrayList<>();
     }
+
+
 
     void addAccount(Account account){
         this.accounts.add(account);

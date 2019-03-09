@@ -1,5 +1,8 @@
 package phase1;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -103,6 +106,18 @@ class Options {
     private void logoutPrompt() {
         System.out.println("Have a nice day, " + this.loginUser.getUsername() + "!");
         System.out.println("===========================================================\n");
+        LoginManagerBackup backUp = new LoginManagerBackup();
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("LoginManagerStorage.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(backUp);
+            out.close();
+            fileOut.close();
+            System.out.printf("Serialized data saved.");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
         this.loginUser = null;
     }
 

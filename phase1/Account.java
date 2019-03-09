@@ -2,13 +2,14 @@ package phase1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 
-abstract class Account {
+abstract class Account implements Serializable {
     static final String outputFilePath = "/outgoing.txt";
     private static final String inputFilePath = "/deposits.txt"; // not sure if this is the correct path
     /*

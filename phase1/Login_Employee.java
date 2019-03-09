@@ -1,6 +1,8 @@
 package phase1;
 
-abstract class Login_Employee extends Login {
+import java.io.Serializable;
+
+abstract class Login_Employee extends Login implements Serializable {
     Login_Employee(String username, String password) {
         this(username, password, "Employee");
     }
