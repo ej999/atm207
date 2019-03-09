@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 
 class Account_Debt_LineOfCredit extends Account_Debt {
     /*
@@ -58,15 +59,15 @@ class Account_Debt_LineOfCredit extends Account_Debt {
      * @throws IOException
      */
     boolean payBill(double amount, String accountName) throws IOException {
-        if (amount > 0 && (balance - amount) >= 0) {
-            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName;
-            // TODO: add date and time to message
+        if (amount > 0) {
+            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
+                    LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
                 out.println(message);
                 System.out.println("File has been written.");
             }
-            balance -= amount;
+            balance += amount;
             updateMostRecentTransaction("PayBill",amount,null);
             return true;
         }
@@ -86,8 +87,12 @@ class Account_Debt_LineOfCredit extends Account_Debt {
 
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
-            balance -= transferAmount;
-            account.balance += transferAmount;
+            balance += transferAmount;
+            if(account instanceof Account_Asset) {
+                account.balance += transferAmount;
+            } else {
+                account.balance -= transferAmount;
+            }
             if (user == getOwner()) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
@@ -99,12 +104,16 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     }
 
     void undoTransfer(double transferAmount, Account account) {
-        balance += transferAmount;
-        account.balance -= transferAmount;
+        balance -= transferAmount;
+        if (account instanceof Account_Asset) {
+            account.balance -= transferAmount;
+        } else {
+            account.balance += transferAmount;
+        }
     }
 
     private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {
-        return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
+        return transferAmount > 0 && user.hasAccount(account);
     }
 
     @Override

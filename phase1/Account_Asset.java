@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 
 /**
  * Asset accounts include Chequing and Savings Accounts.
@@ -27,8 +28,8 @@ abstract class Account_Asset extends Account {
      */
     boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0 && (balance - amount) >= 0) {
-            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName;
-            // TODO: add date and time to message
+            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
+                    LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
                 out.println(message);
@@ -39,6 +40,41 @@ abstract class Account_Asset extends Account {
             return true;
         }
         return false;
+    }
+
+    private boolean validWithdrawal(double withdrawalAmount) {
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
+    }
+
+    /**
+     * Withdraw money from an account (This will decrease <balance>)
+     * TODO: notify the Cash class about this withdrawal
+     *
+     * @param withdrawalAmount amount to be withdrawn
+     * @param condition additional condition in order to successfully withdraw
+     * @return withdrawalAmount, otherwise 0.
+     */
+    double withdraw(double withdrawalAmount, boolean condition) {
+        if (validWithdrawal(withdrawalAmount) && (condition)) {
+            balance -= withdrawalAmount;
+            updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
+            return withdrawalAmount;
+        }
+        return 0;
+    }
+
+    void deposit(double depositAmount) {
+        if (depositAmount > 0) {
+            balance += depositAmount;
+            updateMostRecentTransaction("Deposit", depositAmount, null);
+            System.out.println("valid deposit");
+        } else {
+            System.out.println("invalid deposit");
+        }
+    }
+
+    void undoDeposit(double depositAmount) {
+        balance -= depositAmount;
     }
 
     /**
@@ -55,7 +91,11 @@ abstract class Account_Asset extends Account {
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
-            account.balance += transferAmount;
+            if (account instanceof Account_Asset) {
+                account.balance += transferAmount;
+            } else {
+                account.balance -= transferAmount;
+            }
             if (user == getOwner()) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
@@ -68,7 +108,12 @@ abstract class Account_Asset extends Account {
 
     void undoTransfer(double transferAmount, Account account) {
         balance += transferAmount;
-        account.balance -= transferAmount;
+        if (account instanceof Account_Asset) {
+            account.balance -= transferAmount;
+        } else {
+            account.balance += transferAmount;
+        }
+
     }
 
     private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {

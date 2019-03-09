@@ -39,19 +39,8 @@ abstract class Account {
         mostRecentTransaction.put("Account", account);
     }
 
-    void deposit(double depositAmount) {
-        if (depositAmount > 0) {
-            balance += depositAmount;
-            updateMostRecentTransaction("Deposit", depositAmount, null);
-            System.out.println("valid deposit");
-        } else {
-            System.out.println("invalid deposit");
-        }
-    }
-
-    void undoDeposit(double depositAmount) {
-        balance -= depositAmount;
-    }
+    abstract void deposit(double depositAmount);
+    abstract void undoDeposit(double depositAmount);
 
     /**
      * Deposit money into their account by entering a cheque or cash into the machine
@@ -70,27 +59,8 @@ abstract class Account {
         }
     }
 
+    abstract double withdraw(double withdrawalAmount);
 
-    private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
-    }
-
-    /**
-     * Withdraw money from an account (This will decrease <balance>)
-     * TODO: notify the Cash class about this withdrawal
-     *
-     * @param withdrawalAmount amount to be withdrawn
-     * @param condition additional condition in order to successfully withdraw
-     * @return withdrawalAmount, otherwise 0.
-     */
-    double withdraw(double withdrawalAmount, boolean condition) {
-        if (validWithdrawal(withdrawalAmount) && (condition)) {
-            balance -= withdrawalAmount;
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
-            return withdrawalAmount;
-        }
-        return 0;
-    }
 
     void undoWithdrawal(double withdrawalAmount) {
         balance += withdrawalAmount;

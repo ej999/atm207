@@ -21,6 +21,9 @@ class Cash {
         bills.put("fifty", cashList.get(3));
     }
 
+    /*
+    When bank manager restocks the machine
+     */
     void cashDeposit(ArrayList<Integer> cashList) {
         bills.put("five", bills.get("five") + cashList.get(0));
         bills.put("ten", bills.get("ten") + cashList.get(1));

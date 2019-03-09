@@ -2,7 +2,6 @@ package phase1;
 
 class Account_Debt_CreditCard extends Account_Debt {
     /*
-     * TODO: These are accounts that display a positive balance when the user owes a money and a negative balance
      * when the user overpays. It is not possible to transfer money out of a credit account.
      * But it is possible to transfer money in.
      *
