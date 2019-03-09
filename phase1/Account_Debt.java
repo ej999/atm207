@@ -11,12 +11,12 @@ abstract class Account_Debt extends Account {
     }
 
     private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0;
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 &&
+                Cash.isThereEnoughBills(withdrawalAmount);
     }
 
     /**
      * Withdraw money from an account (This will increase <balance> since you owe money)
-     * TODO: notify the Cash class about this withdrawal
      *
      * @param withdrawalAmount amount to be withdrawn
      * @return withdrawalAmount, otherwise 0.
@@ -25,6 +25,7 @@ abstract class Account_Debt extends Account {
     double withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
+            Cash.cashWithdrawal(withdrawalAmount);
             updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
             return withdrawalAmount;
         }
@@ -34,6 +35,7 @@ abstract class Account_Debt extends Account {
     @Override
     void undoWithdrawal(double amount) {
         balance -= amount;
+        Cash.undoCashWithdrawal(amount);
     }
 
     /*

@@ -44,12 +44,12 @@ abstract class Account_Asset extends Account {
     }
 
     private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0;
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
+                Cash.isThereEnoughBills(withdrawalAmount);
     }
 
     /**
      * Withdraw money from an account (This will decrease <balance>)
-     * TODO: notify the Cash class about this withdrawal
      *
      * @param withdrawalAmount amount to be withdrawn
      * @param condition additional condition in order to successfully withdraw
@@ -58,6 +58,7 @@ abstract class Account_Asset extends Account {
     double withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
+            Cash.cashWithdrawal(withdrawalAmount);
             updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
             return withdrawalAmount;
         }
@@ -67,6 +68,7 @@ abstract class Account_Asset extends Account {
     @Override
     void undoWithdrawal(double withdrawalAmount) {
         balance += withdrawalAmount;
+        Cash.undoCashWithdrawal(withdrawalAmount);
     }
 
     @Override
