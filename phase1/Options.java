@@ -142,10 +142,10 @@ class Options {
         if (LoginManager.checkLoginExistence(username)) {
             System.out.println("Enter account type : \n" +
                     "Chequing \n Saving \n Credit Card \n Line of Credit ");
+            String account = reader.next();
+            ((Login_Employee_BankManager) loginUser).addAccount(account, (Login_Customer) LoginManager.getLogin(username));
+            System.out.println("Command runs successfully.");
         }
-        String account = reader.next();
-        ((Login_Employee_BankManager) loginUser).addAccount(account, (Login_Customer) LoginManager.getLogin(username));
-        System.out.println("Command runs successfully.");
     }
 
     private void restockPrompt() {
@@ -176,8 +176,8 @@ class Options {
 
     private void undoPrompt(){
         Scanner reader = new Scanner(System.in);
-        boolean validInput = false;
-        while (!validInput){
+        boolean finished = false;
+        while (!finished){
             System.out.println("Enter username: ");
             String username = reader.next();
             if (LoginManager.checkLoginExistence(username)) {
@@ -188,16 +188,21 @@ class Options {
                 for (Account a: accounts){
                     System.out.println("" + i + ". " + a);
                 }
+                int option = reader.nextInt();
                 try{
-                    Account account2undo = accounts.get(i);
+                    Account account2undo = accounts.get(option);
                     account2undo.undoMostRecentTransaction();
-                    validInput = true;
+                    finished = true;
                     System.out.println("Undo successful.");
                 } catch(ArrayIndexOutOfBoundsException f){
-                    System.out.println("invalid selection");
+                    System.out.println("invalid selection. try again?(y/n)");
+                    String proceed = reader.next();
+                    if (proceed.equals("n")) finished = true;
                 }
             }
-            else System.out.println("User not found. ");
+            else System.out.println("User not found. Try again? (y/n)");
+            String proceed = reader.next();
+            if (proceed.equals("n")) finished = true;
         }
     }
 }
