@@ -158,12 +158,18 @@ class Options {
         int twenties = reader.nextInt();
         System.out.println("Enter amount of 50 dollar bills: ");
         int fifties = reader.nextInt();
-        HashMap<Integer, Integer> restock = new HashMap<>();
-        restock.put(5, fives);
-        restock.put(10, tens);
-        restock.put(20, twenties);
-        restock.put(50, fifties);
-        //addToBill(restock, ); TODO: figure out how to access Cash: need to know where cash is stored
+        ArrayList<Integer> restock = new ArrayList<>();
+        restock.add(fives);
+        restock.add(tens);
+        restock.add(twenties);
+        restock.add(fifties);
+//        HashMap<Integer, Integer> restock = new HashMap<>();
+//        restock.put(5, fives);
+//        restock.put(10, tens);
+//        restock.put(20, twenties);
+//        restock.put(50, fifties);
+        //addToBill(restock, );
+        Cash.cashDeposit(restock);
     }
 
 
