@@ -200,15 +200,17 @@ class Options {
                     account2undo.undoMostRecentTransaction();
                     finished = true;
                     System.out.println("Undo successful.");
-                } catch(ArrayIndexOutOfBoundsException f){
+                } catch(IndexOutOfBoundsException f){
                     System.out.println("invalid selection. try again?(y/n)");
                     String proceed = reader.next();
                     if (proceed.equals("n")) finished = true;
                 }
             }
-            else System.out.println("User not found. Try again? (y/n)");
-            String proceed = reader.next();
-            if (proceed.equals("n")) finished = true;
+            else {
+                System.out.println("User not found. Try again? (y/n)");
+                String proceed = reader.next();
+                if (proceed.equals("n")) finished = true;
+            }
         }
     }
 }
