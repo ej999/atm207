@@ -144,7 +144,7 @@ class Options {
         String username = reader.next();
         if (LoginManager.checkLoginExistence(username)) {
             System.out.println("Enter account type : \n" +
-                    "Chequing \n Saving \n Credit Card \n Line of Credit ");
+                    "Chequing \nSaving \nCredit Card \nLine of Credit ");
             String account = reader.next();
             ((Login_Employee_BankManager) loginUser).addAccount(account, (Login_Customer) LoginManager.getLogin(username));
             System.out.println("Command runs successfully.");
