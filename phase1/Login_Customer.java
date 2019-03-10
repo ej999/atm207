@@ -48,6 +48,16 @@ class Login_Customer extends Login implements Serializable {
         return false;
     }
 
+    boolean hasMoreThanOneChequing() {
+        int i = 0;
+        for (Account a : this.accounts) {
+            if (a instanceof Account_Asset_Chequing) {
+                i++;
+            }
+        }
+        return i > 1;
+    }
+
     // The total of their debt account balances subtracted from the total of their asset account balances.
     private double netTotal() {
         double sum = 0;

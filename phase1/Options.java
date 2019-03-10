@@ -74,6 +74,8 @@ class Options {
             //TODO
             options.put("Request Creating an Account", new Thread(this::setPasswordPrompt));
 
+            options.put("Change Primary Account", new Thread(this::setPrimaryPrompt));
+
             options.put("Change Password", new Thread(this::setPasswordPrompt));
 
             options.put("Logout", new Thread(this::logoutPrompt));
@@ -225,11 +227,38 @@ class Options {
     }
 
     private void setPasswordPrompt() {
-        System.out.print("Please enter a new password: ");
+        System.out.print("\nPlease enter a new password: ");
         Scanner reader2 = new Scanner(System.in);
         String newPass = reader2.nextLine();
         loginUser.setPassword(newPass);
         System.out.println("Command runs successfully.");
+    }
+
+    private void setPrimaryPrompt() {
+        System.out.println("\nA primary chequing account will be the default destination for deposits.");
+
+        if (((Login_Customer) loginUser).hasMoreThanOneChequing()) {
+            System.out.println("\n\u001B[1mAccount Type\t\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+                    "\u001B[0m");
+            int i = 1;
+            for (Account a : ((Login_Customer) loginUser).getAccounts()) {
+                if (a instanceof Account_Asset_Chequing) {
+                    System.out.println("[" + i + "] " + a);
+                }
+                i++;
+            }
+
+            System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
+            Scanner reader = new Scanner(System.in);
+            int selected = reader.nextInt();
+            ((Login_Customer)loginUser).setPrimary(((Login_Customer)loginUser).getAccounts().get(selected-1));
+            System.out.println("Command runs successfully.");
+        } else {
+            System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
+                    "account.\nYou are welcome to request creating a new chequing account at anytime.");
+        }
+
+
     }
 
 //    private void viewBalancePrompt() {

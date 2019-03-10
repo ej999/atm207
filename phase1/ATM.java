@@ -61,6 +61,7 @@ public class ATM {
         LoginManager.addLogin(jen);
         jen.createLogin("1", "1");
         jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("1")), 1234);
+        jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("1")), 12345);
         jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
         jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
         jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
