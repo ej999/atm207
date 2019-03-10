@@ -33,7 +33,7 @@ class ATM {
         return loginUser;
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         // Instantiate an Employee account here for basic functions here.
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
