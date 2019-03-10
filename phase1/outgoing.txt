@@ -1,8 +1,16 @@
 User 
 [1mPrimary		Account Type		Creation Date					Balance		Most Recent Transaction[0m
-X			Chequing			Sun Mar 10 08:05:39 EDT 2019	1234.0		n/a
-			Line of Credit		Sun Mar 10 08:05:39 EDT 2019	4321.0		n/a
-			Saving				Sun Mar 10 08:05:39 EDT 2019	1000.0		n/a
-			Credit Card			Sun Mar 10 08:05:39 EDT 2019	420.0		n/a
+X			Chequing			Sun Mar 10 12:47:43 EDT 2019	1369.6		$100.1 deposited.
+			Line of Credit		Sun Mar 10 12:47:43 EDT 2019	4321.0		n/a
+			Saving				Sun Mar 10 12:47:43 EDT 2019	1000.0		n/a
+			Credit Card			Sun Mar 10 12:47:43 EDT 2019	420.0		n/a
 
-[1mYour net total is [0m$-2507.0 paid 213.0 to BMO on 2019-03-10T08:05:57.879
+[1mYour net total is [0m$-2371.4 paid 100.0 to Mobile on 2019-03-10T12:59:47.197
+User 
+[1mPrimary		Account Type		Creation Date					Balance		Most Recent Transaction[0m
+X			Chequing			Sun Mar 10 13:03:31 EDT 2019	1234.0		n/a
+			Line of Credit		Sun Mar 10 13:03:31 EDT 2019	4321.0		n/a
+			Saving				Sun Mar 10 13:03:31 EDT 2019	1000.0		n/a
+			Credit Card			Sun Mar 10 13:03:31 EDT 2019	420.0		n/a
+
+[1mYour net total is [0m$-2507.0 paid 50.0 to Bill on 2019-03-10T13:04:32.487
