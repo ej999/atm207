@@ -44,6 +44,8 @@ class Options {
      */
     private void createOptions() {
         if (loginUser instanceof Login_Employee_BankManager) {
+            options.put("Read alerts", new Thread(this::readAlertPrompt));
+
             options.put("Create a login for a user", new Thread(this::createLoginPrompt));
 
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
@@ -57,7 +59,9 @@ class Options {
             options.put("Clear all bank data", new Thread(this::clearDataPrompt));
 
             options.put("Logout", new Thread(this::logoutPrompt));
+
         } else if (loginUser instanceof Login_Customer) {
+
             options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
 
             options.put("Pay a Bill", new Thread(this::payBillPrompt));
@@ -422,5 +426,9 @@ class Options {
         } else {
             System.out.println("The username does not exist. Transfer is cancelled.");
         }
+    }
+
+    private void readAlertPrompt() {
+        ((Login_Employee_BankManager) loginUser).readAlerts();
     }
 }
