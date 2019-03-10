@@ -16,10 +16,10 @@ class Account_Debt_CreditCard extends Account_Debt {
     public String toString() {
         String mostRecentTransactionString;
 
-        if (mostRecentTransaction.get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " withdrawn.";
-        } else if (mostRecentTransaction.get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " deposited.";
+        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
         } else {
             mostRecentTransactionString = "n/a";
         }

@@ -2,8 +2,6 @@ package phase1;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 //import java.util.Account;
@@ -12,17 +10,11 @@ import java.util.Map;
 
 class Login_Employee_BankManager extends Login_Employee implements Serializable {
 
-    ATMFrame myATM;
+    private final ATMTime myATM;
+
     Login_Employee_BankManager(String username, String password) {
         super(username, password, "BankManager");
-        myATM = new ATMFrame();
-    }
-
-    // Assume ATM stores bills as HashMap
-    public void addToBill(HashMap<Integer, Integer> bills, HashMap<Integer, Integer> ATM) {
-        for (Map.Entry<Integer, Integer> denom : bills.entrySet()) {
-            ATM.replace(denom.getKey(), denom.getValue() + ATM.get(denom.getKey()));
-        }
+        myATM = new ATMTime();
     }
 
     /**
@@ -63,7 +55,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
     /**
      * Create an account for a Customer.
      */
-    void addAccount(String accountType, Login_Customer username, double amount) {
+    void addAccount(String accountType, Login_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
         Account newAccount = null;
 
         if (accountType == null) {
@@ -76,7 +68,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
                 }
                 case "Saving": {
                     newAccount = new Account_Asset_Saving(amount, username);
-                    myATM.addObserver((Account_Asset_Saving)newAccount);
+                    myATM.addObserver((Account_Asset_Saving) newAccount);
                     break;
                 }
                 case "CreditCard": {

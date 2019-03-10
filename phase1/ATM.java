@@ -13,6 +13,7 @@ import java.util.Scanner;
  * <p>
  * Preloaded bank manage account: {username: jen, password: 1234}
  * Preloaded customer account: {username: 1, password: 1}
+ * Preloaded customer account: {username: 2, password: 2}
  */
 class ATM extends Observable implements Serializable {
     /**
@@ -49,7 +50,6 @@ class ATM extends Observable implements Serializable {
         jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
         jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
         jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
-        System.out.println();
 
         // Load the back up of Login account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();
@@ -65,7 +65,7 @@ class ATM extends Observable implements Serializable {
         //noinspection InfiniteLoopStatement
         while (true) {
             // Constantly checking if now is the start of the month.
-            now = new ATMFrame().checkMonth(now);
+            now = new ATMTime().checkMonth(now);
 
 
             // A login session.

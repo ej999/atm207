@@ -119,27 +119,22 @@ final class Cash {
      */
     static void cashWithdrawal(double amount) {
         double remainder = amount;
-        ArrayList<Integer> cashList = new ArrayList<>();
 
         // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
         // specific bill that needed to be withdrawn or the inventory of that bill.
         int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
         bills.put("fifty", bills.get("fifty") - fiftyWithdrawn);
-        cashList.add(fiftyWithdrawn);
         remainder -= fiftyWithdrawn * 50;
 
         int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
         bills.put("twenty", bills.get("twenty") - twentyWithdrawn);
-        cashList.add(twentyWithdrawn);
         remainder -= twentyWithdrawn * 20;
 
         int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
         bills.put("ten", bills.get("ten") - tenWithdrawn);
-        cashList.add(tenWithdrawn);
         remainder -= tenWithdrawn * 10;
 
         int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-        cashList.add(fiveWithdrawn);
         bills.put("five", bills.get("five") - fiveWithdrawn);
 
         checkDenom();

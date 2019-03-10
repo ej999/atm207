@@ -58,7 +58,7 @@ class Options {
         } else if (loginUser instanceof Login_Customer) {
             options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
 
-            options.put("Pay a Bill", new Thread(this::paybillPrompt));
+            options.put("Pay a Bill", new Thread(this::payBillPrompt));
 
             options.put("Make a Transfer between my Accounts", new Thread(this::transferBetweenAccountsPrompt));
 
@@ -351,7 +351,7 @@ class Options {
         }
     }
 
-    private void paybillPrompt() {
+    private void payBillPrompt() {
         Account account = selectAccountPrompt((Login_Customer) loginUser, "CreditCard");
 
         Scanner reader = new Scanner(System.in);

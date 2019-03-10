@@ -8,7 +8,7 @@ import java.util.Observable;
 /**
  * ATM frame that handles update.
  */
-class ATMFrame extends Observable implements Serializable {
+class ATMTime extends Observable implements Serializable {
     /**
      * check if today is the start of the month
      */

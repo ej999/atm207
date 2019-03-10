@@ -15,17 +15,12 @@ abstract class Account_Asset extends Account implements Account_Transferable {
         super(balance, owner);
     }
 
-    Account_Asset(Login_Customer owner) {
-        super(owner);
-    }
-
     /**
      * Pay a bill by transferring money to a non-user's account
      *
      * @param amount      transfer amount
      * @param accountName non-user's account name
      * @return true if bill has been payed successfully
-     * @throws IOException
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0 && (balance - amount) >= 0) {
@@ -52,17 +47,14 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      *
      * @param withdrawalAmount amount to be withdrawn
      * @param condition        additional condition in order to successfully withdraw
-     * @return withdrawalAmount, otherwise 0.
      */
-    double withdraw(double withdrawalAmount, boolean condition) {
+    void withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
 
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
-            return withdrawalAmount;
         }
-        return 0;
     }
 
     @Override
@@ -123,7 +115,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
         return false;
     }
 
-    void undoTransfer(double transferAmount, Account account) {
+    private void undoTransfer(double transferAmount, Account account) {
         balance += transferAmount;
         if (account instanceof Account_Asset) {
             account.balance -= transferAmount;
@@ -140,9 +132,9 @@ abstract class Account_Asset extends Account implements Account_Transferable {
     @Override
     void undoMostRecentTransaction() {
         super.undoMostRecentTransaction();
-        if (mostRecentTransaction.get("Type").equals("TransferBetweenAccounts") ||
-                mostRecentTransaction.get("Type").equals("TransferToAnotherUser")) {
-            undoTransfer((Double) mostRecentTransaction.get("Amount"), (Account) mostRecentTransaction.get("Account"));
+        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
+                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
+            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
         }
     }
 }

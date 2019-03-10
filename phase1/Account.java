@@ -10,15 +10,14 @@ import java.util.Date;
 import java.util.HashMap;
 
 abstract class Account implements Serializable {
-    // TODO: verify these file paths actually work
     static final String outputFilePath = "phase1/outgoing.txt";
     private static final String inputFilePath = "phase1/deposits.txt";
     final Date dateOfCreation;
-    // TODO: make mostRecentTransaction private and create getters
-    /*
-    Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
+
+    /**
+     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
      */
-    final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
+    private final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
             put("Amount", 0.00);
@@ -36,6 +35,10 @@ abstract class Account implements Serializable {
 
     Account(Login_Customer owner) {
         this(0, owner);
+    }
+
+    HashMap<String, Object> getMostRecentTransaction() {
+        return mostRecentTransaction;
     }
 
     void updateMostRecentTransaction(String type, double amount, Account account) {
@@ -58,8 +61,6 @@ abstract class Account implements Serializable {
 
     /**
      * Deposit money into their account by reading individual lines from deposits.txt
-     *
-     * @throws IOException
      */
     void depositMoney() throws IOException {
         Path path = Paths.get(inputFilePath);
@@ -73,16 +74,12 @@ abstract class Account implements Serializable {
         }
     }
 
-    abstract double withdraw(double withdrawalAmount);
+    abstract void withdraw(double withdrawalAmount);
 
     abstract void undoWithdrawal(double withdrawalAmount);
 
     double getBalance() {
         return balance;
-    }
-
-    void setBalance(double balance) {
-        this.balance = balance;
     }
 
     @Override

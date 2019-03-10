@@ -25,7 +25,6 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @param amount      transfer amount
      * @param accountName non-user's account name
      * @return true if bill has been payed successfully
-     * @throws IOException
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
@@ -80,7 +79,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         return false;
     }
 
-    void undoTransfer(double transferAmount, Account account) {
+    private void undoTransfer(double transferAmount, Account account) {
         balance -= transferAmount;
         if (account instanceof Account_Asset) {
             account.balance -= transferAmount;
@@ -96,9 +95,9 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
     @Override
     void undoMostRecentTransaction() {
         super.undoMostRecentTransaction();
-        if (mostRecentTransaction.get("Type").equals("TransferBetweenAccounts") ||
-                mostRecentTransaction.get("Type").equals("TransferToAnotherUser")) {
-            undoTransfer((Double) mostRecentTransaction.get("Amount"), (Account) mostRecentTransaction.get("Account"));
+        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
+                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
+            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
         }
     }
 
@@ -106,14 +105,14 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
     public String toString() {
         String mostRecentTransactionString;
 
-        if (mostRecentTransaction.get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " withdrawn.";
-        } else if (mostRecentTransaction.get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " deposited.";
+        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
         } else {
             mostRecentTransactionString = "n/a";
         }
 
-        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance==0)?" ":"") + "\t\t" + mostRecentTransactionString;
+        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
     }
 }

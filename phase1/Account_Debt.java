@@ -24,17 +24,14 @@ abstract class Account_Debt extends Account {
      * Withdraw money from an account (This will increase <balance> since you owe money)
      *
      * @param withdrawalAmount amount to be withdrawn
-     * @return withdrawalAmount, otherwise 0.
      */
     @Override
-    double withdraw(double withdrawalAmount) {
+    void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
-            return withdrawalAmount;
         }
-        return 0;
     }
 
     @Override
