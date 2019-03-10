@@ -31,7 +31,7 @@ abstract class Account_Debt extends Account {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
+            updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
             return withdrawalAmount;
         }
         return 0;

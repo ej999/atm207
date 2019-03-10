@@ -16,27 +16,25 @@ class Options {
      * Storing all available options: description as keys, and their methods as values.
      */
     private final LinkedHashMap<String, Thread> options;
+
     /**
      * The login account of the current logged-in user.
-     * It is set to null if a user is logout or the login is not valid at the first place.
      */
     private Login loginUser;
-    /**
-     * Display available options for the logged-in user.
-     */
+
     private boolean helped = false;
 
     Options(Login loginUser) {
         this.loginUser = loginUser;
         this.options = new LinkedHashMap<>();
 
-        // display and allow logged-in user to select option as long as the login is still valid.
+        // create, display. and allow logged-in user to select option.
         while (this.loginUser != null) {
             createOptions();
             displayOptions();
             selectOptions();
 
-            // need to be clear and create again since a Thread cannot be restarted.
+            // Since a Thread cannot be restarted, options has to be recreated every time after a user selects an option.
             options.clear();
         }
     }
@@ -49,9 +47,9 @@ class Options {
             options.put("Create a login for a user", new Thread(this::createLoginPrompt));
 
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
-
+            //TODO check if it's working
             options.put("Restock the ATM", new Thread(this::restockPrompt));
-
+            //TODO check if it's working
             options.put("Undo the most recent transaction on a user's account", new Thread(this::undoPrompt));
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
@@ -72,7 +70,7 @@ class Options {
             options.put("Cash Withdrawal", new Thread(this::setPasswordPrompt));
 
             //TODO
-            options.put("Request Creating an Account", new Thread(this::setPasswordPrompt));
+            options.put("Request Creating an Account", new Thread(this::requestAccountPrompt));
 
             options.put("Change Primary Account", new Thread(this::setPrimaryPrompt));
 
@@ -82,7 +80,11 @@ class Options {
         }
     }
 
-    /**Show the options to the user
+    /**
+     * Display available options for the logged-in user.
+     */
+    /**
+     * Show the options to the user
      */
     private void displayOptions() {
         if (helped) {
@@ -120,15 +122,72 @@ class Options {
             }
             i++;
         }
+        System.out.println("\nThe option [" + selected + "] is not valid. Please double-checked the number you entered.");
     }
 
-    /** logs out the user and backs up the users data*/
+    /**
+     * Gets username and password from input and tells BankManager to create the customer.
+     */
+    private void createLoginPrompt() {
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Creating Login... Enter username: ");
+        String username = reader.next();
+        System.out.print("Enter password: ");
+        String password = reader.next();
+        ((Login_Employee_BankManager) loginUser).createLogin(username, password);
+    }
+
+    private String selectAccountPrompt() {
+        Scanner reader = new Scanner(System.in);
+        System.out.println("\n[1] Chequing");
+        System.out.println("[2] Saving");
+        System.out.println("[3] Credit Card");
+        System.out.println("[4] Line of Credit");
+
+        System.out.print("Please enter account type by number [1-4]: ");
+        int account = reader.nextInt();
+        switch (account) {
+            case 1: {
+                return "Chequing";
+            }
+            case 2: {
+                return "Saving";
+            }
+            case 3: {
+                return "CreditCard";
+            }
+            case 4: {
+                return "LineOfCredit";
+            }
+            default:
+                return null;
+        }
+    }
+
+
+    /**
+     * Gets username and tells BankManager to create the specified account for the customer
+     */
+    private void createAccountPrompt() {
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Please enter username: ");
+        String username = reader.next();
+        if (LoginManager.checkLoginExistence(username)) {
+            String accountType = selectAccountPrompt();
+            ((Login_Employee_BankManager) loginUser).addAccount(accountType, (Login_Customer) LoginManager.getLogin(username));
+        } else {
+            System.out.println("The username does not exist. No account has been created.");
+        }
+    }
+
+    /**
+     * logs out the user and backs up the users data
+     */
     private void logoutPrompt() {
         //Every time the user logs out, the LoginManager's contents will be serialized and saved.
         LoginManagerBackup backUp = new LoginManagerBackup();
         try {
-            FileOutputStream fileOut =
-                    new FileOutputStream("LoginManagerStorage.txt");
+            FileOutputStream fileOut = new FileOutputStream("LoginManagerStorage.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(backUp);
             out.close();
@@ -145,43 +204,19 @@ class Options {
         this.loginUser = null;
     }
 
-    /**Gets username and password from input and tells BankManager to create the customer*/
-    private void createLoginPrompt() {
-        Scanner reader = new Scanner(System.in);
-        System.out.print("Creating Login...");
-        System.out.print("Enter username: ");
-        String username = reader.next();
-        System.out.print("Enter password: ");
-        String password = reader.next();
-        ((Login_Employee_BankManager) loginUser).createLogin(username, password);
-    }
-
-    /**Gets username and tells BankManager to create the specified account for the customer*/
-    private void createAccountPrompt() {
-        Scanner reader = new Scanner(System.in);
-        System.out.println("Enter username: ");
-        String username = reader.next();
-        if (LoginManager.checkLoginExistence(username)) {
-            System.out.println("Enter account type : \n" +
-                    "Chequing \nSaving \nCredit Card \nLine of Credit ");
-            String account = reader.next();
-            ((Login_Employee_BankManager) loginUser).addAccount(account, (Login_Customer) LoginManager.getLogin(username));
-            System.out.println("Command runs successfully.");
-        }
-    }
-
-    /**Restocks the bank machine based on input
+    /**
+     * Restocks the bank machine based on input
      * only the BankManager is able to access this
      */
     private void restockPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.println("Enter amount of 5 dollar bills: ");
+        System.out.print("Enter amount of 5 dollar bills: ");
         int fives = reader.nextInt();
-        System.out.println("Enter amount of 10 dollar bills: ");
+        System.out.print("Enter amount of 10 dollar bills: ");
         int tens = reader.nextInt();
-        System.out.println("Enter amount of 20 dollar bills: ");
+        System.out.print("Enter amount of 20 dollar bills: ");
         int twenties = reader.nextInt();
-        System.out.println("Enter amount of 50 dollar bills: ");
+        System.out.print("Enter amount of 50 dollar bills: ");
         int fifties = reader.nextInt();
         ArrayList<Integer> restock = new ArrayList<>();
         restock.add(fives);
@@ -241,8 +276,8 @@ class Options {
      */
     private void setPasswordPrompt() {
         System.out.print("\nPlease enter a new password: ");
-        Scanner reader2 = new Scanner(System.in);
-        String newPass = reader2.nextLine();
+        Scanner reader = new Scanner(System.in);
+        String newPass = reader.nextLine();
         loginUser.setPassword(newPass);
     }
 
@@ -267,13 +302,26 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((Login_Customer)loginUser).setPrimary(((Login_Customer)loginUser).getAccounts().get(selected-1));
+            ((Login_Customer) loginUser).setPrimary(((Login_Customer) loginUser).getAccounts().get(selected - 1));
         } else {
             System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
                     "account.\nYou are welcome to request creating a new chequing account at anytime.");
         }
 
 
+    }
+
+    private void requestAccountPrompt() {
+        Scanner reader = new Scanner(System.in);
+        System.out.println("\nWhich type of account would you like to request?");
+        System.out.println("\n[1] Chequing");
+        System.out.println("[2] Saving");
+        System.out.println("[3] Credit Card");
+        System.out.println("[4] Line of Credit");
+
+        System.out.print("Please enter account type by number [1-4]: ");
+        //TODO
+//        ((Login_Customer)loginUser).requestAccount();
     }
 
 //    private void viewBalancePrompt() {

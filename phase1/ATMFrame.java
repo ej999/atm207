@@ -1,6 +1,5 @@
 package phase1;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
@@ -10,11 +9,13 @@ import java.util.Observable;
  */
 public class ATMFrame extends Observable {
 
-    /** check if today is the start of the month*/
+    /**
+     * check if today is the start of the month
+     */
     /*
     TODO: this method should be called every night by ________
      */
-    public void checkMonth(){
+    public void checkMonth() {
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
