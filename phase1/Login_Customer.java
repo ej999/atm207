@@ -2,7 +2,6 @@ package phase1;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -78,59 +77,28 @@ class Login_Customer extends Login implements Serializable {
          requestHelp(n);
     }
 
-    void selectOption(int o){
-        switch(o) {
+
+
+    void selectAccount(Account account){
+        System.out.println("1. Show account creation date.");
+        System.out.println("2. Show account balance.");
+        System.out.println("3. Show most recent transaction.");
+        Scanner reader = new Scanner(System.in);
+        int choice = reader.nextInt();
+        switch(choice){
             case 1:
-                StringBuilder returnMessage = new StringBuilder();
-                for(Account account:accounts){
-                    System.out.println(account.getClass() + ": " + account.getBalance());
-            }
+                System.out.println(account.dateOfCreation);
                 break;
-            case 2: //moved to Options class
-//                System.out.println("Select the account you would like to work with:");
-//                    HashMap<Integer, Account> option = new HashMap<>();
-//                    int i = 1;
-//                    for(Account account: accounts){
-//                        System.out.println(i + ". " + account.toString());
-//                        option.put(i, account);
-//                        i += 1;
-//                    }
-//                Scanner reader = new Scanner(System.in);
-//                int accountNumber = reader.nextInt();
-//                selectAccount(option.get(accountNumber));
+            case 2:
+                System.out.println(account.getBalance());
                 break;
-
-
             case 3:
-                System.out.println(netTotal());
+                System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
+                System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
                 break;
-            case 4: // moved to Options class
-//                System.out.println("Please enter a new password: ");
-//                Scanner reader2 = new Scanner(System.in);
-//                String newPass = reader2.nextLine();
-//                setPassword(newPass);
 
         }
     }
 
-//    void selectAccount(Account account){
-//        System.out.println("1. Show account creation date.");
-//        System.out.println("2. Show account balance.");
-//        System.out.println("3. Show most recent transaction.");
-//        Scanner reader = new Scanner(System.in);
-//        int choice = reader.nextInt();
-//        switch(choice){
-//            case 1:
-//                System.out.println(account.dateOfCreation);
-//                break;
-//            case 2:
-//                System.out.println(account.getBalance());
-//                break;
-//            case 3:
-//                System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
-//                System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
-//                break;
 
- //       }
-//    }
 }

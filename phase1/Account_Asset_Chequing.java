@@ -17,4 +17,9 @@ class Account_Asset_Chequing extends Account_Asset {
     double withdraw(double withdrawalAmount) {
         return super.withdraw(withdrawalAmount,(balance - withdrawalAmount >= -100));
     }
+
+    @Override
+    public String toString() {
+        return "Chequing\t\t\t" + dateOfCreation + "\t" + balance;
+    }
 }

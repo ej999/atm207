@@ -85,17 +85,9 @@ abstract class Account implements Serializable {
         this.balance = balance;
     }
 
-    /**
-     * A string representation of this account.
-     *
-     * @return nice string rep.
-     */
-    @Override
-    public String toString() {
-        return "Username: " + owner.getUsername() + "\nBalance: " + balance + "\nAccount Type: " +
-                getClass().getName() + "\nDate Created: " + dateOfCreation +
-                "\nMost Recent Transaction: " + mostRecentTransaction;
-    }
+    public abstract String toString();
+
+
 
     Login_Customer getOwner() {
         return owner;

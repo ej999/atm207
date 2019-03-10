@@ -31,4 +31,9 @@ class Account_Asset_Saving extends Account_Asset implements Observer {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance;
+    }
+
 }
