@@ -226,11 +226,11 @@ class Options {
         this.loginUser = null;
     }
 
-    private void clearDataPrompt(){
-        System.out.println("Are you sure you want to do this? Y/N" );
+    private void clearDataPrompt() {
+        System.out.print("USE WITH CAUTION: all data including all login and bank account will be deleted! (Y/N): ");
         Scanner reader2 = new Scanner(System.in);
         String answer = reader2.nextLine();
-        if (answer.equals("Y")){
+        if (answer.equals("Y")) {
             LoginManagerBackup deleter = new LoginManagerBackup();
             deleter.deleteBackup();
         }
@@ -321,7 +321,7 @@ class Options {
             ((Login_Customer) loginUser).setPrimary(((Login_Customer) loginUser).getAccounts().get(selected - 1));
         } else {
             System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
-                    "account.\nYou are welcome to request creating a new chequing account at anytime.");
+                    "account.\nHowever, you are welcome to request creating a new chequing account on main menu.");
         }
 
 
