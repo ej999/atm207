@@ -47,9 +47,9 @@ class Options {
             options.put("Create a login for a user", new Thread(this::createLoginPrompt));
 
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
-            //TODO check if it's working
+
             options.put("Restock the ATM", new Thread(this::restockPrompt));
-            //TODO check if it's working
+
             options.put("Undo the most recent transaction on a user's account", new Thread(this::undoPrompt));
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
@@ -134,7 +134,7 @@ class Options {
         ((Login_Employee_BankManager) loginUser).createLogin(username, password);
     }
 
-    private String selectAccountPrompt() {
+    private String selectAccountTypePrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("\n[1] Chequing");
         System.out.println("[2] Saving");
@@ -169,7 +169,7 @@ class Options {
         System.out.print("Please enter username: ");
         String username = reader.next();
         if (LoginManager.checkLoginExistence(username)) {
-            String accountType = selectAccountPrompt();
+            String accountType = selectAccountTypePrompt();
             ((Login_Employee_BankManager) loginUser).addAccount(accountType, (Login_Customer) LoginManager.getLogin(username));
         } else {
             System.out.println("The username does not exist. No account has been created.");
@@ -201,8 +201,6 @@ class Options {
         System.out.println(fives + " 5-dollar-bill, " + tens + " 10-dollar-bill, " + twenties + " 20-dollar-bill, "
                 + fifties + " 50-dollar-bill are successfully restocked. ");
     }
-
-    //TODO
 
     /**
      * logs out the user and backs up the users data
@@ -308,55 +306,14 @@ class Options {
     }
 
     private void requestAccountPrompt() {
-        Scanner reader = new Scanner(System.in);
-        System.out.println("\nWhich type of account would you like to request?");
-        System.out.println("\n[1] Chequing");
-        System.out.println("[2] Saving");
-        System.out.println("[3] Credit Card");
-        System.out.println("[4] Line of Credit");
+        String accountType = selectAccountTypePrompt();
 
-        System.out.print("Please enter account type by number [1-4]: ");
-        //TODO
-//        ((Login_Customer)loginUser).requestAccount();
+        try {
+            ((Login_Customer)loginUser).requestAccount(accountType);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
     }
-
-//    private void viewBalancePrompt() {
-//        StringBuilder returnMessage = new StringBuilder();
-//        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
-//        for(Account account:((Login_Customer)loginUser).getAccounts()){
-//            System.out.println(account);
-//        }
-//
-//        double netTotal = ((Login_Customer) loginUser).netTotal();
-//        System.out.println("\n\u001B[1mYour net total is \u001B[0m$" + netTotal);
-//    }
-
-//    private void viewAccountPrompt() {
-//        System.out.println("\n\u001B[1m    Account Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
-//        HashMap<Integer, Account> option = new HashMap<>();
-//        int i = 1;
-//        for(Account account: ((Login_Customer)loginUser).getAccounts()){
-//            System.out.println("[" + i + "] " + account.toString());
-//            option.put(i, account);
-//            i += 1;
-//        }
-//        System.out.print("Please select the account you would like to work with: ");
-//        Scanner reader = new Scanner(System.in);
-//        int accountNumber = reader.nextInt();
-//        selectAccountPrompt(option.get(accountNumber));
-//    }
-
-//    private void selectAccountPrompt(Account account){
-//        System.out.println("[1] Make a Payment.");
-//        System.out.println("[2] Make a Transfer.");
-//        System.out.println("Please enter the corresponding number: ");
-//        Scanner reader = new Scanner(System.in);
-//        int choice = reader.nextInt();
-//        switch(choice){
-//            case 1:
-//                break;
-//
-//        }
-//    }
 
 }
