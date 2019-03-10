@@ -24,12 +24,11 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0 && (balance - amount) >= 0) {
-            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
+            String message = "User " + this.getOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
                 out.println(message);
-                // TODO: cannot find message in outgoing.txt
             }
             balance -= amount;
             updateMostRecentTransaction("PayBill", amount, null);

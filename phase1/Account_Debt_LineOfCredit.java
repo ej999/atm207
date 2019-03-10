@@ -28,13 +28,12 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
-            String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
+            String message = "User " + this.getOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
                 out.println(message);
                 System.out.println("File has been written.");
-                // TODO: cannot find message in outgoing.txt
             }
             balance += amount;
             updateMostRecentTransaction("PayBill", amount, null);
