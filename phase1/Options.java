@@ -82,6 +82,8 @@ class Options {
         }
     }
 
+    /**Show the options to the user
+     */
     private void displayOptions() {
         if (helped) {
             System.out.println("\nIs there anything we can help you?");
@@ -120,7 +122,7 @@ class Options {
         }
     }
 
-
+    /** logs out the user and backs up the users data*/
     private void logoutPrompt() {
         //Every time the user logs out, the LoginManager's contents will be serialized and saved.
         LoginManagerBackup backUp = new LoginManagerBackup();
@@ -143,7 +145,7 @@ class Options {
         this.loginUser = null;
     }
 
-
+    /**Gets username and password from input and tells BankManager to create the customer*/
     private void createLoginPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Creating Login...");
@@ -154,6 +156,7 @@ class Options {
         ((Login_Employee_BankManager) loginUser).createLogin(username, password);
     }
 
+    /**Gets username and tells BankManager to create the specified account for the customer*/
     private void createAccountPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter username: ");
@@ -167,6 +170,9 @@ class Options {
         }
     }
 
+    /**Restocks the bank machine based on input
+     * only the BankManager is able to access this
+     */
     private void restockPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter amount of 5 dollar bills: ");
@@ -191,7 +197,11 @@ class Options {
         Cash.cashDeposit(restock);
     }
 
-
+    /**
+     * Gets customer by username and displays all their accounts
+     * Select an account from input and tell that account to undo the last transaction
+     * only BankManager can access this
+     */
     private void undoPrompt() {
         Scanner reader = new Scanner(System.in);
         boolean finished = false;
@@ -226,6 +236,9 @@ class Options {
         }
     }
 
+    /**
+     * sets a new password
+     */
     private void setPasswordPrompt() {
         System.out.print("\nPlease enter a new password: ");
         Scanner reader2 = new Scanner(System.in);
@@ -233,6 +246,10 @@ class Options {
         loginUser.setPassword(newPass);
     }
 
+    /**
+     * checks if the customer has more than one account and gets choice of primary account from input
+     * tells the LoginCustomer to set chosen account as primary
+     */
     private void setPrimaryPrompt() {
         System.out.println("\nA primary chequing account will be the default destination for deposits.");
 
