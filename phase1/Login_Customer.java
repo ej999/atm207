@@ -52,11 +52,13 @@ class Login_Customer extends Login implements Serializable {
     double netTotal() {
         double sum = 0;
         for (Account a : this.accounts) {
-            if (a instanceof Account_Asset) {
+//            if (a instanceof Account_Asset_Saving || a instanceof  Account_Asset_Chequing) {
                 sum += a.getBalance();
-            } else {
-                sum -= a.getBalance();
-            }
+//            }
+//            } else if (a instanceof Account_Debt) {
+//                sum -= a.getBalance();
+//                System.err.println(a);
+//            }
         }
         return sum;
     }
