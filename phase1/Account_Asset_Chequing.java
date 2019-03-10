@@ -15,7 +15,7 @@ class Account_Asset_Chequing extends Account_Asset {
 
     @Override
     double withdraw(double withdrawalAmount) {
-        return super.withdraw(withdrawalAmount,(balance - withdrawalAmount >= -100));
+        return super.withdraw(withdrawalAmount, (balance - withdrawalAmount >= -100));
     }
 
     @Override

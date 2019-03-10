@@ -4,19 +4,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * A class for handling cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
  * This is a utility/helper class.
  */
 final class Cash {
-
-    private Cash(){}
 
     /*
     Map denomination to quantity
@@ -31,6 +26,8 @@ final class Cash {
         }
     };
     private static final String outputFilePath = "/alerts.txt";
+    private Cash() {
+    }
 
     // Not sure if constructor is needed. Truman can you verify?
 //    Cash(ArrayList<Integer> cashList) {
@@ -43,10 +40,11 @@ final class Cash {
 
     /**
      * Check the quantity of denominations
+     *
      * @return true iff amount of any denomination goes below 20
      */
     static private boolean isAmountBelowTwenty() {
-        for(int n: bills.values()) {
+        for (int n : bills.values()) {
             if (n < 20) {
                 return true;
             }
@@ -115,6 +113,7 @@ final class Cash {
 
     /**
      * In order for a withdrawal to take place, there must be enough bills to give out.
+     *
      * @param amount withdrawal amount
      * @return true iff there is enough bills for amount
      */

@@ -1,17 +1,20 @@
 package phase1;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class LoginManagerBackup implements Serializable {
+class LoginManagerBackup implements Serializable {
 
-    HashMap<String, Login> login_map = new HashMap<>();
+    HashMap<String, Login> login_map;
 
     LoginManagerBackup() {
         login_map = LoginManager.login_map;
     }
 
-    public LoginManagerBackup returnFileBackup() {
+    LoginManagerBackup returnFileBackup() {
         try {
             FileInputStream file = new FileInputStream("LoginManagerStorage.txt");
             ObjectInputStream object = new ObjectInputStream(file);
@@ -21,17 +24,12 @@ public class LoginManagerBackup implements Serializable {
             return backup;
         }
         //For any exceptions, it will just return the same data as what the current LoginManager has
-        catch (EOFException f){
+        catch (IOException | ClassNotFoundException f) {
             //f.printStackTrace();
             return new LoginManagerBackup();
-        }
-        catch (IOException i) {
-            //i.printStackTrace();
-            return new LoginManagerBackup();
-        } catch (ClassNotFoundException c) {
-            //c.printStackTrace();
-            return new LoginManagerBackup();
-        }
+        }//i.printStackTrace();
+        //c.printStackTrace();
+
 
     }
 

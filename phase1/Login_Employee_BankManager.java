@@ -25,6 +25,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
 
     /**
      * Bank Manager has the ability to restock cash machine.
+     *
      * @param cashList amount of denominations [fives, tens, twenties, fifties]
      */
     public void restockMachine(ArrayList<Integer> cashList) {
@@ -34,6 +35,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
     /**
      * The manager has the ability to undo the most recent transaction on any asset or debt account,
      * except for paying bills.
+     *
      * @param account account involved
      */
     public void undoMostRecentTransaction(Account account) {
@@ -48,10 +50,10 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
 
         // Username should be unique.
         if (LoginManager.checkLoginExistence(username)) {
-            System.out.println("Existed username. Login account is not created.");
+            System.out.println("Username already exists. Login account is not created.");
         } else {
             LoginManager.addLogin(newUser);
-            System.out.println("Command runs successfully.");
+            System.out.println("Login account is successfully created.");
         }
 
     }
@@ -60,31 +62,38 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
      * Create an account for a Customer.
      */
     void addAccount(String accountType, Login_Customer username, double amount) {
-        switch (accountType) {
-            case "Chequing": {
-                Account_Asset_Chequing newAccount = new Account_Asset_Chequing(amount, username);
-                username.addAccount(newAccount);
-                break;
+        Account newAccount = null;
+
+        if (accountType == null) {
+            System.out.println("Invalid account type. Account is not created.");
+        } else {
+            switch (accountType) {
+                case "Chequing": {
+                    newAccount = new Account_Asset_Chequing(amount, username);
+                    break;
+                }
+                case "Saving": {
+                    newAccount = new Account_Asset_Saving(amount, username);
+                    break;
+                }
+                case "CreditCard": {
+                    newAccount = new Account_Debt_CreditCard(amount, username);
+                    break;
+                }
+                case "LineOfCredit": {
+                    newAccount = new Account_Debt_LineOfCredit(amount, username);
+                    break;
+                }
+                default:
+                    System.out.println("Invalid account type. Account is not created.");
             }
-            case "Saving": {
-                Account_Asset_Saving newAccount = new Account_Asset_Saving(amount, username);
-                username.addAccount(newAccount);
-                break;
-            }
-            case "CreditCard": {
-                Account_Debt_CreditCard newAccount = new Account_Debt_CreditCard(amount, username);
-                username.addAccount(newAccount);
-                break;
-            }
-            case "LineOfCredit": {
-                Account_Debt_LineOfCredit newAccount = new Account_Debt_LineOfCredit(amount, username);
-                username.addAccount(newAccount);
-                break;
-            }
-            default:
-                System.out.println("Invalid account type");
-                break;
         }
+
+        if (newAccount != null) {
+            username.addAccount(newAccount);
+            System.out.println("Command runs successfully.");
+        }
+
     }
 
     /**

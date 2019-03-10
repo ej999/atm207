@@ -37,7 +37,7 @@ abstract class Account_Asset extends Account {
                 System.out.println("File has been written.");
             }
             balance -= amount;
-            updateMostRecentTransaction("PayBill",amount,null);
+            updateMostRecentTransaction("PayBill", amount, null);
             return true;
         }
         return false;
@@ -52,14 +52,14 @@ abstract class Account_Asset extends Account {
      * Withdraw money from an account (This will decrease <balance>)
      *
      * @param withdrawalAmount amount to be withdrawn
-     * @param condition additional condition in order to successfully withdraw
+     * @param condition        additional condition in order to successfully withdraw
      * @return withdrawalAmount, otherwise 0.
      */
     double withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount,null);
+            updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
             return withdrawalAmount;
         }
         return 0;
@@ -99,9 +99,10 @@ abstract class Account_Asset extends Account {
 
     /**
      * Transfer money from this account to another user's account (this will decrease their balance)
+     *
      * @param transferAmount amount to transfer
-     * @param user receives transferAmount
-     * @param account of user
+     * @param user           receives transferAmount
+     * @param account        of user
      * @return true iff transfer is valid
      */
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {

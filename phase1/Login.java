@@ -21,10 +21,6 @@ abstract class Login implements Serializable {
         return username;
     }
 
-    void setUsername(String u) {
-        username = u;
-    }
-
     String getPassword() {
         return password;
     }
@@ -35,7 +31,7 @@ abstract class Login implements Serializable {
             System.out.println("Password should not be empty. Your password has not been changed");
         } else {
             password = p;
-            System.out.println("Command runs successfully.");
+            System.out.println("Password is set successfully.");
         }
     }
 

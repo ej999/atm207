@@ -22,6 +22,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     /*
     Duplicate Code here. Is there a way around it?
      */
+
     /**
      * Pay a bill by transferring money to a non-user's account
      *
@@ -40,7 +41,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
                 System.out.println("File has been written.");
             }
             balance += amount;
-            updateMostRecentTransaction("PayBill",amount,null);
+            updateMostRecentTransaction("PayBill", amount, null);
             return true;
         }
         return false;
@@ -59,15 +60,16 @@ class Account_Debt_LineOfCredit extends Account_Debt {
 
     /**
      * Transfer money to another user's account. This also increases the balance.
+     *
      * @param transferAmount transfer amount
-     * @param user receiver of amount
-     * @param account user account
+     * @param user           receiver of amount
+     * @param account        user account
      * @return true iff transfer was a success
      */
     boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance += transferAmount;
-            if(account instanceof Account_Asset) {
+            if (account instanceof Account_Asset) {
                 account.balance += transferAmount;
             } else {
                 account.balance -= transferAmount;
