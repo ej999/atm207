@@ -106,6 +106,16 @@ class Account_Debt_LineOfCredit extends Account_Debt {
 
     @Override
     public String toString() {
-        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance;
+        String mostRecentTransactionString;
+
+        if (mostRecentTransaction.get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " withdrawn.";
+        } else if (mostRecentTransaction.get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " deposited.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

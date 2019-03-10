@@ -33,7 +33,17 @@ class Account_Asset_Saving extends Account_Asset implements Observer {
 
     @Override
     public String toString() {
-        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance;
+        String mostRecentTransactionString;
+
+        if (mostRecentTransaction.get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " withdrawn.";
+        } else if (mostRecentTransaction.get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " deposited.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 
 }

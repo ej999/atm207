@@ -14,6 +14,16 @@ class Account_Debt_CreditCard extends Account_Debt {
 
     @Override
     public String toString() {
-        return "Credit Card\t\t\t" + dateOfCreation + "\t" + balance;
+        String mostRecentTransactionString;
+
+        if (mostRecentTransaction.get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " withdrawn.";
+        } else if (mostRecentTransaction.get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + mostRecentTransaction.get("Amount") + " deposited.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return "Credit Card\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

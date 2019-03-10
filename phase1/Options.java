@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
@@ -52,9 +51,10 @@ class Options {
             options.put("Logout", new Thread(this::logoutPrompt));
 //            options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
-            options.put("Show summary of all account balances.", new Thread(this::viewBalancePrompt));
-            options.put("View an account.", new Thread(this::viewAccountPrompt));
-            options.put("See net worth.", new Thread(this::netTotalPrompt));
+            options.put("Show my account summary.", new Thread(this::viewBalancePrompt));
+//            options.put("View an account.", new Thread(this::viewAccountPrompt));
+//            options.put("See net worth.", new Thread(this::netTotalPrompt));
+            options.put("Transfering .", new Thread(this::setPasswordPrompt));
             options.put("Change password.", new Thread(this::setPasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
         }
@@ -176,10 +176,10 @@ class Options {
     }
 
 
-    private void netTotalPrompt() {
-        double netTotal = ((Login_Customer) loginUser).netTotal();
-        System.out.println("Your net total is " + netTotal + ".");
-    }
+//    private void netTotalPrompt() {
+//        double netTotal = ((Login_Customer) loginUser).netTotal();
+//        System.out.println("Your net total is " + netTotal);
+//    }
 
 
 
@@ -227,47 +227,42 @@ class Options {
 
     private void viewBalancePrompt() {
         StringBuilder returnMessage = new StringBuilder();
-        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\u001B[0m");
+        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
         for(Account account:((Login_Customer)loginUser).getAccounts()){
             System.out.println(account);
         }
+
+        double netTotal = ((Login_Customer) loginUser).netTotal();
+        System.out.println("\n\u001B[1mYour net total is \u001B[0m$" + netTotal);
     }
 
-    private void viewAccountPrompt() {
-        System.out.println("\n\u001B[1m    Account Type\t\tCreation Date\t\t\t\t\tBalance\u001B[0m");
-        HashMap<Integer, Account> option = new HashMap<>();
-        int i = 1;
-        for(Account account: ((Login_Customer)loginUser).getAccounts()){
-            System.out.println("[" + i + "] " + account.toString());
-            option.put(i, account);
-            i += 1;
-        }
-        System.out.print("Please select the account you would like to work with: ");
-        Scanner reader = new Scanner(System.in);
-        int accountNumber = reader.nextInt();
-        selectAccountPrompt(option.get(accountNumber));
-    }
+//    private void viewAccountPrompt() {
+//        System.out.println("\n\u001B[1m    Account Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
+//        HashMap<Integer, Account> option = new HashMap<>();
+//        int i = 1;
+//        for(Account account: ((Login_Customer)loginUser).getAccounts()){
+//            System.out.println("[" + i + "] " + account.toString());
+//            option.put(i, account);
+//            i += 1;
+//        }
+//        System.out.print("Please select the account you would like to work with: ");
+//        Scanner reader = new Scanner(System.in);
+//        int accountNumber = reader.nextInt();
+//        selectAccountPrompt(option.get(accountNumber));
+//    }
 
-    private void selectAccountPrompt(Account account){
-        System.out.println("[1] Show account creation date.");
-        System.out.println("[2] Show account balance.");
-        System.out.println("[3] Show most recent transaction.");
-        System.out.println("Please enter the corresponding number: ");
-        Scanner reader = new Scanner(System.in);
-        int choice = reader.nextInt();
-        switch(choice){
-            case 1:
-                System.out.println(account.dateOfCreation);
-                break;
-            case 2:
-                System.out.println(account.getBalance());
-                break;
-            case 3:
-                System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
-                System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
-                break;
-
-        }
-    }
+//    private void selectAccountPrompt(Account account){
+//        System.out.println("[1] Make a Payment.");
+//        System.out.println("[2] Make a Transfer.");
+//        System.out.println("Please enter the corresponding number: ");
+//        Scanner reader = new Scanner(System.in);
+//        int choice = reader.nextInt();
+//        switch(choice){
+//            case 1:
+//                //TODO
+//                break;
+//
+//        }
+//    }
 
 }
