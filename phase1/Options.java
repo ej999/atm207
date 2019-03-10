@@ -51,11 +51,12 @@ class Options {
 //            options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
             //TODO move the Options-related methods from Login_customer to here.
-            options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));
-            options.put("View an account.", new Thread(this::createLoginPrompt));
+            options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));//TODO: implement this
+            options.put("View an account.", new Thread(this::viewAnAccountPrompt));
             options.put("See net worth.", new Thread(this::netTotalPrompt));
-            options.put("Change password.", new Thread(this::createLoginPrompt));
+            options.put("Change password.", new Thread(this::changePasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
+
         }
     }
 
@@ -193,11 +194,12 @@ class Options {
                 int i = 1;
                 for (Account a: accounts){
                     System.out.println("" + i + ". " + a);
+                    i++;
                 }
                 int option = reader.nextInt();
                 try{
                     Account account2undo = accounts.get(option);
-                    account2undo.undoMostRecentTransaction();
+                    ((Login_Employee_BankManager) loginUser).undoMostRecentTransaction(account2undo);
                     finished = true;
                     System.out.println("Undo successful.");
                 } catch(IndexOutOfBoundsException f){
@@ -212,5 +214,46 @@ class Options {
                 if (proceed.equals("n")) finished = true;
             }
         }
+    }
+
+    private void viewAnAccountPrompt(){
+        System.out.println("Select the account you would like to work with:");
+        HashMap<Integer, Account> option = new HashMap<>();
+        int i = 1;
+        for(Account account: ((Login_Customer)loginUser).getAccounts()){
+            System.out.println(i + ". " + account.toString());
+            option.put(i, account);
+            i += 1;
+        }
+        Scanner reader = new Scanner(System.in);
+        int accountNumber = reader.nextInt();
+        selectAccount(option.get(accountNumber));
+    }
+
+    private void selectAccount(Account account) {
+        System.out.println("1. Show account creation date.");
+        System.out.println("2. Show account balance.");
+        System.out.println("3. Show most recent transaction.");
+        Scanner reader = new Scanner(System.in);
+        int choice = reader.nextInt();
+        switch (choice) {
+            case 1:
+                System.out.println(account.dateOfCreation);
+                break;
+            case 2:
+                System.out.println(account.getBalance());
+                break;
+            case 3:
+                System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
+                System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
+                break;
+        }
+    }
+
+    private void changePasswordPrompt(){
+        System.out.println("Please enter a new password: ");
+        Scanner reader2 = new Scanner(System.in);
+        String newPass = reader2.nextLine();
+        loginUser.setPassword(newPass);
     }
 }
