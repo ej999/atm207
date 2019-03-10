@@ -63,7 +63,7 @@ class Login_Customer extends Login implements Serializable {
         return sum;
     }
 
-    // add a line of request in the alert.text
+    // add a line of request in the alerts.text
     private void requestHelp(String s) throws IOException {
         String content = s + "\n";
         File file = new File("phase1/alerts.txt");
