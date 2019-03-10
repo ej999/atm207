@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Asset accounts include Chequing and Savings Accounts.
  */
-abstract class Account_Asset extends Account {
+abstract class Account_Asset extends Account implements Account_Transferable {
 
     Account_Asset(double balance, Login_Customer owner) {
         super(balance, owner);
@@ -27,14 +27,13 @@ abstract class Account_Asset extends Account {
      * @return true if bill has been payed successfully
      * @throws IOException
      */
-    boolean payBill(double amount, String accountName) throws IOException {
+    public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0 && (balance - amount) >= 0) {
             String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath)))) {
                 out.println(message);
-                System.out.println("File has been written.");
             }
             balance -= amount;
             updateMostRecentTransaction("PayBill", amount, null);
@@ -59,6 +58,7 @@ abstract class Account_Asset extends Account {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
+
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
             return withdrawalAmount;
         }
@@ -93,7 +93,7 @@ abstract class Account_Asset extends Account {
      * @param account        another account the user owns
      * @return true if transfer was successful
      */
-    boolean transferBetweenAccounts(double transferAmount, Account account) {
+    public boolean transferBetweenAccounts(double transferAmount, Account account) {
         return transferToAnotherUser(transferAmount, getOwner(), account);
     }
 
@@ -105,7 +105,7 @@ abstract class Account_Asset extends Account {
      * @param account        of user
      * @return true iff transfer is valid
      */
-    boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
             if (account instanceof Account_Asset) {

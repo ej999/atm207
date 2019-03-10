@@ -1,0 +1,8 @@
+User 
+[1mPrimary		Account Type		Creation Date					Balance		Most Recent Transaction[0m
+X			Chequing			Sun Mar 10 08:05:39 EDT 2019	1234.0		n/a
+			Line of Credit		Sun Mar 10 08:05:39 EDT 2019	4321.0		n/a
+			Saving				Sun Mar 10 08:05:39 EDT 2019	1000.0		n/a
+			Credit Card			Sun Mar 10 08:05:39 EDT 2019	420.0		n/a
+
+[1mYour net total is [0m$-2507.0 paid 213.0 to BMO on 2019-03-10T08:05:57.879

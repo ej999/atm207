@@ -3,7 +3,7 @@ package phase1;
 /**
  * A chequing account.
  */
-class Account_Asset_Chequing extends Account_Asset {
+class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
 
     Account_Asset_Chequing(Login_Customer owner) {
         super(owner);
@@ -15,7 +15,7 @@ class Account_Asset_Chequing extends Account_Asset {
 
     @Override
     double withdraw(double withdrawalAmount) {
-        return super.withdraw(withdrawalAmount, (balance - withdrawalAmount >= -100));
+        return super.withdraw(withdrawalAmount, balance > 0 & (balance - withdrawalAmount >= -100));
     }
 
     @Override

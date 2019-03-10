@@ -13,9 +13,9 @@ import java.util.HashMap;
  */
 final class Cash {
 
-    /*
-    Map denomination to quantity
-    Cash initially starts with fifty bills of every denomination
+    /**
+     * Map denomination to quantity
+     * Cash initially starts with fifty bills of every denomination
      */
     private static final HashMap<String, Integer> bills = new HashMap<String, Integer>() {
         {
@@ -25,18 +25,7 @@ final class Cash {
             put("fifty", 50);
         }
     };
-    private static final String outputFilePath = "/alerts.txt";
-    private Cash() {
-    }
-
-    // Not sure if constructor is needed. Truman can you verify?
-//    Cash(ArrayList<Integer> cashList) {
-//        bills = new HashMap<>();
-//        bills.put("five", cashList.get(0));
-//        bills.put("ten", cashList.get(1));
-//        bills.put("twenty", cashList.get(2));
-//        bills.put("fifty", cashList.get(3));
-//    }
+    private static final String outputFilePath = "phase1/alerts.txt";
 
     /**
      * Check the quantity of denominations
@@ -69,7 +58,6 @@ final class Cash {
         // Open the file for writing and write to it.
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
             out.println(bills);
-            System.out.println("File has been written.");
         }
     }
 
@@ -131,26 +119,36 @@ final class Cash {
      */
     static void cashWithdrawal(double amount) {
         double remainder = amount;
+        ArrayList<Integer> cashList = new ArrayList<>();
 
         // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
         // specific bill that needed to be withdrawn or the inventory of that bill.
         int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
         bills.put("fifty", bills.get("fifty") - fiftyWithdrawn);
+        cashList.add(fiftyWithdrawn);
         remainder -= fiftyWithdrawn * 50;
 
         int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
         bills.put("twenty", bills.get("twenty") - twentyWithdrawn);
+        cashList.add(twentyWithdrawn);
         remainder -= twentyWithdrawn * 20;
 
         int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
         bills.put("ten", bills.get("ten") - tenWithdrawn);
+        cashList.add(tenWithdrawn);
         remainder -= tenWithdrawn * 10;
 
         int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
+        cashList.add(fiveWithdrawn);
         bills.put("five", bills.get("five") - fiveWithdrawn);
 
         checkDenom();
-
+        int totalAmount = fiftyWithdrawn * 50 + twentyWithdrawn * 20 + tenWithdrawn * 10 + fiveWithdrawn * 5;
+        System.out.println("\nTotal amount of $" + totalAmount + ": " + fiftyWithdrawn + " fifty-dollar bills, " +
+                twentyWithdrawn + " twenty-dollar bills, " + tenWithdrawn + " ten-dollar bills, " + fiveWithdrawn +
+                " five-dollar bills have be withdrawn. ");
+        System.out.println("Please note that the actual withdrawal amount may be differ " +
+                "due to the fact that five-dollar note is the lowest denomination");
     }
 
     static void undoCashWithdrawal(double amount) {
@@ -173,37 +171,5 @@ final class Cash {
         int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
         bills.put("five", bills.get("five") + fiveWithdrawn);
 
-    }
-
-    static int getFiveDollarBill() {
-        return bills.get("five");
-    }
-
-    static void setFiveDollarBill(int fiveDollarBill) {
-        bills.put("five", fiveDollarBill);
-    }
-
-    static int getTenDollarBill() {
-        return bills.get("ten");
-    }
-
-    static void setTenDollarBill(int tenDollarBill) {
-        bills.put("ten", tenDollarBill);
-    }
-
-    static int getTwentyDollarBill() {
-        return bills.get("twenty");
-    }
-
-    static void setTwentyDollarBill(int twentyDollarBill) {
-        bills.put("twenty", twentyDollarBill);
-    }
-
-    static int getFiftyDollarBill() {
-        return bills.get("fifty");
-    }
-
-    static void setFiftyDollarBill(int fiftyDollarBill) {
-        bills.put("fifty", fiftyDollarBill);
     }
 }

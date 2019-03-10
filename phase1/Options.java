@@ -58,18 +58,16 @@ class Options {
         } else if (loginUser instanceof Login_Customer) {
             options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
 
-            //TODO
-            options.put("Make a Payment/Transfer", new Thread(this::setPasswordPrompt));
+            options.put("Pay a Bill", new Thread(this::paybillPrompt));
 
-            //TODO deposit money into their account by entering a cheque or cash into the machine
-            // (This will be simulated by individual lines in an input file called deposits.txt.
-            // You can decide the format of the file. This will increase their balance.)
-            options.put("Cash/Cheque Deposit", new Thread(this::setPasswordPrompt));
+            options.put("Make a Transfer between my Accounts", new Thread(this::transferBetweenAccountsPrompt));
 
-            //TODO
-            options.put("Cash Withdrawal", new Thread(this::setPasswordPrompt));
+            options.put("Make a Transfer to another User", new Thread(this::transferToAnotherUserPrompt));
 
-            //TODO
+            options.put("Cash/Cheque Deposit", new Thread(this::depositPrompt));
+
+            options.put("Cash Withdrawal", new Thread(this::withdrawalPrompt));
+
             options.put("Request Creating an Account", new Thread(this::requestAccountPrompt));
 
             options.put("Change Primary Account", new Thread(this::setPrimaryPrompt));
@@ -197,7 +195,7 @@ class Options {
         restock.add(twenties);
         restock.add(fifties);
 
-        ((Login_Employee_BankManager)loginUser).restockMachine(restock);
+        ((Login_Employee_BankManager) loginUser).restockMachine(restock);
         System.out.println(fives + " 5-dollar-bill, " + tens + " 10-dollar-bill, " + twenties + " 20-dollar-bill, "
                 + fifties + " 50-dollar-bill are successfully restocked. ");
     }
@@ -209,7 +207,7 @@ class Options {
         //Every time the user logs out, the LoginManager's contents will be serialized and saved.
         LoginManagerBackup backUp = new LoginManagerBackup();
         try {
-            FileOutputStream fileOut = new FileOutputStream("LoginManagerStorage.txt");
+            FileOutputStream fileOut = new FileOutputStream("phase1/LoginManagerStorage.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(backUp);
             out.close();
@@ -226,6 +224,31 @@ class Options {
         this.loginUser = null;
     }
 
+    private Account selectAccountPrompt(Login_Customer customer) {
+        return selectAccountPrompt(customer, "no_exclusion");
+    }
+
+    private Account selectAccountPrompt(Login_Customer customer, String exclusion) {
+        Scanner reader = new Scanner(System.in);
+
+        System.out.println();
+        ArrayList<Account> accounts = customer.getAccounts();
+        int i = 1;
+        for (Account a : accounts) {
+            if (!a.getClass().getName().contains(exclusion)) {
+                System.out.println("[" + i + "] " + a);
+                i++;
+            }
+        }
+
+        int option = -99;
+        while (option > accounts.size() || option < 0) {
+            System.out.print("Please select an account: ");
+            option = reader.nextInt();
+        }
+        return accounts.get(option - 1);
+    }
+
     /**
      * Gets customer by username and displays all their accounts
      * Select an account from input and tell that account to undo the last transaction
@@ -235,32 +258,17 @@ class Options {
         Scanner reader = new Scanner(System.in);
         boolean finished = false;
         while (!finished) {
-            System.out.println("Enter username: ");
+            System.out.print("Enter username: ");
             String username = reader.next();
             if (LoginManager.checkLoginExistence(username)) {
-                Login customer = LoginManager.getLogin(username);
-                System.out.println("Which account to undo: ");
-                ArrayList<Account> accounts = ((Login_Customer) customer).getAccounts();
-                int i = 1;
-                for (Account a : accounts) {
-                    System.out.println("" + i + ". " + a);
-                    i++;
-                }
-                int option = reader.nextInt();
-                try {
-                    Account account2undo = accounts.get(option);
-                    ((Login_Employee_BankManager)loginUser).undoMostRecentTransaction(account2undo);
-                    finished = true;
-                    System.out.println("Undo successful.");
-                } catch (IndexOutOfBoundsException f) {
-                    System.out.println("invalid selection. try again?(y/n)");
-                    String proceed = reader.next();
-                    if (proceed.equals("n")) finished = true;
-                }
+                Account account2undo = selectAccountPrompt((Login_Customer) LoginManager.getLogin(username));
+                ((Login_Employee_BankManager) loginUser).undoMostRecentTransaction(account2undo);
+                finished = true;
+                System.out.println("Undo successful.");
             } else {
-                System.out.println("User not found. Try again? (y/n)");
-                String proceed = reader.next();
-                if (proceed.equals("n")) finished = true;
+                System.out.print("User not found. Try again? (Y/N)");
+                String proceed = reader.next().toUpperCase().trim();
+                if (proceed.equals("N")) finished = true;
             }
         }
     }
@@ -309,11 +317,96 @@ class Options {
         String accountType = selectAccountTypePrompt();
 
         try {
-            ((Login_Customer)loginUser).requestAccount(accountType);
-        }
-        catch(IOException e) {
+            ((Login_Customer) loginUser).requestAccount(accountType);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private void withdrawalPrompt() {
+        Account account = selectAccountPrompt((Login_Customer) loginUser);
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Please enter the amount you would like to withdraw: ");
+
+        double amount = reader.nextDouble();
+        double actualAmount = amount - amount % 5;
+
+        account.withdraw(actualAmount);
+
+
+    }
+
+    private void depositPrompt() {
+        Account primary = ((Login_Customer) loginUser).getPrimary();
+
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Please make sure to ready your cash/cheque in deposit.txt");
+        System.out.print("Enter any key to proceed... ");
+        reader.next();
+
+        try {
+            primary.depositMoney();
+        } catch (IOException e) {
+            // do nothing?
+        }
+    }
+
+    private void paybillPrompt() {
+        Account account = selectAccountPrompt((Login_Customer) loginUser, "CreditCard");
+
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Please enter the amount you would like to pay: ");
+        double amount = reader.nextDouble();
+        System.out.print("Please enter the non-user account you would like to pay: ");
+        String payee = reader.next();
+
+
+        try {
+            if (((Account_Transferable) account).payBill(amount, payee)) {
+                System.out.println("Bill has been paid.");
+            } else {
+                System.out.println("Payment is unsuccessful.");
+            }
+        } catch (IOException e) {
+            // do nothing?
+        }
+    }
+
+    private void transferBetweenAccountsPrompt() {
+        System.out.println("Now select the account you would like to transfer FROM: ");
+        Account from = selectAccountPrompt((Login_Customer) loginUser, "CreditCard");
+
+        System.out.println("Now select the account you would like to transfer TO: ");
+        Account to = selectAccountPrompt((Login_Customer) loginUser);
+
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Please enter the amount you would like to transfer: ");
+        double amount = reader.nextDouble();
+
+        if (((Account_Transferable) from).transferBetweenAccounts(amount, to)) {
+            System.out.println("Transfer is successful.");
+        } else {
+            System.out.println("Transfer is unsuccessful.");
+        }
+    }
+
+    private void transferToAnotherUserPrompt() {
+        Scanner reader = new Scanner(System.in);
+
+        Account from = selectAccountPrompt((Login_Customer) loginUser, "CreditCard");
+
+        System.out.print("Please enter username you would like to transfer to: ");
+        String username = reader.next();
+
+        System.out.print("Please enter the amount you would like to transfer: ");
+        double amount = reader.nextDouble();
+
+        if (LoginManager.checkLoginExistence(username)) {
+            Login_Customer user = (Login_Customer) LoginManager.getLogin(username);
+            ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
+            System.out.println("Transfer is successful.");
+        } else {
+            System.out.println("The username does not exist. Transfer is cancelled.");
+        }
+    }
 }

@@ -11,10 +11,8 @@ import java.util.HashMap;
 
 abstract class Account implements Serializable {
     // TODO: verify these file paths actually work
-    static final String outputFilePath = "/outgoing.txt";
-    private static final String inputFilePath = "/deposits.txt";
-
-    double balance;
+    static final String outputFilePath = "phase1/outgoing.txt";
+    private static final String inputFilePath = "phase1/deposits.txt";
     final Date dateOfCreation;
     // TODO: make mostRecentTransaction private and create getters
     /*
@@ -28,6 +26,7 @@ abstract class Account implements Serializable {
         }
     };
     private final Login_Customer owner;
+    double balance;
 
     Account(double balance, Login_Customer owner) {
         this.balance = balance;

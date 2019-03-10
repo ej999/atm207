@@ -16,7 +16,7 @@ class LoginManagerBackup implements Serializable {
 
     LoginManagerBackup returnFileBackup() {
         try {
-            FileInputStream file = new FileInputStream("LoginManagerStorage.txt");
+            FileInputStream file = new FileInputStream("phase1/LoginManagerStorage.txt");
             ObjectInputStream object = new ObjectInputStream(file);
             LoginManagerBackup backup = (LoginManagerBackup) object.readObject();
             object.close();

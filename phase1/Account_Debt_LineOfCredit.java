@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
-class Account_Debt_LineOfCredit extends Account_Debt {
+class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
 
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
@@ -19,10 +19,6 @@ class Account_Debt_LineOfCredit extends Account_Debt {
         super(balance, owner);
     }
 
-    /*
-    Duplicate Code here. Is there a way around it?
-     */
-
     /**
      * Pay a bill by transferring money to a non-user's account
      *
@@ -31,7 +27,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
      * @return true if bill has been payed successfully
      * @throws IOException
      */
-    boolean payBill(double amount, String accountName) throws IOException {
+    public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
             String message = "User " + this.getOwner() + " paid " + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
@@ -54,7 +50,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
      * @param account        another account the user owns
      * @return true if transfer was successful
      */
-    boolean transferBetweenAccounts(double transferAmount, Account account) {
+    public boolean transferBetweenAccounts(double transferAmount, Account account) {
         return transferToAnotherUser(transferAmount, getOwner(), account);
     }
 
@@ -66,7 +62,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
      * @param account        user account
      * @return true iff transfer was a success
      */
-    boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance += transferAmount;
             if (account instanceof Account_Asset) {

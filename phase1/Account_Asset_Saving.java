@@ -6,7 +6,7 @@ import java.util.Observer;
 /**
  * A savings account.
  */
-class Account_Asset_Saving extends Account_Asset implements Observer {
+class Account_Asset_Saving extends Account_Asset implements Observer, Account_Transferable {
 
     Account_Asset_Saving(Login_Customer owner) {
         super(owner);
