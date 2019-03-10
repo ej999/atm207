@@ -194,7 +194,7 @@ class Options {
 //        restock.put(20, twenties);
 //        restock.put(50, fifties);
         //addToBill(restock, );
-        Cash.cashDeposit(restock);
+        ((Login_Employee_BankManager)loginUser).restockMachine(restock);
     }
 
     /**
@@ -220,7 +220,7 @@ class Options {
                 int option = reader.nextInt();
                 try {
                     Account account2undo = accounts.get(option);
-                    account2undo.undoMostRecentTransaction();
+                    ((Login_Employee_BankManager)loginUser).undoMostRecentTransaction(account2undo);
                     finished = true;
                     System.out.println("Undo successful.");
                 } catch (IndexOutOfBoundsException f) {
