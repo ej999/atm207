@@ -205,6 +205,7 @@ class Options {
                 int i = 1;
                 for (Account a : accounts) {
                     System.out.println("" + i + ". " + a);
+                    i++;
                 }
                 int option = reader.nextInt();
                 try {
