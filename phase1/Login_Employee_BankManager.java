@@ -12,8 +12,10 @@ import java.util.Map;
 
 class Login_Employee_BankManager extends Login_Employee implements Serializable {
 
+    ATMFrame myATM;
     Login_Employee_BankManager(String username, String password) {
         super(username, password, "BankManager");
+        myATM = new ATMFrame();
     }
 
     // Assume ATM stores bills as HashMap
@@ -74,6 +76,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
                 }
                 case "Saving": {
                     newAccount = new Account_Asset_Saving(amount, username);
+                    myATM.addObserver((Account_Asset_Saving)newAccount);
                     break;
                 }
                 case "CreditCard": {
