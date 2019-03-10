@@ -234,7 +234,7 @@ class Options {
             LoginManagerBackup deleter = new LoginManagerBackup();
             deleter.deleteBackup();
         }
-        System.out.println("Data has been cleared. Please restart the program");
+        System.out.println("Data has been cleared. Please restart the program.");
         System.exit(0);
     }
 
