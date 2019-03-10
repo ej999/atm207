@@ -12,7 +12,7 @@ class Login_Customer extends Login implements Serializable {
     private Account primary;
 
 
-    Login_Customer(String username, String password){
+    Login_Customer(String username, String password) {
         super(username, password, "Customer");
         this.accounts = new ArrayList<>();
     }
@@ -20,12 +20,13 @@ class Login_Customer extends Login implements Serializable {
 
     /**
      * By default, first chequing account added is the primary account.
+     *
      * @param account to be added
      */
-    void addAccount(Account account){
+    void addAccount(Account account) {
         this.accounts.add(account);
         // If a user has only one checking account, it will be the default destination for any deposits.
-        if(primary == null && account instanceof Account_Asset_Chequing){
+        if (primary == null && account instanceof Account_Asset_Chequing) {
             primary = account;
         }
     }
@@ -38,9 +39,9 @@ class Login_Customer extends Login implements Serializable {
         return accounts;
     }
 
-    boolean hasAccount(Account account){
-        for(Account a : this.accounts){
-            if(a.equals(account)){
+    boolean hasAccount(Account account) {
+        for (Account a : this.accounts) {
+            if (a.equals(account)) {
                 return true;
             }
 
@@ -53,7 +54,7 @@ class Login_Customer extends Login implements Serializable {
         double sum = 0;
         for (Account a : this.accounts) {
 //            if (a instanceof Account_Asset_Saving || a instanceof  Account_Asset_Chequing) {
-                sum += a.getBalance();
+            sum += a.getBalance();
 //            }
 //            } else if (a instanceof Account_Debt) {
 //                sum -= a.getBalance();
@@ -62,32 +63,32 @@ class Login_Customer extends Login implements Serializable {
         }
         return sum;
     }
-// add a line of request in the alert.text
+
+    // add a line of request in the alert.text
     void requestHelp(String s) throws IOException {
         String content = s + "\n";
         File file = new File("alerts.txt");
-        FileWriter fw = new FileWriter(file.getAbsoluteFile(),true);
+        FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(content);
         bw.close(); // Be sure to close BufferedWriter
 
     }
 
-// add a line of string in alert that request for new account
+    // add a line of string in alert that request for new account
     void requestAccount(String accountType) throws IOException {
-         String n = "Requesting to create " + accountType + " Account." + "\n";
-         requestHelp(n);
+        String n = "Requesting to create " + accountType + " Account." + "\n";
+        requestHelp(n);
     }
 
 
-
-    void selectAccount(Account account){
+    void selectAccount(Account account) {
         System.out.println("1. Show account creation date.");
         System.out.println("2. Show account balance.");
         System.out.println("3. Show most recent transaction.");
         Scanner reader = new Scanner(System.in);
         int choice = reader.nextInt();
-        switch(choice){
+        switch (choice) {
             case 1:
                 System.out.println(account.dateOfCreation);
                 break;
@@ -102,5 +103,17 @@ class Login_Customer extends Login implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder returnMessage = new StringBuilder();
+        returnMessage.append("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+                "\u001B[0m");
+        for (Account account : getAccounts()) {
+            returnMessage.append("\n" + account);
+        }
 
+        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$" + netTotal());
+
+        return returnMessage.toString();
+    }
 }

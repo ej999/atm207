@@ -21,7 +21,7 @@ class Options {
     /**
      * Storing all available options: description as keys, and their methods as values.
      */
-    private LinkedHashMap<String, Thread> options;
+    private final LinkedHashMap<String, Thread> options;
 
     Options(Login loginUser) {
         this.loginUser = loginUser;
@@ -43,19 +43,29 @@ class Options {
      */
     private void createOptions() {
         if (loginUser instanceof Login_Employee_BankManager) {
-            options.put("Create a login for a user.", new Thread(this::createLoginPrompt));
-            options.put("Create a bank account for a user.", new Thread(this::createAccountPrompt));
-            options.put("Restock the ATM.", new Thread(this::restockPrompt));
-            options.put("Undo the most recent transaction on a user's account.", new Thread(this::undoPrompt));
-            options.put("Change password.", new Thread(this::setPasswordPrompt));
+            options.put("Create a login for a user", new Thread(this::createLoginPrompt));
+            options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
+            options.put("Restock the ATM", new Thread(this::restockPrompt));
+            options.put("Undo the most recent transaction on a user's account", new Thread(this::undoPrompt));
+            options.put("Change password", new Thread(this::setPasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
-//            options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
+            // options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
-            options.put("Show my account summary.", new Thread(this::viewBalancePrompt));
-//            options.put("View an account.", new Thread(this::viewAccountPrompt));
-//            options.put("See net worth.", new Thread(this::netTotalPrompt));
-            options.put("Transfering .", new Thread(this::setPasswordPrompt));
-            options.put("Change password.", new Thread(this::setPasswordPrompt));
+            options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
+            //TODO
+            options.put("Make a Payment", new Thread(this::setPasswordPrompt));
+            //TODO
+            options.put("Make a Transfer", new Thread(this::setPasswordPrompt));
+            //TODO
+            options.put("Cash Deposit", new Thread(this::setPasswordPrompt));
+            //TODO
+            options.put("Cheque Deposit", new Thread(this::setPasswordPrompt));
+            //TODO
+            options.put("Cash Withdrawal", new Thread(this::setPasswordPrompt));
+            //TODO
+            options.put("Request Creating an Account", new Thread(this::setPasswordPrompt));
+
+            options.put("Change Password", new Thread(this::setPasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
         }
     }
@@ -114,7 +124,7 @@ class Options {
             out.writeObject(backUp);
             out.close();
             fileOut.close();
-            System.err.printf("Serialized data saved. ");
+            System.err.print("Serialized data saved. ");
         } catch (IOException i) {
             i.printStackTrace();
         }
@@ -176,13 +186,6 @@ class Options {
     }
 
 
-//    private void netTotalPrompt() {
-//        double netTotal = ((Login_Customer) loginUser).netTotal();
-//        System.out.println("Your net total is " + netTotal);
-//    }
-
-
-
     private void undoPrompt(){
         Scanner reader = new Scanner(System.in);
         boolean finished = false;
@@ -225,16 +228,16 @@ class Options {
         System.out.println("Command runs successfully.");
     }
 
-    private void viewBalancePrompt() {
-        StringBuilder returnMessage = new StringBuilder();
-        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
-        for(Account account:((Login_Customer)loginUser).getAccounts()){
-            System.out.println(account);
-        }
-
-        double netTotal = ((Login_Customer) loginUser).netTotal();
-        System.out.println("\n\u001B[1mYour net total is \u001B[0m$" + netTotal);
-    }
+//    private void viewBalancePrompt() {
+//        StringBuilder returnMessage = new StringBuilder();
+//        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
+//        for(Account account:((Login_Customer)loginUser).getAccounts()){
+//            System.out.println(account);
+//        }
+//
+//        double netTotal = ((Login_Customer) loginUser).netTotal();
+//        System.out.println("\n\u001B[1mYour net total is \u001B[0m$" + netTotal);
+//    }
 
 //    private void viewAccountPrompt() {
 //        System.out.println("\n\u001B[1m    Account Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction\u001B[0m");
@@ -259,7 +262,6 @@ class Options {
 //        int choice = reader.nextInt();
 //        switch(choice){
 //            case 1:
-//                //TODO
 //                break;
 //
 //        }
