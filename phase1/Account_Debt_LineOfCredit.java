@@ -103,4 +103,9 @@ class Account_Debt_LineOfCredit extends Account_Debt {
             undoTransfer((Double) mostRecentTransaction.get("Amount"), (Account) mostRecentTransaction.get("Account"));
         }
     }
+
+    @Override
+    public String toString() {
+        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance;
+    }
 }

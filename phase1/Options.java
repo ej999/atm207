@@ -14,12 +14,13 @@ import java.util.Scanner;
  */
 class Options {
     /**
+     * The login account of the current logged-in user.
      * It is set to null if a user is logout or the login is not valid at the first place.
      */
     private Login loginUser;
 
     /**
-     * Storing all associated option descriptions and their methods.
+     * Storing all available options: description as keys, and their methods as values.
      */
     private LinkedHashMap<String, Thread> options;
 
@@ -47,16 +48,15 @@ class Options {
             options.put("Create a bank account for a user.", new Thread(this::createAccountPrompt));
             options.put("Restock the ATM.", new Thread(this::restockPrompt));
             options.put("Undo the most recent transaction on a user's account.", new Thread(this::undoPrompt));
+            options.put("Change password.", new Thread(this::setPasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
 //            options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
-            //TODO move the Options-related methods from Login_customer to here.
-            options.put("Show summary of all account balances.", new Thread(this::createLoginPrompt));//TODO: implement this
-            options.put("View an account.", new Thread(this::viewAnAccountPrompt));
+            options.put("Show summary of all account balances.", new Thread(this::viewBalancePrompt));
+            options.put("View an account.", new Thread(this::viewAccountPrompt));
             options.put("See net worth.", new Thread(this::netTotalPrompt));
-            options.put("Change password.", new Thread(this::changePasswordPrompt));
+            options.put("Change password.", new Thread(this::setPasswordPrompt));
             options.put("Logout", new Thread(this::logoutPrompt));
-
         }
     }
 
@@ -97,8 +97,7 @@ class Options {
                 } catch (InterruptedException e) {
                     System.err.print("Main thread Interrupted");
                 }
-                options.get(key).interrupt();
-                options.get(key).stop();
+                return;
             }
             i++;
         }
@@ -106,10 +105,8 @@ class Options {
 
 
     private void logoutPrompt() {
-        System.out.println("Have a nice day, " + this.loginUser.getUsername() + "!");
-        System.out.println("===========================================================\n");
-        LoginManagerBackup backUp = new LoginManagerBackup();
         //Every time the user logs out, the LoginManager's contents will be serialized and saved.
+        LoginManagerBackup backUp = new LoginManagerBackup();
         try {
             FileOutputStream fileOut =
                     new FileOutputStream("LoginManagerStorage.txt");
@@ -117,10 +114,15 @@ class Options {
             out.writeObject(backUp);
             out.close();
             fileOut.close();
-            System.out.printf("Serialized data saved.");
+            System.err.printf("Serialized data saved. ");
         } catch (IOException i) {
             i.printStackTrace();
         }
+
+        System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
+        System.out.println("===========================================================\n");
+
+        // Logout the current user by assigning the loginUser to null.
         this.loginUser = null;
     }
 
@@ -194,12 +196,11 @@ class Options {
                 int i = 1;
                 for (Account a: accounts){
                     System.out.println("" + i + ". " + a);
-                    i++;
                 }
                 int option = reader.nextInt();
                 try{
                     Account account2undo = accounts.get(option);
-                    ((Login_Employee_BankManager) loginUser).undoMostRecentTransaction(account2undo);
+                    account2undo.undoMostRecentTransaction();
                     finished = true;
                     System.out.println("Undo successful.");
                 } catch(IndexOutOfBoundsException f){
@@ -216,27 +217,45 @@ class Options {
         }
     }
 
-    private void viewAnAccountPrompt(){
-        System.out.println("Select the account you would like to work with:");
+    private void setPasswordPrompt() {
+        System.out.print("Please enter a new password: ");
+        Scanner reader2 = new Scanner(System.in);
+        String newPass = reader2.nextLine();
+        loginUser.setPassword(newPass);
+        System.out.println("Command runs successfully.");
+    }
+
+    private void viewBalancePrompt() {
+        StringBuilder returnMessage = new StringBuilder();
+        System.out.println("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\u001B[0m");
+        for(Account account:((Login_Customer)loginUser).getAccounts()){
+            System.out.println(account);
+        }
+    }
+
+    private void viewAccountPrompt() {
+        System.out.println("\n\u001B[1m    Account Type\t\tCreation Date\t\t\t\t\tBalance\u001B[0m");
         HashMap<Integer, Account> option = new HashMap<>();
         int i = 1;
         for(Account account: ((Login_Customer)loginUser).getAccounts()){
-            System.out.println(i + ". " + account.toString());
+            System.out.println("[" + i + "] " + account.toString());
             option.put(i, account);
             i += 1;
         }
+        System.out.print("Please select the account you would like to work with: ");
         Scanner reader = new Scanner(System.in);
         int accountNumber = reader.nextInt();
-        selectAccount(option.get(accountNumber));
+        selectAccountPrompt(option.get(accountNumber));
     }
 
-    private void selectAccount(Account account) {
-        System.out.println("1. Show account creation date.");
-        System.out.println("2. Show account balance.");
-        System.out.println("3. Show most recent transaction.");
+    private void selectAccountPrompt(Account account){
+        System.out.println("[1] Show account creation date.");
+        System.out.println("[2] Show account balance.");
+        System.out.println("[3] Show most recent transaction.");
+        System.out.println("Please enter the corresponding number: ");
         Scanner reader = new Scanner(System.in);
         int choice = reader.nextInt();
-        switch (choice) {
+        switch(choice){
             case 1:
                 System.out.println(account.dateOfCreation);
                 break;
@@ -247,13 +266,8 @@ class Options {
                 System.out.println("Type :" + account.mostRecentTransaction.get("Type"));
                 System.out.println("Amount :" + account.mostRecentTransaction.get("Amount"));
                 break;
+
         }
     }
 
-    private void changePasswordPrompt(){
-        System.out.println("Please enter a new password: ");
-        Scanner reader2 = new Scanner(System.in);
-        String newPass = reader2.nextLine();
-        loginUser.setPassword(newPass);
-    }
 }
