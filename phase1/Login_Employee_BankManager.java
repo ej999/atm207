@@ -1,5 +1,8 @@
 package phase1;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -96,6 +99,24 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
      */
     void addAccount(String accountType, Login_Customer username) {
         this.addAccount(accountType, username, 0);
+    }
+
+    /**
+     * Allow BankManger to read alerts.
+     */
+    void readAlerts() {
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("phase1/alerts.txt"));
+            String alert = reader.readLine();
+            while (alert != null) {
+                System.out.println(alert);
+                alert = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
