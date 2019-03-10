@@ -7,7 +7,7 @@ import java.util.Observable;
 /**
  * TODO: write description for this class
  */
-public class ATMFrame extends Observable {
+class ATMFrame extends Observable {
 
     /**
      * check if today is the start of the month
@@ -15,7 +15,7 @@ public class ATMFrame extends Observable {
     /*
     TODO: this method should be called every night by ________
      */
-    public void checkMonth() {
+    void checkMonth() {
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);

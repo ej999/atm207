@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 class LoginManagerBackup implements Serializable {
 
-    HashMap<String, Login> login_map;
+    final HashMap<String, Login> login_map;
 
     LoginManagerBackup() {
         login_map = LoginManager.login_map;

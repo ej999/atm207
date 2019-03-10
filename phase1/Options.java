@@ -81,10 +81,7 @@ class Options {
     }
 
     /**
-     * Display available options for the logged-in user.
-     */
-    /**
-     * Show the options to the user
+     * Display available options to the logged-in user.
      */
     private void displayOptions() {
         if (helped) {
@@ -164,7 +161,6 @@ class Options {
         }
     }
 
-
     /**
      * Gets username and tells BankManager to create the specified account for the customer
      */
@@ -179,6 +175,34 @@ class Options {
             System.out.println("The username does not exist. No account has been created.");
         }
     }
+
+    /**
+     * Restocks the bank machine based on input.
+     * Only the BankManager is able to access this.
+     */
+    private void restockPrompt() {
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Enter amount of 5 dollar bills: ");
+        int fives = reader.nextInt();
+        System.out.print("Enter amount of 10 dollar bills: ");
+        int tens = reader.nextInt();
+        System.out.print("Enter amount of 20 dollar bills: ");
+        int twenties = reader.nextInt();
+        System.out.print("Enter amount of 50 dollar bills: ");
+        int fifties = reader.nextInt();
+
+        ArrayList<Integer> restock = new ArrayList<>();
+        restock.add(fives);
+        restock.add(tens);
+        restock.add(twenties);
+        restock.add(fifties);
+
+        ((Login_Employee_BankManager)loginUser).restockMachine(restock);
+        System.out.println(fives + " 5-dollar-bill, " + tens + " 10-dollar-bill, " + twenties + " 20-dollar-bill, "
+                + fifties + " 50-dollar-bill are successfully restocked. ");
+    }
+
+    //TODO
 
     /**
      * logs out the user and backs up the users data
@@ -202,34 +226,6 @@ class Options {
 
         // Logout the current user by assigning the loginUser to null.
         this.loginUser = null;
-    }
-
-    /**
-     * Restocks the bank machine based on input
-     * only the BankManager is able to access this
-     */
-    private void restockPrompt() {
-        Scanner reader = new Scanner(System.in);
-        System.out.print("Enter amount of 5 dollar bills: ");
-        int fives = reader.nextInt();
-        System.out.print("Enter amount of 10 dollar bills: ");
-        int tens = reader.nextInt();
-        System.out.print("Enter amount of 20 dollar bills: ");
-        int twenties = reader.nextInt();
-        System.out.print("Enter amount of 50 dollar bills: ");
-        int fifties = reader.nextInt();
-        ArrayList<Integer> restock = new ArrayList<>();
-        restock.add(fives);
-        restock.add(tens);
-        restock.add(twenties);
-        restock.add(fifties);
-//        HashMap<Integer, Integer> restock = new HashMap<>();
-//        restock.put(5, fives);
-//        restock.put(10, tens);
-//        restock.put(20, twenties);
-//        restock.put(50, fifties);
-        //addToBill(restock, );
-        ((Login_Employee_BankManager)loginUser).restockMachine(restock);
     }
 
     /**

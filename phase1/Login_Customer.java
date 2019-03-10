@@ -101,14 +101,14 @@ class Login_Customer extends Login implements Serializable {
                 "\u001B[0m");
         for (Account account : getAccounts()) {
             if (account == primary) {
-                returnMessage.append("\nX\t\t\t" + account);
+                returnMessage.append("\nX\t\t\t").append(account);
             } else {
-                returnMessage.append("\n\t\t\t" + account);
+                returnMessage.append("\n\t\t\t").append(account);
             }
 
         }
 
-        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$" + netTotal());
+        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
 
         return returnMessage.toString();
     }

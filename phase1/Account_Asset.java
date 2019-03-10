@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
  */
 abstract class Account_Asset extends Account {
 
-    public Account_Asset(double balance, Login_Customer owner) {
+    Account_Asset(double balance, Login_Customer owner) {
         super(balance, owner);
     }
 
-    public Account_Asset(Login_Customer owner) {
+    Account_Asset(Login_Customer owner) {
         super(owner);
     }
 

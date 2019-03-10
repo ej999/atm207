@@ -77,7 +77,7 @@ final class Cash {
     When bank manager restocks the machine
     cashList: [fives, tens, twenties, fifties]
      */
-    public static void cashDeposit(ArrayList<Integer> cashList) {
+    static void cashDeposit(ArrayList<Integer> cashList) {
         bills.put("five", bills.get("five") + cashList.get(0));
         bills.put("ten", bills.get("ten") + cashList.get(1));
         bills.put("twenty", bills.get("twenty") + cashList.get(2));
@@ -117,7 +117,7 @@ final class Cash {
      * @param amount withdrawal amount
      * @return true iff there is enough bills for amount
      */
-    public static boolean isThereEnoughBills(double amount) {
+    static boolean isThereEnoughBills(double amount) {
         ArrayList<Integer> numberOfBills = verifyCashWithdrawal(amount);
         double total = numberOfBills.get(0) * 50 + numberOfBills.get(1) * 20 + numberOfBills.get(2) * 10 +
                 numberOfBills.get(3) * 5;
@@ -129,7 +129,7 @@ final class Cash {
      * withdrawal depending on the withdrawal amount and the inventory.
      * Update quantity of denominations.
      */
-    public static void cashWithdrawal(double amount) {
+    static void cashWithdrawal(double amount) {
         double remainder = amount;
 
         // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
@@ -175,35 +175,35 @@ final class Cash {
 
     }
 
-    public static int getFiveDollarBill() {
+    static int getFiveDollarBill() {
         return bills.get("five");
     }
 
-    public static void setFiveDollarBill(int fiveDollarBill) {
+    static void setFiveDollarBill(int fiveDollarBill) {
         bills.put("five", fiveDollarBill);
     }
 
-    public static int getTenDollarBill() {
+    static int getTenDollarBill() {
         return bills.get("ten");
     }
 
-    public static void setTenDollarBill(int tenDollarBill) {
+    static void setTenDollarBill(int tenDollarBill) {
         bills.put("ten", tenDollarBill);
     }
 
-    public static int getTwentyDollarBill() {
+    static int getTwentyDollarBill() {
         return bills.get("twenty");
     }
 
-    public static void setTwentyDollarBill(int twentyDollarBill) {
+    static void setTwentyDollarBill(int twentyDollarBill) {
         bills.put("twenty", twentyDollarBill);
     }
 
-    public static int getFiftyDollarBill() {
+    static int getFiftyDollarBill() {
         return bills.get("fifty");
     }
 
-    public static void setFiftyDollarBill(int fiftyDollarBill) {
+    static void setFiftyDollarBill(int fiftyDollarBill) {
         bills.put("fifty", fiftyDollarBill);
     }
 }

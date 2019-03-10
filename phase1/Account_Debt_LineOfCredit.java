@@ -11,7 +11,7 @@ class Account_Debt_LineOfCredit extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    public Account_Debt_LineOfCredit(Login_Customer owner) {
+    Account_Debt_LineOfCredit(Login_Customer owner) {
         super(owner);
     }
 
@@ -118,6 +118,6 @@ class Account_Debt_LineOfCredit extends Account_Debt {
             mostRecentTransactionString = "n/a";
         }
 
-        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance==0)?" ":"") + "\t\t" + mostRecentTransactionString;
     }
 }

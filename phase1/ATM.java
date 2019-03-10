@@ -7,7 +7,7 @@ import java.util.Scanner;
  * It will display options on the screen and the user will select an option by typing the corresponding number
  * on the keyboard.
  */
-public class ATM {
+class ATM {
     /**
      * Allow user to login by entering username and password.
      *
@@ -33,7 +33,7 @@ public class ATM {
         return loginUser;
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // Instantiate an Employee account here for basic functions here.
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
@@ -43,6 +43,7 @@ public class ATM {
         jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
         jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
         jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
+        jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 0);
 
         //TODO Check works or not
         // Load the back up of Login account lists after restarting the ATM.

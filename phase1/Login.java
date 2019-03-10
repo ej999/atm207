@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 abstract class Login implements Serializable {
     private final String loginType;
-    private String username;
+    private final String username;
     private String password;
 
 

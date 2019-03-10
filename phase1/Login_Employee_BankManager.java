@@ -30,7 +30,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
      *
      * @param cashList amount of denominations [fives, tens, twenties, fifties]
      */
-    public void restockMachine(ArrayList<Integer> cashList) {
+    void restockMachine(ArrayList<Integer> cashList) {
         Cash.cashDeposit(cashList);
     }
 
@@ -40,7 +40,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
      *
      * @param account account involved
      */
-    public void undoMostRecentTransaction(Account account) {
+    void undoMostRecentTransaction(Account account) {
         account.undoMostRecentTransaction();
     }
 
@@ -55,7 +55,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
             System.out.println("Username already exists. Login account is not created.");
         } else {
             LoginManager.addLogin(newUser);
-            System.out.println("Login account is successfully created.");
+            System.out.println("A Login account with username, " + username + ", is successfully created.");
         }
 
     }
@@ -94,7 +94,7 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
 
         if (newAccount != null) {
             username.addAccount(newAccount);
-            System.out.println("Command runs successfully.");
+            System.out.println("A " + accountType + " account with $" + amount + " balance is successfully created for " + username.getUsername() + ". ");
         }
 
     }

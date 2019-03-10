@@ -15,27 +15,27 @@ abstract class Account implements Serializable {
     private static final String inputFilePath = "/deposits.txt";
 
     double balance;
-    Date dateOfCreation;
+    final Date dateOfCreation;
     // TODO: make mostRecentTransaction private and create getters
     /*
     Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
      */
-    HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
+    final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
         {
             put("Type", "");
             put("Amount", 0.00);
             put("Account", null);
         }
     };
-    private Login_Customer owner;
+    private final Login_Customer owner;
 
-    public Account(double balance, Login_Customer owner) {
+    Account(double balance, Login_Customer owner) {
         this.balance = balance;
         this.owner = owner;
         this.dateOfCreation = new Date();
     }
 
-    public Account(Login_Customer owner) {
+    Account(Login_Customer owner) {
         this(0, owner);
     }
 
@@ -78,7 +78,7 @@ abstract class Account implements Serializable {
 
     abstract void undoWithdrawal(double withdrawalAmount);
 
-    public double getBalance() {
+    double getBalance() {
         return balance;
     }
 
@@ -86,8 +86,8 @@ abstract class Account implements Serializable {
         this.balance = balance;
     }
 
+    @Override
     public abstract String toString();
-
 
     Login_Customer getOwner() {
         return owner;
