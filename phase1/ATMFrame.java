@@ -3,11 +3,12 @@ package phase1;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
+import java.io.Serializable;
 
 /**
  * TODO: write description for this class
  */
-class ATMFrame extends Observable {
+class ATMFrame extends Observable implements Serializable {
 
     /**
      * check if today is the start of the month
