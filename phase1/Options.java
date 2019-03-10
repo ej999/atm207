@@ -13,15 +13,18 @@ import java.util.Scanner;
  */
 class Options {
     /**
+     * Storing all available options: description as keys, and their methods as values.
+     */
+    private final LinkedHashMap<String, Thread> options;
+    /**
      * The login account of the current logged-in user.
      * It is set to null if a user is logout or the login is not valid at the first place.
      */
     private Login loginUser;
-
     /**
-     * Storing all available options: description as keys, and their methods as values.
+     * Display available options for the logged-in user.
      */
-    private final LinkedHashMap<String, Thread> options;
+    private boolean helped = false;
 
     Options(Login loginUser) {
         this.loginUser = loginUser;
@@ -44,36 +47,38 @@ class Options {
     private void createOptions() {
         if (loginUser instanceof Login_Employee_BankManager) {
             options.put("Create a login for a user", new Thread(this::createLoginPrompt));
+
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
+
             options.put("Restock the ATM", new Thread(this::restockPrompt));
+
             options.put("Undo the most recent transaction on a user's account", new Thread(this::undoPrompt));
+
             options.put("Change password", new Thread(this::setPasswordPrompt));
+
             options.put("Logout", new Thread(this::logoutPrompt));
-            // options.put("Logout", new Thread(() -> {this.loggedOut = true;}));
         } else if (loginUser instanceof Login_Customer) {
             options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
+
             //TODO
-            options.put("Make a Payment", new Thread(this::setPasswordPrompt));
-            //TODO
-            options.put("Make a Transfer", new Thread(this::setPasswordPrompt));
-            //TODO
-            options.put("Cash Deposit", new Thread(this::setPasswordPrompt));
-            //TODO
-            options.put("Cheque Deposit", new Thread(this::setPasswordPrompt));
+            options.put("Make a Payment/Transfer", new Thread(this::setPasswordPrompt));
+
+            //TODO deposit money into their account by entering a cheque or cash into the machine
+            // (This will be simulated by individual lines in an input file called deposits.txt.
+            // You can decide the format of the file. This will increase their balance.)
+            options.put("Cash/Cheque Deposit", new Thread(this::setPasswordPrompt));
+
             //TODO
             options.put("Cash Withdrawal", new Thread(this::setPasswordPrompt));
+
             //TODO
             options.put("Request Creating an Account", new Thread(this::setPasswordPrompt));
 
             options.put("Change Password", new Thread(this::setPasswordPrompt));
+
             options.put("Logout", new Thread(this::logoutPrompt));
         }
     }
-
-    /**
-     * Display available options for the logged-in user.
-     */
-    private boolean helped = false;
 
     private void displayOptions() {
         if (helped) {
@@ -186,10 +191,10 @@ class Options {
     }
 
 
-    private void undoPrompt(){
+    private void undoPrompt() {
         Scanner reader = new Scanner(System.in);
         boolean finished = false;
-        while (!finished){
+        while (!finished) {
             System.out.println("Enter username: ");
             String username = reader.next();
             if (LoginManager.checkLoginExistence(username)) {
@@ -197,22 +202,21 @@ class Options {
                 System.out.println("Which account to undo: ");
                 ArrayList<Account> accounts = ((Login_Customer) customer).getAccounts();
                 int i = 1;
-                for (Account a: accounts){
+                for (Account a : accounts) {
                     System.out.println("" + i + ". " + a);
                 }
                 int option = reader.nextInt();
-                try{
+                try {
                     Account account2undo = accounts.get(option);
                     account2undo.undoMostRecentTransaction();
                     finished = true;
                     System.out.println("Undo successful.");
-                } catch(IndexOutOfBoundsException f){
+                } catch (IndexOutOfBoundsException f) {
                     System.out.println("invalid selection. try again?(y/n)");
                     String proceed = reader.next();
                     if (proceed.equals("n")) finished = true;
                 }
-            }
-            else {
+            } else {
                 System.out.println("User not found. Try again? (y/n)");
                 String proceed = reader.next();
                 if (proceed.equals("n")) finished = true;

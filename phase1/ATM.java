@@ -60,10 +60,10 @@ public class ATM {
         Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
         LoginManager.addLogin(jen);
         jen.createLogin("1", "1");
-        jen.addAccount("Chequing", ((Login_Customer)LoginManager.getLogin("1")),1234);
-        jen.addAccount("LineOfCredit", ((Login_Customer)LoginManager.getLogin("1")),4321);
-        jen.addAccount("Saving", ((Login_Customer)LoginManager.getLogin("1")),1000);
-        jen.addAccount("CreditCard", ((Login_Customer)LoginManager.getLogin("1")),420);
+        jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("1")), 1234);
+        jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
+        jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
+        jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
 
         // Load the back up of Login account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();

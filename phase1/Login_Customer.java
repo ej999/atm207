@@ -17,7 +17,6 @@ class Login_Customer extends Login implements Serializable {
         this.accounts = new ArrayList<>();
     }
 
-
     /**
      * By default, first chequing account added is the primary account.
      *
@@ -50,7 +49,7 @@ class Login_Customer extends Login implements Serializable {
     }
 
     // The total of their debt account balances subtracted from the total of their asset account balances.
-    double netTotal() {
+    private double netTotal() {
         double sum = 0;
         for (Account a : this.accounts) {
 //            if (a instanceof Account_Asset_Saving || a instanceof  Account_Asset_Chequing) {
@@ -106,10 +105,15 @@ class Login_Customer extends Login implements Serializable {
     @Override
     public String toString() {
         StringBuilder returnMessage = new StringBuilder();
-        returnMessage.append("\n\u001B[1mAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
                 "\u001B[0m");
         for (Account account : getAccounts()) {
-            returnMessage.append("\n" + account);
+            if (account == primary) {
+                returnMessage.append("\nX\t\t\t" + account);
+            } else {
+                returnMessage.append("\n\t\t\t" + account);
+            }
+
         }
 
         returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$" + netTotal());
