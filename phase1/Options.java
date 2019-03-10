@@ -152,7 +152,6 @@ class Options {
         System.out.print("Enter password: ");
         String password = reader.next();
         ((Login_Employee_BankManager) loginUser).createLogin(username, password);
-        System.out.println("Command runs successfully.");
     }
 
     private void createAccountPrompt() {
@@ -231,7 +230,6 @@ class Options {
         Scanner reader2 = new Scanner(System.in);
         String newPass = reader2.nextLine();
         loginUser.setPassword(newPass);
-        System.out.println("Command runs successfully.");
     }
 
     private void setPrimaryPrompt() {
@@ -252,7 +250,6 @@ class Options {
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
             ((Login_Customer)loginUser).setPrimary(((Login_Customer)loginUser).getAccounts().get(selected-1));
-            System.out.println("Command runs successfully.");
         } else {
             System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
                     "account.\nYou are welcome to request creating a new chequing account at anytime.");

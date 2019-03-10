@@ -1,11 +1,9 @@
 package phase1;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.FileWriter;
 
 
 //import java.util.Account;
@@ -45,10 +43,16 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
     /**
      * Only a bank manager can create and set the initial password for a user.
      */
-    public void createLogin(String username, String password) {
-
+    void createLogin(String username, String password) {
         Login_Customer newUser = new Login_Customer(username, password);
-        LoginManager.addLogin(newUser);
+
+        // Username should be unique.
+        if (LoginManager.checkLoginExistence(username)) {
+            System.out.println("Existed username. Login account is not created.");
+        } else {
+            LoginManager.addLogin(newUser);
+            System.out.println("Command runs successfully.");
+        }
 
     }
 

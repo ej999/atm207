@@ -31,10 +31,12 @@ abstract class Login implements Serializable {
 
     void setPassword(String p) {
         // password should not be empty.
-        if(p.equals("")) {
-            System.out.println("Your password has not been changed");
+        if (p.equals("")) {
+            System.out.println("Password should not be empty. Your password has not been changed");
+        } else {
+            password = p;
+            System.out.println("Command runs successfully.");
         }
-        password = p.equals("") ? password : p;
     }
 
     String getLoginType() {

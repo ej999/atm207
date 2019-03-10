@@ -66,6 +66,7 @@ public class ATM {
         jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
         jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
 
+
         // Load the back up of Login account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManager.login_map = load_backup.returnFileBackup().login_map;

@@ -31,7 +31,12 @@ class Login_Customer extends Login implements Serializable {
     }
 
     void setPrimary(Account primary) {
-        this.primary = primary;
+        if (primary instanceof Account_Asset_Chequing) {
+            this.primary = primary;
+            System.out.println("Command runs successfully.");
+        } else {
+            throw new IllegalArgumentException("Only chequing account can be set to primary.");
+        }
     }
 
     ArrayList<Account> getAccounts() {
