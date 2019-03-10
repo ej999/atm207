@@ -54,6 +54,8 @@ class Options {
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
 
+            options.put("Clear all bank data", new Thread(this::clearDataPrompt));
+
             options.put("Logout", new Thread(this::logoutPrompt));
         } else if (loginUser instanceof Login_Customer) {
             options.put("Show my account summary", new Thread(() -> System.out.println(loginUser)));
@@ -222,6 +224,18 @@ class Options {
 
         // Logout the current user by assigning the loginUser to null.
         this.loginUser = null;
+    }
+
+    private void clearDataPrompt(){
+        System.out.println("Are you sure you want to do this? Y/N" );
+        Scanner reader2 = new Scanner(System.in);
+        String answer = reader2.nextLine();
+        if (answer.equals("Y")){
+            LoginManagerBackup deleter = new LoginManagerBackup();
+            deleter.deleteBackup();
+        }
+        System.out.println("Data has been cleared. Please restart the program");
+        System.exit(0);
     }
 
     private Account selectAccountPrompt(Login_Customer customer) {

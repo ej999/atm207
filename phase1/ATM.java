@@ -1,10 +1,7 @@
 package phase1;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Observable;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * An ATM that allows customers and employees to interact with their login accounts.
@@ -42,18 +39,24 @@ class ATM extends Observable implements Serializable {
     }
 
     public static void main(String[] args) {
-        // Instantiate an Employee account here for basic functions here.
-        Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
-        LoginManager.addLogin(jen);
-        jen.createLogin("1", "1");
-        jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("1")), 1234);
-        jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
-        jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
-        jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
-
         // Load the back up of Login account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();
-        LoginManager.login_map = load_backup.returnFileBackup().login_map;
+        LoginManagerBackup backup = load_backup.returnFileBackup();
+        if (backup.deleted == 0) {
+            LoginManager.login_map = load_backup.returnFileBackup().login_map;
+        }
+        else {
+            LoginManager.login_map = new HashMap<>();
+            // Instantiate an Employee account here for basic functions here.
+            Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
+            LoginManager.addLogin(jen);
+            jen.createLogin("1", "1");
+            jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("1")), 1234);
+            jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("1")), 4321);
+            jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("1")), 1000);
+            jen.addAccount("CreditCard", ((Login_Customer) LoginManager.getLogin("1")), 420);
+        }
+
 
 
         Date today = new Date();

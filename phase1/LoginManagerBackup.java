@@ -1,17 +1,21 @@
 package phase1;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 
 class LoginManagerBackup implements Serializable {
 
-    final HashMap<String, Login> login_map;
+    HashMap<String, Login> login_map;
+    int deleted = 0;
 
     LoginManagerBackup() {
-        login_map = LoginManager.login_map;
+        this.login_map = LoginManager.login_map;
+    }
+
+    //This is for when we delete
+    LoginManagerBackup(String deleter){
+        this.deleted = 1;
+
     }
 
     LoginManagerBackup returnFileBackup() {
@@ -29,6 +33,22 @@ class LoginManagerBackup implements Serializable {
             return new LoginManagerBackup();
         }//i.printStackTrace();
         //c.printStackTrace();
+
+
+    }
+
+    public void deleteBackup() {
+        try {
+            FileOutputStream fileOut =
+                    new FileOutputStream("phase1/LoginManagerStorage.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(new LoginManagerBackup( "deleted"));
+            out.close();
+            fileOut.close();
+            System.err.print("Backup deleted.");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
 
 
     }
