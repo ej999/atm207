@@ -57,9 +57,23 @@ class Options {
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
 
+            options.put("Load custom bank data", new Thread(this::loadCustomPrompt));
+
             options.put("Clear all bank data", new Thread(this::clearDataPrompt));
 
             options.put("Logout", new Thread(this::logoutPrompt));
+
+        } else if (loginUser instanceof Login_Employee_Teller) {
+            options.put("Read alerts", new Thread(this::readAlertPrompt));
+
+            options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
+
+            options.put("Change password", new Thread(this::setPasswordPrompt));
+
+            options.put("Undo the most recent transaction on a user's account", new Thread(this::undoPrompt));
+
+            options.put("Logout", new Thread(this::logoutPrompt));
+
 
         } else if (loginUser instanceof Login_Customer) {
 
@@ -232,8 +246,8 @@ class Options {
     }
 
     private void loadCustomPrompt(){
-        System.out.println("Please enter the name of the file you want to load from (don't include its extension." +
-                "Note that it must be stored in the phase1 folder");
+        System.out.println("Please enter the name of the file you want to load from (don't include its extension.)" +
+                " Note that it must be stored in the phase1 folder");
         Scanner reader1 = new Scanner(System.in);
         String answer = reader1.nextLine();
         LoginManagerBackup custom_loader = new LoginManagerBackup();
