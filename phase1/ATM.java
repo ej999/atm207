@@ -42,14 +42,16 @@ class ATM extends Observable implements Serializable {
         // Load the back up of Login account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManagerBackup backup = load_backup.returnFileBackup();
+        LoginManager.login_map = new HashMap<>();
+        // Instantiate an Employee account here for basic functions here.
+        Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
+        LoginManager.addLogin(jen);
         if (backup.deleted == 0) {
             LoginManager.login_map = load_backup.returnFileBackup().login_map;
+
         } else {
             // If the backup was deleted, recreate the default state here.
-            LoginManager.login_map = new HashMap<>();
-            // Instantiate an Employee account here for basic functions here.
-            Login_Employee_BankManager jen = new Login_Employee_BankManager("jen", "1234");
-            LoginManager.addLogin(jen);
+
             jen.createLogin("steve", "1234");
             jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("steve")), 1234);
             jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("steve")), 4321);
