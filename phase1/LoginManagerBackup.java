@@ -49,7 +49,20 @@ class LoginManagerBackup implements Serializable {
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
 
+    HashMap<String, Login> loadCustom(String filename){
+        try{FileInputStream file = new FileInputStream("phase1/" + filename + ".txt");
+            ObjectInputStream object = new ObjectInputStream(file);
+            LoginManagerBackup backup = (LoginManagerBackup) object.readObject();
+            object.close();
+            file.close();
+            return backup.login_map;
+        }
+        catch (IOException | ClassNotFoundException f) {
+            //f.printStackTrace();
+            return LoginManager.login_map;
+        }
 
     }
 

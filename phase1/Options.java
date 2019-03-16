@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
@@ -228,6 +229,16 @@ class Options {
 
         // Logout the current user by assigning the loginUser to null.
         this.loginUser = null;
+    }
+
+    private void loadCustomPrompt(){
+        System.out.println("Please enter the name of the file you want to load from (don't include its extension." +
+                "Note that it must be stored in the phase1 folder");
+        Scanner reader1 = new Scanner(System.in);
+        String answer = reader1.nextLine();
+        LoginManagerBackup custom_loader = new LoginManagerBackup();
+        HashMap<String, Login> custom_map = custom_loader.loadCustom(answer);
+        LoginManager.login_map = custom_map;
     }
 
     private void clearDataPrompt() {
