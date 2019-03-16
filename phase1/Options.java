@@ -146,11 +146,13 @@ class Options {
      */
     private void createLoginPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating Login... Enter username: ");
+        System.out.print("Creating Login... Enter user type (Customer, Teller):");
+        String type = reader.next();
+        System.out.print(" Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        ((Login_Employee_BankManager) loginUser).createLogin(username, password);
+        ((Login_Employee_BankManager) loginUser).createLogin(type, username, password);
     }
 
     private String selectAccountTypePrompt() {
@@ -262,9 +264,9 @@ class Options {
         if (answer.equals("Y")) {
             LoginManagerBackup deleter = new LoginManagerBackup();
             deleter.deleteBackup();
+            System.out.println("Data has been cleared. Please restart the program.");
+            System.exit(0);
         }
-        System.out.println("Data has been cleared. Please restart the program.");
-        System.exit(0);
     }
 
     private Account selectAccountPrompt(Login_Customer customer) {

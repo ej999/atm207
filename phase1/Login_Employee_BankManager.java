@@ -42,16 +42,32 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
     /**
      * Only a bank manager can create and set the initial password for a user.
      */
-    void createLogin(String username, String password) {
-        Login_Customer newUser = new Login_Customer(username, password);
+    void createLogin(String account_type, String username, String password) {
+        switch(account_type) {
+            case "Customer": {
+                Login_Customer newUser = new Login_Customer(username, password);
 
-        // Username should be unique.
-        if (LoginManager.checkLoginExistence(username)) {
-            System.out.println("Username already exists. Login account is not created.");
-        } else {
-            LoginManager.addLogin(newUser);
-            System.out.println("A Login account with username, " + username + ", is successfully created.");
+                // Username should be unique.
+                if (LoginManager.checkLoginExistence(username)) {
+                    System.out.println("Username already exists. Login account is not created.");
+                } else {
+                    LoginManager.addLogin(newUser);
+                    System.out.println("A customer account with username, " + username + ", is successfully created.");
+                }
+            }
+            case "Teller": {
+                Login_Employee_Teller newTeller = new Login_Employee_Teller(username, password);
+
+                // Username should be unique.
+                if (LoginManager.checkLoginExistence(username)) {
+                    System.out.println("Username already exists. Login account is not created.");
+                } else {
+                    LoginManager.addLogin(newTeller);
+                    System.out.println("A teller account with username, " + username + ", is successfully created.");
+                }
+            }
         }
+
 
     }
 

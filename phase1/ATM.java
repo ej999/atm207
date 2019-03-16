@@ -52,7 +52,7 @@ class ATM extends Observable implements Serializable {
         } else {
             // If the backup was deleted, recreate the default state here.
 
-            jen.createLogin("steve", "1234");
+            jen.createLogin("Customer", "steve", "1234");
             jen.addAccount("Chequing", ((Login_Customer) LoginManager.getLogin("steve")), 1234);
             jen.addAccount("LineOfCredit", ((Login_Customer) LoginManager.getLogin("steve")), 4321);
             jen.addAccount("Saving", ((Login_Customer) LoginManager.getLogin("steve")), 1000);
