@@ -14,6 +14,9 @@ import java.util.HashMap;
  * iterating through the ArrayList and first checking the quantities, and then the prices.
  * If no viable offers, it gets added to its HashMap.
  *
+ * TODO:
+ * - After successful trade, remove money from one person's account and add to other
+ * - Add inventory functionality
  */
 
 public class TradingSystem {
@@ -23,22 +26,58 @@ public class TradingSystem {
     }
 
     public void addSellOffer(String item, TradeOffer tradeoffer) {
+        //If equal or better buy offer exists, make trade
         if(buy_offers.containsKey(item)){
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
             Login user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
             for(int i = 0; i < offers.size(); i++){
-                if(offers.get(i).getQuantity() == quantity && offers.get(i).getPrice() > price){
+                int other_quantity = offers.get(i).getQuantity();
+                int other_price = offers.get(i).getPrice();
+                Login other_user = offers.get(i).getTradeUser();
+                if(other_quantity == quantity && other_price > price){
+
                     System.out.println("Offer made");
                 }
             }
 
         }
-        //sell_offers.put(item, tradeoffer);
+        //Else check for key existence, append trade offer to list.
+        else {
+            if(!sell_offers.containsKey(item)){
+                sell_offers.put(item, new ArrayList<>());
+            }
+            sell_offers.get(item).add(tradeoffer);
+        }
+
     }
 
     public void addBuyOffer(String item, TradeOffer tradeoffer) {
-        //buy_offers.put(item, tradeoffer);
+        //If equal or better sell offer exists, make trade
+        if(sell_offers.containsKey(item)){
+            int quantity = tradeoffer.getQuantity();
+            int price = tradeoffer.getPrice();
+            Login user = tradeoffer.getTradeUser();
+            ArrayList<TradeOffer> offers = sell_offers.get(item);
+            for(int i = 0; i < offers.size(); i++){
+                int other_quantity = offers.get(i).getQuantity();
+                int other_price = offers.get(i).getPrice();
+                Login other_user = offers.get(i).getTradeUser();
+                if(other_quantity == quantity && other_price < price){
+                    System.out.println("Offer made");
+                }
+            }
+
+        }
+        //Else check for key existence, append trade offer to list.
+        else {
+            if(!buy_offers.containsKey(item)){
+                buy_offers.put(item, new ArrayList<>());
+            }
+            buy_offers.get(item).add(tradeoffer);
+        }
+
     }
+
 }
