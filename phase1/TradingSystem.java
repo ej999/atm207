@@ -16,7 +16,11 @@ import java.util.HashMap;
  *
  * TODO:
  * - After successful trade, remove money from one person's account and add to other
- * - Add inventory functionality
+ * - Add inventory functionality to users
+ * - Cumulative offers
+ * - Commission fee for bank
+ * - Add forex functionality
+ * - Add classes and sub-classes of items that can be traded (precious metals, jewels, foreign exchange)
  */
 
 public class TradingSystem {
