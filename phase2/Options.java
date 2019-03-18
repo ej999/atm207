@@ -40,9 +40,6 @@ class Options {
         }
     }
 
-    /**
-     * Create available options for the logged-in user.
-     */
     private void createOptions() {
         if (loginUser instanceof Login_Employee_BankManager) {
             options.put("Read alerts", new Thread(this::readAlertPrompt));
@@ -99,9 +96,6 @@ class Options {
         }
     }
 
-    /**
-     * Display available options to the logged-in user.
-     */
     private void displayOptions() {
         if (helped) {
             System.out.println("\nIs there anything we can help you?");
@@ -117,9 +111,6 @@ class Options {
         helped = true;
     }
 
-    /**
-     * Allow logged-in user to select available options.
-     */
     private void selectOptions() {
         Scanner test = new Scanner(System.in);
         System.out.print("Please enter the corresponding number: ");
@@ -223,9 +214,6 @@ class Options {
                 + fifties + " 50-dollar-bill are successfully restocked. ");
     }
 
-    /**
-     * logs out the user and backs up the users data
-     */
     private void logoutPrompt() {
         //Every time the user logs out, the LoginManager's contents will be serialized and saved.
         LoginManagerBackup backUp = new LoginManagerBackup();
@@ -318,9 +306,7 @@ class Options {
         }
     }
 
-    /**
-     * sets a new password
-     */
+
     private void setPasswordPrompt() {
         System.out.print("\nPlease enter a new password: ");
         Scanner reader = new Scanner(System.in);

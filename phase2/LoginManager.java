@@ -14,26 +14,17 @@ final class LoginManager {
     private LoginManager() {
     }
 
-    /**
-     * Add a login account.
-     */
     static void addLogin(Login user) {
         // Username should be unique.
         login_map.putIfAbsent(user.getUsername(), user);
 
     }
 
-    /**
-     * Get a Login account by its username.
-     */
     static Login getLogin(String username) {
         return login_map.get(username);
     }
 
 
-    /**
-     * Check whether the login account exists.
-     */
     static boolean checkLoginExistence(String username) {
         Login l = login_map.get(username);
 

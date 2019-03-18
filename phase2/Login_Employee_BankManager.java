@@ -71,9 +71,6 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
 
     }
 
-    /**
-     * Create an account for a Customer.
-     */
     void addAccount(String accountType, Login_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
         Account newAccount = null;
 
@@ -117,9 +114,6 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
         this.addAccount(accountType, username, 0);
     }
 
-    /**
-     * Allow BankManger to read alerts.
-     */
     void readAlerts() {
         BufferedReader reader;
         try {
