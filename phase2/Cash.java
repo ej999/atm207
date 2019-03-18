@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -167,4 +168,22 @@ final class Cash {
         bills.put("five", bills.get("five") + fiveWithdrawn);
 
     }
+
+    private static ArrayList<Integer> getDenominator(double amount) {
+        double remainder = amount;
+
+        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
+        remainder -= fiftyWithdrawn * 50;
+
+        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
+        remainder -= twentyWithdrawn * 20;
+
+        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
+        remainder -= tenWithdrawn * 10;
+
+        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
+
+        return new ArrayList<>(Arrays.asList(fiftyWithdrawn, twentyWithdrawn, tenWithdrawn, fiveWithdrawn));
+    }
+
 }
