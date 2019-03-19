@@ -4,47 +4,8 @@ import java.io.Serializable;
 
 public class Login_Employee_Teller extends Login_Employee implements Serializable {
 
-    private final ATMTime myATM;
-
     Login_Employee_Teller(String username, String password) {
         super(username, password, "BankTeller");
-        myATM = new ATMTime();
-
-    }
-
-    void addAccount(String accountType, Login_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
-        Account newAccount = null;
-
-        if (accountType == null) {
-            System.out.println("Invalid account type. Account is not created.");
-        } else {
-            switch (accountType) {
-                case "Chequing": {
-                    newAccount = new Account_Asset_Chequing(amount, username);
-                    break;
-                }
-                case "Saving": {
-                    newAccount = new Account_Asset_Saving(amount, username);
-                    myATM.addObserver((Account_Asset_Saving) newAccount);
-                    break;
-                }
-                case "CreditCard": {
-                    newAccount = new Account_Debt_CreditCard(amount, username);
-                    break;
-                }
-                case "LineOfCredit": {
-                    newAccount = new Account_Debt_LineOfCredit(amount, username);
-                    break;
-                }
-                default:
-                    System.out.println("Invalid account type. Account is not created.");
-            }
-        }
-
-        if (newAccount != null) {
-            username.addAccount(newAccount);
-            System.out.println("A " + accountType + " account with $" + amount + " balance is successfully created for " + username.getUsername() + ". ");
-        }
 
     }
 
