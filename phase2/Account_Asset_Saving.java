@@ -12,6 +12,10 @@ class Account_Asset_Saving extends Account_Asset implements Observer, Account_Tr
         super(balance, owner);
     }
 
+    Account_Asset_Saving(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     @Override
     void withdraw(double withdrawalAmount) {
         super.withdraw(withdrawalAmount, (balance - withdrawalAmount) >= 0);

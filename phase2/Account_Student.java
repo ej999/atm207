@@ -11,6 +11,10 @@ abstract class Account_Student extends Account implements Account_Transferable {
         this.transactions = 0;
     }
 
+    Account_Student(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
                 Cash.isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);

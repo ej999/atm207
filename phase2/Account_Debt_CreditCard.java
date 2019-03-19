@@ -12,6 +12,10 @@ class Account_Debt_CreditCard extends Account_Debt {
         super(balance, owner);
     }
 
+    Account_Debt_CreditCard(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     @Override
     public String toString() {
         String mostRecentTransactionString;

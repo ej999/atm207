@@ -19,6 +19,10 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         super(balance, owner);
     }
 
+    Account_Debt_LineOfCredit(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     /**
      * Pay a bill by transferring money to a non-user's account
      *

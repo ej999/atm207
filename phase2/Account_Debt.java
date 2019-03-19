@@ -10,6 +10,10 @@ abstract class Account_Debt extends Account {
         super(owner);
     }
 
+    Account_Debt(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     @Override
     double getBalance() {
         return -balance;

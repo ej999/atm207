@@ -9,6 +9,10 @@ class Account_Asset_Chequing extends Account_Asset implements Account_Transferab
         super(balance, owner);
     }
 
+    Account_Asset_Chequing(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     @Override
     void withdraw(double withdrawalAmount) {
         super.withdraw(withdrawalAmount, balance > 0 & (balance - withdrawalAmount >= -100));

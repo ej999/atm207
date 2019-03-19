@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -24,17 +25,27 @@ abstract class Account implements Serializable {
             put("Account", null);
         }
     };
-    private final SystemUser_Customer owner;
+    // An array of account holders
+    private final ArrayList<SystemUser_Customer> owners = new ArrayList<>();
     double balance;
 
     Account(double balance, SystemUser_Customer owner) {
         this.balance = balance;
-        this.owner = owner;
+        this.owners.add(owner);
         this.dateOfCreation = new Date();
     }
 
     Account(SystemUser_Customer owner) {
         this(0, owner);
+    }
+
+    Account(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        this(balance, owner1);
+        this.owners.add(owner2);
+    }
+
+    Account(SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        this(0, owner1, owner2);
     }
 
     HashMap<String, Object> getMostRecentTransaction() {
@@ -86,7 +97,33 @@ abstract class Account implements Serializable {
     public abstract String toString();
 
     SystemUser_Customer getOwner() {
-        return owner;
+        // Assuming primary account holder
+        return owners.get(0);
+    }
+
+    /**
+     * Add another owner to this account.
+     * @param newOwner account holder
+     * @return true iff newOwner is distinct
+     */
+    public boolean addOwner(SystemUser_Customer newOwner) {
+        if (!owners.contains(newOwner)) {
+            owners.add(newOwner);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isJoint() {
+        return owners.size()>1;
+    }
+
+    public boolean removeOwner(SystemUser_Customer owner) {
+        if (isJoint() && owners.contains(owner)) {
+            owners.remove(owner);
+            return true;
+        }
+        return false;
     }
 
 }

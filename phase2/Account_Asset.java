@@ -15,6 +15,10 @@ abstract class Account_Asset extends Account implements Account_Transferable {
         super(balance, owner);
     }
 
+    Account_Asset(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
+    }
+
     /**
      * Pay a bill by transferring money to a non-user's account
      *
