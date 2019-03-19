@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * A customer's login account, with username, password, list of their accounts, primary chequing account, and net total.
+ * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
 class SystemUser_Customer extends SystemUser implements Serializable {
     private final ArrayList<Account> accounts;

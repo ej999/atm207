@@ -1,14 +1,27 @@
 package phase2;
 
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * An ATM that allows customers and employees to interact with their login accounts.
  * It will display options on the screen and the user will select an option by typing the corresponding number
  * on the keyboard.
  */
-class ATM extends Observable implements Serializable {
+
+//TODO ATM class no longer extends to Observable. Check how it affects the program.
+public class ATM extends Application implements Serializable {
     /**
      * Allow user to login by entering username and password.
      * <p>
@@ -34,11 +47,14 @@ class ATM extends Observable implements Serializable {
         return systemUser;
     }
 
+    Button button;
+
     /**
      * Preloaded bank manage account: {username: jen, password: 1234}
      * Preloaded customer account: {username: steve, password: 1234}
      */
     public static void main(String[] args) {
+
         // Load the back up of SystemUser account lists after restarting the ATM.
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManagerBackup backup = load_backup.returnFileBackup();
@@ -59,6 +75,9 @@ class ATM extends Observable implements Serializable {
             jen.addAccount("CreditCard", ((SystemUser_Customer) LoginManager.getLogin("steve")), 420);
         }
 
+        //Java FX
+        launch(args);
+
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -77,5 +96,33 @@ class ATM extends Observable implements Serializable {
             new Options(systemUser);
         }
 
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("CSC207 Banking Service");
+
+        button = new Button();
+        button.setText("Click me");
+        button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Login");
+            }
+        });
+
+        StackPane layout = new StackPane();
+        layout.setId("pane");
+        layout.getChildren().add(button);
+
+        Scene scene = new Scene(layout, 300, 250);
+
+        // Set background using css
+        scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
+
+
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
 }
