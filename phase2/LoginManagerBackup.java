@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 class LoginManagerBackup implements Serializable {
 
-    HashMap<String, Login> login_map;
+    HashMap<String, SystemUser> login_map;
     int deleted = 0;
 
     LoginManagerBackup() {
@@ -51,7 +51,7 @@ class LoginManagerBackup implements Serializable {
         }
     }
 
-    HashMap<String, Login> loadCustom(String filename) {
+    HashMap<String, SystemUser> loadCustom(String filename) {
         try {
             FileInputStream file = new FileInputStream("phase1/" + filename + ".txt");
             ObjectInputStream object = new ObjectInputStream(file);

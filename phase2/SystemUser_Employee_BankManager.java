@@ -11,11 +11,11 @@ import java.util.ArrayList;
 //Import ATM
 
 
-class Login_Employee_BankManager extends Login_Employee implements Serializable {
+class SystemUser_Employee_BankManager extends SystemUser_Employee implements Serializable {
 
 
-    Login_Employee_BankManager(String username, String password) {
-        super(username, password, "BankManager");
+    SystemUser_Employee_BankManager(String username, String password) {
+        super(username, password);
     }
 
     /**
@@ -44,22 +44,22 @@ class Login_Employee_BankManager extends Login_Employee implements Serializable 
     void createLogin(String account_type, String username, String password) {
         switch (account_type) {
             case "Customer": {
-                Login_Customer newUser = new Login_Customer(username, password);
+                SystemUser_Customer newUser = new SystemUser_Customer(username, password);
 
                 // Username should be unique.
                 if (LoginManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. Login account is not created.");
+                    System.out.println("Username already exists. SystemUser account is not created.");
                 } else {
                     LoginManager.addLogin(newUser);
                     System.out.println("A customer account with username, " + username + ", is successfully created.");
                 }
             }
             case "Teller": {
-                Login_Employee_Teller newTeller = new Login_Employee_Teller(username, password);
+                SystemUser_Employee_Teller newTeller = new SystemUser_Employee_Teller(username, password);
 
                 // Username should be unique.
                 if (LoginManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. Login account is not created.");
+                    System.out.println("Username already exists. SystemUser account is not created.");
                 } else {
                     LoginManager.addLogin(newTeller);
                     System.out.println("A teller account with username, " + username + ", is successfully created.");

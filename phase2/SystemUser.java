@@ -3,19 +3,17 @@ package phase2;
 import java.io.Serializable;
 
 /**
- * Login account, with username, password, login type on an ATM.
+ * SystemUser account, with username, password, login type on an ATM.
  */
-abstract class Login implements Serializable {
-    private final String loginType;
+abstract class SystemUser implements Serializable {
     private final String username;
     private String password;
     //TODO: any login user (e.g. employees) should have accounts, not just customers
 
 
-    Login(String username, String password, String loginType) {
+    SystemUser(String username, String password) {
         this.username = username;
         this.password = password;
-        this.loginType = loginType;
     }
 
     String getUsername() {
@@ -34,9 +32,5 @@ abstract class Login implements Serializable {
             password = p;
             System.out.println("Password is set successfully.");
         }
-    }
-
-    String getLoginType() {
-        return loginType;
     }
 }

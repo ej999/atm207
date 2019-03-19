@@ -7,36 +7,36 @@ import java.util.HashMap;
  */
 final class LoginManager {
     /**
-     * A mapping of username to Login.
+     * A mapping of username to SystemUser.
      */
-    static HashMap<String, Login> login_map = new HashMap<>();
+    static HashMap<String, SystemUser> login_map = new HashMap<>();
 
     private LoginManager() {
     }
 
-    static void addLogin(Login user) {
+    static void addLogin(SystemUser user) {
         // Username should be unique.
         login_map.putIfAbsent(user.getUsername(), user);
 
     }
 
-    static Login getLogin(String username) {
+    static SystemUser getLogin(String username) {
         return login_map.get(username);
     }
 
 
     static boolean checkLoginExistence(String username) {
-        Login l = login_map.get(username);
+        SystemUser l = login_map.get(username);
 
         return l != null;
     }
 
     /**
      * Verify if both username and password are valid.
-     * Return Login user if valid, otherwise return null.
+     * Return SystemUser user if valid, otherwise return null.
      */
-    static Login verifyLogin(String u, String p) {
-        Login l = login_map.get(u);
+    static SystemUser verifyLogin(String u, String p) {
+        SystemUser l = login_map.get(u);
         // Username exists.
         if (l != null && l.getPassword().equals(p)) {
             return getLogin(u);

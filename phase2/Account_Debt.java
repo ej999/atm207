@@ -2,11 +2,11 @@ package phase2;
 
 abstract class Account_Debt extends Account {
 
-    Account_Debt(double balance, Login owner) {
+    Account_Debt(double balance, SystemUser_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Debt(Login owner) {
+    Account_Debt(SystemUser_Customer owner) {
         super(owner);
     }
 

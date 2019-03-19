@@ -7,13 +7,13 @@ import java.util.Date;
 /**
  * A customer's login account, with username, password, list of their accounts, primary chequing account, and net total.
  */
-class Login_Customer extends Login implements Serializable {
+class SystemUser_Customer extends SystemUser implements Serializable {
     private final ArrayList<Account> accounts;
     private Account primary;
 
 
-    Login_Customer(String username, String password) {
-        super(username, password, "Customer");
+    SystemUser_Customer(String username, String password) {
+        super(username, password);
         this.accounts = new ArrayList<>();
     }
 

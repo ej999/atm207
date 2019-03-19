@@ -3,7 +3,7 @@ package phase2;
 public final class AccountFactory {
     private static ATMTime myATM = new ATMTime();
 
-    public static Account createAccount(String accountType, Login owner, double initialAmount) {
+    public static Account createAccount(String accountType, SystemUser_Customer owner, double initialAmount) {
 
         if(accountType == null){
             System.out.println("Invalid account type. Account cannot be created.");

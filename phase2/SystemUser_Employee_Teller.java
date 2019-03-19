@@ -2,10 +2,10 @@ package phase2;
 
 import java.io.Serializable;
 
-public class Login_Employee_Teller extends Login_Employee implements Serializable {
+public class SystemUser_Employee_Teller extends SystemUser_Employee implements Serializable {
 
-    Login_Employee_Teller(String username, String password) {
-        super(username, password, "BankTeller");
+    SystemUser_Employee_Teller(String username, String password) {
+        super(username, password);
 
     }
 
@@ -16,7 +16,7 @@ public class Login_Employee_Teller extends Login_Employee implements Serializabl
 //    /**
 //     * Create an account for a Customer. Amount is not initialized here.
 //     */
-//    void addAccount(String accountType, Login_Customer username) {
+//    void addAccount(String accountType, SystemUser_Customer username) {
 //        this.addAccount(accountType, username, 0);
 //    }
 //

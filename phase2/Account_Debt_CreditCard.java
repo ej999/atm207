@@ -4,11 +4,11 @@ class Account_Debt_CreditCard extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_CreditCard(Login owner) {
+    Account_Debt_CreditCard(SystemUser_Customer owner) {
         super(owner);
     }
 
-    Account_Debt_CreditCard(double balance, Login owner) {
+    Account_Debt_CreditCard(double balance, SystemUser_Customer owner) {
         super(balance, owner);
     }
 
