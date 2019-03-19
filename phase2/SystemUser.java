@@ -3,7 +3,7 @@ package phase2;
 import java.io.Serializable;
 
 /**
- * SystemUser account, with username, password, login type on an ATM.
+ * SystemUser with username and password.
  */
 abstract class SystemUser implements Serializable {
     private final String username;
