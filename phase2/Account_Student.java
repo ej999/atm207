@@ -2,6 +2,7 @@ package phase2;
 
 abstract class Account_Student extends Account implements Account_Transferable {
     int transactions;
+    int maxTransactions;
 
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
@@ -12,7 +13,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount) && (transactions < 20);
+                Cash.isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     /**
@@ -29,6 +30,9 @@ abstract class Account_Student extends Account implements Account_Transferable {
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
         }
     }
+    void setMaxTransactions(int transactionsAmount) {
+        maxTransactions = transactionsAmount;
+    }
 
     @Override
     void undoWithdrawal(double withdrawalAmount) {
@@ -39,7 +43,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
 
     @Override
     void deposit(double depositAmount) {
-        if ((depositAmount > 0) && (transactions < 20)) {
+        if ((depositAmount > 0) && (transactions < maxTransactions)) {
             balance += depositAmount;
             transactions += 1;
             updateMostRecentTransaction("Deposit", depositAmount, null);
@@ -106,7 +110,8 @@ abstract class Account_Student extends Account implements Account_Transferable {
     }
 
     private boolean validTransfer(double transferAmount, SystemUser_Customer user, Account account) {
-        return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) && (transactions < 20);
+        return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) &&
+                (transactions < maxTransactions);
     }
 
     @Override
