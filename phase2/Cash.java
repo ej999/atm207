@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ final class Cash {
     }
 
     /**
+     * //TODO look into this
      * Send an alert to alerts.txt iff isAmountBelowTwenty
      */
     static private void checkDenom() {
@@ -116,57 +118,32 @@ final class Cash {
     /**
      * Cash withdrawal. The number of different bills are used in
      * withdrawal depending on the withdrawal amount and the inventory.
-     * Update quantity of denominations.
+     *
+     * TODO
      */
     static void cashWithdrawal(double amount) {
-        double remainder = amount;
+        ArrayList<Integer> denominator = getDenominator(amount);
 
-        // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
-        // specific bill that needed to be withdrawn or the inventory of that bill.
-        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
-        bills.put("fifty", bills.get("fifty") - fiftyWithdrawn);
-        remainder -= fiftyWithdrawn * 50;
+        bills.put("fifty", bills.get("fifty") - denominator.get(0));
 
-        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
-        bills.put("twenty", bills.get("twenty") - twentyWithdrawn);
-        remainder -= twentyWithdrawn * 20;
+        bills.put("twenty", bills.get("twenty") - denominator.get(1));
 
-        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
-        bills.put("ten", bills.get("ten") - tenWithdrawn);
-        remainder -= tenWithdrawn * 10;
+        bills.put("ten", bills.get("ten") - denominator.get(2));
 
-        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-        bills.put("five", bills.get("five") - fiveWithdrawn);
+        bills.put("five", bills.get("five") - denominator.get(3));
 
         checkDenom();
-        int totalAmount = fiftyWithdrawn * 50 + twentyWithdrawn * 20 + tenWithdrawn * 10 + fiveWithdrawn * 5;
-        System.out.println("\nTotal amount of $" + totalAmount + ": " + fiftyWithdrawn + " fifty-dollar bills, " +
-                twentyWithdrawn + " twenty-dollar bills, " + tenWithdrawn + " ten-dollar bills, " + fiveWithdrawn +
+        int totalAmount = denominator.get(0) * 50 + denominator.get(1) * 20 + denominator.get(2) * 10 + denominator.get(3) * 5;
+        //TODO
+        System.out.println("\nTotal amount of $" + totalAmount + ": " + denominator.get(0) + " fifty-dollar bills, " +
+                denominator.get(1) + " twenty-dollar bills, " + denominator.get(2) + " ten-dollar bills, " + denominator.get(3) +
                 " five-dollar bills have be withdrawn. ");
         System.out.println("Please note that the actual withdrawal amount may be differ " +
                 "due to the fact that five-dollar note is the lowest denomination");
     }
 
     static void undoCashWithdrawal(double amount) {
-        double remainder = amount;
-
-        // The number of a specific bill withdrawn should be the smaller integer of either the amount of the
-        // specific bill that needed to be withdrawn or the inventory of that bill.
-        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
-        bills.put("fifty", bills.get("fifty") + fiftyWithdrawn);
-        remainder -= fiftyWithdrawn * 50;
-
-        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
-        bills.put("twenty", bills.get("twenty") + twentyWithdrawn);
-        remainder -= twentyWithdrawn * 20;
-
-        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
-        bills.put("ten", bills.get("ten") + tenWithdrawn);
-        remainder -= tenWithdrawn * 10;
-
-        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-        bills.put("five", bills.get("five") + fiveWithdrawn);
-
+        cashWithdrawal(-amount);
     }
 
     private static ArrayList<Integer> getDenominator(double amount) {
