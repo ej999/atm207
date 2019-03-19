@@ -9,6 +9,7 @@ abstract class Login implements Serializable {
     private final String loginType;
     private final String username;
     private String password;
+    //TODO: any login user (e.g. employees) should have accounts, not just customers
 
 
     Login(String username, String password, String loginType) {

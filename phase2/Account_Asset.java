@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 abstract class Account_Asset extends Account implements Account_Transferable {
 
-    Account_Asset(double balance, Login_Customer owner) {
+    Account_Asset(double balance, Login owner) {
         super(balance, owner);
     }
 
@@ -97,7 +97,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, Login_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Login user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
             if (account instanceof Account_Asset) {
@@ -125,7 +125,8 @@ abstract class Account_Asset extends Account implements Account_Transferable {
 
     }
 
-    private boolean validTransfer(double transferAmount, Login_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, Login user, Account account) {
+        //TODO: any login user should have a hasAccount method
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
     }
 

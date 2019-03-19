@@ -24,16 +24,16 @@ abstract class Account implements Serializable {
             put("Account", null);
         }
     };
-    private final Login_Customer owner;
+    private final Login owner;
     double balance;
 
-    Account(double balance, Login_Customer owner) {
+    Account(double balance, Login owner) {
         this.balance = balance;
         this.owner = owner;
         this.dateOfCreation = new Date();
     }
 
-    Account(Login_Customer owner) {
+    Account(Login owner) {
         this(0, owner);
     }
 
@@ -85,7 +85,7 @@ abstract class Account implements Serializable {
     @Override
     public abstract String toString();
 
-    Login_Customer getOwner() {
+    Login getOwner() {
         return owner;
     }
 
