@@ -2,6 +2,8 @@ package phase2;
 
 abstract class Account_Debt extends Account {
 
+    static final double DEBT_CAPACITY = 10000;
+
     Account_Debt(double balance, SystemUser_Customer owner) {
         super(balance, owner);
     }
