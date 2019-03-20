@@ -21,9 +21,11 @@ abstract class Account_Debt extends Account {
         return -balance;
     }
 
-    private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount);
+    boolean validWithdrawal(double withdrawalAmount) {
+        return withdrawalAmount > 0 &&
+                withdrawalAmount % 5 == 0 &&
+                Cash.isThereEnoughBills(withdrawalAmount) &&
+                balance < DEBT_CAPACITY;
     }
 
     /**

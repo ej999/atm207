@@ -93,7 +93,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
     }
 
     private boolean validTransfer(double transferAmount, SystemUser_Customer user, Account account) {
-        return transferAmount > 0 && user.hasAccount(account);
+        return validWithdrawal(transferAmount) && user.hasAccount(account);
     }
 
     @Override
