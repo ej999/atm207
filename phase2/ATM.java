@@ -121,8 +121,29 @@ public class ATM extends Application implements Serializable {
 
         Tutorial: https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
          */
+
+        //TODO: How to make gui work with Options class? MVC?
         window = primaryStage;
         window.setTitle("CSC207 Banking Services");
+
+        Button button1 = new Button("Read alerts");
+        Button button2 = new Button("Create a login for a user");
+        Button button3 = new Button("Create a bank account for a user");
+        Button button4 = new Button("Restock the ATM");
+        Button button5 = new Button("Undo the most recent transaction on a user's account");
+        Button button6 = new Button("Change password");
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+
+        gridPane.add(button1, 0, 0, 1, 1);
+        gridPane.add(button2, 1, 0, 1, 1);
+        gridPane.add(button3, 2, 0, 1, 1);
+        gridPane.add(button4, 0, 1, 1, 1);
+        gridPane.add(button5, 1, 1, 1, 1);
+        gridPane.add(button6, 2, 1, 1, 1);
+
+        Scene scene2 = new Scene(gridPane, 300, 275);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -146,6 +167,7 @@ public class ATM extends Application implements Serializable {
             public void handle(ActionEvent event) {
                 actionTarget.setFill(Color.FIREBRICK);
                 actionTarget.setText("Sign in button pressed");
+                window.setScene(scene2);
             }
         });
 
