@@ -3,11 +3,22 @@ package phase2;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import javafx.scene.text.Text;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +33,9 @@ import java.util.Scanner;
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application implements Serializable {
+    private Button button;
+    private Stage window;
+
     /**
      * Allow user to login by entering username and password.
      * <p>
@@ -46,8 +60,6 @@ public class ATM extends Application implements Serializable {
         System.out.println("\nSystemUser success. Hi " + systemUser.getUsername() + "!");
         return systemUser;
     }
-
-    Button button;
 
     /**
      * Preloaded bank manage account: {username: jen, password: 1234}
@@ -75,7 +87,7 @@ public class ATM extends Application implements Serializable {
             jen.addAccount("CreditCard", ((SystemUser_Customer) LoginManager.getLogin("steve")), 420);
         }
 
-        //Java FX
+        //Java FX -> invoke start method
         launch(args);
 
 
@@ -100,29 +112,88 @@ public class ATM extends Application implements Serializable {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("CSC207 Banking Service");
+        /*
+        A bit of terminology
+        stage - window
+        scene - content inside window
+        primaryStage - main window
+        layout - how everything's arranged on screen
 
-        button = new Button();
-        button.setText("Click me");
-        button.setOnAction(new EventHandler<ActionEvent>() {
+        Tutorial: https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
+         */
+        window = primaryStage;
+        window.setTitle("CSC207 Banking Services");
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setPadding(new Insets(25,25,25,25));
+
+        // manage the spacing between rows and cols
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        Button btn = new Button("Sign in");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(btn);
+        grid.add(hbBtn,1,4);
+
+        final Text actionTarget = new Text();
+        grid.add(actionTarget,1,6);
+
+        btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Login");
+                actionTarget.setFill(Color.FIREBRICK);
+                actionTarget.setText("Sign in button pressed");
             }
         });
 
-        StackPane layout = new StackPane();
-        layout.setId("pane");
-        layout.getChildren().add(button);
+        Text scenetitle = new Text("Welcome");
+        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid.add(scenetitle, 0,0,2,1);
 
-        Scene scene = new Scene(layout, 300, 250);
+        Label userName = new Label("Username:");
+        grid.add(userName,0,1);
 
-        // Set background using css
-        scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
+        TextField userTextField = new TextField();
+        grid.add(userTextField,1,1);
 
+        Label pw = new Label("Password:");
+        grid.add(pw,0,2);
 
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
+        PasswordField pwBox = new PasswordField();
+        grid.add(pwBox,1,2);
+
+//        grid.setGridLinesVisible(true);
+
+        Scene scene = new Scene(grid, 300, 275);
+
+        window.setScene(scene);
+        window.setResizable(false);
+        window.show();
+
+//        button = new Button();
+//        button.setText("Click me");
+//        button.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                System.out.println("Login");
+//            }
+//        });
+//
+//        StackPane layout = new StackPane();
+//        layout.setId("pane");
+//        layout.getChildren().add(button);
+//
+//        Scene scene = new Scene(layout, 300, 250);
+//
+//        // Set background using css
+//        scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
+//
+//
+//        primaryStage.setScene(scene);
+//        primaryStage.setResizable(false);
+//        primaryStage.show();
     }
 }

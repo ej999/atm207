@@ -10,13 +10,14 @@ import java.util.Date;
 class SystemUser_Customer extends SystemUser implements Serializable {
     private final ArrayList<Account> accounts;
     private Account primary;
-    private int age;
+    //TODO: personal details
+//    private int age;
 
 
-    SystemUser_Customer(String username, String password, int age) {
+    SystemUser_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
-        this.age = age;
+//        this.age = age;
     }
 
     /**
@@ -104,7 +105,7 @@ class SystemUser_Customer extends SystemUser implements Serializable {
         return primary;
     }
 
-    int getAge() {return age;}
+//    int getAge() {return age;}
 
     void setPrimary(Account primary) {
         if (primary instanceof Account_Asset_Chequing) {
