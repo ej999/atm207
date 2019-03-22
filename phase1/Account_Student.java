@@ -3,7 +3,6 @@ package phase1;
 abstract class Account_Student extends Account implements Account_Transferable {
     public int transactions;
     // Transactions, student account has maximum 20 transfers that they can have
-    // TODO: Interest, age, email
     Account_Student(double balance, Login_Customer owner) {
         super(balance, owner);
         this.transactions = 0;

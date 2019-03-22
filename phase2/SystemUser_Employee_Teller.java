@@ -1,0 +1,40 @@
+package phase2;
+
+import java.io.Serializable;
+
+public class SystemUser_Employee_Teller extends SystemUser_Employee implements Serializable {
+
+    SystemUser_Employee_Teller(String username, String password) {
+        super(username, password);
+
+    }
+
+//    void undoMostRecentTransaction(Account account) {
+//        account.undoMostRecentTransaction();
+//    }
+//
+//    /**
+//     * Create an account for a Customer. Amount is not initialized here.
+//     */
+//    void addAccount(String accountType, SystemUser_Customer username) {
+//        this.addAccount(accountType, username, 0);
+//    }
+//
+//    /**
+//     * Allow BankManger to read alerts.
+//     */
+//    void readAlerts() {
+//        BufferedReader reader;
+//        try {
+//            reader = new BufferedReader(new FileReader("phase1/alerts.txt"));
+//            String alert = reader.readLine();
+//            while (alert != null) {
+//                System.out.println(alert);
+//                alert = reader.readLine();
+//            }
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+}

@@ -3,9 +3,9 @@ package phase2;
 public class TradeOffer {
     int quantity;
     int price;
-    Login tradeUser;
+    SystemUser tradeUser;
 
-    TradeOffer(int quantity, int price, Login tradeUser) {
+    TradeOffer(int quantity, int price, SystemUser tradeUser) {
         this.quantity = quantity;
         this.price = price;
         this.tradeUser = tradeUser;
@@ -19,7 +19,7 @@ public class TradeOffer {
         return this.price;
     }
 
-    public Login getTradeUser() {
+    public SystemUser getTradeUser() {
         return this.tradeUser;
     }
 }

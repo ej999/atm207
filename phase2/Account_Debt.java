@@ -2,12 +2,18 @@ package phase2;
 
 abstract class Account_Debt extends Account {
 
-    Account_Debt(double balance, Login_Customer owner) {
+    private static final double DEBT_CAPACITY = 10000;
+
+    Account_Debt(double balance, SystemUser_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Debt(Login_Customer owner) {
+    Account_Debt(SystemUser_Customer owner) {
         super(owner);
+    }
+
+    Account_Debt(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+        super(balance, owner1, owner2);
     }
 
     @Override
@@ -15,9 +21,12 @@ abstract class Account_Debt extends Account {
         return -balance;
     }
 
-    private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount);
+    // Withdrawal is valid only when amount
+    boolean validWithdrawal(double withdrawalAmount) {
+        return withdrawalAmount > 0 &&
+                withdrawalAmount % 5 == 0 &&
+                Cash.isThereEnoughBills(withdrawalAmount) &&
+                balance < DEBT_CAPACITY;
     }
 
     /**

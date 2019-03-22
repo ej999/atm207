@@ -26,7 +26,7 @@ public class TradingSystem {
         if (buy_offers.containsKey(item)) {
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            Login user = tradeoffer.getTradeUser();
+            SystemUser user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
             for (int i = 0; i < offers.size(); i++) {
                 if (offers.get(i).getQuantity() == quantity && offers.get(i).getPrice() > price) {
