@@ -4,17 +4,14 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * A class for handling cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
- * This is a utility/helper class.
+ * A utility class that handles cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
  */
 final class Cash {
-
     /**
      * Map denomination to quantity
      * Cash initially starts with fifty bills of every denomination
@@ -76,30 +73,24 @@ final class Cash {
     }
 
     /**
-     * return a List of cash that contains the number of bills that will be withdrawn
+     * return a List [fifty, twenty, ten, five] of cash that contains the number of bills that will be withdrawn
      * according to the withdrawal amount and the inventory.
-     * [fifty, twenty, ten, five]
      */
-    static private ArrayList<Integer> verifyCashWithdrawal(double amount) {
+    private static ArrayList<Integer> getDenominator(double amount) {
         double remainder = amount;
-        ArrayList<Integer> cashList = new ArrayList<>();
 
         int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
-        cashList.add(fiftyWithdrawn);
         remainder -= fiftyWithdrawn * 50;
 
         int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
-        cashList.add(twentyWithdrawn);
         remainder -= twentyWithdrawn * 20;
 
         int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
-        cashList.add(tenWithdrawn);
         remainder -= tenWithdrawn * 10;
 
         int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-        cashList.add(fiveWithdrawn);
 
-        return cashList;
+        return new ArrayList<>(Arrays.asList(fiftyWithdrawn, twentyWithdrawn, tenWithdrawn, fiveWithdrawn));
     }
 
     /**
@@ -109,7 +100,7 @@ final class Cash {
      * @return true iff there is enough bills for amount
      */
     static boolean isThereEnoughBills(double amount) {
-        ArrayList<Integer> numberOfBills = verifyCashWithdrawal(amount);
+        ArrayList<Integer> numberOfBills = getDenominator(amount);
         double total = numberOfBills.get(0) * 50 + numberOfBills.get(1) * 20 + numberOfBills.get(2) * 10 +
                 numberOfBills.get(3) * 5;
         return amount == total;
@@ -144,23 +135,6 @@ final class Cash {
 
     static void undoCashWithdrawal(double amount) {
         cashWithdrawal(-amount);
-    }
-
-    private static ArrayList<Integer> getDenominator(double amount) {
-        double remainder = amount;
-
-        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
-        remainder -= fiftyWithdrawn * 50;
-
-        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
-        remainder -= twentyWithdrawn * 20;
-
-        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
-        remainder -= tenWithdrawn * 10;
-
-        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-
-        return new ArrayList<>(Arrays.asList(fiftyWithdrawn, twentyWithdrawn, tenWithdrawn, fiveWithdrawn));
     }
 
 }

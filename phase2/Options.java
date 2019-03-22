@@ -355,12 +355,12 @@ class Options {
     }
 
     private void withdrawalPrompt() {
-        Account account = selectAccountPrompt((SystemUser_Customer) systemUser);
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter an amount: ");
-
         double amount = reader.nextDouble();
         double actualAmount = amount - amount % 5;
+
+        Account account = selectAccountPrompt((SystemUser_Customer) systemUser);
 
         account.withdraw(actualAmount);
 

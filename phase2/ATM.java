@@ -111,6 +111,7 @@ public class ATM extends Application implements Serializable {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Post.post();
         /*
         A bit of terminology
         stage - window
