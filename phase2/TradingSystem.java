@@ -1,4 +1,4 @@
-package phase2;
+package phase1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,32 +13,76 @@ import java.util.HashMap;
  * When an offer is added, the system first checks if there exists a viable offer in the other HashMap, by
  * iterating through the ArrayList and first checking the quantities, and then the prices.
  * If no viable offers, it gets added to its HashMap.
+ *
+ * TODO:
+ * - After successful trade, remove money from one person's account and add to other
+ * - Add inventory functionality to users
+ * - Cumulative offers
+ * - Commission fee for bank
+ * - Add forex functionality
+ * - Add classes and sub-classes of items that can be traded (precious metals, jewels, foreign exchange)
  */
 
 public class TradingSystem {
     HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
     HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
-
     TradingSystem() {
     }
 
     public void addSellOffer(String item, TradeOffer tradeoffer) {
-        if (buy_offers.containsKey(item)) {
+        //If equal or better buy offer exists, make trade
+        if(buy_offers.containsKey(item)){
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            SystemUser user = tradeoffer.getTradeUser();
+            Login_Customer user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
-            for (int i = 0; i < offers.size(); i++) {
-                if (offers.get(i).getQuantity() == quantity && offers.get(i).getPrice() > price) {
+            for(int i = 0; i < offers.size(); i++){
+                int other_quantity = offers.get(i).getQuantity();
+                int other_price = offers.get(i).getPrice();
+                Login other_user = offers.get(i).getTradeUser();
+                if(other_quantity == quantity && other_price > price){
+                    other_user
+
                     System.out.println("Offer made");
                 }
             }
 
         }
-        //sell_offers.put(item, tradeoffer);
+        //Else check for key existence, append trade offer to list.
+        else {
+            if(!sell_offers.containsKey(item)){
+                sell_offers.put(item, new ArrayList<>());
+            }
+            sell_offers.get(item).add(tradeoffer);
+        }
+
     }
 
     public void addBuyOffer(String item, TradeOffer tradeoffer) {
-        //buy_offers.put(item, tradeoffer);
+        //If equal or better sell offer exists, make trade
+        if(sell_offers.containsKey(item)){
+            int quantity = tradeoffer.getQuantity();
+            int price = tradeoffer.getPrice();
+            Login_Customer user = tradeoffer.getTradeUser();
+            ArrayList<TradeOffer> offers = sell_offers.get(item);
+            for(int i = 0; i < offers.size(); i++){
+                int other_quantity = offers.get(i).getQuantity();
+                int other_price = offers.get(i).getPrice();
+                Login other_user = offers.get(i).getTradeUser();
+                if(other_quantity == quantity && other_price < price){
+                    System.out.println("Offer made");
+                }
+            }
+
+        }
+        //Else check for key existence, append trade offer to list.
+        else {
+            if(!buy_offers.containsKey(item)){
+                buy_offers.put(item, new ArrayList<>());
+            }
+            buy_offers.get(item).add(tradeoffer);
+        }
+
     }
+
 }
