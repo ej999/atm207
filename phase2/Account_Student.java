@@ -1,19 +1,33 @@
 package phase2;
 
+import java.util.Observable;
+import java.util.Observer;
+
 abstract class Account_Student extends Account implements Account_Transferable {
     int transactions;
     int maxTransactions;
+    int transferLimit;
+    int transferTotal;
 
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
     Account_Student(double balance, SystemUser_Customer owner) {
         super(balance, owner);
         this.transactions = 0;
+        this.transferTotal = 0;
     }
 
     Account_Student(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
         super(balance, owner1, owner2);
     }
+
+    public void update(Observable o, Object arg) {
+        if ((boolean) arg) {
+            transferLimit = 0;
+            transactions = 0;
+        }
+    }
+
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
@@ -34,9 +48,24 @@ abstract class Account_Student extends Account implements Account_Transferable {
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
         }
     }
-    void setMaxTransactions(int transactionsAmount) {
+    /**
+     * Sets the monthly Transactions that a Student Account has.
+     *
+     * @param transactionsAmount the set amount of transactions
+     */
+    public void setMaxTransactions(int transactionsAmount) {
         maxTransactions = transactionsAmount;
     }
+
+    /**
+     * Sets the monthly amount that a Student Account has for allowance of transfers.
+     *
+     * @param transferLimitAmount the set amount of transfers
+     */
+     public void setTransferLimit(int transferLimitAmount) {
+        transferLimit = transferLimitAmount;
+    }
+
 
     @Override
     void undoWithdrawal(double withdrawalAmount) {
@@ -71,6 +100,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
+        transferTotal += transferAmount;
         return transferToAnotherUser(transferAmount, getOwner(), account);
 
     }
@@ -105,6 +135,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
     private void undoTransfer(double transferAmount, Account account) {
         balance += transferAmount;
         transactions -= 1;
+        transferTotal -= transferAmount;
         if (account instanceof Account_Asset) {
             account.balance -= transferAmount;
         } else {
@@ -115,7 +146,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
 
     private boolean validTransfer(double transferAmount, SystemUser_Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) &&
-                (transactions < maxTransactions);
+                (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
 
     @Override
@@ -126,5 +157,18 @@ abstract class Account_Student extends Account implements Account_Transferable {
                 getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
             undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
         }
+    }
+    public String toString() {
+        String mostRecentTransactionString;
+
+        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return "Student\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

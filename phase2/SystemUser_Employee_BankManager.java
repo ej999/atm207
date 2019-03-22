@@ -41,6 +41,19 @@ class SystemUser_Employee_BankManager extends SystemUser_Employee implements Ser
      * Only a bank manager can create and set the initial password for a user.
      * TODO: I think this method should be in LoginManager
      */
+
+    void setMaxTransactions(Account_Student account, int transactionsAmount) {
+        account.setMaxTransactions(transactionsAmount);
+    }
+
+    void setTransferLimit(Account_Student account, int transferLimitAmount) {
+        account.setTransferLimit(transferLimitAmount);
+    }
+
+    /**
+     * Only a bank manager can create and set the initial password for a user.
+     * TODO: I think this method should be in LoginManager
+     */
     void createLogin(String account_type, String username, String password) {
         switch (account_type) {
             case "Customer": {
