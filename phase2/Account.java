@@ -115,7 +115,7 @@ abstract class Account implements Serializable {
     }
 
     public boolean isJoint() {
-        return owners.size()>1;
+        return owners.size() > 1;
     }
 
     public boolean removeOwner(SystemUser_Customer owner) {

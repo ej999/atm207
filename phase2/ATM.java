@@ -12,13 +12,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javafx.scene.text.Text;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +42,7 @@ public class ATM extends Application implements Serializable {
      * enter username and password.
      */
     private static SystemUser loginPrompt() {
-        System.out.println("Welcome to CSC207 Banking Service.");
+        System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);
 

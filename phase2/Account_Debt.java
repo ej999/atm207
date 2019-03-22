@@ -2,7 +2,7 @@ package phase2;
 
 abstract class Account_Debt extends Account {
 
-    static final double DEBT_CAPACITY = 10000;
+    private static final double DEBT_CAPACITY = 10000;
 
     Account_Debt(double balance, SystemUser_Customer owner) {
         super(balance, owner);
@@ -21,6 +21,7 @@ abstract class Account_Debt extends Account {
         return -balance;
     }
 
+    // Withdrawal is valid only when amount
     boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 &&
                 withdrawalAmount % 5 == 0 &&
