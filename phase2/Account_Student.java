@@ -11,10 +11,11 @@ abstract class Account_Student extends Account implements Account_Transferable {
 
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
+    // Default 20 transactions, 250 transferTotal
     Account_Student(double balance, SystemUser_Customer owner) {
         super(balance, owner);
-        this.transactions = 0;
-        this.transferTotal = 0;
+        this.transactions = 20;
+        this.transferTotal = 250;
     }
 
     Account_Student(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
