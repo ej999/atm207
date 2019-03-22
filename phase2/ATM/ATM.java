@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;

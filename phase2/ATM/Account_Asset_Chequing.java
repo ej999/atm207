@@ -1,19 +1,21 @@
-package phase2;
+package ATM;
 
-class Account_Debt_CreditCard extends Account_Debt {
-    /**
-     * Balance is set to 0.00 as default if an initial balance is not provided.
-     */
-    Account_Debt_CreditCard(SystemUser_Customer owner) {
-        super(owner);
-    }
+/**
+ * A chequing account.
+ */
+class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
 
-    Account_Debt_CreditCard(double balance, SystemUser_Customer owner) {
+    Account_Asset_Chequing(double balance, SystemUser_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Debt_CreditCard(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Asset_Chequing(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
         super(balance, owner1, owner2);
+    }
+
+    @Override
+    void withdraw(double withdrawalAmount) {
+        super.withdraw(withdrawalAmount, balance > 0 & (balance - withdrawalAmount >= -100));
     }
 
     @Override
@@ -28,6 +30,6 @@ class Account_Debt_CreditCard extends Account_Debt {
             mostRecentTransactionString = "n/a";
         }
 
-        return "Credit Card\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Chequing\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

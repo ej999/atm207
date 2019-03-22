@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 public class AccountCreator {
 }

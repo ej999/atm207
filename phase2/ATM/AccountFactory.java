@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 public final class AccountFactory {
     private static ATMSystem myATM = new ATMSystem();
