@@ -1,7 +1,7 @@
 package phase2;
 
 public final class AccountFactory {
-    private static ATMTime myATM = new ATMTime();
+    private static ATMSystem myATM = new ATMSystem();
 
     public static Account createAccount(String accountType, SystemUser_Customer owner, double initialAmount) {
 

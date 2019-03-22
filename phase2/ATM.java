@@ -32,7 +32,6 @@ import java.util.Scanner;
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application implements Serializable {
-    private Button button;
     private Stage window;
 
     /**
@@ -99,7 +98,7 @@ public class ATM extends Application implements Serializable {
         //noinspection InfiniteLoopStatement
         while (true) {
             // Constantly checking if now is the start of the month.
-            now = new ATMTime().checkMonth(now);
+            now = new ATMSystem().checkMonth(now);
 
 
             // A login session.
@@ -111,7 +110,9 @@ public class ATM extends Application implements Serializable {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Post.post();
+        REST toMap = new REST();
+        toMap.retrieveData();
+        toMap.parseJson();
         /*
         A bit of terminology
         stage - window
