@@ -1,4 +1,4 @@
-package phase1;
+package phase2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.util.HashMap;
  * If no viable offers, it gets added to its HashMap.
  *
  * TODO:
- * - After successful trade, remove money from one person's account and add to other
+ * - After successful trade, remove money from one person's account and add to other. DONE
  * - Add inventory functionality to users
  * - Cumulative offers
  * - Commission fee for bank
@@ -34,16 +34,18 @@ public class TradingSystem {
         if(buy_offers.containsKey(item)){
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            Login_Customer user = tradeoffer.getTradeUser();
+            SystemUser_Customer  user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
             for(int i = 0; i < offers.size(); i++){
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
-                Login other_user = offers.get(i).getTradeUser();
+                SystemUser_Customer  other_user = offers.get(i).getTradeUser();
                 if(other_quantity == quantity && other_price > price){
-                    other_user
-
+                    user.getPrimary().deposit(other_price);
+                    other_user.getPrimary().withdraw(other_price);
                     System.out.println("Offer made");
+                    offers.remove(i);
+
                 }
             }
 
@@ -63,14 +65,18 @@ public class TradingSystem {
         if(sell_offers.containsKey(item)){
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            Login_Customer user = tradeoffer.getTradeUser();
+            SystemUser_Customer  user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = sell_offers.get(item);
             for(int i = 0; i < offers.size(); i++){
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
-                Login other_user = offers.get(i).getTradeUser();
+                SystemUser_Customer  other_user = offers.get(i).getTradeUser();
                 if(other_quantity == quantity && other_price < price){
+                    //Money will be exchanged.
+                    user.getPrimary().withdraw(other_price);
+                    other_user.getPrimary().deposit(other_price);
                     System.out.println("Offer made");
+                    offers.remove(i);
                 }
             }
 
