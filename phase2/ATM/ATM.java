@@ -30,6 +30,10 @@ import java.util.Scanner;
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application implements Serializable {
+    private Stage window;
+    private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
+    private SystemUser systemUser;
+    private boolean helped = false;
 
     /**
      * Allow user to login by entering username and password.
@@ -109,6 +113,9 @@ public class ATM extends Application implements Serializable {
     public void init() throws Exception {
         super.init();
         System.out.println("Inside init() method! Perform necessary initializations here.");
+        createBMOptionsScreen();
+        createTellerOptions();
+        createCustomerOptions();
     }
 
     @Override
@@ -138,71 +145,85 @@ public class ATM extends Application implements Serializable {
 
         Tutorial: https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
          */
+        window = primaryStage;
+        window.setTitle("CSC207 Banking Services");
 
-        /*
-        First display welcome screen
-        Then after user (be it customer or employee) logs in show options screen
-
-        Create helper methods to make this method smaller
-         */
-
-        primaryStage.setTitle("CSC207 Banking Services");
-
-        // The following creates the OPTIONS screen
-
-//        Stage bankManagerWindow = new Stage();
-//        bankManagerWindow.setTitle("Bank Manager");
-//
-//        // Options for bank manager
-//        Button button1 = new Button("Read alerts");
-//        Button button2 = new Button("Create login for a user");
-//        Button button3 = new Button("Create bank account for user");
-//        Button button4 = new Button("Restock ATM");
-//        Button button5 = new Button("Undo most recent transaction on a user's account");
-//        Button button6 = new Button("Change password");
-//        Button button7 = new Button("Load custom bank data");
-//        Button button8 = new Button("Clear all bank data");
-//        Button button9 = new Button("Logout");
-//
-//        // Then we need handlers for all nine buttons...
-//
-//
-//        GridPane gridPane = new GridPane();
-//        gridPane.setAlignment(Pos.CENTER);
-//        gridPane.setPadding(new Insets(10,10,10,10));
-//        gridPane.setVgap(10);
-//
-//        gridPane.add(button1, 0, 1);
-//        gridPane.add(button2, 0, 2);
-//        gridPane.add(button3, 0, 3);
-//        gridPane.add(button4, 0, 4);
-//        gridPane.add(button5, 0, 5);
-//        gridPane.add(button6, 0, 6);
-//        gridPane.add(button7, 0, 7);
-//        gridPane.add(button8, 0, 8);
-//        gridPane.add(button9, 0, 9);
-//
-//        Text message = new Text("How can we help you today?");
-//        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-//        gridPane.add(message, 0,0,2,1);
-//
-//        Scene optionsScreen = new Scene(gridPane, 300, 275);
-//
-//        bankManagerWindow.setScene(optionsScreen);
-//        bankManagerWindow.show();
-
-
-        /*
-        The following creates the WELCOME screen
-         */
         GridPane gridPane = createLoginFormPane();
         addUIControls(gridPane);
-        Scene welcomeScreen = new Scene(gridPane, 300, 275);
+        welcomeScreen = new Scene(gridPane, 300, 275);
 
-        primaryStage.setScene(welcomeScreen);
-        primaryStage.setResizable(false);
-        primaryStage.show();
+        window.setScene(welcomeScreen);
+        window.setResizable(false);
+        window.show();
 
+    }
+
+    private void createBMOptionsScreen() {
+        // Options for bank manager
+        Button button1 = new Button("Read alerts");
+        Button button2 = new Button("Create login for user");
+        Button button3 = new Button("Create bank account for user");
+        Button button4 = new Button("Restock ATM");
+        Button button5 = new Button("Undo transaction");
+        Button button6 = new Button("Change password");
+        Button button7 = new Button("Load custom bank data");
+        Button button8 = new Button("Clear all bank data");
+        Button button9 = new Button("Logout");
+
+        // TODO: Then we need handlers for all nine buttons...
+
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setPadding(new Insets(20,20,20,20));
+        gridPane.setVgap(10);
+
+        gridPane.add(button1, 0, 1);
+        gridPane.add(button2, 0, 2);
+        gridPane.add(button3, 0, 3);
+        gridPane.add(button4, 0, 4);
+        gridPane.add(button5, 0, 5);
+        gridPane.add(button6, 0, 6);
+        gridPane.add(button7, 0, 7);
+        gridPane.add(button8, 0, 8);
+        gridPane.add(button9, 0, 9);
+
+        Text message = new Text("How can we help you today?");
+        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        gridPane.add(message, 0,0,2,1);
+
+        BMOptions = new Scene(gridPane, 300, 450);
+    }
+
+    private void createTellerOptions() {
+        Button button1 = new Button("Read alerts");
+        Button button2 = new Button("Create bank account for user");
+        Button button3 = new Button("Change password");
+        Button button4 = new Button("Undo transaction");
+        Button button5 = new Button("Logout");
+
+        // TODO: Then we need handlers for all five buttons...
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setPadding(new Insets(20,20,20,20));
+        gridPane.setVgap(10);
+
+        gridPane.add(button1, 0, 1);
+        gridPane.add(button2, 0, 2);
+        gridPane.add(button3, 0, 3);
+        gridPane.add(button4, 0, 4);
+        gridPane.add(button5, 0, 5);
+
+        Text message = new Text("How can we help you today?");
+        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        gridPane.add(message, 0,0,2,1);
+
+        tellerOptions = new Scene(gridPane, 300, 300);
+    }
+
+    private void createCustomerOptions() {
+        // TODO
     }
 
     private GridPane createLoginFormPane() {
@@ -224,11 +245,13 @@ public class ATM extends Application implements Serializable {
         Label userName = new Label("Username:");
         grid.add(userName,0,1);
         TextField userTextField = new TextField();
+        userTextField.setPromptText("username");
         grid.add(userTextField,1,1);
 
         Label pw = new Label("Password:");
         grid.add(pw,0,2);
         PasswordField pwBox = new PasswordField();
+        pwBox.setPromptText("password");
         grid.add(pwBox,1,2);
 
         Button btn = new Button("Sign in");
@@ -252,7 +275,7 @@ public class ATM extends Application implements Serializable {
                 } else if (password.isEmpty()) {
                     actionTarget.setText("Please enter your password");
                 } else {
-                    SystemUser systemUser = LoginManager.verifyLogin(username, password);
+                    systemUser = LoginManager.verifyLogin(username, password);
 
                     if (systemUser == null) {
                         actionTarget.setText("Login attempt failed");
@@ -260,7 +283,13 @@ public class ATM extends Application implements Serializable {
                         showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                                 "Hi " + username);
 
-                        // TODO: set scene to options screen
+                        if (systemUser instanceof SystemUser_Employee_BankManager) {
+                            window.setScene(BMOptions);
+                        } else if (systemUser instanceof SystemUser_Employee_Teller) {
+                            window.setScene(tellerOptions);
+                        } else if (systemUser instanceof SystemUser_Customer) {
+                            window.setScene(customerOptions);
+                        }
                     }
                 }
             }
