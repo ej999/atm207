@@ -126,6 +126,8 @@ public class ATM extends Application implements Serializable {
         /*
         First display welcome screen
         Then after user (be it customer or employee) logs in show options screen
+
+        Create helper methods to make this method smaller
          */
 
 
@@ -134,25 +136,53 @@ public class ATM extends Application implements Serializable {
         window = primaryStage;
         window.setTitle("CSC207 Banking Services");
 
+        // The following creates the OPTIONS screen
+
+        Stage bankManagerWindow = new Stage();
+        bankManagerWindow.setTitle("Bank Manager");
+
+        // Options for bank manager
         Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create a login for a user");
-        Button button3 = new Button("Create a bank account for a user");
-        Button button4 = new Button("Restock the ATM");
-        Button button5 = new Button("Undo the most recent transaction on a user's account");
+        Button button2 = new Button("Create login for a user");
+        Button button3 = new Button("Create bank account for user");
+        Button button4 = new Button("Restock ATM");
+        Button button5 = new Button("Undo most recent transaction on a user's account");
         Button button6 = new Button("Change password");
+        Button button7 = new Button("Load custom bank data");
+        Button button8 = new Button("Clear all bank data");
+        Button button9 = new Button("Logout");
+
+        // Then we need handlers for all nine buttons...
+
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
+        gridPane.setPadding(new Insets(10,10,10,10));
+        gridPane.setVgap(10);
 
-        gridPane.add(button1, 0, 0, 1, 1);
-        gridPane.add(button2, 1, 0, 1, 1);
-        gridPane.add(button3, 2, 0, 1, 1);
-        gridPane.add(button4, 0, 1, 1, 1);
-        gridPane.add(button5, 1, 1, 1, 1);
-        gridPane.add(button6, 2, 1, 1, 1);
+        gridPane.add(button1, 0, 1);
+        gridPane.add(button2, 0, 2);
+        gridPane.add(button3, 0, 3);
+        gridPane.add(button4, 0, 4);
+        gridPane.add(button5, 0, 5);
+        gridPane.add(button6, 0, 6);
+        gridPane.add(button7, 0, 7);
+        gridPane.add(button8, 0, 8);
+        gridPane.add(button9, 0, 9);
 
-        Scene scene2 = new Scene(gridPane, 300, 275);
+        Text message = new Text("How can we help you today?");
+        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        gridPane.add(message, 0,0,2,1);
 
+        Scene optionsScreen = new Scene(gridPane, 300, 275);
+
+        bankManagerWindow.setScene(optionsScreen);
+        bankManagerWindow.show();
+
+
+        /*
+        The following creates the WELCOME screen
+         */
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25,25,25,25));
@@ -174,8 +204,10 @@ public class ATM extends Application implements Serializable {
             @Override
             public void handle(ActionEvent event) {
                 actionTarget.setFill(Color.FIREBRICK);
+                //TODO: Check if username and password exists in database
                 actionTarget.setText("Sign in button pressed");
-                window.setScene(scene2);
+                // If login info is valid, go to the next screen
+//                window.setScene(optionsScreen);
             }
         });
 
@@ -197,33 +229,12 @@ public class ATM extends Application implements Serializable {
 
 //        grid.setGridLinesVisible(true);
 
-        Scene scene = new Scene(grid, 300, 275);
+        Scene welcomeScreen = new Scene(grid, 300, 275);
 
-        window.setScene(scene);
+        window.setScene(welcomeScreen);
         window.setResizable(false);
         window.show();
 
-//        button = new Button();
-//        button.setText("Click me");
-//        button.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                System.out.println("Login");
-//            }
-//        });
-//
-//        StackPane layout = new StackPane();
-//        layout.setId("pane");
-//        layout.getChildren().add(button);
-//
-//        Scene scene = new Scene(layout, 300, 250);
-//
-//        // Set background using css
-//        scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
-//
-//
-//        primaryStage.setScene(scene);
-//        primaryStage.setResizable(false);
-//        primaryStage.show();
     }
+
 }
