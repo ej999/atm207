@@ -10,6 +10,7 @@ import java.util.Date;
 class SystemUser_Customer extends SystemUser implements Serializable {
     private final ArrayList<Account> accounts;
     private Account primary;
+    private Inventory goods = new Inventory();
     //TODO: personal details
 //    private int age;
 

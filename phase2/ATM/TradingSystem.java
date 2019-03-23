@@ -95,4 +95,25 @@ public class TradingSystem {
 
     }
 
+    public void removeOffer(String item, SystemUser_Customer user, boolean sell){
+        if(sell){
+            ArrayList<TradeOffer> offers = sell_offers.get(item);
+            for (int i = 0; i < offers.size(); i++){
+                if (offers.get(i).getTradeUser() == user){
+                    offers.remove(i);
+                    System.out.println("Sell offer removed.");
+                }
+            }
+        }
+        else {
+            ArrayList<TradeOffer> offers = buy_offers.get(item);
+            for (int i = 0; i < offers.size(); i++){
+                if (offers.get(i).getTradeUser() == user){
+                    offers.remove(i);
+                    System.out.println("Buy offer removed.");
+                }
+            }
+        }
+    }
+
 }
