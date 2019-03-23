@@ -6,10 +6,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -17,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -32,7 +30,6 @@ import java.util.Scanner;
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application implements Serializable {
-    private Stage window;
 
     /**
      * Allow user to login by entering username and password.
@@ -109,10 +106,29 @@ public class ATM extends Application implements Serializable {
     }
 
     @Override
+    public void init() throws Exception {
+        super.init();
+        System.out.println("Inside init() method! Perform necessary initializations here.");
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        System.out.println("Inside stop() method! Destroy resources. Perform Cleanup.");
+    }
+
+    /**
+     * Main entry point of a JavaFX application. This is where the user interface is created and made visible.
+     * @param primaryStage the main window
+     * @throws Exception
+     */
+    @Override
     public void start(Stage primaryStage) throws Exception {
+        //TODO: How to make gui work with Options class? MVC?
         REST toMap = new REST();
         toMap.retrieveData();
         toMap.parseJson();
+
         /*
         A bit of terminology
         stage - window
@@ -130,59 +146,66 @@ public class ATM extends Application implements Serializable {
         Create helper methods to make this method smaller
          */
 
-
-
-        //TODO: How to make gui work with Options class? MVC?
-        window = primaryStage;
-        window.setTitle("CSC207 Banking Services");
+        primaryStage.setTitle("CSC207 Banking Services");
 
         // The following creates the OPTIONS screen
 
-        Stage bankManagerWindow = new Stage();
-        bankManagerWindow.setTitle("Bank Manager");
-
-        // Options for bank manager
-        Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create login for a user");
-        Button button3 = new Button("Create bank account for user");
-        Button button4 = new Button("Restock ATM");
-        Button button5 = new Button("Undo most recent transaction on a user's account");
-        Button button6 = new Button("Change password");
-        Button button7 = new Button("Load custom bank data");
-        Button button8 = new Button("Clear all bank data");
-        Button button9 = new Button("Logout");
-
-        // Then we need handlers for all nine buttons...
-
-
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(10,10,10,10));
-        gridPane.setVgap(10);
-
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
-        gridPane.add(button6, 0, 6);
-        gridPane.add(button7, 0, 7);
-        gridPane.add(button8, 0, 8);
-        gridPane.add(button9, 0, 9);
-
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0,0,2,1);
-
-        Scene optionsScreen = new Scene(gridPane, 300, 275);
-
-        bankManagerWindow.setScene(optionsScreen);
-        bankManagerWindow.show();
+//        Stage bankManagerWindow = new Stage();
+//        bankManagerWindow.setTitle("Bank Manager");
+//
+//        // Options for bank manager
+//        Button button1 = new Button("Read alerts");
+//        Button button2 = new Button("Create login for a user");
+//        Button button3 = new Button("Create bank account for user");
+//        Button button4 = new Button("Restock ATM");
+//        Button button5 = new Button("Undo most recent transaction on a user's account");
+//        Button button6 = new Button("Change password");
+//        Button button7 = new Button("Load custom bank data");
+//        Button button8 = new Button("Clear all bank data");
+//        Button button9 = new Button("Logout");
+//
+//        // Then we need handlers for all nine buttons...
+//
+//
+//        GridPane gridPane = new GridPane();
+//        gridPane.setAlignment(Pos.CENTER);
+//        gridPane.setPadding(new Insets(10,10,10,10));
+//        gridPane.setVgap(10);
+//
+//        gridPane.add(button1, 0, 1);
+//        gridPane.add(button2, 0, 2);
+//        gridPane.add(button3, 0, 3);
+//        gridPane.add(button4, 0, 4);
+//        gridPane.add(button5, 0, 5);
+//        gridPane.add(button6, 0, 6);
+//        gridPane.add(button7, 0, 7);
+//        gridPane.add(button8, 0, 8);
+//        gridPane.add(button9, 0, 9);
+//
+//        Text message = new Text("How can we help you today?");
+//        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+//        gridPane.add(message, 0,0,2,1);
+//
+//        Scene optionsScreen = new Scene(gridPane, 300, 275);
+//
+//        bankManagerWindow.setScene(optionsScreen);
+//        bankManagerWindow.show();
 
 
         /*
         The following creates the WELCOME screen
          */
+        GridPane gridPane = createLoginFormPane();
+        addUIControls(gridPane);
+        Scene welcomeScreen = new Scene(gridPane, 300, 275);
+
+        primaryStage.setScene(welcomeScreen);
+        primaryStage.setResizable(false);
+        primaryStage.show();
+
+    }
+
+    private GridPane createLoginFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25,25,25,25));
@@ -190,6 +213,23 @@ public class ATM extends Application implements Serializable {
         // manage the spacing between rows and cols
         grid.setVgap(10);
         grid.setHgap(10);
+        return grid;
+    }
+
+    private void addUIControls(GridPane grid) {
+        Text scenetitle = new Text("Welcome");
+        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid.add(scenetitle, 0,0,2,1);
+
+        Label userName = new Label("Username:");
+        grid.add(userName,0,1);
+        TextField userTextField = new TextField();
+        grid.add(userTextField,1,1);
+
+        Label pw = new Label("Password:");
+        grid.add(pw,0,2);
+        PasswordField pwBox = new PasswordField();
+        grid.add(pwBox,1,2);
 
         Button btn = new Button("Sign in");
         HBox hbBtn = new HBox(10);
@@ -204,37 +244,37 @@ public class ATM extends Application implements Serializable {
             @Override
             public void handle(ActionEvent event) {
                 actionTarget.setFill(Color.FIREBRICK);
-                //TODO: Check if username and password exists in database
-                actionTarget.setText("Sign in button pressed");
-                // If login info is valid, go to the next screen
-//                window.setScene(optionsScreen);
+                String username = userTextField.getText();
+                String password = pwBox.getText();
+
+                if (username.isEmpty()) {
+                    actionTarget.setText("Please enter your username");
+                } else if (password.isEmpty()) {
+                    actionTarget.setText("Please enter your password");
+                } else {
+                    SystemUser systemUser = LoginManager.verifyLogin(username, password);
+
+                    if (systemUser == null) {
+                        actionTarget.setText("Login attempt failed");
+                    } else {
+                        showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
+                                "Hi " + username);
+
+                        // TODO: set scene to options screen
+                    }
+                }
             }
         });
 
-        Text scenetitle = new Text("Welcome");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(scenetitle, 0,0,2,1);
+    }
 
-        Label userName = new Label("Username:");
-        grid.add(userName,0,1);
-
-        TextField userTextField = new TextField();
-        grid.add(userTextField,1,1);
-
-        Label pw = new Label("Password:");
-        grid.add(pw,0,2);
-
-        PasswordField pwBox = new PasswordField();
-        grid.add(pwBox,1,2);
-
-//        grid.setGridLinesVisible(true);
-
-        Scene welcomeScreen = new Scene(grid, 300, 275);
-
-        window.setScene(welcomeScreen);
-        window.setResizable(false);
-        window.show();
-
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner);
+        alert.show();
     }
 
 }
