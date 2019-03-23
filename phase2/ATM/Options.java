@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.HashMap;
  *
  * TODO:
  * - After successful trade, remove money from one person's account and add to other. DONE
+ * - Check if a user has enough money before you can withdraw
  * - Add inventory functionality to users
  * - Cumulative offers
  * - Commission fee for bank
@@ -40,7 +41,9 @@ public class TradingSystem {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
                 SystemUser_Customer  other_user = offers.get(i).getTradeUser();
-                if(other_quantity == quantity && other_price > price){
+                //Checks if quantities are the same, price is better, and buyers has enough money
+                if(other_quantity == quantity && other_price > price
+                        && other_user.getPrimary().getBalance() > other_price){
                     user.getPrimary().deposit(other_price);
                     other_user.getPrimary().withdraw(other_price);
                     System.out.println("Offer made");
@@ -71,7 +74,8 @@ public class TradingSystem {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
                 SystemUser_Customer  other_user = offers.get(i).getTradeUser();
-                if(other_quantity == quantity && other_price < price){
+                if(other_quantity == quantity && other_price < price
+                        && user.getPrimary().getBalance() > other_price){
                     //Money will be exchanged.
                     user.getPrimary().withdraw(other_price);
                     other_user.getPrimary().deposit(other_price);

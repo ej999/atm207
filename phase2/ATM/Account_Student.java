@@ -1,4 +1,4 @@
-package phase2;
+package ATM;
 
 import java.util.Observable;
 import java.util.Observer;

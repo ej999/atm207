@@ -1,9 +1,9 @@
-package phase2;
+package ATM;
 
 public class TradeOffer {
-    int quantity;
-    int price;
-    SystemUser_Customer  tradeUser;
+    private int quantity;
+    private int price;
+    private SystemUser_Customer  tradeUser;
 
     TradeOffer(int quantity, int price, SystemUser_Customer  tradeUser){
         this.quantity = quantity;
@@ -11,15 +11,15 @@ public class TradeOffer {
         this.tradeUser = tradeUser;
     }
 
-    public int getQuantity(){
+    int getQuantity(){
         return this.quantity;
     }
 
-    public int getPrice(){
+    int getPrice(){
         return this.price;
     }
 
-    public SystemUser_Customer  getTradeUser(){
+    SystemUser_Customer  getTradeUser(){
         return this.tradeUser;
     }
 }
