@@ -444,4 +444,21 @@ class Options {
     private void readAlertPrompt() {
         ((SystemUser_Employee_BankManager) systemUser).readAlerts();
     }
+//WIP
+//    private void tradePrompt() {
+//        Scanner reader = new Scanner(System.in);
+//        System.out.println("Would you like to: 1) Put up a trade offer 2) Remove a trade");
+//        int choice = reader.nextInt();
+//
+//    }
+//
+//    private void makeTrade(){
+//        System.out.println("Would you like to BUY or SELL?");
+//        Scanner reader = new Scanner(System.in);
+//        String choice = reader.nextLine();
+//        System.out.println("What item would you like to sell?");
+//
+//    }
 }
+
+
