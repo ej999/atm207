@@ -123,6 +123,13 @@ public class ATM extends Application implements Serializable {
         Tutorial: https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
          */
 
+        /*
+        First display welcome screen
+        Then after user (be it customer or employee) logs in show options screen
+         */
+
+
+
         //TODO: How to make gui work with Options class? MVC?
         window = primaryStage;
         window.setTitle("CSC207 Banking Services");
