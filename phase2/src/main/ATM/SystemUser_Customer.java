@@ -8,6 +8,13 @@ import java.util.Date;
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
 class SystemUser_Customer extends SystemUser implements Serializable {
+
+    private static final String user_type = SystemUser_Customer.class.getName();
+
+    public String getUser_type() {
+        return user_type;
+    }
+
     private final ArrayList<Account> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
@@ -83,24 +90,25 @@ class SystemUser_Customer extends SystemUser implements Serializable {
         requestHelp(n);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder returnMessage = new StringBuilder();
-        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
-                "\u001B[0m");
-        for (Account account : getAccounts()) {
-            if (account == primary) {
-                returnMessage.append("\nX\t\t\t").append(account);
-            } else {
-                returnMessage.append("\n\t\t\t").append(account);
-            }
-
-        }
-
-        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
-
-        return returnMessage.toString();
-    }
+    //TODO toString interferes with serialization in Gson.fromJson
+//    @Override
+//    public String toString() {
+//        StringBuilder returnMessage = new StringBuilder();
+//        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+//                "\u001B[0m");
+//        for (Account account : getAccounts()) {
+//            if (account == primary) {
+//                returnMessage.append("\nX\t\t\t").append(account);
+//            } else {
+//                returnMessage.append("\n\t\t\t").append(account);
+//            }
+//
+//        }
+//
+//        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
+//
+//        return returnMessage.toString();
+//    }
 
     Account getPrimary() {
         return primary;

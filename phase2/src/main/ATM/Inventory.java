@@ -6,26 +6,30 @@ import java.util.HashMap;
 //etc.), with its value being the amount of it.
 public class Inventory {
     HashMap<String, Integer> storage = new HashMap<>();
-    Inventory(){
+
+    public Inventory() {
     }
 
-    Inventory(HashMap<String, Integer> storage){
+    Inventory(HashMap<String, Integer> storage) {
         this.storage = storage;
     }
 
-    boolean itemExists(String item){
+    public HashMap<String, Integer> getStorage() {
+        return storage;
+    }
+
+    boolean itemExists(String item) {
         return storage.containsKey(item);
     }
 
-    Integer itemAmount(String item){
+    Integer itemAmount(String item) {
         return storage.get(item);
     }
 
-    void addItem(String item, Integer amount){
-        if (storage.containsKey(item)){
+    void addItem(String item, Integer amount) {
+        if (storage.containsKey(item)) {
             storage.put(item, storage.get(item) + amount);
-        }
-        else {
+        } else {
             storage.put(item, amount);
         }
     }

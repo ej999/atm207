@@ -1,5 +1,6 @@
 package ATM;
 
+import com.google.firebase.database.FirebaseDatabase;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,10 +18,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * An ATM that allows customers and employees to interact with their login accounts.
@@ -70,11 +70,27 @@ public class ATM extends Application implements Serializable {
         LoginManagerBackup load_backup = new LoginManagerBackup();
         LoginManagerBackup backup = load_backup.returnFileBackup();
         LoginManager.login_map = new HashMap<>();
+
         // Instantiate an Employee account here for basic functions here.
         SystemUser_Employee_BankManager jen = new SystemUser_Employee_BankManager("jen", "1234");
+        SystemUser_Employee_Teller pete = new SystemUser_Employee_Teller("pete", "1234");
+        SystemUser_Customer steve = new SystemUser_Customer("steve", "1234");
+
+        //TODO move to loginmanager class?
+        FireBaseDBAccess fbDb = new FireBaseDBAccess();
+        fbDb.save(jen, "EmployeeBankManager",jen.getUsername());
+        fbDb.save(pete, "EmployeeBankManager",pete.getUsername());
+        fbDb.save(steve, "EmployeeBankManager",steve.getUsername());
+
+        HashMap<String, Object> bankManager_map = fbDb.retrieve("EmployeeBankManager");
+
+
+//        Modifier.isAbstract(SystemUser_Employee.class.getModifiers());
+
+
         LoginManager.addLogin(jen);
         if (backup.deleted == 0) {
-            LoginManager.login_map = load_backup.returnFileBackup().login_map;
+            LoginManager.login_map = backup.login_map;
 
         } else {
             // If the backup was deleted, recreate the default state here.
@@ -88,7 +104,7 @@ public class ATM extends Application implements Serializable {
 
         //Java FX -> invoke start method
         launch(args);
-
+        System.out.println(bankManager_map.keySet());
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();

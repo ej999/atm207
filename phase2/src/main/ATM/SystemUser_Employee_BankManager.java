@@ -13,9 +13,14 @@ import java.util.ArrayList;
 
 class SystemUser_Employee_BankManager extends SystemUser_Employee implements Serializable {
 
+    private static final String user_type = SystemUser_Employee_BankManager.class.getName();
 
     SystemUser_Employee_BankManager(String username, String password) {
         super(username, password);
+    }
+
+    public String getUser_type() {
+        return user_type;
     }
 
     /**

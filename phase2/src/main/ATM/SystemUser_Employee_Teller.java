@@ -4,9 +4,15 @@ import java.io.Serializable;
 
 public class SystemUser_Employee_Teller extends SystemUser_Employee implements Serializable {
 
+    private static final String user_type = SystemUser_Employee_Teller.class.getName();
+
     SystemUser_Employee_Teller(String username, String password) {
         super(username, password);
 
+    }
+
+    public String getUser_type() {
+        return user_type;
     }
 
 //    void undoMostRecentTransaction(Account account) {

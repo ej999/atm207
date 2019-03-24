@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -40,10 +41,10 @@ class FireBaseDBAccess {
         }
     }
 
-    void save(Object item, String child) {
+    void save(Object item, String child, String key) {
         if (item != null) {
             // Get existing child or will bee created new child.
-            DatabaseReference childRef = databaseRef.child(child);
+            DatabaseReference childRef = databaseRef.child(child).child(key);
 
             // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
             CountDownLatch latch = new CountDownLatch(1);
@@ -82,9 +83,63 @@ class FireBaseDBAccess {
         }
     }
 
-    void retrieve(String child) {
+    HashMap<String, Object> retrieve(String child) {
         // Get existing child or will bee created new child.
         DatabaseReference childRef = databaseRef.child(child);
+
+        // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
+        CountDownLatch latch = new CountDownLatch(1);
+
+        HashMap<String, Object> object_map = new HashMap<>();
+        childRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+                Object objInJSON = snapshot.getValue();
+                try {
+                    Class classOfObj = Class.forName((String) ((HashMap) objInJSON).get("user_type"));
+                    Object object = json2object(snapshot.getValue(), classOfObj);
+                    object_map.put(snapshot.getKey(), object);
+                } catch (ClassNotFoundException e) {
+                    e.getStackTrace();
+                }
+
+                latch.countDown();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
+        try {
+            // Wait for FireBase to save record.
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return object_map;
+    }
+
+    <T> void retrieveIndividual(String child, Class<T> classOfT) {
+        // Get existing child or will bee created new child.
+        DatabaseReference childRef = databaseRef.child(child).child("ass");
 
         // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
         CountDownLatch latch = new CountDownLatch(1);
@@ -92,12 +147,7 @@ class FireBaseDBAccess {
         childRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                String ob = snapshot.getValue().toString();
-                System.out.println(ob);
-
-                Gson gson = new Gson();
-                Item item = gson.fromJson(ob, Item.class);
-                System.out.println(item);
+                System.out.println(json2object(snapshot.getValue().toString(), classOfT));
                 latch.countDown();
             }
 
@@ -108,7 +158,6 @@ class FireBaseDBAccess {
             }
         });
 
-
         try {
             // Wait for FireBase to save record.
             latch.await();
@@ -117,4 +166,9 @@ class FireBaseDBAccess {
         }
     }
 
+    // Helper method that convert object from JSON using Gson
+    <T> T json2object(Object ob, Class<T> classOfT) {
+        Gson gson = new Gson();
+        return gson.fromJson(ob.toString(), classOfT);
+    }
 }

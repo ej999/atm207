@@ -16,11 +16,11 @@ abstract class SystemUser implements Serializable {
         this.password = password;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
