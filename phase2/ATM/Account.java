@@ -6,14 +6,18 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 abstract class Account implements Serializable {
     static final String outputFilePath = "phase1/outgoing.txt";
     private static final String inputFilePath = "phase1/deposits.txt";
     final Date dateOfCreation;
+
+    /*
+    The most recent transaction is at the beginning. Behaves like a stack.
+     */
+//    ArrayList<Transaction> transactionHistory;
+    Stack<Transaction> transactionHistory;
 
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
@@ -33,6 +37,7 @@ abstract class Account implements Serializable {
         this.balance = balance;
         this.owners.add(owner);
         this.dateOfCreation = new Date();
+        this.transactionHistory = new Stack<Transaction>();
     }
 
     Account(SystemUser_Customer owner) {
@@ -63,6 +68,29 @@ abstract class Account implements Serializable {
             undoWithdrawal((Double) mostRecentTransaction.get("Amount"));
         } else if (mostRecentTransaction.get("Type") == "Deposit") {
             undoDeposit((Double) mostRecentTransaction.get("Amount"));
+        }
+    }
+
+    /**
+     * Undoes the n most recent transactions.
+     * @param n transactions to be undone
+     */
+    void undoTransactions(int n) {
+        if (n>0) {
+
+            for (int i = 0; i < n; i++) {
+                try {
+                    Transaction transaction = transactionHistory.pop();
+
+                    if (transaction.getType().equals("Withdrawal")) {
+                        undoWithdrawal(transaction.getAmount());
+                    } else if (transaction.getType().equals("Deposit")) {
+                        undoDeposit(transaction.getAmount());
+                    }
+                } catch (EmptyStackException e) {
+                    System.out.println("All transactions on this account have been undone");
+                }
+            }
         }
     }
 
