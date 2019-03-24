@@ -126,6 +126,7 @@ public class ATM extends Application implements Serializable {
 
     /**
      * Main entry point of a JavaFX application. This is where the user interface is created and made visible.
+     *
      * @param primaryStage the main window
      * @throws Exception
      */
@@ -173,7 +174,7 @@ public class ATM extends Application implements Serializable {
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20,20,20,20));
+        gridPane.setPadding(new Insets(20, 20, 20, 20));
         gridPane.setVgap(10);
 
         gridPane.add(button1, 0, 1);
@@ -188,7 +189,7 @@ public class ATM extends Application implements Serializable {
 
         Text message = new Text("How can we help you today?");
         message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0,0,2,1);
+        gridPane.add(message, 0, 0, 2, 1);
 
         BMOptions = new Scene(gridPane, 300, 450);
     }
@@ -204,7 +205,7 @@ public class ATM extends Application implements Serializable {
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20,20,20,20));
+        gridPane.setPadding(new Insets(20, 20, 20, 20));
         gridPane.setVgap(10);
 
         gridPane.add(button1, 0, 1);
@@ -215,7 +216,7 @@ public class ATM extends Application implements Serializable {
 
         Text message = new Text("How can we help you today?");
         message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0,0,2,1);
+        gridPane.add(message, 0, 0, 2, 1);
 
         tellerOptions = new Scene(gridPane, 300, 300);
     }
@@ -227,7 +228,7 @@ public class ATM extends Application implements Serializable {
     private GridPane createLoginFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(25,25,25,25));
+        grid.setPadding(new Insets(25, 25, 25, 25));
 
         // manage the spacing between rows and cols
         grid.setVgap(10);
@@ -238,28 +239,28 @@ public class ATM extends Application implements Serializable {
     private void addUIControls(GridPane grid) {
         Text scenetitle = new Text("Welcome");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(scenetitle, 0,0,2,1);
+        grid.add(scenetitle, 0, 0, 2, 1);
 
         Label userName = new Label("Username:");
-        grid.add(userName,0,1);
+        grid.add(userName, 0, 1);
         TextField userTextField = new TextField();
         userTextField.setPromptText("username");
-        grid.add(userTextField,1,1);
+        grid.add(userTextField, 1, 1);
 
         Label pw = new Label("Password:");
-        grid.add(pw,0,2);
+        grid.add(pw, 0, 2);
         PasswordField pwBox = new PasswordField();
         pwBox.setPromptText("password");
-        grid.add(pwBox,1,2);
+        grid.add(pwBox, 1, 2);
 
         Button btn = new Button("Sign in");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(btn);
-        grid.add(hbBtn,1,4);
+        grid.add(hbBtn, 1, 4);
 
         final Text actionTarget = new Text();
-        grid.add(actionTarget,1,6);
+        grid.add(actionTarget, 1, 6);
 
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
