@@ -132,11 +132,7 @@ public class ATM extends Application implements Serializable {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //TODO: How to make gui work with Options class? MVC?
-
         //TODO: use software design principles
-        REST toMap = new REST();
-        toMap.retrieveData();
-        toMap.parseJson();
 
         /*
         A bit of terminology
