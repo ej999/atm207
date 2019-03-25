@@ -10,7 +10,9 @@ import java.util.*;
 abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
-    final Date dateOfCreation;
+
+    // Store as timestamp instead of Date object.
+    final long dateOfCreation;
 
     // Since username is unique, we use username here instead of User_Customer object.
     private final ArrayList<String> owners = new ArrayList<>();
@@ -35,7 +37,7 @@ abstract class Account {
     Account(double balance, User_Customer owner) {
         this.balance = balance;
         this.owners.add(owner.getUsername());
-        this.dateOfCreation = new Date();
+        this.dateOfCreation = new Date().getTime();
         this.transactionHistory = new Stack<Transaction>();
     }
 
@@ -72,7 +74,8 @@ abstract class Account {
         }
     }
 
-    Date getDateOfCreation() {
+    //TODO truman: doesn't work for Gson.fromJson()
+    public Long getDateOfCreation() {
         return dateOfCreation;
     }
 

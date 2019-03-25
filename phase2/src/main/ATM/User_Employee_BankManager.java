@@ -14,7 +14,7 @@ class User_Employee_BankManager extends User_Employee {
 
     private static final String type = User_Employee_BankManager.class.getName();
 
-    User_Employee_BankManager(String username, String password) {
+    public User_Employee_BankManager(String username, String password) {
         super(username, password);
     }
 
@@ -41,11 +41,11 @@ class User_Employee_BankManager extends User_Employee {
         account.undoMostRecentTransaction();
     }
 
-    void setMaxTransactions(Account_Student account, int transactionsAmount) {
+    void setMaxTransactions(Account_Youth account, int transactionsAmount) {
         account.setMaxTransactions(transactionsAmount);
     }
 
-    void setTransferLimit(Account_Student account, int transferLimitAmount) {
+    void setTransferLimit(Account_Youth account, int transferLimitAmount) {
         account.setTransferLimit(transferLimitAmount);
     }
 

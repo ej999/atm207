@@ -38,21 +38,24 @@ public class ATM extends Application {
      * It will return the User account if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
-    private static User authenticationPrompt() {
+    private static User authPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);
 
-        User user = null;
-        while (user == null) {
+        String username = null;
+        User user;
+        boolean authResult = false;
+        while (!authResult) {
             System.out.print("Please enter your username: ");
-            String username = reader.next();
+            username = reader.next();
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            user = UserManager.authentication(username, password);
-
+            authResult = UserManager.auth(username, password);
         }
+        user = UserManager.getUser(username);
+
         System.out.println("\nUser success. Hi " + user.getUsername() + "!");
         return user;
     }
@@ -93,7 +96,7 @@ public class ATM extends Application {
             now = new ATMSystem().checkMonth(now);
 
             // A login session.
-            User user = authenticationPrompt();
+            User user = authPrompt();
             new Options(user);
         }
     }
@@ -204,11 +207,13 @@ public class ATM extends Application {
                 } else if (password.isEmpty()) {
                     actionTarget.setText("Please enter your password");
                 } else {
-                    user = UserManager.authentication(username, password);
 
-                    if (user == null) {
+                    boolean authResult = UserManager.auth(username, password);
+
+                    if (!authResult) {
                         actionTarget.setText("Login attempt failed");
                     } else {
+                        user = UserManager.getUser(username);
                         showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                                 "Hi " + username);
 

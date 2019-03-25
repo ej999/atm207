@@ -27,8 +27,8 @@ class Options {
         this.options = new LinkedHashMap<>();
 
         // create, display. and allow logged-in user to select option.
+        createOptions();
         while (this.user != null) {
-            createOptions();
             displayOptions();
             selectOptions();
 
@@ -134,9 +134,9 @@ class Options {
      */
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating User... Enter user type (Customer, Teller, BankManager):");
+        System.out.print("Creating User... Enter user type (" + UserManager.getTypesOfUsers() + "): ");
         String type = reader.next();
-        System.out.print(" Enter username: ");
+        System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
@@ -177,7 +177,7 @@ class Options {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
-        if (UserManager.checkLoginExistence(username)) {
+        if (UserManager.isPresent(username)) {
             String accountType = selectAccountTypePrompt();
             AccountManager.addAccount(accountType, (User_Customer) UserManager.getUser(username));
         } else {
@@ -212,19 +212,9 @@ class Options {
     }
 
     private void logoutPrompt() {
-        //Every time the user logs out, the UserManager's contents will be serialized and saved.
+        //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
         UserManagerSerialization backUp = new UserManagerSerialization();
-//        try {
-//            //todo truman
-//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(backUp);
-//            out.close();
-//            fileOut.close();
-//            System.err.print("Serialized data saved. ");
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
+        new UserManagerSerialization().serialize();
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
@@ -290,7 +280,7 @@ class Options {
         while (!finished) {
             System.out.print("Enter username: ");
             String username = reader.next();
-            if (UserManager.checkLoginExistence(username)) {
+            if (UserManager.isPresent(username)) {
                 Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
                 ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
                 finished = true;
@@ -429,7 +419,7 @@ class Options {
         System.out.print("Please enter the amount you would like to transfer: ");
         double amount = reader.nextDouble();
 
-        if (UserManager.checkLoginExistence(username)) {
+        if (UserManager.isPresent(username)) {
             User_Customer user = (User_Customer) UserManager.getUser(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
