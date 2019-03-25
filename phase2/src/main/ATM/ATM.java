@@ -61,11 +61,11 @@ public class ATM extends Application {
     public static void main(String[] args) {
         // Load the back up of User account lists after restarting the ATM.
         UserManagerSerialization serialization = new UserManagerSerialization();
-        serialization.deserialize();
+//        serialization.deserialize();
 
         // If the backup was deleted or database is empty, recreate the default state here.
         if (UserManager.user_map.isEmpty()) {
-            System.err.println("Warning: data is not retrieved from Firebase database!");
+            System.err.println("Warning: data is not retrieved from FireBase database!");
 
             // Instantiate an Employee account here for basic functions here.
             UserManager.createLogin("BankManager", "jen", "1234");
@@ -75,7 +75,6 @@ public class ATM extends Application {
             User_Employee_BankManager jen = (User_Employee_BankManager) UserManager.user_map.get("jen");
             User pete = UserManager.user_map.get("pete");
             User steve = UserManager.user_map.get("steve");
-
 
             jen.addAccount("Chequing", ((User_Customer) UserManager.getLogin("steve")), 1234);
             jen.addAccount("LineOfCredit", ((User_Customer) UserManager.getLogin("steve")), 4321);
