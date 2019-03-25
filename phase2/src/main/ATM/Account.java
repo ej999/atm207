@@ -11,7 +11,9 @@ abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
     final Date dateOfCreation;
-    private final ArrayList<User_Customer> owners = new ArrayList<>();
+
+    // Since username is unique, we use username here instead of User_Customer object.
+    private final ArrayList<String> owners = new ArrayList<>();
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
      */
@@ -29,9 +31,10 @@ abstract class Account {
 //    ArrayList<Transaction> transactionHistory;
     Stack<Transaction> transactionHistory;
     double balance;
+
     Account(double balance, User_Customer owner) {
         this.balance = balance;
-        this.owners.add(owner);
+        this.owners.add(owner.getUsername());
         this.dateOfCreation = new Date();
         this.transactionHistory = new Stack<Transaction>();
     }
@@ -42,14 +45,14 @@ abstract class Account {
 
     Account(double balance, User_Customer owner1, User_Customer owner2) {
         this(balance, owner1);
-        this.owners.add(owner2);
+        this.owners.add(owner2.getUsername());
     }
 
     Account(User_Customer owner1, User_Customer owner2) {
         this(0, owner1, owner2);
     }
 
-    public abstract String getAccount_type();
+    public abstract String getType();
 
     HashMap<String, Object> getMostRecentTransaction() {
         return mostRecentTransaction;
@@ -67,6 +70,10 @@ abstract class Account {
         } else if (mostRecentTransaction.get("Type") == "Deposit") {
             undoDeposit((Double) mostRecentTransaction.get("Amount"));
         }
+    }
+
+    Date getDateOfCreation() {
+        return dateOfCreation;
     }
 
     /**
@@ -116,19 +123,19 @@ abstract class Account {
 
     abstract void undoWithdrawal(double withdrawalAmount);
 
-    double getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    @Override
-    public abstract String toString();
+//    @Override
+//    public abstract String toString();
 
-    User_Customer getPrimaryOwner() {
+    String getPrimaryOwner() {
         // Assuming primary account holder
         return owners.get(0);
     }
 
-    public ArrayList<User_Customer> getOwners() {
+    public ArrayList<String> getOwners() {
         return owners;
     }
 
@@ -140,7 +147,7 @@ abstract class Account {
      */
     public boolean addOwner(User_Customer newOwner) {
         if (!owners.contains(newOwner)) {
-            owners.add(newOwner);
+            owners.add(newOwner.getUsername());
             return true;
         }
         return false;

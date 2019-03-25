@@ -12,7 +12,7 @@ import java.util.Observer;
  */
 class Account_Asset_GIC extends Account_Asset implements Observer, Account_Transferable {
 
-    private static final String account_type = Account_Asset_GIC.class.getName();
+    private static final String type = Account_Asset_GIC.class.getName();
     double rate;
     Period period;
     // period = Period.ofMonths(12)
@@ -37,8 +37,8 @@ class Account_Asset_GIC extends Account_Asset implements Observer, Account_Trans
 
     }
 
-    public String getAccount_type() {
-        return account_type;
+    public String getType() {
+        return type;
     }
 
     @Override

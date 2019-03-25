@@ -29,7 +29,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0 && (balance - amount) >= 0) {
-            String message = "\nUser " + this.getPrimaryOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
+            String message = "\nUser " + this.getPrimaryOwner() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
@@ -98,7 +98,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == getPrimaryOwner()) {
+            if (user == UserManager.getUser(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
                 transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
             } else {

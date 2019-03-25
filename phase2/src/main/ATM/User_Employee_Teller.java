@@ -2,15 +2,15 @@ package ATM;
 
 public class User_Employee_Teller extends User_Employee {
 
-    private static final String user_type = User_Employee_Teller.class.getName();
+    private static final String type = User_Employee_Teller.class.getName();
 
     User_Employee_Teller(String username, String password) {
         super(username, password);
 
     }
 
-    public String getUser_type() {
-        return user_type;
+    public String getType() {
+        return type;
     }
 
     @Override

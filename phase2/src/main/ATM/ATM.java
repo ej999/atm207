@@ -65,31 +65,21 @@ public class ATM extends Application {
 
         // If the HashMap of User objects is empty or deleted, recreate the default state here.
         if (UserManager.user_map.isEmpty()) {
-            System.err.println("Warning: data is not retrieved from FireBase database!");
+            // Instantiate accounts and users for demo.
+            UserManager.createUser("BankManager", "jen", "1234");
+            UserManager.createUser("Teller", "pete", "1234");
+            UserManager.createUser("Customer", "steve", "1234");
+            AccountManager.addAccount("CHEQUING", ((User_Customer) UserManager.getUser("steve")), 1234);
+            AccountManager.addAccount("LINEOFCREDIT", ((User_Customer) UserManager.getUser("steve")), 4321);
+            AccountManager.addAccount("SAVINGS", ((User_Customer) UserManager.getUser("steve")), 1000);
+            AccountManager.addAccount("CREDITCARD", ((User_Customer) UserManager.getUser("steve")), 420);
 
-            // Instantiate an Employee account here for basic functions here.
-            UserManager.createLogin("BankManager", "jen", "1234");
-            UserManager.createLogin("Teller", "pete", "1234");
-            UserManager.createLogin("Customer", "steve", "1234");
-
-            User_Employee_BankManager jen = (User_Employee_BankManager) UserManager.user_map.get("jen");
-            User pete = UserManager.user_map.get("pete");
-            User steve = UserManager.user_map.get("steve");
-
-//            jen.addAccount("CHEQUING", ((User_Customer) UserManager.getLogin("steve")), 1234);
-//            jen.addAccount("LINEOFCREDIT", ((User_Customer) UserManager.getLogin("steve")), 4321);
-//            jen.addAccount("SAVINGS", ((User_Customer) UserManager.getLogin("steve")), 1000);
-//            jen.addAccount("CREDITCARD", ((User_Customer) UserManager.getLogin("steve")), 420);
             // Save to FireBase database.
-            FireBaseDBAccess fbDb = new FireBaseDBAccess();
-            fbDb.save(jen, "Users", jen.getUsername());
-            fbDb.save(pete, "Users", pete.getUsername());
-            fbDb.save(steve, "Users", steve.getUsername());
+            serialization.serialize();
         }
 
         //Java FX -> invoke start method
         launch(args);
-
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
@@ -110,7 +100,7 @@ public class ATM extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        System.err.println("Inside init() method! Perform necessary initializations here.");
+//        System.err.println("Inside init() method! Perform necessary initializations here.");
         // Cannot initialize options screen just yet because main window, welcome screen, and user don't exist
 //        createBMOptionsScreen();
 //        createTellerOptions();
@@ -146,7 +136,7 @@ public class ATM extends Application {
         window = primaryStage;
         window.setTitle("CSC207 Banking Services");
 
-        GridPane gridPane = createLoginFormPane();
+        GridPane gridPane = createUserFormPane();
         addUIControls(gridPane);
         welcomeScreen = new Scene(gridPane, 300, 275);
 
@@ -170,7 +160,7 @@ public class ATM extends Application {
         // TODO
     }
 
-    private GridPane createLoginFormPane() {
+    private GridPane createUserFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));

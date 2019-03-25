@@ -12,8 +12,8 @@ import java.util.Date;
  */
 class User_Customer extends User {
 
+    private static final String type = User_Customer.class.getName();
     private final ArrayList<Account> accounts;
-    private static final String user_type = User_Customer.class.getName();
     private Account primary;
     private Inventory goods = new Inventory();
     //TODO: personal details
@@ -33,8 +33,8 @@ class User_Customer extends User {
     //TODO: personal details
 //    private int age;
 
-    public String getUser_type() {
-        return user_type;
+    public String getType() {
+        return type;
     }
 
     /**
@@ -50,7 +50,7 @@ class User_Customer extends User {
         }
     }
 
-    public ArrayList<Account> getAccounts() {
+    ArrayList<Account> getAccounts() {
         return accounts;
     }
 

@@ -12,14 +12,14 @@ import java.util.ArrayList;
 
 class User_Employee_BankManager extends User_Employee {
 
-    private static final String user_type = User_Employee_BankManager.class.getName();
+    private static final String type = User_Employee_BankManager.class.getName();
 
     User_Employee_BankManager(String username, String password) {
         super(username, password);
     }
 
-    public String getUser_type() {
-        return user_type;
+    public String getType() {
+        return type;
     }
 
     /**

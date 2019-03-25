@@ -12,14 +12,14 @@ final class UserManager {
     private UserManager() {
     }
 
-    static void addLogin(User user) {
+    static void addUser(User user) {
         // Username should be unique.
         user_map.putIfAbsent(user.getUsername(), user);
     }
 
     // Note that only a Bank Manager can create and set the initial password for a user.
-    static void createLogin(String account_type, String username, String password) {
-        switch (account_type) {
+    static void createUser(String type, String username, String password) {
+        switch (type) {
             case "Customer": {
                 User_Customer newUser = new User_Customer(username, password);
 
@@ -27,7 +27,7 @@ final class UserManager {
                 if (UserManager.checkLoginExistence(username)) {
                     System.out.println("Username already exists. User account is not created.");
                 } else {
-                    UserManager.addLogin(newUser);
+                    UserManager.addUser(newUser);
                     System.out.println("A customer account with username, " + username + ", is successfully created.");
                 }
             }
@@ -38,7 +38,7 @@ final class UserManager {
                 if (UserManager.checkLoginExistence(username)) {
                     System.out.println("Username already exists. User account is not created.");
                 } else {
-                    UserManager.addLogin(newTeller);
+                    UserManager.addUser(newTeller);
                     System.out.println("A teller account with username, " + username + ", is successfully created.");
                 }
             }
@@ -49,14 +49,14 @@ final class UserManager {
                 if (UserManager.checkLoginExistence(username)) {
                     System.out.println("Username already exists. User account is not created.");
                 } else {
-                    UserManager.addLogin(newManager);
+                    UserManager.addUser(newManager);
                     System.out.println("A teller account with username, " + username + ", is successfully created.");
                 }
             }
         }
     }
 
-    static User getLogin(String username) {
+    static User getUser(String username) {
         return user_map.get(username);
     }
 
@@ -72,7 +72,7 @@ final class UserManager {
         User l = user_map.get(u);
         // Username exists.
         if (l != null && l.getPassword().equals(p)) {
-            return getLogin(u);
+            return getUser(u);
 
         } else {
             System.out.println("The login attempt failed. Please double-check your username and password.\n");

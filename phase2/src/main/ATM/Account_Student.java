@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Observable;
 
 class Account_Student extends Account implements Account_Transferable {
-    private static final String account_type = Account_Student.class.getName();
+    private static final String type = Account_Student.class.getName();
     int transactions;
     int maxTransactions;
     int transferLimit;
@@ -28,8 +28,8 @@ class Account_Student extends Account implements Account_Transferable {
         super(balance, owner1, owner2);
     }
 
-    public String getAccount_type() {
-        return account_type;
+    public String getType() {
+        return type;
     }
 
     public void update(Observable o, Object arg) {
@@ -62,7 +62,7 @@ class Account_Student extends Account implements Account_Transferable {
 
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
-            String message = "\nUser " + this.getPrimaryOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
+            String message = "\nUser " + this.getPrimaryOwner() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
@@ -133,7 +133,7 @@ class Account_Student extends Account implements Account_Transferable {
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
         transferTotal += transferAmount;
-        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
 
     }
 
@@ -153,7 +153,7 @@ class Account_Student extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == getPrimaryOwner()) {
+            if (user == UserManager.getUser(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);

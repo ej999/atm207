@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
 
-    private static final String account_type = Account_Debt_LineOfCredit.class.getName();
+    private static final String type = Account_Debt_LineOfCredit.class.getName();
 
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
@@ -25,8 +25,8 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         super(balance, owner1, owner2);
     }
 
-    public String getAccount_type() {
-        return account_type;
+    public String getType() {
+        return type;
     }
 
     /**
@@ -38,7 +38,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
-            String message = "\nUser " + this.getPrimaryOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
+            String message = "\nUser " + this.getPrimaryOwner() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
@@ -60,7 +60,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
     }
 
     /**
@@ -79,7 +79,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == getPrimaryOwner()) {
+            if (user == UserManager.getUser(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
@@ -111,18 +111,18 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         }
     }
 
-    @Override
-    public String toString() {
-        String mostRecentTransactionString;
-
-        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-        } else {
-            mostRecentTransactionString = "n/a";
-        }
-
-        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
-    }
+//    @Override
+//    public String toString() {
+//        String mostRecentTransactionString;
+//
+//        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
+//    }
 }

@@ -140,7 +140,7 @@ class Options {
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        UserManager.createLogin(type, username, password);
+        UserManager.createUser(type, username, password);
     }
 
     private String selectAccountTypePrompt() {
@@ -179,7 +179,7 @@ class Options {
         String username = reader.next();
         if (UserManager.checkLoginExistence(username)) {
             String accountType = selectAccountTypePrompt();
-            ((User_Employee_BankManager) user).addAccount(accountType, (User_Customer) UserManager.getLogin(username));
+            AccountManager.addAccount(accountType, (User_Customer) UserManager.getUser(username));
         } else {
             System.out.println("The username does not exist. No account has been created.");
         }
@@ -291,7 +291,7 @@ class Options {
             System.out.print("Enter username: ");
             String username = reader.next();
             if (UserManager.checkLoginExistence(username)) {
-                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getLogin(username));
+                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
                 ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
                 finished = true;
                 System.out.println("Undo successful.");
@@ -430,7 +430,7 @@ class Options {
         double amount = reader.nextDouble();
 
         if (UserManager.checkLoginExistence(username)) {
-            User_Customer user = (User_Customer) UserManager.getLogin(username);
+            User_Customer user = (User_Customer) UserManager.getUser(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
         } else {

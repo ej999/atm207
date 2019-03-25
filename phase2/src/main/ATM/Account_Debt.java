@@ -16,11 +16,6 @@ abstract class Account_Debt extends Account {
         super(balance, owner1, owner2);
     }
 
-    @Override
-    double getBalance() {
-        return -balance;
-    }
-
     // Withdrawal is valid only when amount
     boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 &&

@@ -7,7 +7,7 @@ import java.util.Observer;
  * A savings account.
  */
 class Account_Asset_Saving extends Account_Asset implements Observer, Account_Transferable {
-    private static final String account_type = Account_Asset_Saving.class.getName();
+    private static final String type = Account_Asset_Saving.class.getName();
 
     Account_Asset_Saving(double balance, User_Customer owner) {
         super(balance, owner);
@@ -17,8 +17,8 @@ class Account_Asset_Saving extends Account_Asset implements Observer, Account_Tr
         super(balance, owner1, owner2);
     }
 
-    public String getAccount_type() {
-        return account_type;
+    public String getType() {
+        return type;
     }
 
     @Override
@@ -36,19 +36,19 @@ class Account_Asset_Saving extends Account_Asset implements Observer, Account_Tr
         }
     }
 
-    @Override
-    public String toString() {
-        String mostRecentTransactionString;
-
-        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-        } else {
-            mostRecentTransactionString = "n/a";
-        }
-
-        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
-    }
+//    @Override
+//    public String toString() {
+//        String mostRecentTransactionString;
+//
+//        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+//    }
 
 }

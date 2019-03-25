@@ -9,7 +9,7 @@ final class AccountManager {
     // A list of existing bank accounts
     static ArrayList<Account> account_list = new ArrayList<>();
 
-    private static ATMSystem myATM = new ATMSystem();
+    private static final ATMSystem myATM = new ATMSystem();
 
     static void addAccount(Account account) {
         account_list.add(account);
@@ -54,11 +54,29 @@ final class AccountManager {
     static ArrayList<Account> getAccount(String username) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (Account ac : account_list) {
-            if (ac.getOwners().contains(UserManager.getLogin(username))) {
+            if (ac.getOwners().contains(UserManager.getUser(username))) {
                 accountsOwned.add(ac);
             }
         }
         return accountsOwned;
     }
+
+    static void addAccount(String accountType, User_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
+        Account newAccount = AccountManager.createAccount(accountType, username, amount);
+        if (newAccount != null) {
+            username.addAccount(newAccount);
+            System.out.println("A " + accountType + " account with $" + amount + " balance is successfully created for "
+                    + username.getUsername() + ". ");
+        }
+
+    }
+
+    /**
+     * Create an account for a Customer. Amount is not initialized here.
+     */
+    static void addAccount(String accountType, User_Customer username) {
+        AccountManager.addAccount(accountType, username, 0);
+    }
+
 
 }
