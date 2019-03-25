@@ -20,6 +20,11 @@ class SystemUser_Customer extends SystemUser implements Serializable {
     private Inventory goods = new Inventory();
     //TODO: personal details
 //    private int age;
+    private int creditScore;
+    // credit Score should have a default value
+    // each month if the customer payed everything on time it should be increased by a little amount
+    // if anything is unpayed pass a certain deadline(30 days) the score should decrease drastically
+    // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 
     SystemUser_Customer(String username, String password) {
@@ -115,6 +120,14 @@ class SystemUser_Customer extends SystemUser implements Serializable {
     }
 
 //    int getAge() {return age;}
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
+    }
 
     void setPrimary(Account primary) {
         if (primary instanceof Account_Asset_Chequing) {
