@@ -129,9 +129,10 @@ public class ATM extends Application implements Serializable {
     public void init() throws Exception {
         super.init();
         System.out.println("Inside init() method! Perform necessary initializations here.");
-        createBMOptionsScreen();
-        createTellerOptions();
-        createCustomerOptions();
+        // Cannot initialize options screen just yet because main window, welcome screen, and user don't exist
+//        createBMOptionsScreen();
+//        createTellerOptions();
+//        createCustomerOptions();
     }
 
     @Override
@@ -174,67 +175,13 @@ public class ATM extends Application implements Serializable {
     }
 
     private void createBMOptionsScreen() {
-        // Options for bank manager
-        Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create login for user");
-        Button button3 = new Button("Create bank account for user");
-        Button button4 = new Button("Restock ATM");
-        Button button5 = new Button("Undo transaction");
-        Button button6 = new Button("Change password");
-        Button button7 = new Button("Load custom bank data");
-        Button button8 = new Button("Clear all bank data");
-        Button button9 = new Button("Logout");
-
-        // TODO: Then we need handlers for all nine buttons...
-
-
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.setVgap(10);
-
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
-        gridPane.add(button6, 0, 6);
-        gridPane.add(button7, 0, 7);
-        gridPane.add(button8, 0, 8);
-        gridPane.add(button9, 0, 9);
-
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0, 0, 2, 1);
-
-        BMOptions = new Scene(gridPane, 300, 450);
+        BankManagerOptionsGUI gui = new BankManagerOptionsGUI(window, welcomeScreen, systemUser);
+        BMOptions = gui.createOptionsScreen();
     }
 
     private void createTellerOptions() {
-        Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create bank account for user");
-        Button button3 = new Button("Change password");
-        Button button4 = new Button("Undo transaction");
-        Button button5 = new Button("Logout");
-
-        // TODO: Then we need handlers for all five buttons...
-
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.setVgap(10);
-
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
-
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0, 0, 2, 1);
-
-        tellerOptions = new Scene(gridPane, 300, 300);
+        EmployeeOptionsGUI gui = new EmployeeOptionsGUI(window, welcomeScreen, systemUser);
+        tellerOptions = gui.createOptionsScreen();
     }
 
     private void createCustomerOptions() {
@@ -298,11 +245,17 @@ public class ATM extends Application implements Serializable {
                         showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                                 "Hi " + username);
 
+
+                        // At this point user has been created so we can create all the gui.
+
                         if (systemUser instanceof SystemUser_Employee_BankManager) {
+                            createBMOptionsScreen();
                             window.setScene(BMOptions);
                         } else if (systemUser instanceof SystemUser_Employee_Teller) {
+                            createTellerOptions();
                             window.setScene(tellerOptions);
                         } else if (systemUser instanceof SystemUser_Customer) {
+                            createCustomerOptions();
                             window.setScene(customerOptions);
                         }
                     }

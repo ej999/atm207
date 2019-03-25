@@ -1,4 +1,4 @@
-package src.main.ATM;
+package ATM;
 
 /**
  * GUI for customer options.
