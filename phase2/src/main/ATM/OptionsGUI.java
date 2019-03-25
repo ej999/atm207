@@ -122,7 +122,7 @@ public abstract class OptionsGUI {
             window.setScene(optionsScreen);
         });
 
-        return new Scene(grid, 300,275);
+        return new Scene(grid, 300, 275);
     }
 
     public void setPasswordHandler() {
@@ -133,10 +133,11 @@ public abstract class OptionsGUI {
 
     /**
      * A pop-up alert window
+     *
      * @param alertType e.g. CONFIRMATION, ERROR
-     * @param owner window
-     * @param title title of window
-     * @param message alert message
+     * @param owner     window
+     * @param title     title of window
+     * @param message   alert message
      */
     public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);

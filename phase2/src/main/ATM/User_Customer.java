@@ -12,8 +12,8 @@ import java.util.Date;
  */
 class User_Customer extends User {
 
-    private static final String user_type = User_Customer.class.getName();
     private final ArrayList<Account> accounts;
+    private static final String user_type = User_Customer.class.getName();
     private Account primary;
     private Inventory goods = new Inventory();
     //TODO: personal details
@@ -50,7 +50,7 @@ class User_Customer extends User {
         }
     }
 
-    ArrayList<Account> getAccounts() {
+    public ArrayList<Account> getAccounts() {
         return accounts;
     }
 
@@ -130,14 +130,6 @@ class User_Customer extends User {
 
 //    int getAge() {return age;}
 
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
-
     void setPrimary(Account primary) {
         if (primary instanceof Account_Asset_Chequing) {
             this.primary = primary;
@@ -145,5 +137,13 @@ class User_Customer extends User {
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary.");
         }
+    }
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
     }
 }

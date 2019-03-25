@@ -41,7 +41,7 @@ class Options {
         if (user instanceof User_Employee_BankManager) {
             options.put("Read alerts", new Thread(this::readAlertPrompt));
 
-            options.put("Create a login for a user", new Thread(this::createLoginPrompt));
+            options.put("Create a user", new Thread(this::createUserPrompt));
 
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
 
@@ -132,9 +132,9 @@ class Options {
     /**
      * Gets username and password from input and tells Bank Manager to create the customer.
      */
-    private void createLoginPrompt() {
+    private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating User... Enter user type (Customer, Teller):");
+        System.out.print("Creating User... Enter user type (Customer, Teller, BankManager):");
         String type = reader.next();
         System.out.print(" Enter username: ");
         String username = reader.next();
@@ -244,12 +244,12 @@ class Options {
 //    }
 
     private void clearDataPrompt() {
-        System.out.print("USE WITH CAUTION: all data including all login and bank account will be deleted! (Y/N): ");
+        System.out.print("WARNING: Committing a fraud with value exceeding one million dollars might result in 14 year jail sentence! (Y/N): ");
         Scanner reader2 = new Scanner(System.in);
         String answer = reader2.nextLine();
         if (answer.equals("Y")) {
-            UserManagerSerialization deleter = new UserManagerSerialization();
-            System.out.println("Data has been cleared. Please restart the program.");
+            new UserManagerSerialization().deleteDatabase();
+            System.out.println("Data has been cleared. Good Luck!");
             System.exit(0);
         }
     }

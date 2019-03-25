@@ -1,8 +1,14 @@
 package ATM;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.Observable;
 
-abstract class Account_Student extends Account implements Account_Transferable {
+class Account_Student extends Account implements Account_Transferable {
+    private static final String account_type = Account_Student.class.getName();
     int transactions;
     int maxTransactions;
     int transferLimit;
@@ -17,8 +23,13 @@ abstract class Account_Student extends Account implements Account_Transferable {
         this.transferTotal = 250;
     }
 
+
     Account_Student(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
+    }
+
+    public String getAccount_type() {
+        return account_type;
     }
 
     public void update(Observable o, Object arg) {
@@ -48,6 +59,27 @@ abstract class Account_Student extends Account implements Account_Transferable {
             updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
         }
     }
+
+    public boolean payBill(double amount, String accountName) throws IOException {
+        if (amount > 0) {
+            String message = "\nUser " + this.getPrimaryOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
+                    LocalDateTime.now();
+            // Open the file for writing and write to it.
+            try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
+                out.println(message);
+                System.out.println("File has been written.");
+            }
+            balance += amount;
+            updateMostRecentTransaction("PayBill", amount, null);
+            return true;
+        }
+        return false;
+    }
+
+    void withdraw(double withdrawalAmount) {
+        withdraw(withdrawalAmount, true);
+    }
+
     /**
      * Sets the monthly Transactions that a Student Account has.
      *
@@ -62,7 +94,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
      *
      * @param transferLimitAmount the set amount of transfers
      */
-     public void setTransferLimit(int transferLimitAmount) {
+    public void setTransferLimit(int transferLimitAmount) {
         transferLimit = transferLimitAmount;
     }
 
@@ -101,7 +133,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
         transferTotal += transferAmount;
-        return transferToAnotherUser(transferAmount, getOwner(), account);
+        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
 
     }
 
@@ -121,7 +153,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == getOwner()) {
+            if (user == getPrimaryOwner()) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
@@ -158,6 +190,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
             undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
         }
     }
+
     public String toString() {
         String mostRecentTransactionString;
 

@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 
 class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
 
+    private static final String account_type = Account_Debt_LineOfCredit.class.getName();
+
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
@@ -23,6 +25,10 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         super(balance, owner1, owner2);
     }
 
+    public String getAccount_type() {
+        return account_type;
+    }
+
     /**
      * Pay a bill by transferring money to a non-user's account
      *
@@ -32,7 +38,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      */
     public boolean payBill(double amount, String accountName) throws IOException {
         if (amount > 0) {
-            String message = "\nUser " + this.getOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
+            String message = "\nUser " + this.getPrimaryOwner().getUsername() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
@@ -54,7 +60,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, getOwner(), account);
+        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
     }
 
     /**
@@ -73,7 +79,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == getOwner()) {
+            if (user == getPrimaryOwner()) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);

@@ -11,6 +11,8 @@ import java.util.Observer;
  * Withdrawing before the end of a period will result in no interest.
  */
 class Account_Asset_GIC extends Account_Asset implements Observer, Account_Transferable {
+
+    private static final String account_type = Account_Asset_GIC.class.getName();
     double rate;
     Period period;
     // period = Period.ofMonths(12)
@@ -33,6 +35,10 @@ class Account_Asset_GIC extends Account_Asset implements Observer, Account_Trans
         startDate = LocalDate.now();
         endDate = startDate.plus(period);
 
+    }
+
+    public String getAccount_type() {
+        return account_type;
     }
 
     @Override

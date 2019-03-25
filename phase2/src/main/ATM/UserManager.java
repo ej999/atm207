@@ -3,13 +3,14 @@ package ATM;
 import java.util.HashMap;
 
 /**
- * A static class to manage the list of all types of login accounts.
+ * A static class to manage all existing user accounts.
  */
 final class UserManager {
     // A mapping of username to User.
     static HashMap<String, User> user_map = new HashMap<>();
 
-    private UserManager() {}
+    private UserManager() {
+    }
 
     static void addLogin(User user) {
         // Username should be unique.
@@ -66,11 +67,8 @@ final class UserManager {
         return l != null;
     }
 
-    /**
-     * Verify if both username and password are valid.
-     * Return User user if valid, otherwise return null.
-     */
-    static User verifyLogin(String u, String p) {
+    // Verify if both username and password are valid.
+    static User authentication(String u, String p) {
         User l = user_map.get(u);
         // Username exists.
         if (l != null && l.getPassword().equals(p)) {

@@ -13,7 +13,7 @@ import java.util.HashMap;
  * When an offer is added, the system first checks if there exists a viable offer in the other HashMap, by
  * iterating through the ArrayList and first checking the quantities, and then the prices.
  * If no viable offers, it gets added to its HashMap.
- *
+ * <p>
  * TODO:
  * - After successful trade, remove money from one person's account and add to other. DONE
  * - Check if a user has enough money before you can withdraw
@@ -27,23 +27,24 @@ import java.util.HashMap;
 public class TradingSystem {
     HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
     HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
+
     TradingSystem() {
     }
 
     public void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
-        if(buy_offers.containsKey(item)){
+        if (buy_offers.containsKey(item)) {
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
             User_Customer user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
-            for(int i = 0; i < offers.size(); i++){
+            for (int i = 0; i < offers.size(); i++) {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
                 User_Customer other_user = offers.get(i).getTradeUser();
                 //Checks if quantities are the same, price is better, and buyers has enough money
-                if(other_quantity == quantity && other_price > price
-                        && other_user.getPrimary().getBalance() > other_price){
+                if (other_quantity == quantity && other_price > price
+                        && other_user.getPrimary().getBalance() > other_price) {
                     user.getPrimary().deposit(other_price);
                     other_user.getPrimary().withdraw(other_price);
                     System.out.println("Offer made");
@@ -55,7 +56,7 @@ public class TradingSystem {
         }
         //Else check for key existence, append trade offer to list.
         else {
-            if(!sell_offers.containsKey(item)){
+            if (!sell_offers.containsKey(item)) {
                 sell_offers.put(item, new ArrayList<>());
             }
             sell_offers.get(item).add(tradeoffer);
@@ -65,17 +66,17 @@ public class TradingSystem {
 
     public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
-        if(sell_offers.containsKey(item)){
+        if (sell_offers.containsKey(item)) {
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
             User_Customer user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = sell_offers.get(item);
-            for(int i = 0; i < offers.size(); i++){
+            for (int i = 0; i < offers.size(); i++) {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
                 User_Customer other_user = offers.get(i).getTradeUser();
-                if(other_quantity == quantity && other_price < price
-                        && user.getPrimary().getBalance() > other_price){
+                if (other_quantity == quantity && other_price < price
+                        && user.getPrimary().getBalance() > other_price) {
                     //Money will be exchanged.
                     user.getPrimary().withdraw(other_price);
                     other_user.getPrimary().deposit(other_price);
@@ -87,7 +88,7 @@ public class TradingSystem {
         }
         //Else check for key existence, append trade offer to list.
         else {
-            if(!buy_offers.containsKey(item)){
+            if (!buy_offers.containsKey(item)) {
                 buy_offers.put(item, new ArrayList<>());
             }
             buy_offers.get(item).add(tradeoffer);
@@ -96,19 +97,18 @@ public class TradingSystem {
     }
 
     public void removeOffer(String item, User_Customer user, boolean sell) {
-        if(sell){
+        if (sell) {
             ArrayList<TradeOffer> offers = sell_offers.get(item);
-            for (int i = 0; i < offers.size(); i++){
-                if (offers.get(i).getTradeUser() == user){
+            for (int i = 0; i < offers.size(); i++) {
+                if (offers.get(i).getTradeUser() == user) {
                     offers.remove(i);
                     System.out.println("Sell offer removed.");
                 }
             }
-        }
-        else {
+        } else {
             ArrayList<TradeOffer> offers = buy_offers.get(item);
-            for (int i = 0; i < offers.size(); i++){
-                if (offers.get(i).getTradeUser() == user){
+            for (int i = 0; i < offers.size(); i++) {
+                if (offers.get(i).getTradeUser() == user) {
                     offers.remove(i);
                     System.out.println("Buy offer removed.");
                 }

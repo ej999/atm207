@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * A helper class that allow read and write to project's FireBase database.
+ * A helper class for UserManagerSerialization that allow read and write to FireBase project.
  */
 final class FireBaseDBAccess {
     private static boolean initialized = false;
@@ -39,24 +39,42 @@ final class FireBaseDBAccess {
 
             // Get a reference to our database.
             databaseRef = FirebaseDatabase.getInstance().getReference("/");
+
+            initialized = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        initialized = true;
     }
 
     void save(Object item, String child, String key) {
         if (item != null) {
-            // Get existing child or will bee created new child.
+            // Get existing child or new child will be created.
             DatabaseReference childRef = databaseRef.child(child).child(key);
 
             // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
             CountDownLatch latch = new CountDownLatch(1);
 
-            childRef.setValue(item, (error, ref) -> {
-                System.out.println("Record " + ref + " saved!");
-                latch.countDown();
-            });
+            childRef.setValue(item, (error, ref) -> latch.countDown());
+
+            try {
+                // Wait for FireBase to save record.
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void saveAll(HashMap<String, User> item_map, String child) {
+        if (item_map != null) {
+            // Get existing child or new child will be created.
+            DatabaseReference childRef = databaseRef.child(child);
+
+            // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
+            CountDownLatch latch = new CountDownLatch(1);
+
+            childRef.setValueAsync(item_map);
+            latch.countDown();
 
             try {
                 // Wait for FireBase to save record.
@@ -90,7 +108,7 @@ final class FireBaseDBAccess {
     /**
      * Return a HashMap of all the child items as their objects in database.
      */
-    HashMap<String, Object> retrieve(String child) {
+    HashMap<String, Object> retrieveAll(String child) {
         // Get existing child or will bee created new child.
         DatabaseReference childRef = databaseRef.child(child);
 
@@ -129,7 +147,7 @@ final class FireBaseDBAccess {
         return object_map;
     }
 
-    <T> void retrieveIndividual(String child, Class<T> classOfT) {
+    <T> void retrieve(String child, Class<T> classOfT) {
         // Get existing child or will bee created new child.
         DatabaseReference childRef = databaseRef.child(child).child("ass");
 
@@ -158,7 +176,7 @@ final class FireBaseDBAccess {
         }
     }
 
-    // Helper method that convert object from JSON using Gson
+    // Helper method that convert object from JSON using Gson.
     private <T> T json2object(Object ob, Class<T> classOfT) {
         Gson gson = new Gson();
         return gson.fromJson(ob.toString(), classOfT);

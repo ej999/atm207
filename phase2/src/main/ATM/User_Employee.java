@@ -6,7 +6,7 @@ abstract class User_Employee extends User {
     }
 
     void addAccount(String accountType, User_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
-        Account newAccount = AccountFactory.createAccount(accountType, username, amount);
+        Account newAccount = AccountManager.createAccount(accountType, username, amount);
 
         if (newAccount != null) {
             username.addAccount(newAccount);

@@ -109,7 +109,7 @@ final class Cash {
     /**
      * Cash withdrawal. The number of different bills are used in
      * withdrawal depending on the withdrawal amount and the inventory.
-     *
+     * <p>
      * TODO
      */
     static void cashWithdrawal(double amount) {

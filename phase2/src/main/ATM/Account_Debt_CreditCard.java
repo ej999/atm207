@@ -1,6 +1,8 @@
 package ATM;
 
 class Account_Debt_CreditCard extends Account_Debt {
+    private static final String account_type = Account_Debt_CreditCard.class.getName();
+
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
@@ -12,8 +14,13 @@ class Account_Debt_CreditCard extends Account_Debt {
         super(balance, owner);
     }
 
+
     Account_Debt_CreditCard(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
+    }
+
+    public String getAccount_type() {
+        return account_type;
     }
 
     @Override

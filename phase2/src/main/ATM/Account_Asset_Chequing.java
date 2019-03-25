@@ -4,6 +4,7 @@ package ATM;
  * A chequing account.
  */
 class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
+    private static final String account_type = Account_Asset_Chequing.class.getName();
 
     Account_Asset_Chequing(double balance, User_Customer owner) {
         super(balance, owner);
@@ -11,6 +12,11 @@ class Account_Asset_Chequing extends Account_Asset implements Account_Transferab
 
     Account_Asset_Chequing(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
+    }
+
+    @Override
+    public String getAccount_type() {
+        return account_type;
     }
 
     @Override

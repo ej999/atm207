@@ -38,7 +38,7 @@ public class ATM extends Application {
      * It will return the User account if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
-    private static User loginPrompt() {
+    private static User authenticationPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);
@@ -50,7 +50,7 @@ public class ATM extends Application {
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            user = UserManager.verifyLogin(username, password);
+            user = UserManager.authentication(username, password);
 
         }
         System.out.println("\nUser success. Hi " + user.getUsername() + "!");
@@ -59,11 +59,11 @@ public class ATM extends Application {
 
 
     public static void main(String[] args) {
-        // Load the back up of User account lists after restarting the ATM.
+        // Load the HashMap of User objects from FireBase database whenever a ATM is restarted or turned on.
         UserManagerSerialization serialization = new UserManagerSerialization();
         serialization.deserialize();
 
-        // If the backup was deleted or database is empty, recreate the default state here.
+        // If the HashMap of User objects is empty or deleted, recreate the default state here.
         if (UserManager.user_map.isEmpty()) {
             System.err.println("Warning: data is not retrieved from FireBase database!");
 
@@ -76,16 +76,15 @@ public class ATM extends Application {
             User pete = UserManager.user_map.get("pete");
             User steve = UserManager.user_map.get("steve");
 
-            jen.addAccount("Chequing", ((User_Customer) UserManager.getLogin("steve")), 1234);
-            jen.addAccount("LineOfCredit", ((User_Customer) UserManager.getLogin("steve")), 4321);
-            jen.addAccount("Saving", ((User_Customer) UserManager.getLogin("steve")), 1000);
-            jen.addAccount("CreditCard", ((User_Customer) UserManager.getLogin("steve")), 420);
-
+//            jen.addAccount("CHEQUING", ((User_Customer) UserManager.getLogin("steve")), 1234);
+//            jen.addAccount("LINEOFCREDIT", ((User_Customer) UserManager.getLogin("steve")), 4321);
+//            jen.addAccount("SAVINGS", ((User_Customer) UserManager.getLogin("steve")), 1000);
+//            jen.addAccount("CREDITCARD", ((User_Customer) UserManager.getLogin("steve")), 420);
             // Save to FireBase database.
             FireBaseDBAccess fbDb = new FireBaseDBAccess();
-            fbDb.save(jen, "User", jen.getUsername());
-            fbDb.save(pete, "User", pete.getUsername());
-            fbDb.save(steve, "User", steve.getUsername());
+            fbDb.save(jen, "Users", jen.getUsername());
+            fbDb.save(pete, "Users", pete.getUsername());
+            fbDb.save(steve, "Users", steve.getUsername());
         }
 
         //Java FX -> invoke start method
@@ -103,7 +102,7 @@ public class ATM extends Application {
             now = new ATMSystem().checkMonth(now);
 
             // A login session.
-            User user = loginPrompt();
+            User user = authenticationPrompt();
             new Options(user);
         }
     }
@@ -111,18 +110,18 @@ public class ATM extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        System.out.println("Inside init() method! Perform necessary initializations here.");
+        System.err.println("Inside init() method! Perform necessary initializations here.");
         // Cannot initialize options screen just yet because main window, welcome screen, and user don't exist
 //        createBMOptionsScreen();
 //        createTellerOptions();
 //        createCustomerOptions();
     }
 
-    @Override
-    public void stop() throws Exception {
-        super.stop();
-        System.out.println("Inside stop() method! Destroy resources. Perform Cleanup.");
-    }
+//    @Override
+//    public void stop() throws Exception {
+//        super.stop();
+//        System.err.println("Inside stop() method! Destroy resources. Perform Cleanup.");
+//    }
 
     /**
      * Main entry point of a JavaFX application. This is where the user interface is created and made visible.
@@ -220,7 +219,7 @@ public class ATM extends Application {
                 } else if (password.isEmpty()) {
                     actionTarget.setText("Please enter your password");
                 } else {
-                    user = UserManager.verifyLogin(username, password);
+                    user = UserManager.authentication(username, password);
 
                     if (user == null) {
                         actionTarget.setText("Login attempt failed");

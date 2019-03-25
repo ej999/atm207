@@ -11,11 +11,11 @@ public class TradeOffer {
         this.tradeUser = tradeUser;
     }
 
-    int getQuantity(){
+    int getQuantity() {
         return this.quantity;
     }
 
-    int getPrice(){
+    int getPrice() {
         return this.price;
     }
 

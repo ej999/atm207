@@ -14,7 +14,7 @@ final class UserManagerSerialization {
 
     // Deserialize JSON from FireBase to a HashMap of User object, and assign it to user_map in UserManager.
     void deserialize() {
-        HashMap<String, Object> user_map_temp = fbDb.retrieve("User");
+        HashMap<String, Object> user_map_temp = fbDb.retrieveAll("Users");
 
         // Downcast Object key to User key.
         HashMap<String, User> user_map = new HashMap<>();
@@ -30,12 +30,13 @@ final class UserManagerSerialization {
         System.err.println("For debugging only: UserManager.user_map = " + UserManager.user_map);
     }
 
-    //TODO
+    // All the data structures stored in suffix-Manager classes will be serialize to JSON after a action is performed by User.
     void serialize() {
+        fbDb.saveAll(UserManager.user_map, "Users");
     }
 
-    public void deleteBackup() {
-        //TODO
+    public void deleteDatabase() {
+        fbDb.save(0, "", "");
     }
 
 //    HashMap<String, User> loadCustom(String filename) {

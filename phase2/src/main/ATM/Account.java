@@ -11,6 +11,7 @@ abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
     final Date dateOfCreation;
+    private final ArrayList<User_Customer> owners = new ArrayList<>();
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
      */
@@ -22,14 +23,12 @@ abstract class Account {
         }
     };
     // An array of account holders
-    private final ArrayList<User_Customer> owners = new ArrayList<>();
     /*
     The most recent transaction is at the beginning. Behaves like a stack.
      */
 //    ArrayList<Transaction> transactionHistory;
     Stack<Transaction> transactionHistory;
     double balance;
-
     Account(double balance, User_Customer owner) {
         this.balance = balance;
         this.owners.add(owner);
@@ -49,6 +48,8 @@ abstract class Account {
     Account(User_Customer owner1, User_Customer owner2) {
         this(0, owner1, owner2);
     }
+
+    public abstract String getAccount_type();
 
     HashMap<String, Object> getMostRecentTransaction() {
         return mostRecentTransaction;
@@ -122,9 +123,13 @@ abstract class Account {
     @Override
     public abstract String toString();
 
-    User_Customer getOwner() {
+    User_Customer getPrimaryOwner() {
         // Assuming primary account holder
         return owners.get(0);
+    }
+
+    public ArrayList<User_Customer> getOwners() {
+        return owners;
     }
 
     /**
