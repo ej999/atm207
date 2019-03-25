@@ -11,15 +11,15 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_LineOfCredit(SystemUser_Customer owner) {
+    Account_Debt_LineOfCredit(User_Customer owner) {
         super(owner);
     }
 
-    Account_Debt_LineOfCredit(double balance, SystemUser_Customer owner) {
+    Account_Debt_LineOfCredit(double balance, User_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Debt_LineOfCredit(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Debt_LineOfCredit(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
     }
 
@@ -65,7 +65,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @param account        user account
      * @return true iff transfer was a success
      */
-    public boolean transferToAnotherUser(double transferAmount, SystemUser_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance += transferAmount;
             if (account instanceof Account_Asset) {
@@ -92,7 +92,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         }
     }
 
-    private boolean validTransfer(double transferAmount, SystemUser_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
         return validWithdrawal(transferAmount) && user.hasAccount(account);
     }
 

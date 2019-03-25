@@ -14,14 +14,14 @@ import javafx.stage.Stage;
  * GUI for Bank Manager.
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI{
-    /*
-    Constructor should take in main window, welcome screen, systemuser? from ATM
-    Let's think of some methods...
-    - createBMOptionsScreen
-    - createAlerts
+    /**
+     * Constructor should take in main window, welcome screen, user? from ATM
+     * Let's think of some methods...
+     * - createBMOptionsScreen
+     * - createAlerts
      */
 
-    public BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, SystemUser user) {
+    public BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 

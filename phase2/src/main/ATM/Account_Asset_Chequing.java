@@ -5,11 +5,11 @@ package ATM;
  */
 class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
 
-    Account_Asset_Chequing(double balance, SystemUser_Customer owner) {
+    Account_Asset_Chequing(double balance, User_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Asset_Chequing(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Asset_Chequing(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
     }
 

@@ -5,18 +5,16 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 /**
  * GUI for common options across all users.
@@ -24,9 +22,9 @@ import java.io.ObjectOutputStream;
 public abstract class OptionsGUI {
     Stage window;
     Scene welcomeScreen, optionsScreen;
-    SystemUser user;
+    User user;
 
-    public OptionsGUI(Stage mainWindow, Scene welcomeScreen, SystemUser user) {
+    public OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         this.window = mainWindow;
         this.welcomeScreen = welcomeScreen;
         this.user = user;
@@ -42,7 +40,7 @@ public abstract class OptionsGUI {
         UserManagerSerialization backUp = new UserManagerSerialization();
         //TODO truman
 //        try {
-//            FileOutputStream fileOut = new FileOutputStream("phase2/LoginManagerStorage.txt");
+//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
 //            ObjectOutputStream out = new ObjectOutputStream(fileOut);
 //            out.writeObject(backUp);
 //            out.close();

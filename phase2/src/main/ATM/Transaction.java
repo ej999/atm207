@@ -1,7 +1,5 @@
 package ATM;
 
-import java.util.HashMap;
-
 /**
  * A class that represents a transaction made by a user.
  * Possible transactions include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill

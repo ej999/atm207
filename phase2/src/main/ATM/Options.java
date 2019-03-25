@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 /**
- * A class to provide the available options to the SystemUser user base on their login account type, bank account balance,
+ * A class to provide the available options to the User user base on their login account type, bank account balance,
  * and type of owned accounts.
  */
 class Options {
@@ -18,16 +18,16 @@ class Options {
     /**
      * The login account of the current logged-in user.
      */
-    private SystemUser systemUser;
+    private User user;
 
     private boolean helped = false;
 
-    Options(SystemUser systemUser) {
-        this.systemUser = systemUser;
+    Options(User user) {
+        this.user = user;
         this.options = new LinkedHashMap<>();
 
         // create, display. and allow logged-in user to select option.
-        while (this.systemUser != null) {
+        while (this.user != null) {
             createOptions();
             displayOptions();
             selectOptions();
@@ -38,7 +38,7 @@ class Options {
     }
 
     private void createOptions() {
-        if (systemUser instanceof SystemUser_Employee_BankManager) {
+        if (user instanceof User_Employee_BankManager) {
             options.put("Read alerts", new Thread(this::readAlertPrompt));
 
             options.put("Create a login for a user", new Thread(this::createLoginPrompt));
@@ -57,7 +57,7 @@ class Options {
 
             options.put("Logout", new Thread(this::logoutPrompt));
 
-        } else if (systemUser instanceof SystemUser_Employee_Teller) {
+        } else if (user instanceof User_Employee_Teller) {
             options.put("Read alerts", new Thread(this::readAlertPrompt));
 
             options.put("Create a bank account for a user", new Thread(this::createAccountPrompt));
@@ -69,9 +69,9 @@ class Options {
             options.put("Logout", new Thread(this::logoutPrompt));
 
 
-        } else if (systemUser instanceof SystemUser_Customer) {
+        } else if (user instanceof User_Customer) {
 
-            options.put("Show my account summary", new Thread(() -> System.out.println(systemUser)));
+            options.put("Show my account summary", new Thread(() -> System.out.println(user)));
 
             options.put("Pay a Bill", new Thread(this::payBillPrompt));
 
@@ -134,7 +134,7 @@ class Options {
      */
     private void createLoginPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating SystemUser... Enter user type (Customer, Teller):");
+        System.out.print("Creating User... Enter user type (Customer, Teller):");
         String type = reader.next();
         System.out.print(" Enter username: ");
         String username = reader.next();
@@ -179,7 +179,7 @@ class Options {
         String username = reader.next();
         if (UserManager.checkLoginExistence(username)) {
             String accountType = selectAccountTypePrompt();
-            ((SystemUser_Employee_BankManager) systemUser).addAccount(accountType, (SystemUser_Customer) UserManager.getLogin(username));
+            ((User_Employee_BankManager) user).addAccount(accountType, (User_Customer) UserManager.getLogin(username));
         } else {
             System.out.println("The username does not exist. No account has been created.");
         }
@@ -206,7 +206,7 @@ class Options {
         restock.add(twenties);
         restock.add(fifties);
 
-        ((SystemUser_Employee_BankManager) systemUser).restockMachine(restock);
+        ((User_Employee_BankManager) user).restockMachine(restock);
         System.out.println(fives + " 5-dollar-bill, " + tens + " 10-dollar-bill, " + twenties + " 20-dollar-bill, "
                 + fifties + " 50-dollar-bill are successfully restocked. ");
     }
@@ -216,7 +216,7 @@ class Options {
         UserManagerSerialization backUp = new UserManagerSerialization();
 //        try {
 //            //todo truman
-//            FileOutputStream fileOut = new FileOutputStream("phase1/LoginManagerStorage.txt");
+//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
 //            ObjectOutputStream out = new ObjectOutputStream(fileOut);
 //            out.writeObject(backUp);
 //            out.close();
@@ -229,8 +229,8 @@ class Options {
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
 
-        // Logout the current user by assigning the systemUser to null.
-        this.systemUser = null;
+        // Logout the current user by assigning the user to null.
+        this.user = null;
     }
 
 //    private void loadCustomPrompt() {
@@ -239,7 +239,7 @@ class Options {
 //        Scanner reader1 = new Scanner(System.in);
 //        String answer = reader1.nextLine();
 //        UserManagerSerialization custom_loader = new UserManagerSerialization();
-//        HashMap<String, SystemUser> custom_map = custom_loader.loadCustom(answer);
+//        HashMap<String, User> custom_map = custom_loader.loadCustom(answer);
 //        UserManager.user_map = custom_map;
 //    }
 
@@ -254,11 +254,11 @@ class Options {
         }
     }
 
-    private Account selectAccountPrompt(SystemUser_Customer customer) {
+    private Account selectAccountPrompt(User_Customer customer) {
         return selectAccountPrompt(customer, "no_exclusion");
     }
 
-    private Account selectAccountPrompt(SystemUser_Customer customer, String exclusion) {
+    private Account selectAccountPrompt(User_Customer customer, String exclusion) {
         Scanner reader = new Scanner(System.in);
 
         System.out.println();
@@ -291,8 +291,8 @@ class Options {
             System.out.print("Enter username: ");
             String username = reader.next();
             if (UserManager.checkLoginExistence(username)) {
-                Account account2undo = selectAccountPrompt((SystemUser_Customer) UserManager.getLogin(username));
-                ((SystemUser_Employee_BankManager) systemUser).undoMostRecentTransaction(account2undo);
+                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getLogin(username));
+                ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
                 finished = true;
                 System.out.println("Undo successful.");
             } else {
@@ -308,7 +308,7 @@ class Options {
         System.out.print("\nPlease enter a new password: ");
         Scanner reader = new Scanner(System.in);
         String newPass = reader.nextLine();
-        systemUser.setPassword(newPass);
+        user.setPassword(newPass);
     }
 
     /**
@@ -318,11 +318,11 @@ class Options {
     private void setPrimaryPrompt() {
         System.out.println("\nA primary chequing account will be the default destination for deposits.");
 
-        if (((SystemUser_Customer) systemUser).hasMoreThanOneChequing()) {
+        if (((User_Customer) user).hasMoreThanOneChequing()) {
             System.out.println("\n\u001B[1mAccount Type\t\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
                     "\u001B[0m");
             int i = 1;
-            for (Account a : ((SystemUser_Customer) systemUser).getAccounts()) {
+            for (Account a : ((User_Customer) user).getAccounts()) {
                 if (a instanceof Account_Asset_Chequing) {
                     System.out.println("[" + i + "] " + a);
                 }
@@ -332,7 +332,7 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((SystemUser_Customer) systemUser).setPrimary(((SystemUser_Customer) systemUser).getAccounts().get(selected - 1));
+            ((User_Customer) user).setPrimary(((User_Customer) user).getAccounts().get(selected - 1));
         } else {
             System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
                     "account.\nHowever, you are welcome to request creating a new chequing account on main menu.");
@@ -345,7 +345,7 @@ class Options {
         String accountType = selectAccountTypePrompt();
 
         try {
-            ((SystemUser_Customer) systemUser).requestAccount(accountType);
+            ((User_Customer) user).requestAccount(accountType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -357,7 +357,7 @@ class Options {
         double amount = reader.nextDouble();
         double actualAmount = amount - amount % 5;
 
-        Account account = selectAccountPrompt((SystemUser_Customer) systemUser);
+        Account account = selectAccountPrompt((User_Customer) user);
 
         account.withdraw(actualAmount);
 
@@ -365,7 +365,7 @@ class Options {
     }
 
     private void depositPrompt() {
-        Account primary = ((SystemUser_Customer) systemUser).getPrimary();
+        Account primary = ((User_Customer) user).getPrimary();
 
         Scanner reader = new Scanner(System.in);
         System.out.println("Please make sure to ready your cash/cheque in deposit.txt");
@@ -380,7 +380,7 @@ class Options {
     }
 
     private void payBillPrompt() {
-        Account account = selectAccountPrompt((SystemUser_Customer) systemUser, "CreditCard");
+        Account account = selectAccountPrompt((User_Customer) user, "CreditCard");
 
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter the amount you would like to pay: ");
@@ -402,10 +402,10 @@ class Options {
 
     private void transferBetweenAccountsPrompt() {
         System.out.println("Now select the account you would like to transfer FROM: ");
-        Account from = selectAccountPrompt((SystemUser_Customer) systemUser, "CreditCard");
+        Account from = selectAccountPrompt((User_Customer) user, "CreditCard");
 
         System.out.println("Now select the account you would like to transfer TO: ");
-        Account to = selectAccountPrompt((SystemUser_Customer) systemUser);
+        Account to = selectAccountPrompt((User_Customer) user);
 
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter the amount you would like to transfer: ");
@@ -421,7 +421,7 @@ class Options {
     private void transferToAnotherUserPrompt() {
         Scanner reader = new Scanner(System.in);
 
-        Account from = selectAccountPrompt((SystemUser_Customer) systemUser, "CreditCard");
+        Account from = selectAccountPrompt((User_Customer) user, "CreditCard");
 
         System.out.print("Please enter username you would like to transfer to: ");
         String username = reader.next();
@@ -430,7 +430,7 @@ class Options {
         double amount = reader.nextDouble();
 
         if (UserManager.checkLoginExistence(username)) {
-            SystemUser_Customer user = (SystemUser_Customer) UserManager.getLogin(username);
+            User_Customer user = (User_Customer) UserManager.getLogin(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
         } else {
@@ -439,7 +439,7 @@ class Options {
     }
 
     private void readAlertPrompt() {
-        ((SystemUser_Employee_BankManager) systemUser).readAlerts();
+        ((User_Employee_BankManager) user).readAlerts();
     }
 //WIP
 //    private void tradePrompt() {

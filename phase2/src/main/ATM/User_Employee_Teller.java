@@ -1,10 +1,10 @@
 package ATM;
 
-public class SystemUser_Employee_Teller extends SystemUser_Employee {
+public class User_Employee_Teller extends User_Employee {
 
-    private static final String user_type = SystemUser_Employee_Teller.class.getName();
+    private static final String user_type = User_Employee_Teller.class.getName();
 
-    SystemUser_Employee_Teller(String username, String password) {
+    User_Employee_Teller(String username, String password) {
         super(username, password);
 
     }
@@ -25,7 +25,7 @@ public class SystemUser_Employee_Teller extends SystemUser_Employee {
 //    /**
 //     * Create an account for a Customer. Amount is not initialized here.
 //     */
-//    void addAccount(String accountType, SystemUser_Customer username) {
+//    void addAccount(String accountType, User_Customer username) {
 //        this.addAccount(accountType, username, 0);
 //    }
 //
@@ -35,7 +35,7 @@ public class SystemUser_Employee_Teller extends SystemUser_Employee {
 //    void readAlerts() {
 //        BufferedReader reader;
 //        try {
-//            reader = new BufferedReader(new FileReader("phase1/alerts.txt"));
+//            reader = new BufferedReader(new FileReader("phase2/src/resources/alerts.txt"));
 //            String alert = reader.readLine();
 //            while (alert != null) {
 //                System.out.println(alert);

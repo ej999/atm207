@@ -4,15 +4,15 @@ abstract class Account_Debt extends Account {
 
     private static final double DEBT_CAPACITY = 10000;
 
-    Account_Debt(double balance, SystemUser_Customer owner) {
+    Account_Debt(double balance, User_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Debt(SystemUser_Customer owner) {
+    Account_Debt(User_Customer owner) {
         super(owner);
     }
 
-    Account_Debt(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Debt(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
     }
 

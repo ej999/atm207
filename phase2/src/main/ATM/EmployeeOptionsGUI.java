@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  */
 public class EmployeeOptionsGUI extends OptionsGUI {
 
-    public EmployeeOptionsGUI(Stage mainWindow, Scene welcomeScreen, SystemUser user) {
+    public EmployeeOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 

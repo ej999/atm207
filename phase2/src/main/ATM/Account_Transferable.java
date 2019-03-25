@@ -7,5 +7,5 @@ interface Account_Transferable {
 
     boolean transferBetweenAccounts(double transferAmount, Account account);
 
-    boolean transferToAnotherUser(double transferAmount, SystemUser_Customer user, Account account);
+    boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account);
 }

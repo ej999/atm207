@@ -3,7 +3,7 @@ package ATM;
 public final class AccountFactory {
     private static ATMSystem myATM = new ATMSystem();
 
-    public static Account createAccount(String accountType, SystemUser_Customer owner, double initialAmount) {
+    public static Account createAccount(String accountType, User_Customer owner, double initialAmount) {
 
         if (accountType == null) {
             System.out.println("Invalid account type. Account cannot be created.");

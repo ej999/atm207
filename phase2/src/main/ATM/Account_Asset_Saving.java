@@ -8,11 +8,11 @@ import java.util.Observer;
  */
 class Account_Asset_Saving extends Account_Asset implements Observer, Account_Transferable {
 
-    Account_Asset_Saving(double balance, SystemUser_Customer owner) {
+    Account_Asset_Saving(double balance, User_Customer owner) {
         super(balance, owner);
     }
 
-    Account_Asset_Saving(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Asset_Saving(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
     }
 

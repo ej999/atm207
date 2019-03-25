@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 abstract class Account {
-    static final String outputFilePath = "phase1/outgoing.txt";
-    private static final String inputFilePath = "phase1/deposits.txt";
+    static final String outputFilePath = "phase2/src/resources/outgoing.txt";
+    private static final String inputFilePath = "phase2/src/resources/deposits.txt";
     final Date dateOfCreation;
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
@@ -22,7 +22,7 @@ abstract class Account {
         }
     };
     // An array of account holders
-    private final ArrayList<SystemUser_Customer> owners = new ArrayList<>();
+    private final ArrayList<User_Customer> owners = new ArrayList<>();
     /*
     The most recent transaction is at the beginning. Behaves like a stack.
      */
@@ -30,23 +30,23 @@ abstract class Account {
     Stack<Transaction> transactionHistory;
     double balance;
 
-    Account(double balance, SystemUser_Customer owner) {
+    Account(double balance, User_Customer owner) {
         this.balance = balance;
         this.owners.add(owner);
         this.dateOfCreation = new Date();
         this.transactionHistory = new Stack<Transaction>();
     }
 
-    Account(SystemUser_Customer owner) {
+    Account(User_Customer owner) {
         this(0, owner);
     }
 
-    Account(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account(double balance, User_Customer owner1, User_Customer owner2) {
         this(balance, owner1);
         this.owners.add(owner2);
     }
 
-    Account(SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account(User_Customer owner1, User_Customer owner2) {
         this(0, owner1, owner2);
     }
 
@@ -122,7 +122,7 @@ abstract class Account {
     @Override
     public abstract String toString();
 
-    SystemUser_Customer getOwner() {
+    User_Customer getOwner() {
         // Assuming primary account holder
         return owners.get(0);
     }
@@ -133,7 +133,7 @@ abstract class Account {
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */
-    public boolean addOwner(SystemUser_Customer newOwner) {
+    public boolean addOwner(User_Customer newOwner) {
         if (!owners.contains(newOwner)) {
             owners.add(newOwner);
             return true;
@@ -145,7 +145,7 @@ abstract class Account {
         return owners.size() > 1;
     }
 
-    public boolean removeOwner(SystemUser_Customer owner) {
+    public boolean removeOwner(User_Customer owner) {
         if (isJoint() && owners.contains(owner)) {
             owners.remove(owner);
             return true;

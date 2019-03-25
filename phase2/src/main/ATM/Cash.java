@@ -24,7 +24,7 @@ final class Cash {
             put("fifty", 50);
         }
     };
-    private static final String outputFilePath = "phase1/alerts.txt";
+    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
 
     /**
      * Check the quantity of denominations

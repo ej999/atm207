@@ -1,11 +1,11 @@
 package ATM;
 
-abstract class SystemUser_Employee extends SystemUser {
-    SystemUser_Employee(String username, String password) {
+abstract class User_Employee extends User {
+    User_Employee(String username, String password) {
         super(username, password);
     }
 
-    void addAccount(String accountType, SystemUser_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
+    void addAccount(String accountType, User_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
         Account newAccount = AccountFactory.createAccount(accountType, username, amount);
 
         if (newAccount != null) {
@@ -19,7 +19,7 @@ abstract class SystemUser_Employee extends SystemUser {
     /**
      * Create an account for a Customer. Amount is not initialized here.
      */
-    void addAccount(String accountType, SystemUser_Customer username) {
+    void addAccount(String accountType, User_Customer username) {
         this.addAccount(accountType, username, 0);
     }
 

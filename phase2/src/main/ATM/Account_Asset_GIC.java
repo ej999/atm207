@@ -1,9 +1,9 @@
 package ATM;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Observable;
 import java.util.Observer;
-import java.time.Period;
-import java.time.LocalDate;
 
 /**
  * GIC account.
@@ -17,7 +17,7 @@ class Account_Asset_GIC extends Account_Asset implements Observer, Account_Trans
     LocalDate startDate;
     LocalDate endDate;
 
-    Account_Asset_GIC(double balance, double rate, Period period, SystemUser_Customer owner) {
+    Account_Asset_GIC(double balance, double rate, Period period, User_Customer owner) {
 
         super(balance, owner);
         this.rate = rate;
@@ -26,7 +26,7 @@ class Account_Asset_GIC extends Account_Asset implements Observer, Account_Trans
         endDate = startDate.plus(period);
     }
 
-    Account_Asset_GIC(double balance, double rate, Period period, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Asset_GIC(double balance, double rate, Period period, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
         this.rate = rate;
         this.period = period;

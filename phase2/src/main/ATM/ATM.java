@@ -29,37 +29,37 @@ import java.util.Scanner;
 public class ATM extends Application {
     private Stage window;
     private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
-    private SystemUser systemUser;
+    private User user;
     private boolean helped = false;
 
     /**
      * Allow user to login by entering username and password.
      * <p>
-     * It will return the SystemUser account if the login is valid; otherwise, it'll consistently asking user to
+     * It will return the User account if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
-    private static SystemUser loginPrompt() {
+    private static User loginPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);
 
-        SystemUser systemUser = null;
-        while (systemUser == null) {
+        User user = null;
+        while (user == null) {
             System.out.print("Please enter your username: ");
             String username = reader.next();
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            systemUser = UserManager.verifyLogin(username, password);
+            user = UserManager.verifyLogin(username, password);
 
         }
-        System.out.println("\nSystemUser success. Hi " + systemUser.getUsername() + "!");
-        return systemUser;
+        System.out.println("\nUser success. Hi " + user.getUsername() + "!");
+        return user;
     }
 
 
     public static void main(String[] args) {
-        // Load the back up of SystemUser account lists after restarting the ATM.
+        // Load the back up of User account lists after restarting the ATM.
         UserManagerSerialization serialization = new UserManagerSerialization();
         serialization.deserialize();
 
@@ -72,21 +72,21 @@ public class ATM extends Application {
             UserManager.createLogin("Teller", "pete", "1234");
             UserManager.createLogin("Customer", "steve", "1234");
 
-            SystemUser_Employee_BankManager jen = (SystemUser_Employee_BankManager) UserManager.user_map.get("jen");
-            SystemUser pete = UserManager.user_map.get("pete");
-            SystemUser steve = UserManager.user_map.get("steve");
+            User_Employee_BankManager jen = (User_Employee_BankManager) UserManager.user_map.get("jen");
+            User pete = UserManager.user_map.get("pete");
+            User steve = UserManager.user_map.get("steve");
 
 
-            jen.addAccount("Chequing", ((SystemUser_Customer) UserManager.getLogin("steve")), 1234);
-            jen.addAccount("LineOfCredit", ((SystemUser_Customer) UserManager.getLogin("steve")), 4321);
-            jen.addAccount("Saving", ((SystemUser_Customer) UserManager.getLogin("steve")), 1000);
-            jen.addAccount("CreditCard", ((SystemUser_Customer) UserManager.getLogin("steve")), 420);
+            jen.addAccount("Chequing", ((User_Customer) UserManager.getLogin("steve")), 1234);
+            jen.addAccount("LineOfCredit", ((User_Customer) UserManager.getLogin("steve")), 4321);
+            jen.addAccount("Saving", ((User_Customer) UserManager.getLogin("steve")), 1000);
+            jen.addAccount("CreditCard", ((User_Customer) UserManager.getLogin("steve")), 420);
 
             // Save to FireBase database.
             FireBaseDBAccess fbDb = new FireBaseDBAccess();
-            fbDb.save(jen, "SystemUser", jen.getUsername());
-            fbDb.save(pete, "SystemUser", pete.getUsername());
-            fbDb.save(steve, "SystemUser", steve.getUsername());
+            fbDb.save(jen, "User", jen.getUsername());
+            fbDb.save(pete, "User", pete.getUsername());
+            fbDb.save(steve, "User", steve.getUsername());
         }
 
         //Java FX -> invoke start method
@@ -97,15 +97,15 @@ public class ATM extends Application {
         calendar.setTime(today);
         int now = (calendar.get(Calendar.MONTH));
 
-        // The ATM should displays SystemUser interface all the time, until it is being shut down.
+        // The ATM should displays User interface all the time, until it is being shut down.
         //noinspection InfiniteLoopStatement
         while (true) {
             // Constantly checking if now is the start of the month.
             now = new ATMSystem().checkMonth(now);
 
             // A login session.
-            SystemUser systemUser = loginPrompt();
-            new Options(systemUser);
+            User user = loginPrompt();
+            new Options(user);
         }
     }
 
@@ -159,12 +159,12 @@ public class ATM extends Application {
     }
 
     private void createBMOptionsScreen() {
-        BankManagerOptionsGUI gui = new BankManagerOptionsGUI(window, welcomeScreen, systemUser);
+        BankManagerOptionsGUI gui = new BankManagerOptionsGUI(window, welcomeScreen, user);
         BMOptions = gui.createOptionsScreen();
     }
 
     private void createTellerOptions() {
-        EmployeeOptionsGUI gui = new EmployeeOptionsGUI(window, welcomeScreen, systemUser);
+        EmployeeOptionsGUI gui = new EmployeeOptionsGUI(window, welcomeScreen, user);
         tellerOptions = gui.createOptionsScreen();
     }
 
@@ -221,9 +221,9 @@ public class ATM extends Application {
                 } else if (password.isEmpty()) {
                     actionTarget.setText("Please enter your password");
                 } else {
-                    systemUser = UserManager.verifyLogin(username, password);
+                    user = UserManager.verifyLogin(username, password);
 
-                    if (systemUser == null) {
+                    if (user == null) {
                         actionTarget.setText("Login attempt failed");
                     } else {
                         showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
@@ -232,13 +232,13 @@ public class ATM extends Application {
 
                         // At this point user has been created so we can create all the gui.
 
-                        if (systemUser instanceof SystemUser_Employee_BankManager) {
+                        if (user instanceof User_Employee_BankManager) {
                             createBMOptionsScreen();
                             window.setScene(BMOptions);
-                        } else if (systemUser instanceof SystemUser_Employee_Teller) {
+                        } else if (user instanceof User_Employee_Teller) {
                             createTellerOptions();
                             window.setScene(tellerOptions);
-                        } else if (systemUser instanceof SystemUser_Customer) {
+                        } else if (user instanceof User_Customer) {
                             createCustomerOptions();
                             window.setScene(customerOptions);
                         }

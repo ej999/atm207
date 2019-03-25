@@ -1,15 +1,15 @@
 package ATM;
 
 /**
- * SystemUser with username and password.
+ * User with username and password.
  */
-abstract class SystemUser {
+abstract class User {
     private final String username;
     private String password;
     //TODO: any login user (e.g. employees) should have accounts, not just customers
 
 
-    SystemUser(String username, String password) {
+    User(String username, String password) {
         this.username = username;
         this.password = password;
     }

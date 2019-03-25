@@ -1,7 +1,6 @@
 package ATM;
 
 import java.util.Observable;
-import java.util.Observer;
 
 abstract class Account_Student extends Account implements Account_Transferable {
     int transactions;
@@ -12,13 +11,13 @@ abstract class Account_Student extends Account implements Account_Transferable {
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
     // Default 20 transactions, 250 transferTotal
-    Account_Student(double balance, SystemUser_Customer owner) {
+    Account_Student(double balance, User_Customer owner) {
         super(balance, owner);
         this.transactions = 20;
         this.transferTotal = 250;
     }
 
-    Account_Student(double balance, SystemUser_Customer owner1, SystemUser_Customer owner2) {
+    Account_Student(double balance, User_Customer owner1, User_Customer owner2) {
         super(balance, owner1, owner2);
     }
 
@@ -114,7 +113,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, SystemUser_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
             if (account instanceof Account_Asset) {
@@ -145,7 +144,7 @@ abstract class Account_Student extends Account implements Account_Transferable {
 
     }
 
-    private boolean validTransfer(double transferAmount, SystemUser_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }

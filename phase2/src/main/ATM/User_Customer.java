@@ -10,9 +10,9 @@ import java.util.Date;
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
-class SystemUser_Customer extends SystemUser {
+class User_Customer extends User {
 
-    private static final String user_type = SystemUser_Customer.class.getName();
+    private static final String user_type = User_Customer.class.getName();
     private final ArrayList<Account> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
@@ -25,7 +25,7 @@ class SystemUser_Customer extends SystemUser {
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 
-    SystemUser_Customer(String username, String password) {
+    User_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
 //        this.age = age;
@@ -86,7 +86,7 @@ class SystemUser_Customer extends SystemUser {
     // add a line of request in the alerts.text
     private void requestHelp(String s) throws IOException {
         String content = s + "\n";
-        File file = new File("phase1/alerts.txt");
+        File file = new File("phase2/src/resources/alerts.txt");
         FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(content);

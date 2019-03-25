@@ -10,11 +10,11 @@ import java.util.ArrayList;
 //Import ATM
 
 
-class SystemUser_Employee_BankManager extends SystemUser_Employee {
+class User_Employee_BankManager extends User_Employee {
 
-    private static final String user_type = SystemUser_Employee_BankManager.class.getName();
+    private static final String user_type = User_Employee_BankManager.class.getName();
 
-    SystemUser_Employee_BankManager(String username, String password) {
+    User_Employee_BankManager(String username, String password) {
         super(username, password);
     }
 
@@ -52,7 +52,7 @@ class SystemUser_Employee_BankManager extends SystemUser_Employee {
     void readAlerts() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("phase1/alerts.txt"));
+            reader = new BufferedReader(new FileReader("phase2/src/resources/alerts.txt"));
             String alert = reader.readLine();
             while (alert != null) {
                 System.out.println(alert);
