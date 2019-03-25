@@ -61,7 +61,7 @@ public class ATM extends Application {
     public static void main(String[] args) {
         // Load the back up of User account lists after restarting the ATM.
         UserManagerSerialization serialization = new UserManagerSerialization();
-//        serialization.deserialize();
+        serialization.deserialize();
 
         // If the backup was deleted or database is empty, recreate the default state here.
         if (UserManager.user_map.isEmpty()) {
