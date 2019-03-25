@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -17,8 +19,9 @@ class User_Customer extends User {
     private Account primary;
     private Inventory goods = new Inventory();
     //TODO: personal details
-//    private int age;
-//    private Date DOB = new Date();
+    private int age;
+    // Date of Birth
+    private String dob;
     private int creditScore;
     // credit Score should have a default value
     // each month if the customer payed everything on time it should be increased by a little amount
@@ -29,10 +32,21 @@ class User_Customer extends User {
     public User_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
-//        this.age = age;
     }
-    //TODO: personal details
-//    private int age;
+
+    public User_Customer(String username, String password, LocalDate dob) {
+        this(username, password);
+        this.dob = dob.toString();
+        this.age = (int) dob.until(LocalDate.now(), ChronoUnit.YEARS);
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public int getAge() {
+        return age;
+    }
 
     public String getType() {
         return type;

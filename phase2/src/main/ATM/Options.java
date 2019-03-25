@@ -177,7 +177,7 @@ class Options {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
-        if (UserManager.checkLoginExistence(username)) {
+        if (UserManager.isPresent(username)) {
             String accountType = selectAccountTypePrompt();
             AccountManager.addAccount(accountType, (User_Customer) UserManager.getUser(username));
         } else {
@@ -280,7 +280,7 @@ class Options {
         while (!finished) {
             System.out.print("Enter username: ");
             String username = reader.next();
-            if (UserManager.checkLoginExistence(username)) {
+            if (UserManager.isPresent(username)) {
                 Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
                 ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
                 finished = true;
@@ -419,7 +419,7 @@ class Options {
         System.out.print("Please enter the amount you would like to transfer: ");
         double amount = reader.nextDouble();
 
-        if (UserManager.checkLoginExistence(username)) {
+        if (UserManager.isPresent(username)) {
             User_Customer user = (User_Customer) UserManager.getUser(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");

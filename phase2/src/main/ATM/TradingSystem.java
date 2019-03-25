@@ -54,7 +54,7 @@ public class TradingSystem {
             }
 
         }
-        //Else check for key existence, append trade offer to list.
+        //Else check for if key exists, append trade offer to list.
         else {
             if (!sell_offers.containsKey(item)) {
                 sell_offers.put(item, new ArrayList<>());
@@ -86,7 +86,7 @@ public class TradingSystem {
             }
 
         }
-        //Else check for key existence, append trade offer to list.
+        //Else check for if key exists, append trade offer to list.
         else {
             if (!buy_offers.containsKey(item)) {
                 buy_offers.put(item, new ArrayList<>());
