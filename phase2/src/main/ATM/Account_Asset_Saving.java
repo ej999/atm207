@@ -1,5 +1,6 @@
 package ATM;
 
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -49,7 +50,7 @@ class Account_Asset_Saving extends Account_Asset implements Observer, Account_Tr
             mostRecentTransactionString = "n/a";
         }
 
-        return "Saving\t\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Saving\t\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 
 }

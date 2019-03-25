@@ -1,6 +1,11 @@
 package ATM;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A static class to manage all existing user accounts.
@@ -9,7 +14,24 @@ final class UserManager {
     // A mapping of username to User.
     static HashMap<String, User> user_map = new HashMap<>();
 
-    private UserManager() {
+    static final List<Class> typesOfUsers = Arrays.asList(
+            User_Customer.class,
+            User_Employee_BankManager.class,
+            User_Employee_Teller.class
+    );
+
+    UserManager() {
+    }
+
+    // Return as String, not Class.
+    public static List<String> getTypesOfUsers() {
+        List<String> types = new ArrayList<>();
+
+        for (Class type : typesOfUsers) {
+            types.add(type.getSimpleName());
+        }
+
+        return types;
     }
 
     static void addUser(User user) {
@@ -19,39 +41,18 @@ final class UserManager {
 
     // Note that only a Bank Manager can create and set the initial password for a user.
     static void createUser(String type, String username, String password) {
-        switch (type) {
-            case "Customer": {
-                User_Customer newUser = new User_Customer(username, password);
+        if (UserManager.checkLoginExistence(username)) {
+            System.out.println("Username already exists. User account is not created.");
+        } else {
+            try {
+                Class<?> clazz = Class.forName("ATM." + type);
+                Constructor<?> cTor = clazz.getConstructor(String.class, String.class);
+                User newUser = (User) cTor.newInstance(username, password);
 
-                // Username should be unique.
-                if (UserManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. User account is not created.");
-                } else {
-                    UserManager.addUser(newUser);
-                    System.out.println("A customer account with username, " + username + ", is successfully created.");
-                }
-            }
-            case "Teller": {
-                User_Employee_Teller newTeller = new User_Employee_Teller(username, password);
-
-                // Username should be unique.
-                if (UserManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. User account is not created.");
-                } else {
-                    UserManager.addUser(newTeller);
-                    System.out.println("A teller account with username, " + username + ", is successfully created.");
-                }
-            }
-            case "BankManager": {
-                User_Employee_BankManager newManager = new User_Employee_BankManager(username, password);
-
-                // Username should be unique.
-                if (UserManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. User account is not created.");
-                } else {
-                    UserManager.addUser(newManager);
-                    System.out.println("A teller account with username, " + username + ", is successfully created.");
-                }
+                UserManager.addUser(newUser);
+                System.out.println("A User: \"" + newUser + "\", is successfully created.");
+            } catch (NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                System.err.println("User type is not valid. Please retry.");
             }
         }
     }

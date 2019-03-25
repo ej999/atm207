@@ -1,5 +1,7 @@
 package ATM;
 
+import java.util.Date;
+
 /**
  * A chequing account.
  */
@@ -37,6 +39,6 @@ class Account_Asset_Chequing extends Account_Asset implements Account_Transferab
             mostRecentTransactionString = "n/a";
         }
 
-        return "Chequing\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Chequing\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

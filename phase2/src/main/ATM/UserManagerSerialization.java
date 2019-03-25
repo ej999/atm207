@@ -48,6 +48,7 @@ final class UserManagerSerialization {
     void serialize() {
         fbDb.saveAll(UserManager.user_map, "Users");
         fbDb.saveAll(AccountManager.account_list, "Accounts");
+        System.err.print("Serialized data saved. ");
     }
 
     public void deleteDatabase() {

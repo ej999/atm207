@@ -134,9 +134,9 @@ class Options {
      */
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating User... Enter user type (Customer, Teller, BankManager):");
+        System.out.print("Creating User... Enter user type (" + UserManager.getTypesOfUsers() + "): ");
         String type = reader.next();
-        System.out.print(" Enter username: ");
+        System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
@@ -212,19 +212,9 @@ class Options {
     }
 
     private void logoutPrompt() {
-        //Every time the user logs out, the UserManager's contents will be serialized and saved.
+        //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
         UserManagerSerialization backUp = new UserManagerSerialization();
-//        try {
-//            //todo truman
-//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(backUp);
-//            out.close();
-//            fileOut.close();
-//            System.err.print("Serialized data saved. ");
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
+        new UserManagerSerialization().serialize();
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");

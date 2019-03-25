@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Observable;
 
 /**
@@ -207,6 +208,6 @@ class Account_Youth extends Account implements Account_Transferable {
             mostRecentTransactionString = "n/a";
         }
 
-        return "Student\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Student\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

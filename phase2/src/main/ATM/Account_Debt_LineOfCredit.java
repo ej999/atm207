@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
 
@@ -125,6 +126,6 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
             mostRecentTransactionString = "n/a";
         }
 
-        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
+        return "Line of Credit\t\t" + new Date(dateOfCreation) + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
     }
 }

@@ -14,7 +14,7 @@ class User_Employee_BankManager extends User_Employee {
 
     private static final String type = User_Employee_BankManager.class.getName();
 
-    User_Employee_BankManager(String username, String password) {
+    public User_Employee_BankManager(String username, String password) {
         super(username, password);
     }
 

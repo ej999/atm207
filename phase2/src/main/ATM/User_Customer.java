@@ -26,7 +26,7 @@ class User_Customer extends User {
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 
-    User_Customer(String username, String password) {
+    public User_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
 //        this.age = age;

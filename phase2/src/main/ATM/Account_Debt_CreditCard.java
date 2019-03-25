@@ -1,5 +1,7 @@
 package ATM;
 
+import java.util.Date;
+
 class Account_Debt_CreditCard extends Account_Debt {
     private static final String type = Account_Debt_CreditCard.class.getName();
 
@@ -37,6 +39,6 @@ class Account_Debt_CreditCard extends Account_Debt {
             mostRecentTransactionString = "n/a";
         }
 
-        return "Credit Card\t\t\t" + dateOfCreation + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return "Credit Card\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 }

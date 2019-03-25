@@ -4,7 +4,7 @@ public class User_Employee_Teller extends User_Employee {
 
     private static final String type = User_Employee_Teller.class.getName();
 
-    User_Employee_Teller(String username, String password) {
+    public User_Employee_Teller(String username, String password) {
         super(username, password);
 
     }
