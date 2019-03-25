@@ -62,7 +62,7 @@ final class Cash {
     }
 
     /*
-    When bank manager restocks the machine
+    When Bank Manager restocks the machine
     cashList: [fives, tens, twenties, fifties]
      */
     static void cashDeposit(ArrayList<Integer> cashList) {

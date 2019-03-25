@@ -1,10 +1,7 @@
 package ATM;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
@@ -54,7 +51,7 @@ class Options {
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
 
-            options.put("Load custom bank data", new Thread(this::loadCustomPrompt));
+//            options.put("Load custom bank data", new Thread(this::loadCustomPrompt));
 
             options.put("Clear all bank data", new Thread(this::clearDataPrompt));
 
@@ -133,7 +130,7 @@ class Options {
     }
 
     /**
-     * Gets username and password from input and tells BankManager to create the customer.
+     * Gets username and password from input and tells Bank Manager to create the customer.
      */
     private void createLoginPrompt() {
         Scanner reader = new Scanner(System.in);
@@ -143,7 +140,7 @@ class Options {
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        ((SystemUser_Employee_BankManager) systemUser).createLogin(type, username, password);
+        UserManager.createLogin(type, username, password);
     }
 
     private String selectAccountTypePrompt() {
@@ -174,15 +171,15 @@ class Options {
     }
 
     /**
-     * Gets username and tells BankManager to create the specified account for the customer
+     * Gets username and tells Bank Manager to create the specified account for the customer
      */
     private void createAccountPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
-        if (LoginManager.checkLoginExistence(username)) {
+        if (UserManager.checkLoginExistence(username)) {
             String accountType = selectAccountTypePrompt();
-            ((SystemUser_Employee_BankManager) systemUser).addAccount(accountType, (SystemUser_Customer) LoginManager.getLogin(username));
+            ((SystemUser_Employee_BankManager) systemUser).addAccount(accountType, (SystemUser_Customer) UserManager.getLogin(username));
         } else {
             System.out.println("The username does not exist. No account has been created.");
         }
@@ -190,7 +187,7 @@ class Options {
 
     /**
      * Restocks the bank machine based on input.
-     * Only the BankManager is able to access this.
+     * Only the Bank Manager is able to access this.
      */
     private void restockPrompt() {
         Scanner reader = new Scanner(System.in);
@@ -215,18 +212,19 @@ class Options {
     }
 
     private void logoutPrompt() {
-        //Every time the user logs out, the LoginManager's contents will be serialized and saved.
-        LoginManagerBackup backUp = new LoginManagerBackup();
-        try {
-            FileOutputStream fileOut = new FileOutputStream("phase1/LoginManagerStorage.txt");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(backUp);
-            out.close();
-            fileOut.close();
-            System.err.print("Serialized data saved. ");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
+        //Every time the user logs out, the UserManager's contents will be serialized and saved.
+        UserManagerSerialization backUp = new UserManagerSerialization();
+//        try {
+//            //todo truman
+//            FileOutputStream fileOut = new FileOutputStream("phase1/LoginManagerStorage.txt");
+//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//            out.writeObject(backUp);
+//            out.close();
+//            fileOut.close();
+//            System.err.print("Serialized data saved. ");
+//        } catch (IOException i) {
+//            i.printStackTrace();
+//        }
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
@@ -235,23 +233,22 @@ class Options {
         this.systemUser = null;
     }
 
-    private void loadCustomPrompt() {
-        System.out.println("Please enter the name of the file you want to load from (don't include its extension.)" +
-                " Note that it must be stored in the phase1 folder");
-        Scanner reader1 = new Scanner(System.in);
-        String answer = reader1.nextLine();
-        LoginManagerBackup custom_loader = new LoginManagerBackup();
-        HashMap<String, SystemUser> custom_map = custom_loader.loadCustom(answer);
-        LoginManager.login_map = custom_map;
-    }
+//    private void loadCustomPrompt() {
+//        System.out.println("Please enter the name of the file you want to load from (don't include its extension.)" +
+//                " Note that it must be stored in the phase1 folder");
+//        Scanner reader1 = new Scanner(System.in);
+//        String answer = reader1.nextLine();
+//        UserManagerSerialization custom_loader = new UserManagerSerialization();
+//        HashMap<String, SystemUser> custom_map = custom_loader.loadCustom(answer);
+//        UserManager.user_map = custom_map;
+//    }
 
     private void clearDataPrompt() {
         System.out.print("USE WITH CAUTION: all data including all login and bank account will be deleted! (Y/N): ");
         Scanner reader2 = new Scanner(System.in);
         String answer = reader2.nextLine();
         if (answer.equals("Y")) {
-            LoginManagerBackup deleter = new LoginManagerBackup();
-            deleter.deleteBackup();
+            UserManagerSerialization deleter = new UserManagerSerialization();
             System.out.println("Data has been cleared. Please restart the program.");
             System.exit(0);
         }
@@ -285,7 +282,7 @@ class Options {
     /**
      * Gets customer by username and displays all their accounts
      * Select an account from input and tell that account to undo the last transaction
-     * only BankManager can access this
+     * only Bank Manager can access this
      */
     private void undoPrompt() {
         Scanner reader = new Scanner(System.in);
@@ -293,8 +290,8 @@ class Options {
         while (!finished) {
             System.out.print("Enter username: ");
             String username = reader.next();
-            if (LoginManager.checkLoginExistence(username)) {
-                Account account2undo = selectAccountPrompt((SystemUser_Customer) LoginManager.getLogin(username));
+            if (UserManager.checkLoginExistence(username)) {
+                Account account2undo = selectAccountPrompt((SystemUser_Customer) UserManager.getLogin(username));
                 ((SystemUser_Employee_BankManager) systemUser).undoMostRecentTransaction(account2undo);
                 finished = true;
                 System.out.println("Undo successful.");
@@ -432,8 +429,8 @@ class Options {
         System.out.print("Please enter the amount you would like to transfer: ");
         double amount = reader.nextDouble();
 
-        if (LoginManager.checkLoginExistence(username)) {
-            SystemUser_Customer user = (SystemUser_Customer) LoginManager.getLogin(username);
+        if (UserManager.checkLoginExistence(username)) {
+            SystemUser_Customer user = (SystemUser_Customer) UserManager.getLogin(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
         } else {

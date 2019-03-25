@@ -1,6 +1,5 @@
 package ATM;
 
-import com.google.firebase.database.FirebaseDatabase;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,19 +16,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
 
 /**
- * An ATM that allows customers and employees to interact with their login accounts.
- * It will display options on the screen and the user will select an option by typing the corresponding number
- * on the keyboard.
+ * An ATM that allows customers and employees to conduct a range of financial transactions and operations by using
+ * their login accounts. It is displayed on both PrintStream and GUI.
  */
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
-public class ATM extends Application implements Serializable {
+public class ATM extends Application {
     private Stage window;
     private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
     private SystemUser systemUser;
@@ -53,58 +50,47 @@ public class ATM extends Application implements Serializable {
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            systemUser = LoginManager.verifyLogin(username, password);
+            systemUser = UserManager.verifyLogin(username, password);
 
         }
         System.out.println("\nSystemUser success. Hi " + systemUser.getUsername() + "!");
         return systemUser;
     }
 
-    /**
-     * Preloaded bank manage account: {username: jen, password: 1234}
-     * Preloaded customer account: {username: steve, password: 1234}
-     */
+
     public static void main(String[] args) {
-
         // Load the back up of SystemUser account lists after restarting the ATM.
-        LoginManagerBackup load_backup = new LoginManagerBackup();
-        LoginManagerBackup backup = load_backup.returnFileBackup();
-        LoginManager.login_map = new HashMap<>();
+        UserManagerSerialization serialization = new UserManagerSerialization();
+        serialization.deserialize();
 
-        // Instantiate an Employee account here for basic functions here.
-        SystemUser_Employee_BankManager jen = new SystemUser_Employee_BankManager("jen", "1234");
-        SystemUser_Employee_Teller pete = new SystemUser_Employee_Teller("pete", "1234");
-        SystemUser_Customer steve = new SystemUser_Customer("steve", "1234");
+        // If the backup was deleted or database is empty, recreate the default state here.
+        if (UserManager.user_map.isEmpty()) {
+            System.err.println("Warning: data is not retrieved from Firebase database!");
 
-        //TODO move to loginmanager class?
-        FireBaseDBAccess fbDb = new FireBaseDBAccess();
-        fbDb.save(jen, "EmployeeBankManager",jen.getUsername());
-        fbDb.save(pete, "EmployeeBankManager",pete.getUsername());
-        fbDb.save(steve, "EmployeeBankManager",steve.getUsername());
+            // Instantiate an Employee account here for basic functions here.
+            UserManager.createLogin("BankManager", "jen", "1234");
+            UserManager.createLogin("Teller", "pete", "1234");
+            UserManager.createLogin("Customer", "steve", "1234");
 
-        HashMap<String, Object> bankManager_map = fbDb.retrieve("EmployeeBankManager");
-
-
-//        Modifier.isAbstract(SystemUser_Employee.class.getModifiers());
+            SystemUser_Employee_BankManager jen = (SystemUser_Employee_BankManager) UserManager.user_map.get("jen");
+            SystemUser pete = UserManager.user_map.get("pete");
+            SystemUser steve = UserManager.user_map.get("steve");
 
 
-        LoginManager.addLogin(jen);
-        if (backup.deleted == 0) {
-            LoginManager.login_map = backup.login_map;
+            jen.addAccount("Chequing", ((SystemUser_Customer) UserManager.getLogin("steve")), 1234);
+            jen.addAccount("LineOfCredit", ((SystemUser_Customer) UserManager.getLogin("steve")), 4321);
+            jen.addAccount("Saving", ((SystemUser_Customer) UserManager.getLogin("steve")), 1000);
+            jen.addAccount("CreditCard", ((SystemUser_Customer) UserManager.getLogin("steve")), 420);
 
-        } else {
-            // If the backup was deleted, recreate the default state here.
-
-            jen.createLogin("Customer", "steve", "1234");
-            jen.addAccount("Chequing", ((SystemUser_Customer) LoginManager.getLogin("steve")), 1234);
-            jen.addAccount("LineOfCredit", ((SystemUser_Customer) LoginManager.getLogin("steve")), 4321);
-            jen.addAccount("Saving", ((SystemUser_Customer) LoginManager.getLogin("steve")), 1000);
-            jen.addAccount("CreditCard", ((SystemUser_Customer) LoginManager.getLogin("steve")), 420);
+            // Save to FireBase database.
+            FireBaseDBAccess fbDb = new FireBaseDBAccess();
+            fbDb.save(jen, "SystemUser", jen.getUsername());
+            fbDb.save(pete, "SystemUser", pete.getUsername());
+            fbDb.save(steve, "SystemUser", steve.getUsername());
         }
 
         //Java FX -> invoke start method
         launch(args);
-        System.out.println(bankManager_map.keySet());
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -117,12 +103,10 @@ public class ATM extends Application implements Serializable {
             // Constantly checking if now is the start of the month.
             now = new ATMSystem().checkMonth(now);
 
-
             // A login session.
             SystemUser systemUser = loginPrompt();
             new Options(systemUser);
         }
-
     }
 
     @Override
@@ -237,7 +221,7 @@ public class ATM extends Application implements Serializable {
                 } else if (password.isEmpty()) {
                     actionTarget.setText("Please enter your password");
                 } else {
-                    systemUser = LoginManager.verifyLogin(username, password);
+                    systemUser = UserManager.verifyLogin(username, password);
 
                     if (systemUser == null) {
                         actionTarget.setText("Login attempt failed");

@@ -1,11 +1,9 @@
 package ATM;
 
-import java.io.Serializable;
-
 /**
  * SystemUser with username and password.
  */
-abstract class SystemUser implements Serializable {
+abstract class SystemUser {
     private final String username;
     private String password;
     //TODO: any login user (e.g. employees) should have accounts, not just customers
@@ -16,11 +14,11 @@ abstract class SystemUser implements Serializable {
         this.password = password;
     }
 
-    public String getUsername() {
+    String getUsername() {
         return username;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 

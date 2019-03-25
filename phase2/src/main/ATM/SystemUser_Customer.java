@@ -1,31 +1,31 @@
 package ATM;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
-class SystemUser_Customer extends SystemUser implements Serializable {
+class SystemUser_Customer extends SystemUser {
 
     private static final String user_type = SystemUser_Customer.class.getName();
-
-    public String getUser_type() {
-        return user_type;
-    }
-
     private final ArrayList<Account> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
-    //TODO: personal details
-//    private int age;
-
-
     SystemUser_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
 //        this.age = age;
+    }
+    //TODO: personal details
+//    private int age;
+
+    public String getUser_type() {
+        return user_type;
     }
 
     /**
@@ -90,7 +90,7 @@ class SystemUser_Customer extends SystemUser implements Serializable {
         requestHelp(n);
     }
 
-    //TODO toString interferes with serialization in Gson.fromJson
+    //TODO truman: toString interferes with serialization in Gson.fromJson
 //    @Override
 //    public String toString() {
 //        StringBuilder returnMessage = new StringBuilder();
@@ -109,6 +109,11 @@ class SystemUser_Customer extends SystemUser implements Serializable {
 //
 //        return returnMessage.toString();
 //    }
+
+    @Override
+    public String toString() {
+        return "Customer with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
+    }
 
     Account getPrimary() {
         return primary;

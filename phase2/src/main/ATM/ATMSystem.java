@@ -1,6 +1,5 @@
 package ATM;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
@@ -8,7 +7,7 @@ import java.util.Observable;
 /**
  * ATM frame that handles update.
  */
-class ATMSystem extends Observable implements Serializable {
+class ATMSystem extends Observable {
     /**
      * check if today is the start of the month
      */

@@ -2,23 +2,15 @@ package ATM;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-abstract class Account implements Serializable {
+abstract class Account {
     static final String outputFilePath = "phase1/outgoing.txt";
     private static final String inputFilePath = "phase1/deposits.txt";
     final Date dateOfCreation;
-
-    /*
-    The most recent transaction is at the beginning. Behaves like a stack.
-     */
-//    ArrayList<Transaction> transactionHistory;
-    Stack<Transaction> transactionHistory;
-
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
      */
@@ -31,6 +23,11 @@ abstract class Account implements Serializable {
     };
     // An array of account holders
     private final ArrayList<SystemUser_Customer> owners = new ArrayList<>();
+    /*
+    The most recent transaction is at the beginning. Behaves like a stack.
+     */
+//    ArrayList<Transaction> transactionHistory;
+    Stack<Transaction> transactionHistory;
     double balance;
 
     Account(double balance, SystemUser_Customer owner) {
@@ -73,10 +70,11 @@ abstract class Account implements Serializable {
 
     /**
      * Undoes the n most recent transactions.
+     *
      * @param n transactions to be undone
      */
     void undoTransactions(int n) {
-        if (n>0) {
+        if (n > 0) {
 
             for (int i = 0; i < n; i++) {
                 try {
@@ -131,6 +129,7 @@ abstract class Account implements Serializable {
 
     /**
      * Add another owner to this account.
+     *
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */

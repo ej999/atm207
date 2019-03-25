@@ -1,8 +1,6 @@
 package ATM;
 
-import java.io.Serializable;
-
-abstract class SystemUser_Employee extends SystemUser implements Serializable {
+abstract class SystemUser_Employee extends SystemUser {
     SystemUser_Employee(String username, String password) {
         super(username, password);
     }

@@ -14,11 +14,14 @@ import java.util.concurrent.CountDownLatch;
 /**
  * A helper class that allow read and write to project's FireBase database.
  */
-class FireBaseDBAccess {
-    private DatabaseReference databaseRef;
+final class FireBaseDBAccess {
+    private static boolean initialized = false;
+    private static DatabaseReference databaseRef;
 
     FireBaseDBAccess() {
-        initFireBase();
+        if (!initialized) {
+            initFireBase();
+        }
     }
 
     private void initFireBase() {
@@ -39,6 +42,7 @@ class FireBaseDBAccess {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        initialized = true;
     }
 
     void save(Object item, String child, String key) {
@@ -50,7 +54,7 @@ class FireBaseDBAccess {
             CountDownLatch latch = new CountDownLatch(1);
 
             childRef.setValue(item, (error, ref) -> {
-                System.out.println("Record saved!");
+                System.out.println("Record " + ref + " saved!");
                 latch.countDown();
             });
 
@@ -83,6 +87,9 @@ class FireBaseDBAccess {
         }
     }
 
+    /**
+     * Return a HashMap of all the child items as their objects in database.
+     */
     HashMap<String, Object> retrieve(String child) {
         // Get existing child or will bee created new child.
         DatabaseReference childRef = databaseRef.child(child);
@@ -91,39 +98,25 @@ class FireBaseDBAccess {
         CountDownLatch latch = new CountDownLatch(1);
 
         HashMap<String, Object> object_map = new HashMap<>();
-        childRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-                Object objInJSON = snapshot.getValue();
-                try {
-                    Class classOfObj = Class.forName((String) ((HashMap) objInJSON).get("user_type"));
-                    Object object = json2object(snapshot.getValue(), classOfObj);
-                    object_map.put(snapshot.getKey(), object);
-                } catch (ClassNotFoundException e) {
-                    e.getStackTrace();
-                }
 
+        childRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Object child;
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    try {
+                        Class classOfObj = Class.forName((String) ((HashMap) childSnapshot.getValue()).get("user_type"));
+                        Object object = json2object(childSnapshot.getValue(), classOfObj);
+                        object_map.put(childSnapshot.getKey(), object);
+                    } catch (ClassNotFoundException e) {
+                        e.getStackTrace();
+                    }
+                }
                 latch.countDown();
             }
 
             @Override
-            public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-
-            }
-
-            @Override
             public void onCancelled(DatabaseError error) {
-
             }
         });
 
@@ -133,7 +126,6 @@ class FireBaseDBAccess {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         return object_map;
     }
 
@@ -167,7 +159,7 @@ class FireBaseDBAccess {
     }
 
     // Helper method that convert object from JSON using Gson
-    <T> T json2object(Object ob, Class<T> classOfT) {
+    private <T> T json2object(Object ob, Class<T> classOfT) {
         Gson gson = new Gson();
         return gson.fromJson(ob.toString(), classOfT);
     }

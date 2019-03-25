@@ -1,8 +1,6 @@
 package ATM;
 
-import java.io.Serializable;
-
-public class SystemUser_Employee_Teller extends SystemUser_Employee implements Serializable {
+public class SystemUser_Employee_Teller extends SystemUser_Employee {
 
     private static final String user_type = SystemUser_Employee_Teller.class.getName();
 
@@ -13,6 +11,11 @@ public class SystemUser_Employee_Teller extends SystemUser_Employee implements S
 
     public String getUser_type() {
         return user_type;
+    }
+
+    @Override
+    public String toString() {
+        return "Teller with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
     }
 
 //    void undoMostRecentTransaction(Account account) {

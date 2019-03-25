@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * GUI for bank manager.
+ * GUI for Bank Manager.
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI{
     /*
@@ -27,7 +27,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI{
 
     @Override
     public Scene createOptionsScreen() {
-        // Options for bank manager
+        // Options for Bank Manager.
         Button button1 = new Button("Read alerts");
         Button button2 = new Button("Create login for user");
         Button button3 = new Button("Create bank account for user");

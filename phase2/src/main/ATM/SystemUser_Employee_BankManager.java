@@ -3,7 +3,6 @@ package ATM;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 //Import ATM
 
 
-class SystemUser_Employee_BankManager extends SystemUser_Employee implements Serializable {
+class SystemUser_Employee_BankManager extends SystemUser_Employee {
 
     private static final String user_type = SystemUser_Employee_BankManager.class.getName();
 
@@ -33,7 +32,7 @@ class SystemUser_Employee_BankManager extends SystemUser_Employee implements Ser
     }
 
     /**
-     * The manager has the ability to undo the most recent transaction on any asset or debt account,
+     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
      * except for paying bills.
      *
      * @param account account involved
@@ -42,48 +41,12 @@ class SystemUser_Employee_BankManager extends SystemUser_Employee implements Ser
         account.undoMostRecentTransaction();
     }
 
-    /**
-     * Only a bank manager can create and set the initial password for a user.
-     * TODO: I think this method should be in LoginManager
-     */
-
     void setMaxTransactions(Account_Student account, int transactionsAmount) {
         account.setMaxTransactions(transactionsAmount);
     }
 
     void setTransferLimit(Account_Student account, int transferLimitAmount) {
         account.setTransferLimit(transferLimitAmount);
-    }
-
-    /**
-     * Only a bank manager can create and set the initial password for a user.
-     * TODO: I think this method should be in LoginManager
-     */
-    void createLogin(String account_type, String username, String password) {
-        switch (account_type) {
-            case "Customer": {
-                SystemUser_Customer newUser = new SystemUser_Customer(username, password);
-
-                // Username should be unique.
-                if (LoginManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. SystemUser account is not created.");
-                } else {
-                    LoginManager.addLogin(newUser);
-                    System.out.println("A customer account with username, " + username + ", is successfully created.");
-                }
-            }
-            case "Teller": {
-                SystemUser_Employee_Teller newTeller = new SystemUser_Employee_Teller(username, password);
-
-                // Username should be unique.
-                if (LoginManager.checkLoginExistence(username)) {
-                    System.out.println("Username already exists. SystemUser account is not created.");
-                } else {
-                    LoginManager.addLogin(newTeller);
-                    System.out.println("A teller account with username, " + username + ", is successfully created.");
-                }
-            }
-        }
     }
 
     void readAlerts() {
@@ -99,6 +62,11 @@ class SystemUser_Employee_BankManager extends SystemUser_Employee implements Ser
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Bank Manager with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
     }
 
 }

@@ -2,7 +2,7 @@ Step by step:
 
 Customer wants to deposit money
 1)Customer approaches -> Login screen. ATM class asks for login/password, after customer inputs, this gets
-fed to LoginManager, which returns the Customer.
+fed to UserManager, which returns the Customer.
 
 2) They get all of the options from the ATM class, this is determined from the Customer's specific account class itself
  (b/c some classes don't have certain options)
