@@ -80,6 +80,7 @@ public class ATM extends Application {
 
         //Java FX -> invoke start method
         launch(args);
+
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
@@ -101,10 +102,6 @@ public class ATM extends Application {
     public void init() throws Exception {
         super.init();
 //        System.err.println("Inside init() method! Perform necessary initializations here.");
-        // Cannot initialize options screen just yet because main window, welcome screen, and user don't exist
-//        createBMOptionsScreen();
-//        createTellerOptions();
-//        createCustomerOptions();
     }
 
 //    @Override
@@ -121,9 +118,6 @@ public class ATM extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //TODO: How to make gui work with Options class? MVC?
-        //TODO: use software design principles
-
         /*
         A bit of terminology
         stage - window
@@ -151,13 +145,14 @@ public class ATM extends Application {
         BMOptions = gui.createOptionsScreen();
     }
 
-    private void createTellerOptions() {
+    private void createTellerOptionsScreen() {
         EmployeeOptionsGUI gui = new EmployeeOptionsGUI(window, welcomeScreen, user);
         tellerOptions = gui.createOptionsScreen();
     }
 
-    private void createCustomerOptions() {
-        // TODO
+    private void createCustomerOptionsScreen() {
+        CustomerOptionsGUI gui = new CustomerOptionsGUI(window, welcomeScreen, user);
+        customerOptions = gui.createOptionsScreen();
     }
 
     private GridPane createUserFormPane() {
@@ -218,16 +213,16 @@ public class ATM extends Application {
                                 "Hi " + username);
 
 
-                        // At this point user has been created so we can create all the gui.
+                        // At this point the user has been created so we can create the options screen
 
                         if (user instanceof User_Employee_BankManager) {
                             createBMOptionsScreen();
                             window.setScene(BMOptions);
                         } else if (user instanceof User_Employee_Teller) {
-                            createTellerOptions();
+                            createTellerOptionsScreen();
                             window.setScene(tellerOptions);
                         } else if (user instanceof User_Customer) {
-                            createCustomerOptions();
+                            createCustomerOptionsScreen();
                             window.setScene(customerOptions);
                         }
                     }

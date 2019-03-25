@@ -55,6 +55,10 @@ public abstract class OptionsGUI {
         window.setScene(welcomeScreen);
     }
 
+    /**
+     * Common layout for the various scenes
+     * @return gridPane layout
+     */
     public GridPane createFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -66,63 +70,67 @@ public abstract class OptionsGUI {
         return grid;
     }
 
-    public Scene setPasswordScreen() {
-        GridPane grid = createFormPane();
-
+    private void addUIControlsToPasswordScreen(GridPane grid) {
         Label oldPass = new Label("Old Password:");
         grid.add(oldPass, 0, 0);
-        PasswordField userTextField = new PasswordField();
-        userTextField.setPromptText("old password");
-        grid.add(userTextField, 1, 1);
+        PasswordField oldPassField = new PasswordField();
+        oldPassField.setPromptText("old password");
+        grid.add(oldPassField, 1, 1);
 
-        Label pw = new Label("New Password:");
-        grid.add(pw, 0, 2);
+        Label newPass = new Label("New Password:");
+        grid.add(newPass, 0, 2);
         PasswordField pwBox = new PasswordField();
         pwBox.setPromptText("new password");
         grid.add(pwBox, 1, 2);
 
-        Label pw1 = new Label("Confirm New Password:");
-        grid.add(pw1, 0, 3);
+        Label confirmPass = new Label("Confirm New Password:");
+        grid.add(confirmPass, 0, 3);
         PasswordField pwBox1 = new PasswordField();
         grid.add(pwBox1, 1, 3);
 
-        Button btn = new Button("Save");
-        Button btn2 = new Button("Cancel");
+        Button save = new Button("Save");
+        Button cancel = new Button("Cancel");
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(btn);
-        hbBtn.getChildren().add(btn2);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(save);
         grid.add(hbBtn, 1, 4);
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
 
-        // Save btn
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 actionTarget.setFill(Color.FIREBRICK);
-                String oldpassreal = user.getPassword();
-                String oldpassenter = userTextField.getText();
-                String newpass = pwBox.getText();
-                String newpassagain = pwBox1.getText();
+                String realOldPass = user.getPassword();
+                String oldPassTyped = oldPassField.getText();
+                String newPass = pwBox.getText();
+                String newPassAgain = pwBox1.getText();
 
-                if (!oldpassreal.equals(oldpassenter)) {
+                if (!realOldPass.equals(oldPassTyped)) {
                     actionTarget.setText("Old password incorrect");
-                } else if (!newpass.equals(newpassagain)) {
+                } else if (!newPass.equals(newPassAgain)) {
                     actionTarget.setText("Check new password");
+                } else if (newPass.isEmpty()) {
+                    actionTarget.setText("New password cannot be empty");
                 } else {
-                    user.setPassword(newpass);
+                    user.setPassword(newPass);
                     setPasswordHandler();
                 }
             }
         });
 
-        btn2.setOnAction(e -> {
+        cancel.setOnAction(e -> {
             window.setScene(optionsScreen);
         });
+    }
 
-        return new Scene(grid, 300, 275);
+    public Scene changePasswordScreen() {
+        GridPane grid = createFormPane();
+        addUIControlsToPasswordScreen(grid);
+        //TODO: change dimensions so that everything fits
+        return new Scene(grid, 300,275);
     }
 
     public void setPasswordHandler() {

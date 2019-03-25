@@ -39,7 +39,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         Button button9 = new Button("Logout");
 
         // TODO: Then we need handlers for all nine buttons...
-        button6.setOnAction(event -> window.setScene(setPasswordScreen()));
+        button6.setOnAction(event -> window.setScene(changePasswordScreen()));
         button9.setOnAction(event -> logoutHandler());
 
 

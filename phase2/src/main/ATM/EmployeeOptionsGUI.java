@@ -24,19 +24,17 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         Button button1 = new Button("Read alerts");
         Button button2 = new Button("Create bank account for user");
         Button button3 = new Button("Change password");
-        Button button4 = new Button("Undo transaction");
+        Button button4 = new Button("Undo transactions");
         Button button5 = new Button("Logout");
 
-        button3.setOnAction(event -> setPasswordScreen());
+        button3.setOnAction(event -> window.setScene(changePasswordScreen()));
         button5.setOnAction(event -> logoutHandler());
 
-        // TODO: Then we need handlers for all five buttons...
+        // TODO: Then we need handlers for the rest of the buttons
 
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.setVgap(10);
+        GridPane gridPane = createFormPane();
 
+        // Use for loop
         gridPane.add(button1, 0, 1);
         gridPane.add(button2, 0, 2);
         gridPane.add(button3, 0, 3);
