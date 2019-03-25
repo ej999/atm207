@@ -111,18 +111,20 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         }
     }
 
-//    @Override
-//    public String toString() {
-//        String mostRecentTransactionString;
-//
-//        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-//        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-//        } else {
-//            mostRecentTransactionString = "n/a";
-//        }
-//
-//        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
-//    }
+    @Override
+    public String toString() {
+        String mostRecentTransactionString;
+
+        if (getMostRecentTransaction() == null) {
+            mostRecentTransactionString = "n/a";
+        } else if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return "Line of Credit\t\t" + dateOfCreation + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
+    }
 }

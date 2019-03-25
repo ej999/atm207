@@ -72,6 +72,7 @@ abstract class Account {
         }
     }
 
+    //TODO truman: doesn't work for Gson.fromJson()
     Date getDateOfCreation() {
         return dateOfCreation;
     }

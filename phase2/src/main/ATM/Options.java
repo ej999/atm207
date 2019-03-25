@@ -27,8 +27,8 @@ class Options {
         this.options = new LinkedHashMap<>();
 
         // create, display. and allow logged-in user to select option.
+        createOptions();
         while (this.user != null) {
-            createOptions();
             displayOptions();
             selectOptions();
 

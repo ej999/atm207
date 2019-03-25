@@ -18,6 +18,7 @@ class User_Customer extends User {
     private Inventory goods = new Inventory();
     //TODO: personal details
 //    private int age;
+//    private Date DOB = new Date();
     private int creditScore;
     // credit Score should have a default value
     // each month if the customer payed everything on time it should be increased by a little amount
@@ -128,6 +129,7 @@ class User_Customer extends User {
         return primary;
     }
 
+    //TODO based on DOB
 //    int getAge() {return age;}
 
     void setPrimary(Account primary) {

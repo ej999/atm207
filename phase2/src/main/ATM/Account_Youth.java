@@ -7,8 +7,12 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Observable;
 
-class Account_Student extends Account implements Account_Transferable {
-    private static final String type = Account_Student.class.getName();
+/**
+ * Youth account is qualified to people under 20 years old.
+ */
+//TODO refactor student to youth
+class Account_Youth extends Account implements Account_Transferable {
+    private static final String type = Account_Youth.class.getName();
     int transactions;
     int maxTransactions;
     int transferLimit;
@@ -17,20 +21,21 @@ class Account_Student extends Account implements Account_Transferable {
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
     // Default 20 transactions, 250 transferTotal
-    Account_Student(double balance, User_Customer owner) {
+    Account_Youth(double balance, User_Customer owner) {
         super(balance, owner);
         this.transactions = 20;
         this.transferTotal = 250;
     }
 
-
-    Account_Student(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
-    }
-
     public String getType() {
         return type;
     }
+
+//    //TODO: check age of owners
+//    //TODO combine owner1 and owner2 to List of owners.
+//    Account_Youth(double balance, ArrayList<User_Customer> owners) {
+////        super(balance, owner1, owner2);
+//    }
 
     public void update(Observable o, Object arg) {
         if ((boolean) arg) {

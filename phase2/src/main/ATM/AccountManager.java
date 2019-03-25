@@ -43,7 +43,7 @@ final class AccountManager {
             return newAccount;
 
         } else if (accountType.equalsIgnoreCase("STUDENT")) {
-            Account_Student newAccount = new Account_Student(initialAmount, owner);
+            Account_Youth newAccount = new Account_Youth(initialAmount, owner);
             addAccount(newAccount);
             return newAccount;
         }
@@ -77,6 +77,5 @@ final class AccountManager {
     static void addAccount(String accountType, User_Customer username) {
         AccountManager.addAccount(accountType, username, 0);
     }
-
 
 }
