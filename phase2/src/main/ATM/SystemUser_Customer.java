@@ -16,6 +16,15 @@ class SystemUser_Customer extends SystemUser {
     private final ArrayList<Account> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
+    //TODO: personal details
+//    private int age;
+    private int creditScore;
+    // credit Score should have a default value
+    // each month if the customer payed everything on time it should be increased by a little amount
+    // if anything is unpayed pass a certain deadline(30 days) the score should decrease drastically
+    // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
+
+
     SystemUser_Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
@@ -120,6 +129,14 @@ class SystemUser_Customer extends SystemUser {
     }
 
 //    int getAge() {return age;}
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
+    }
 
     void setPrimary(Account primary) {
         if (primary instanceof Account_Asset_Chequing) {
