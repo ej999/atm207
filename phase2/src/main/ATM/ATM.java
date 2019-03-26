@@ -49,7 +49,7 @@ public class ATM extends Application {
 
             authResult = UserManager.auth(username, password);
         }
-        user = UserManager.getUser(username);
+        user = UserManager.getAccount(username);
 
         System.out.println("\nUser success. Hi " + user.getUsername() + "!");
         return user;
@@ -62,16 +62,16 @@ public class ATM extends Application {
         serialization.deserialize();
 
         // If the HashMap of User objects is empty or deleted, recreate the default state here.
-        if (UserManager.user_map.isEmpty()) {
+        if (UserManager.account_map.isEmpty()) {
             // Instantiate accounts and users for demo.
-            UserManager.createUser(User_Employee_BankManager.class.getName(), "jen", "1234");
-            UserManager.createUser(User_Employee_Teller.class.getName(), "pete", "1234");
-            UserManager.createUser(User_Customer.class.getName(), "steve", "1234");
-            AccountManager.addAccount("CHEQUING", ((User_Customer) UserManager.getUser("steve")), 1234);
-            AccountManager.addAccount("LINEOFCREDIT", ((User_Customer) UserManager.getUser("steve")), 4321);
-            AccountManager.addAccount("SAVINGS", ((User_Customer) UserManager.getUser("steve")), 1000);
-            AccountManager.addAccount("CREDITCARD", ((User_Customer) UserManager.getUser("steve")), 420);
-
+            UserManager.createAccount(User_Employee_BankManager.class.getName(), "jen", "1234");
+            UserManager.createAccount(User_Employee_Teller.class.getName(), "pete", "1234");
+            UserManager.createAccount(User_Customer.class.getName(), "steve", "1234");
+            AccountManager.addAccount(Account_Asset_Chequing.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 1234);
+            AccountManager.addAccount(Account_Debt_LineOfCredit.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 4321);
+            AccountManager.addAccount(Account_Asset_Saving.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 1000);
+            AccountManager.addAccount(Account_Debt_CreditCard.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 420);
+            System.out.println(((User_Customer) UserManager.getAccount("steve")).getAccounts());
             // Save to FireBase database.
             serialization.serialize();
         }
@@ -206,7 +206,7 @@ public class ATM extends Application {
                 if (!authResult) {
                     actionTarget.setText("Login attempt failed");
                 } else {
-                    user = UserManager.getUser(username);
+                    user = UserManager.getAccount(username);
                     showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                             "Hi " + username);
 

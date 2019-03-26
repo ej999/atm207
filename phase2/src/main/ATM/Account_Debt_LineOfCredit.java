@@ -14,16 +14,16 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_LineOfCredit(User_Customer owner) {
-        super(owner);
+    Account_Debt_LineOfCredit(String id, User_Customer owner) {
+        super(id, owner);
     }
 
-    Account_Debt_LineOfCredit(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Debt_LineOfCredit(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
-    Account_Debt_LineOfCredit(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Debt_LineOfCredit(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     public String getType() {
@@ -61,7 +61,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
     }
 
     /**
@@ -80,7 +80,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getUser(getPrimaryOwner())) {
+            if (user == UserManager.getAccount(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);

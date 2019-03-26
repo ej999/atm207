@@ -22,8 +22,8 @@ class Account_Youth extends Account implements Account_Transferable {
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
     // Default 20 transactions, 250 transferTotal
-    Account_Youth(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Youth(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
         this.transactions = 20;
         this.transferTotal = 250;
     }
@@ -139,7 +139,7 @@ class Account_Youth extends Account implements Account_Transferable {
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
         transferTotal += transferAmount;
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
 
     }
 
@@ -159,7 +159,7 @@ class Account_Youth extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getUser(getPrimaryOwner())) {
+            if (user == UserManager.getAccount(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
             } else {
                 updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);

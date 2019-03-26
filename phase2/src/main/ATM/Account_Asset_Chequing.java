@@ -8,12 +8,12 @@ import java.util.Date;
 class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
     private static final String type = Account_Asset_Chequing.class.getName();
 
-    Account_Asset_Chequing(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Asset_Chequing(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
-    Account_Asset_Chequing(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Asset_Chequing(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     @Override

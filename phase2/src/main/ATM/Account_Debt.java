@@ -4,16 +4,16 @@ abstract class Account_Debt extends Account {
 
     private static final double DEBT_CAPACITY = 10000;
 
-    Account_Debt(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Debt(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
-    Account_Debt(User_Customer owner) {
-        super(owner);
+    Account_Debt(String id, User_Customer owner) {
+        super(id, owner);
     }
 
-    Account_Debt(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Debt(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     // Withdrawal is valid only when amount

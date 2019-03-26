@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
@@ -15,7 +16,7 @@ import java.util.Date;
 class User_Customer extends User {
 
     private static final String type = User_Customer.class.getName();
-    private final ArrayList<Account> accounts;
+    private final List<String> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
 
@@ -63,20 +64,20 @@ class User_Customer extends User {
      * @param account to be added
      */
     void addAccount(Account account) {
-        this.accounts.add(account);
+        accounts.add(account.getId());
         // If a user has only one checking account, it will be the default destination for any deposits.
         if (primary == null && account instanceof Account_Asset_Chequing) {
             primary = account;
         }
     }
 
-    ArrayList<Account> getAccounts() {
+    public List<String> getAccounts() {
         return accounts;
     }
 
     boolean hasAccount(Account account) {
-        for (Account a : this.accounts) {
-            if (a.equals(account)) {
+        for (String a : this.accounts) {
+            if (AccountManager.getAccount(a).equals(account)) {
                 return true;
             }
 
@@ -86,8 +87,8 @@ class User_Customer extends User {
 
     boolean hasMoreThanOneChequing() {
         int i = 0;
-        for (Account a : this.accounts) {
-            if (a instanceof Account_Asset_Chequing) {
+        for (String a : this.accounts) {
+            if (AccountManager.getAccount(a) instanceof Account_Asset_Chequing) {
                 i++;
             }
         }
@@ -97,8 +98,8 @@ class User_Customer extends User {
     // The total of their debt account balances subtracted from the total of their asset account balances.
     private double netTotal() {
         double sum = 0;
-        for (Account a : this.accounts) {
-            sum += a.getBalance();
+        for (String a : this.accounts) {
+            sum += AccountManager.getAccount(a).getBalance();
         }
         return sum;
     }

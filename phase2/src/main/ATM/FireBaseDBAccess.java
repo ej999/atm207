@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -66,7 +65,7 @@ final class FireBaseDBAccess {
         }
     }
 
-    void saveAll(HashMap<String, User> item_map, String child) {
+    void saveAll(HashMap item_map, String child) {
         if (item_map != null) {
             // Get existing child or new child will be created.
             DatabaseReference childRef = databaseRef.child(child);
@@ -75,27 +74,6 @@ final class FireBaseDBAccess {
             CountDownLatch latch = new CountDownLatch(1);
 
             childRef.setValueAsync(item_map);
-            latch.countDown();
-
-            try {
-                // Wait for FireBase to save record.
-                latch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    void saveAll(ArrayList item_list, String child) {
-        if (item_list != null) {
-            // Get existing child or new child will be created.
-            DatabaseReference childRef = databaseRef.child(child);
-
-            // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-            CountDownLatch latch = new CountDownLatch(1);
-
-            childRef.setValueAsync(item_list);
             latch.countDown();
 
             try {
@@ -167,35 +145,6 @@ final class FireBaseDBAccess {
         }
         return object_map;
     }
-
-//    <T> void retrieve(String child, Class<T> classOfT) {
-//        // Get existing child or will bee created new child.
-//        DatabaseReference childRef = databaseRef.child(child).child("testing");
-//
-//        // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-//        CountDownLatch latch = new CountDownLatch(1);
-//
-//        childRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                System.out.println(json2object(snapshot.getValue().toString(), classOfT));
-//                latch.countDown();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                System.out.println("The read failed: " + error.getCode());
-//                latch.countDown();
-//            }
-//        });
-//
-//        try {
-//            // Wait for FireBase to save record.
-//            latch.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     // Helper method that convert object from JSON using Gson.
     private <T> T json2object(Object ob, Class<T> classOfT) {

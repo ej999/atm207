@@ -8,17 +8,17 @@ class Account_Debt_CreditCard extends Account_Debt {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_CreditCard(User_Customer owner) {
-        super(owner);
+    Account_Debt_CreditCard(String id, User_Customer owner) {
+        super(id, owner);
     }
 
-    Account_Debt_CreditCard(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Debt_CreditCard(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
 
-    Account_Debt_CreditCard(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Debt_CreditCard(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     public String getType() {

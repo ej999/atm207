@@ -1,19 +1,12 @@
 package ATM;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
  * GUI for customer options.
  */
-public class CustomerOptionsGUI extends OptionsGUI{ //extends OptionsGUI{
+public class CustomerOptionsGUI extends OptionsGUI { //extends OptionsGUI{
 
     public CustomerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
@@ -44,7 +37,7 @@ public class CustomerOptionsGUI extends OptionsGUI{ //extends OptionsGUI{
         getOption(8).setOnAction(event -> changePasswordScreen());
         getOption(9).setOnAction(event -> logoutHandler());
 
-        return generateOptionsScreen(350,450);
+        return generateOptionsScreen(350, 450);
     }
 
     public void showAccountSummaryScreen() {

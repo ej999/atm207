@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.util.ArrayList;
-import java.util.function.Function;
 
 /**
  * GUI for common options across all users.
@@ -53,7 +52,8 @@ public abstract class OptionsGUI {
 
     /**
      * Combine layout and controls to form Options Screen
-     * @param width of screen
+     *
+     * @param width  of screen
      * @param height of screen
      * @return
      */
@@ -68,11 +68,12 @@ public abstract class OptionsGUI {
 
     /**
      * Populates Option Screen with all the options
+     *
      * @param layout gridPane
      */
     public void addOptionsToLayout(GridPane layout) {
         for (int i = 1; i <= options.size(); i++) {
-            layout.add(options.get(i-1), 0, i);
+            layout.add(options.get(i - 1), 0, i);
         }
     }
 
@@ -80,7 +81,7 @@ public abstract class OptionsGUI {
      * Create all buttons with text from optionsText
      */
     public void addOptions() {
-        for(String text: optionsText) {
+        for (String text : optionsText) {
             Button btn = new Button(text);
             if (text.equals("Change password")) {
                 btn.setOnAction(e -> changePasswordScreen());
@@ -93,7 +94,7 @@ public abstract class OptionsGUI {
 
     public void addMessageToOptionsScreen(String message, GridPane gridPane) {
         Text _message = new Text(message);
-            _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         gridPane.add(_message, 0, 0, 2, 1);
     }
 
@@ -111,6 +112,7 @@ public abstract class OptionsGUI {
 
     /**
      * Common layout for the various scenes
+     *
      * @return gridPane layout
      */
     public GridPane createFormPane() {
@@ -183,7 +185,7 @@ public abstract class OptionsGUI {
     public void changePasswordScreen() {
         GridPane grid = createFormPane();
         addUIControlsToPasswordScreen(grid);
-        window.setScene(new Scene(grid, 400,275));
+        window.setScene(new Scene(grid, 400, 275));
     }
 
     public void setPasswordHandler() {

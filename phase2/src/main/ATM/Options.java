@@ -5,6 +5,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -136,13 +137,14 @@ class Options {
      */
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating User... Enter user type (" + UserManager.getTypesOfUsers() + "): ");
+        System.out.print("Creating User... Enter user type (" + UserManager.getTypesOfAccounts() + "): ");
         String type = "ATM." + reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        boolean created = UserManager.createUser(type, username, password);
+        boolean created = UserManager.createAccount(type, username, password);
+
         if (created && type.equals(User_Customer.class.getName())) {
             setDobPrompt(username);
         }
@@ -157,7 +159,7 @@ class Options {
             System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
             try {
                 String dob = LocalDate.parse(reader.next()).toString();
-                ((User_Customer) UserManager.getUser(username)).setDob(dob);
+                ((User_Customer) UserManager.getAccount(username)).setDob(dob);
                 System.out.println("Date of Birth for " + username + " is set to " + dob + ".");
             } catch (DateTimeException e) {
                 System.err.println("Are you sure you born on a day that doesn't exist?");
@@ -204,7 +206,7 @@ class Options {
         String username = reader.next();
         if (UserManager.isPresent(username)) {
             String accountType = selectAccountTypePrompt();
-            AccountManager.addAccount(accountType, (User_Customer) UserManager.getUser(username));
+            AccountManager.addAccount(accountType, (User_Customer) UserManager.getAccount(username));
         } else {
             System.err.println("The username does not exist. No account has been created.");
         }
@@ -238,7 +240,6 @@ class Options {
 
     private void logoutPrompt() {
         //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
-        UserManagerSerialization backUp = new UserManagerSerialization();
         new UserManagerSerialization().serialize();
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
@@ -255,7 +256,7 @@ class Options {
 //        String answer = reader1.nextLine();
 //        UserManagerSerialization custom_loader = new UserManagerSerialization();
 //        HashMap<String, User> custom_map = custom_loader.loadCustom(answer);
-//        UserManager.user_map = custom_map;
+//        UserManager.account_map = custom_map;
 //    }
 
     private void clearDataPrompt() {
@@ -277,11 +278,11 @@ class Options {
         Scanner reader = new Scanner(System.in);
 
         System.out.println();
-        ArrayList<Account> accounts = customer.getAccounts();
+        List<String> accounts = customer.getAccounts();
         int i = 1;
-        for (Account a : accounts) {
-            if (!a.getClass().getName().contains(exclusion)) {
-                System.out.println("[" + i + "] " + a);
+        for (String a : accounts) {
+            if (!AccountManager.getAccount(a).getClass().getName().contains(exclusion)) {
+                System.out.println("[" + i + "] " + AccountManager.getAccount(a));
                 i++;
             }
         }
@@ -291,7 +292,7 @@ class Options {
             System.out.print("Please select an account: ");
             option = reader.nextInt();
         }
-        return accounts.get(option - 1);
+        return AccountManager.getAccount(accounts.get(option - 1));
     }
 
     /**
@@ -306,12 +307,12 @@ class Options {
             System.out.print("Enter username: ");
             String username = reader.next();
             if (UserManager.isPresent(username)) {
-                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
+                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getAccount(username));
                 ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
-                finished = true;
                 System.out.println("Undo successful.");
+                finished = true;
             } else {
-                System.out.print("User not found. Try again? (Y/N)");
+                System.err.print("User not found. Try again? (Y/N)");
                 String proceed = reader.next().toUpperCase().trim();
                 if (proceed.equals("N")) finished = true;
             }
@@ -337,9 +338,9 @@ class Options {
             System.out.println("\n\u001B[1mAccount Type\t\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
                     "\u001B[0m");
             int i = 1;
-            for (Account a : ((User_Customer) user).getAccounts()) {
-                if (a instanceof Account_Asset_Chequing) {
-                    System.out.println("[" + i + "] " + a);
+            for (String a : ((User_Customer) user).getAccounts()) {
+                if (AccountManager.getAccount(a) instanceof Account_Asset_Chequing) {
+                    System.out.println("[" + i + "] " + AccountManager.getAccount(a));
                 }
                 i++;
             }
@@ -347,9 +348,9 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((User_Customer) user).setPrimary(((User_Customer) user).getAccounts().get(selected - 1));
+            ((User_Customer) user).setPrimary(AccountManager.getAccount(((User_Customer) user).getAccounts().get(selected - 1)));
         } else {
-            System.out.println("Sorry, you can only change your primary account if you have more than one chequing " +
+            System.err.println("Sorry, you can only change your primary account if you have more than one chequing " +
                     "account.\nHowever, you are welcome to request creating a new chequing account on main menu.");
         }
 
@@ -408,7 +409,7 @@ class Options {
             if (((Account_Transferable) account).payBill(amount, payee)) {
                 System.out.println("Bill has been paid.");
             } else {
-                System.out.println("Payment is unsuccessful.");
+                System.err.println("Payment is unsuccessful.");
             }
         } catch (IOException e) {
             // do nothing?
@@ -445,7 +446,7 @@ class Options {
         double amount = reader.nextDouble();
 
         if (UserManager.isPresent(username)) {
-            User_Customer user = (User_Customer) UserManager.getUser(username);
+            User_Customer user = (User_Customer) UserManager.getAccount(username);
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
         } else {

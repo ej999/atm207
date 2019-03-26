@@ -1,10 +1,9 @@
 package ATM;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * A helper class that operate serialization on HashMap user_map in UserManager to FireBase database.
+ * A helper class that operate serialization on HashMap account_map in UserManager to FireBase database.
  */
 final class UserManagerSerialization {
     private FireBaseDBAccess fbDb;
@@ -13,11 +12,11 @@ final class UserManagerSerialization {
         this.fbDb = new FireBaseDBAccess();
     }
 
-    // Deserialize JSON from FireBase to a HashMap of User object, and assign it to user_map in UserManager.
+    // Deserialize JSON from FireBase to a HashMap of User object, and assign it to account_map in UserManager.
     void deserialize() {
         HashMap<String, Object> user_map_temp = fbDb.retrieveAll("Users");
 
-        // Downcast Object key to User key.
+        // Downcast Object value to User value.
         HashMap<String, User> user_map = new HashMap<>();
         for (String username : user_map_temp.keySet()) {
             Object object = user_map_temp.get(username);
@@ -25,29 +24,30 @@ final class UserManagerSerialization {
                 user_map.put(username, (User) object);
             }
         }
-        UserManager.user_map = user_map;
+        UserManager.account_map = user_map;
+
 
         HashMap<String, Object> account_list_temp = fbDb.retrieveAll("Accounts");
 
-        // Downcast Object type to Account type, and convert to ArrayList.
-        ArrayList<Account> account_list = new ArrayList<>();
-        for (String username : account_list_temp.keySet()) {
-            Object object = account_list_temp.get(username);
+        // Downcast String key to Integer key, and Object value to Account value.
+        HashMap<String, Account> account_map = new HashMap<>();
+        for (String n : account_list_temp.keySet()) {
+            Object object = account_list_temp.get(n);
             if (object instanceof Account) {
-                account_list.add((Account) object);
+                account_map.put(n, (Account) object);
             }
         }
-        AccountManager.account_list = account_list;
+        AccountManager.account_map = account_map;
 
         // REMOVE BEFORE SUBMISSION
-        System.err.println("For debugging only: UserManager.user_map = " + UserManager.user_map);
-        System.err.println("For debugging only: AccountManager.account_list = " + AccountManager.account_list);
+        System.err.println("For debugging only: UserManager.account_map = " + UserManager.account_map);
+        System.err.println("For debugging only: AccountManager.account_map = " + AccountManager.account_map);
     }
 
     // All the data structures stored in suffix-Manager classes will be serialize to JSON after a action is performed by User.
     void serialize() {
-        fbDb.saveAll(UserManager.user_map, "Users");
-        fbDb.saveAll(AccountManager.account_list, "Accounts");
+        fbDb.saveAll(UserManager.account_map, "Users");
+        fbDb.saveAll(AccountManager.account_map, "Accounts");
         System.err.print("Serialized data saved. ");
     }
 
@@ -62,10 +62,10 @@ final class UserManagerSerialization {
 //            UserManagerSerialization backup = (UserManagerSerialization) object.readObject();
 //            object.close();
 //            file.close();
-//            return backup.user_map;
+//            return backup.account_map;
 //        } catch (IOException | ClassNotFoundException f) {
 //            //f.printStackTrace();
-//            return UserManager.user_map;
+//            return UserManager.account_map;
 //        }
 //
 //    }

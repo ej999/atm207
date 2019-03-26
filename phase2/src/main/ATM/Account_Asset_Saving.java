@@ -10,12 +10,12 @@ import java.util.Observer;
 class Account_Asset_Saving extends Account_Asset implements Observer, Account_Transferable {
     private static final String type = Account_Asset_Saving.class.getName();
 
-    Account_Asset_Saving(double balance, User_Customer owner) {
-        super(balance, owner);
+    public Account_Asset_Saving(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
-    Account_Asset_Saving(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Asset_Saving(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     public String getType() {

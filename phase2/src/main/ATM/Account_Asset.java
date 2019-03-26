@@ -12,12 +12,12 @@ import java.util.EmptyStackException;
  */
 abstract class Account_Asset extends Account implements Account_Transferable {
 
-    Account_Asset(double balance, User_Customer owner) {
-        super(balance, owner);
+    Account_Asset(String id, double balance, User_Customer owner) {
+        super(id, balance, owner);
     }
 
-    Account_Asset(double balance, User_Customer owner1, User_Customer owner2) {
-        super(balance, owner1, owner2);
+    Account_Asset(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        super(id, balance, owner1, owner2);
     }
 
     /**
@@ -98,7 +98,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getUser(getPrimaryOwner())) {
+            if (user == UserManager.getAccount(getPrimaryOwner())) {
                 updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
                 transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
             } else {

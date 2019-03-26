@@ -10,13 +10,8 @@ import java.util.*;
 abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
-
-    private final int accountNumber;
-    // Store as timestamp instead of Date object.
     final long dateOfCreation;
-    double balance;
-
-    // Since username is unique, we use username here instead of User_Customer object.
+    private final String id;
     private final ArrayList<String> owners = new ArrayList<>();
     /**
      * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
@@ -28,6 +23,7 @@ abstract class Account {
             put("Account", null);
         }
     };
+    double balance;
     // An array of account holders
     /*
     The most recent transaction is at the beginning. Behaves like a stack.
@@ -35,41 +31,29 @@ abstract class Account {
     //    ArrayList<Transaction> transactionHistory;
     Stack<Transaction> transactionHistory;
 
-    Account(double balance, User_Customer owner) {
+    Account(String id, double balance, User_Customer owner) {
         this.balance = balance;
         this.owners.add(owner.getUsername());
         this.dateOfCreation = new Date().getTime();
         this.transactionHistory = new Stack<Transaction>();
-
-        boolean validAccountNumber = false;
-        int accountNumber = 0;
-        while (!validAccountNumber) {
-            accountNumber = (int) ((Math.random() * 9000000) + 1000000);
-            validAccountNumber = true;
-            for (Account account : AccountManager.account_list) {
-                if (account.getAccountNumber() == accountNumber) {
-                    validAccountNumber = false;
-                }
-            }
-        }
-        this.accountNumber = accountNumber;
+        this.id = id;
     }
 
-    public int getAccountNumber() {
-        return accountNumber;
+    Account(String id, User_Customer owner) {
+        this(id, 0, owner);
     }
 
-    Account(User_Customer owner) {
-        this(0, owner);
-    }
-
-    Account(double balance, User_Customer owner1, User_Customer owner2) {
-        this(balance, owner1);
+    Account(String id, double balance, User_Customer owner1, User_Customer owner2) {
+        this(id, balance, owner1);
         this.owners.add(owner2.getUsername());
     }
 
-    Account(User_Customer owner1, User_Customer owner2) {
-        this(0, owner1, owner2);
+    Account(String id, User_Customer owner1, User_Customer owner2) {
+        this(id, 0, owner1, owner2);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public abstract String getType();
