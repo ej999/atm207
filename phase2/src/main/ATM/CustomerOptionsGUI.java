@@ -49,30 +49,66 @@ public class CustomerOptionsGUI extends OptionsGUI{ //extends OptionsGUI{
 
     public void showAccountSummaryScreen() {
         //TODO
+        /*
+        e.g.' Customer with username "steve" and password "cat" '
+        table view
+        Account | balance | date
+        OK
+         */
     }
 
     public void payBillScreen() {
         //TODO
+        /*
+        enter amount
+        non-user account name
+        Cancel | Pay
+         */
     }
 
     public void makeTransferBetweenScreen() {
         //TODO
+        /*
+        choicebox
+        transfer FROM
+        transfer TO
+        amount
+        Cancel | Transfer
+         */
     }
 
     public void makeTransferAnotherScreen() {
         //TODO
+        /*
+        username:
+        amount:
+        Cancel | Transfer
+         */
     }
 
     public void depositScreen() {
         //TODO
+        /*
+        amount:
+        Cancel | Deposit
+         */
     }
 
     public void withdrawalScreen() {
         //TODO
+        /*
+        Select account drop-down
+        amount
+        Cancel | Withdraw
+         */
     }
 
     public void requestAccountScreen() {
         //TODO
+        /*
+        Select account type picker drop-down CHOICE-BOX control element
+        Cancel | Request
+         */
     }
 
     public void changePrimaryScreen() {

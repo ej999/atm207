@@ -40,13 +40,28 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
     void readAlertsScreen() {
         //TODO
+        /*
+        Perhaps a table view?
+        Date | Request
+         */
     }
 
     void createBankAccountScreen() {
         //TODO
+        /*
+        Username of Customer: <username>
+        Type of Bank Account: <Account Picker control>
+        <Cancel> <Create>
+         */
     }
 
     void undoTransactionsScreen() {
         //TODO
+        /*
+        Username: <username>
+        Select Account: <Account picker>
+        Number of transactions to undo: <n>
+        <Cancel> <Submit>
+         */
     }
 }

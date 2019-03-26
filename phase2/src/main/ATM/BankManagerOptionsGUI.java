@@ -49,14 +49,33 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
     public void createUserScreen() {
         //TODO
+        /*
+        User type: drop-down (choice-box)
+        username:
+        password:
+        Cancel | Create
+        New screen -> DOBScreen
+        ...
+         */
     }
 
     public void restockATMScreen() {
         //TODO
+        /*
+        $5 bills:
+        $10 bills:
+        $20 bills:
+        $50 bills:
+        Cancel | Restock
+         */
     }
 
     public void clearBankDataScreen() {
         //TODO
+        /*
+        Warning label
+        Go back | Proceed
+         */
     }
 
 }
