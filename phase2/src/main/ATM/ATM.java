@@ -136,7 +136,8 @@ public class ATM extends Application {
         GridPane gridPane = createUserFormPane();
         addUIControls(gridPane);
         welcomeScreen = new Scene(gridPane, 300, 275);
-//        welcomeScreen.getStylesheets().add(ATM.class.getResource("Login.css").toExternalForm());
+        // Apply styles
+        welcomeScreen.getStylesheets().add(ATM.class.getResource("Login.css").toExternalForm());
         window.setScene(welcomeScreen);
         window.setResizable(false);
         window.show();
@@ -171,8 +172,8 @@ public class ATM extends Application {
 
     private void addUIControls(GridPane grid) {
         Text scenetitle = new Text("Welcome");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0, 2, 1);
+        scenetitle.setId("welcome-text");
 
         Label userName = new Label("Username:");
         grid.add(userName, 0, 1);
@@ -194,11 +195,11 @@ public class ATM extends Application {
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
+        actionTarget.setId("actiontarget");
 
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                actionTarget.setFill(Color.FIREBRICK);
                 String username = userTextField.getText();
                 String password = pwBox.getText();
 

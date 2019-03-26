@@ -39,6 +39,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         addOptionsToLayout(gridPane);
         addMessageToOptionsScreen("How can we help you today?", gridPane);
         optionsScreen = new Scene(gridPane, 300, 300);
+        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         return optionsScreen;
     }
 

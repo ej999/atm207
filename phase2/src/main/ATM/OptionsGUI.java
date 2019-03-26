@@ -78,7 +78,7 @@ public abstract class OptionsGUI {
 
     public void addMessageToOptionsScreen(String message, GridPane gridPane) {
         Text _message = new Text(message);
-        _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+            _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         gridPane.add(_message, 0, 0, 2, 1);
     }
 

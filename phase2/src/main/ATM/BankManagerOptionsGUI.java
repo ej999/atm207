@@ -42,8 +42,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         GridPane gridPane = createFormPane();
         addOptionsToLayout(gridPane);
         addMessageToOptionsScreen("What can we do for you today?", gridPane);
-        optionsScreen = new Scene(gridPane, 300, 450);
-//        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        optionsScreen = new Scene(gridPane, 325, 450);
+        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         return optionsScreen;
     }
 
