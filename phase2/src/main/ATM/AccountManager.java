@@ -54,14 +54,14 @@ final class AccountManager {
     static ArrayList<Account> getAccount(String username) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (Account ac : account_list) {
-            if (ac.getOwners().contains(UserManager.getUser(username))) {
+            if (ac.getOwners().contains(username)) {
                 accountsOwned.add(ac);
             }
         }
         return accountsOwned;
     }
 
-    static void addAccount(String accountType, User_Customer username, @SuppressWarnings("SameParameterValue") double amount) {
+    static void addAccount(String accountType, User_Customer username, double amount) {
         Account newAccount = AccountManager.createAccount(accountType, username, amount);
         if (newAccount != null) {
             username.addAccount(newAccount);

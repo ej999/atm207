@@ -11,8 +11,10 @@ abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
 
+    //    private final int accountNumber;
     // Store as timestamp instead of Date object.
     final long dateOfCreation;
+    double balance;
 
     // Since username is unique, we use username here instead of User_Customer object.
     private final ArrayList<String> owners = new ArrayList<>();
@@ -30,15 +32,17 @@ abstract class Account {
     /*
     The most recent transaction is at the beginning. Behaves like a stack.
      */
-//    ArrayList<Transaction> transactionHistory;
+    //    ArrayList<Transaction> transactionHistory;
     Stack<Transaction> transactionHistory;
-    double balance;
 
     Account(double balance, User_Customer owner) {
         this.balance = balance;
         this.owners.add(owner.getUsername());
         this.dateOfCreation = new Date().getTime();
         this.transactionHistory = new Stack<Transaction>();
+//todo truman: work on account number
+//        for ()
+//        this.accountNumber =
     }
 
     Account(User_Customer owner) {
@@ -74,7 +78,7 @@ abstract class Account {
         }
     }
 
-    //TODO truman: doesn't work for Gson.fromJson()
+    //TODO see if it's needed
     public Long getDateOfCreation() {
         return dateOfCreation;
     }
