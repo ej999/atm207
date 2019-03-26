@@ -3,7 +3,7 @@ package ATM;
 import java.util.HashMap;
 
 /**
- * A helper class that operate serialization on HashMap account_map in UserManager to FireBase database.
+ * A helper class that operate serialization on UserManager and AccountManager, and save data to FireBase database.
  */
 final class UserManagerSerialization {
     private FireBaseDBAccess fbDb;

@@ -6,12 +6,12 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 abstract class Account {
-    double balance;
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
     final long dateOfCreation;
     private final String id;
     private final ArrayList<String> owners = new ArrayList<>();
+    double balance;
 //    /**
 //     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
 //     */
@@ -22,7 +22,6 @@ abstract class Account {
 //            put("Account", null);
 //        }
 //    };
-
     Stack<Transaction> transactionHistory;
 
     Account(String id, double balance, User_Customer owner) {
@@ -52,7 +51,7 @@ abstract class Account {
 
     public abstract String getType();
 
-    Transaction getMostRecentTransaction() {
+    private Transaction getMostRecentTransaction() {
         try {
             return transactionHistory.peek();
         } catch (EmptyStackException e) {
@@ -125,7 +124,6 @@ abstract class Account {
 //            }
 //        }
 //    }
-
     abstract void withdraw(double withdrawalAmount);
 
     abstract void undoWithdrawal(double withdrawalAmount);
@@ -171,10 +169,11 @@ abstract class Account {
         }
         return false;
     }
-//TODO:truman make it compatible with firebase
 
-//    @Override
-//    public String toString() {
+
+    @Override
+    public String toString() {
+        //TODO:truman make it compatible with firebase
 //        String mostRecentTransactionString;
 //        if (getMostRecentTransaction() == null) {
 //            mostRecentTransactionString = "n/a";
@@ -189,8 +188,9 @@ abstract class Account {
 //        } else {
 //            mostRecentTransactionString = "n/a";
 //        }
-//
+
 //        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
-//    }
+        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t";
+    }
 
 }

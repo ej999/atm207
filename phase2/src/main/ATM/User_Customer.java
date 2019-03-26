@@ -120,37 +120,33 @@ class User_Customer extends User {
         requestHelp(n);
     }
 
-    //TODO truman: toString interferes with serialization in Gson.fromJson
-//    @Override
-//    public String toString() {
-//        StringBuilder returnMessage = new StringBuilder();
-//        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
-//                "\u001B[0m");
-//        for (Account account : getAccounts()) {
-//            if (account == primary) {
-//                returnMessage.append("\nX\t\t\t").append(account);
-//            } else {
-//                returnMessage.append("\n\t\t\t").append(account);
-//            }
-//
-//        }
-//
-//        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
-//
-//        return returnMessage.toString();
-//    }
-
     @Override
     public String toString() {
-        return "Customer with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
+        StringBuilder returnMessage = new StringBuilder();
+        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+                "\u001B[0m");
+        for (String id : getAccounts()) {
+            if (AccountManager.getAccount(id) == primary) {
+                returnMessage.append("\nX\t\t\t").append(AccountManager.getAccount(id));
+            } else {
+                returnMessage.append("\n\t\t\t").append(AccountManager.getAccount(id));
+            }
+
+        }
+
+        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
+
+        return returnMessage.toString();
     }
+
+//    @Override
+//    public String toString() {
+//        return "Customer with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
+//    }
 
     Account getPrimary() {
         return primary;
     }
-
-    //TODO based on DOB
-//    int getAge() {return age;}
 
     void setPrimary(Account primary) {
         if (primary instanceof Account_Asset_Chequing) {
