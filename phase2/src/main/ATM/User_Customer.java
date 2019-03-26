@@ -20,7 +20,7 @@ class User_Customer extends User {
     private Inventory goods = new Inventory();
 
     private String dob;
-    //TODO make age ueful
+    //TODO make age useful
     private int age;
     //TODO: make creitscore work
     private int creditScore;

@@ -128,7 +128,7 @@ class Options {
             }
             i++;
         }
-        System.out.println("\nThe option [" + selected + "] is not valid. Please double-checked the number you entered.");
+        System.err.println("\nThe option [" + selected + "] is not valid. Please double-checked the number you entered.");
     }
 
     /**
@@ -176,16 +176,19 @@ class Options {
         int account = reader.nextInt();
         switch (account) {
             case 1: {
-                return "Chequing";
+                return "CHEQUING";
             }
             case 2: {
-                return "Saving";
+                return "SAVINGS";
             }
             case 3: {
-                return "CreditCard";
+                return "CREDITCARD";
             }
             case 4: {
-                return "LineOfCredit";
+                return "LINEOFCREDIT";
+            }
+            case 5: {
+                return "STUDENT";
             }
             default:
                 return null;
@@ -203,7 +206,7 @@ class Options {
             String accountType = selectAccountTypePrompt();
             AccountManager.addAccount(accountType, (User_Customer) UserManager.getUser(username));
         } else {
-            System.out.println("The username does not exist. No account has been created.");
+            System.err.println("The username does not exist. No account has been created.");
         }
     }
 
@@ -426,7 +429,7 @@ class Options {
         if (((Account_Transferable) from).transferBetweenAccounts(amount, to)) {
             System.out.println("Transfer is successful.");
         } else {
-            System.out.println("Transfer is unsuccessful.");
+            System.err.println("Transfer is unsuccessful.");
         }
     }
 
@@ -446,7 +449,7 @@ class Options {
             ((Account_Transferable) from).transferToAnotherUser(amount, user, user.getPrimary());
             System.out.println("Transfer is successful.");
         } else {
-            System.out.println("The username does not exist. Transfer is cancelled.");
+            System.err.println("The username does not exist. Transfer is cancelled.");
         }
     }
 
