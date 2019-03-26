@@ -36,7 +36,6 @@ abstract class Account_Asset extends Account implements Account_Transferable {
                 out.println(message);
             }
             balance -= amount;
-            updateMostRecentTransaction("PayBill", amount, null);
             transactionHistory.push(new Transaction("PayBill", amount, null));
             return true;
         }
@@ -62,8 +61,6 @@ abstract class Account_Asset extends Account implements Account_Transferable {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
-
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
             transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
         }
     }
@@ -78,7 +75,6 @@ abstract class Account_Asset extends Account implements Account_Transferable {
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
             balance += depositAmount;
-            updateMostRecentTransaction("Deposit", depositAmount, null);
             transactionHistory.push(new Transaction("Deposit", depositAmount, null));
         } else {
             System.out.println("invalid deposit");
@@ -117,13 +113,13 @@ abstract class Account_Asset extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getAccount(getPrimaryOwner())) {
-                updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
-                transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
-            } else {
-                updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
-                transactionHistory.push(new Transaction("TransferToAnotherUser", transferAmount, account));
-            }
+//            if (user == UserManager.getUser(getPrimaryOwner())) {
+//                transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
+//            } else {
+//                transactionHistory.push(new Transaction("TransferToAnotherUser", transferAmount, account));
+//            }
+            // Simplify things
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
             return true;
         }
         return false;
@@ -140,22 +136,21 @@ abstract class Account_Asset extends Account implements Account_Transferable {
     }
 
     private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
-        //TODO: any login user should have a hasAccount method
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
     }
 
-    @Override
-    void undoMostRecentTransaction() {
-        super.undoMostRecentTransaction();
-        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
-                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
-            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
-        }
-        //TODO: how about pay bill?
-    }
+//    @Override
+//    void undoMostRecentTransaction() {
+//        super.undoMostRecentTransaction();
+//        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
+//                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
+//            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
+//        }
+//        //TODO: how about pay bill?
+//    }
 
     @Override
-    void undoTransactions(int n) {
+    boolean undoTransactions(int n) {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 try {
@@ -166,8 +161,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
                         undoWithdrawal(transaction.getAmount());
                     } else if (transaction.getType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
-                    } else if (transaction.getType().equals("TransferBetweenAccounts") ||
-                            transaction.getType().equals("TransferToAnotherUser")) {
+                    } else if (transaction.getType().equals("Transfer")) {
                         undoTransfer(transaction.getAmount(), transaction.getAccount());
                     } else if (type.equals("PayBill")) {
                         undoPaybill(transaction.getAmount());
@@ -177,6 +171,8 @@ abstract class Account_Asset extends Account implements Account_Transferable {
                     System.out.println("All transactions on this account have been undone");
                 }
             }
+            return true;
         }
+        return false;
     }
 }

@@ -299,6 +299,7 @@ class Options {
      * Gets customer by username and displays all their accounts
      * Select an account from input and tell that account to undo the last transaction
      * only Bank Manager can access this
+     * TODO: Now the bank manager can undo n transactions.
      */
     private void undoPrompt() {
         Scanner reader = new Scanner(System.in);
@@ -307,8 +308,9 @@ class Options {
             System.out.print("Enter username: ");
             String username = reader.next();
             if (UserManager.isPresent(username)) {
-                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getAccount(username));
-                ((User_Employee_BankManager) user).undoMostRecentTransaction(account2undo);
+                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
+                ((User_Employee_BankManager) user).undoTransactions(account2undo, 1);
+                finished = true;
                 System.out.println("Undo successful.");
                 finished = true;
             } else {
@@ -384,15 +386,13 @@ class Options {
         Account primary = ((User_Customer) user).getPrimary();
 
         Scanner reader = new Scanner(System.in);
-        System.out.println("Please make sure to ready your cash/cheque in deposit.txt");
-        System.out.print("Enter any key to proceed... ");
-        reader.next();
+//        System.out.println("Please make sure to ready your cash/cheque in deposit.txt");
+//        System.out.print("Enter any key to proceed... ");
+//        reader.next();
 
-        try {
-            primary.depositMoney();
-        } catch (IOException e) {
-            // do nothing?
-        }
+        System.out.println("How much would you like to deposit?");
+        double amount = Double.valueOf(reader.next());
+        primary.deposit(amount);
     }
 
     private void payBillPrompt() {

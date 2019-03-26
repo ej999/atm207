@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.EmptyStackException;
 import java.util.Observable;
 
 /**
  * Youth account is qualified to people under 20 years old.
  */
 //TODO refactor student to youth
+    //TODO: wouldn't it make more sense to make this class extend Account_Asset?
 class Account_Youth extends Account implements Account_Transferable {
     private static final String type = Account_Youth.class.getName();
     int transactions;
@@ -62,7 +64,7 @@ class Account_Youth extends Account implements Account_Transferable {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
             transactions += 1;
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
+            transactionHistory.push(new Transaction("Withdraw", withdrawalAmount, null));
         }
     }
 
@@ -76,10 +78,14 @@ class Account_Youth extends Account implements Account_Transferable {
                 System.out.println("File has been written.");
             }
             balance += amount;
-            updateMostRecentTransaction("PayBill", amount, null);
+            transactionHistory.push(new Transaction("PayBill", amount, null));
             return true;
         }
         return false;
+    }
+
+    public void undoPaybill(double amount) {
+        balance += amount;
     }
 
     void withdraw(double withdrawalAmount) {
@@ -117,7 +123,7 @@ class Account_Youth extends Account implements Account_Transferable {
         if ((depositAmount > 0) && (transactions < maxTransactions)) {
             balance += depositAmount;
             transactions += 1;
-            updateMostRecentTransaction("Deposit", depositAmount, null);
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
         } else {
             System.out.println("invalid deposit");
         }
@@ -159,11 +165,7 @@ class Account_Youth extends Account implements Account_Transferable {
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getAccount(getPrimaryOwner())) {
-                updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
-            } else {
-                updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
-            }
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
             transactions += 1;
             return true;
         }
@@ -187,27 +189,54 @@ class Account_Youth extends Account implements Account_Transferable {
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
 
+//    @Override
+//    void undoMostRecentTransaction() {
+//        super.undoMostRecentTransaction();
+//        transactions += 1;
+//        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
+//                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
+//            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
+//        }
+//    }
+
+//    public String toString() {
+//        String mostRecentTransactionString;
+//
+//        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return "Student\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
+//    }
+
     @Override
-    void undoMostRecentTransaction() {
-        super.undoMostRecentTransaction();
-        transactions += 1;
-        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
-                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
-            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
+    boolean undoTransactions(int n) {
+        if (n > 0) {
+            for (int i = 0; i < n; i++) {
+                try {
+                    Transaction transaction = transactionHistory.pop();
+                    String type = transaction.getType();
+
+                    if (transaction.getType().equals("Withdrawal")) {
+                        undoWithdrawal(transaction.getAmount());
+                    } else if (transaction.getType().equals("Deposit")) {
+                        undoDeposit(transaction.getAmount());
+                    } else if (transaction.getType().equals("Transfer")) {
+                        undoTransfer(transaction.getAmount(), transaction.getAccount());
+                    } else if (type.equals("PayBill")) {
+                        undoPaybill(transaction.getAmount());
+                    }
+
+                } catch (EmptyStackException e) {
+                    System.out.println("All transactions on this account have been undone");
+                }
+            }
+            return true;
         }
-    }
-
-    public String toString() {
-        String mostRecentTransactionString;
-
-        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-        } else {
-            mostRecentTransactionString = "n/a";
-        }
-
-        return "Student\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
+        return false;
     }
 }

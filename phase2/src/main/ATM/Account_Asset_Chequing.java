@@ -26,19 +26,23 @@ class Account_Asset_Chequing extends Account_Asset implements Account_Transferab
         super.withdraw(withdrawalAmount, balance > 0 & (balance - withdrawalAmount >= -100));
     }
 
-    @Override
-    public String toString() {
-        String mostRecentTransactionString;
-        if (getMostRecentTransaction() == null) {
-            mostRecentTransactionString = "n/a";
-        } else if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-        } else {
-            mostRecentTransactionString = "n/a";
-        }
-
-        return "Chequing\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
-    }
+//    @Override
+//    public String toString() {
+//        String mostRecentTransactionString;
+//        if (getMostRecentTransaction() == null) {
+//            mostRecentTransactionString = "n/a";
+//        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn.";
+//        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited.";
+//        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred.";
+//        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return "Chequing\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
+//    }
 }

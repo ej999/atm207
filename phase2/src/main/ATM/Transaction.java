@@ -2,7 +2,7 @@ package ATM;
 
 /**
  * A class that represents a transaction made by a user.
- * Possible transactions include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
+ * Possible transactions include: Withdrawal, Deposit, Transfer, PayBill
  */
 public class Transaction {
     private String type;
