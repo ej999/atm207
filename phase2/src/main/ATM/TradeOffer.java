@@ -3,9 +3,9 @@ package ATM;
 public class TradeOffer {
     private int quantity;
     private int price;
-    private User_Customer tradeUser;
+    private Customer tradeUser;
 
-    TradeOffer(int quantity, int price, User_Customer tradeUser) {
+    TradeOffer(int quantity, int price, Customer tradeUser) {
         this.quantity = quantity;
         this.price = price;
         this.tradeUser = tradeUser;
@@ -19,7 +19,7 @@ public class TradeOffer {
         return this.price;
     }
 
-    User_Customer getTradeUser() {
+    Customer getTradeUser() {
         return this.tradeUser;
     }
 }

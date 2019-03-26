@@ -1,23 +1,21 @@
 package ATM;
 
-import java.util.Date;
-
-class Account_Debt_CreditCard extends Account_Debt {
-    private static final String type = Account_Debt_CreditCard.class.getName();
+class CreditCard extends AccountDebt {
+    private static final String type = CreditCard.class.getName();
 
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_CreditCard(String id, User_Customer owner) {
+    CreditCard(String id, Customer owner) {
         super(id, owner);
     }
 
-    public Account_Debt_CreditCard(String id, double balance, User_Customer owner) {
+    public CreditCard(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
 
-    Account_Debt_CreditCard(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    CreditCard(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 

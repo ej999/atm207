@@ -24,7 +24,7 @@ abstract class Account {
 //    };
     Stack<Transaction> transactionHistory;
 
-    Account(String id, double balance, User_Customer owner) {
+    Account(String id, double balance, Customer owner) {
         this.balance = balance;
         this.owners.add(owner.getUsername());
         this.dateOfCreation = new Date().getTime();
@@ -32,16 +32,16 @@ abstract class Account {
         this.id = id;
     }
 
-    Account(String id, User_Customer owner) {
+    Account(String id, Customer owner) {
         this(id, 0, owner);
     }
 
-    Account(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    Account(String id, double balance, Customer owner1, Customer owner2) {
         this(id, balance, owner1);
         this.owners.add(owner2.getUsername());
     }
 
-    Account(String id, User_Customer owner1, User_Customer owner2) {
+    Account(String id, Customer owner1, Customer owner2) {
         this(id, 0, owner1, owner2);
     }
 
@@ -150,7 +150,7 @@ abstract class Account {
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */
-    public boolean addOwner(User_Customer newOwner) {
+    public boolean addOwner(Customer newOwner) {
         if (!owners.contains(newOwner)) {
             owners.add(newOwner.getUsername());
             return true;
@@ -162,7 +162,7 @@ abstract class Account {
         return owners.size() > 1;
     }
 
-    public boolean removeOwner(User_Customer owner) {
+    public boolean removeOwner(Customer owner) {
         if (isJoint() && owners.contains(owner)) {
             owners.remove(owner);
             return true;

@@ -45,19 +45,19 @@ final class AccountManager {
     }
 
     //TODO GIC has unique parameter
-    private static Account createAccount(String type, User_Customer owner, double initialAmount) {
+    private static Account createAccount(String type, Customer owner, double initialAmount) {
         try {
             // Creating a new instance by getting the proper constructor; instead of using switch cases.
             Class<?> clazz = Class.forName(type);
 
             // The constructor has to be declared public, otherwise ...........
-            Constructor<?> cTor = clazz.getConstructor(String.class, double.class, User_Customer.class);
+            Constructor<?> cTor = clazz.getConstructor(String.class, double.class, Customer.class);
 
             String id = idGenerator();
             Account newAccount = (Account) cTor.newInstance(id, initialAmount, owner);
             account_map.put(newAccount.getId(), newAccount);
-            if (newAccount instanceof Account_Asset_Saving) {
-                myATM.addObserver((Account_Asset_Saving) newAccount);
+            if (newAccount instanceof Saving) {
+                myATM.addObserver((Saving) newAccount);
             }
 
             System.out.println("A User: \"" + newAccount + "\", is successfully created.");
@@ -87,7 +87,7 @@ final class AccountManager {
         return account != null;
     }
 
-    static void addAccount(String accountType, User_Customer User, double amount) {
+    static void addAccount(String accountType, Customer User, double amount) {
         Account account = createAccount(accountType, User, amount);
         if (account != null) {
             User.addAccount(account);
@@ -96,7 +96,7 @@ final class AccountManager {
         }
     }
 
-    static void addAccount(String accountType, User_Customer User) {
+    static void addAccount(String accountType, Customer User) {
         addAccount(accountType, User, 0);
     }
 

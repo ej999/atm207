@@ -13,9 +13,9 @@ import java.util.List;
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
-class User_Customer extends User {
+class Customer extends User {
 
-    private static final String type = User_Customer.class.getName();
+    private static final String type = Customer.class.getName();
     private final List<String> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
@@ -31,12 +31,12 @@ class User_Customer extends User {
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 
-    public User_Customer(String username, String password) {
+    public Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
     }
 
-    public User_Customer(String username, String password, LocalDate dob) {
+    public Customer(String username, String password, LocalDate dob) {
         this(username, password);
         this.dob = dob.toString();
         this.age = (int) dob.until(LocalDate.now(), ChronoUnit.YEARS);
@@ -66,7 +66,7 @@ class User_Customer extends User {
     void addAccount(Account account) {
         accounts.add(account.getId());
         // If a user has only one checking account, it will be the default destination for any deposits.
-        if (primary == null && account instanceof Account_Asset_Chequing) {
+        if (primary == null && account instanceof Chequing) {
             primary = account;
         }
     }
@@ -88,7 +88,7 @@ class User_Customer extends User {
     boolean hasMoreThanOneChequing() {
         int i = 0;
         for (String a : this.accounts) {
-            if (AccountManager.getAccount(a) instanceof Account_Asset_Chequing) {
+            if (AccountManager.getAccount(a) instanceof Chequing) {
                 i++;
             }
         }
@@ -149,7 +149,7 @@ class User_Customer extends User {
     }
 
     void setPrimary(Account primary) {
-        if (primary instanceof Account_Asset_Chequing) {
+        if (primary instanceof Chequing) {
             this.primary = primary;
             System.out.println("Account is successfully set to primary.");
         } else {

@@ -10,16 +10,16 @@ import java.util.Observer;
  * Money is locked up in this account for a period of time with high interest.
  * Withdrawing before the end of a period will result in no interest.
  */
-class Account_Asset_GIC extends Account_Asset implements Observer, Account_Transferable {
+class GIC extends AccountAsset implements Observer, AccountTransferable {
 
-    private static final String type = Account_Asset_GIC.class.getName();
+    private static final String type = GIC.class.getName();
     double rate;
     Period period;
     // period = Period.ofMonths(12)
     LocalDate startDate;
     LocalDate endDate;
 
-    Account_Asset_GIC(String id, double balance, double rate, Period period, User_Customer owner) {
+    GIC(String id, double balance, double rate, Period period, Customer owner) {
 
         super(id, balance, owner);
         this.rate = rate;
@@ -28,7 +28,7 @@ class Account_Asset_GIC extends Account_Asset implements Observer, Account_Trans
         endDate = startDate.plus(period);
     }
 
-    Account_Asset_GIC(String id, double balance, double rate, Period period, User_Customer owner1, User_Customer owner2) {
+    GIC(String id, double balance, double rate, Period period, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
         this.rate = rate;
         this.period = period;

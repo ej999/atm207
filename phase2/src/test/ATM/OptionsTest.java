@@ -9,7 +9,7 @@ public class OptionsTest {
 
     @Before
     public void setUp() {
-        options = new Options(new User_Employee_BankManager("jen", "1234"));
+        options = new Options(new BankManager("jen", "1234"));
 
     }
 

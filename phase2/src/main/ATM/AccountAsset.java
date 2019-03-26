@@ -10,13 +10,13 @@ import java.util.EmptyStackException;
 /**
  * Asset accounts include Chequing and Savings Accounts.
  */
-abstract class Account_Asset extends Account implements Account_Transferable {
+abstract class AccountAsset extends Account implements AccountTransferable {
 
-    Account_Asset(String id, double balance, User_Customer owner) {
+    AccountAsset(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
-    Account_Asset(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    AccountAsset(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 
@@ -94,7 +94,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) UserManager.getAccount(getPrimaryOwner()), account);
     }
 
     /**
@@ -105,10 +105,10 @@ abstract class Account_Asset extends Account implements Account_Transferable {
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
-            if (account instanceof Account_Asset) {
+            if (account instanceof AccountAsset) {
                 account.balance += transferAmount;
             } else {
                 account.balance -= transferAmount;
@@ -127,7 +127,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
 
     private void undoTransfer(double transferAmount, Account account) {
         balance += transferAmount;
-        if (account instanceof Account_Asset) {
+        if (account instanceof AccountAsset) {
             account.balance -= transferAmount;
         } else {
             account.balance += transferAmount;
@@ -135,7 +135,7 @@ abstract class Account_Asset extends Account implements Account_Transferable {
 
     }
 
-    private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
     }
 

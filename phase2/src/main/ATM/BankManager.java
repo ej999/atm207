@@ -10,11 +10,11 @@ import java.util.ArrayList;
 //Import ATM
 
 
-class User_Employee_BankManager extends User_Employee {
+class BankManager extends UserEmployee {
 
-    private static final String type = User_Employee_BankManager.class.getName();
+    private static final String type = BankManager.class.getName();
 
-    public User_Employee_BankManager(String username, String password) {
+    public BankManager(String username, String password) {
         super(username, password);
     }
 
@@ -50,11 +50,11 @@ class User_Employee_BankManager extends User_Employee {
         account.undoTransactions(n);
     }
 
-    void setMaxTransactions(Account_Youth account, int transactionsAmount) {
+    void setMaxTransactions(Youth account, int transactionsAmount) {
         account.setMaxTransactions(transactionsAmount);
     }
 
-    void setTransferLimit(Account_Youth account, int transferLimitAmount) {
+    void setTransferLimit(Youth account, int transferLimitAmount) {
         account.setTransferLimit(transferLimitAmount);
     }
 

@@ -1,18 +1,16 @@
 package ATM;
 
-import java.util.Date;
-
 /**
  * A chequing account.
  */
-class Account_Asset_Chequing extends Account_Asset implements Account_Transferable {
-    private static final String type = Account_Asset_Chequing.class.getName();
+class Chequing extends AccountAsset implements AccountTransferable {
+    private static final String type = Chequing.class.getName();
 
-    public Account_Asset_Chequing(String id, double balance, User_Customer owner) {
+    public Chequing(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
-    Account_Asset_Chequing(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    Chequing(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 

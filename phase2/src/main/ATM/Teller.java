@@ -1,10 +1,10 @@
 package ATM;
 
-public class User_Employee_Teller extends User_Employee {
+public class Teller extends UserEmployee {
 
-    private static final String type = User_Employee_Teller.class.getName();
+    private static final String type = Teller.class.getName();
 
-    public User_Employee_Teller(String username, String password) {
+    public Teller(String username, String password) {
         super(username, password);
 
     }
@@ -25,7 +25,7 @@ public class User_Employee_Teller extends User_Employee {
 //    /**
 //     * Create an account for a Customer. Amount is not initialized here.
 //     */
-//    void addAccount(String accountType, User_Customer username) {
+//    void addAccount(String accountType, Customer username) {
 //        this.addAccount(accountType, username, 0);
 //    }
 //

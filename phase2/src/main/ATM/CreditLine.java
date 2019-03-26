@@ -5,25 +5,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.EmptyStackException;
 
-class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
+class CreditLine extends AccountDebt implements AccountTransferable {
 
-    private static final String type = Account_Debt_LineOfCredit.class.getName();
+    private static final String type = CreditLine.class.getName();
 
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    Account_Debt_LineOfCredit(String id, User_Customer owner) {
+    CreditLine(String id, Customer owner) {
         super(id, owner);
     }
 
-    public Account_Debt_LineOfCredit(String id, double balance, User_Customer owner) {
+    public CreditLine(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
-    Account_Debt_LineOfCredit(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    CreditLine(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 
@@ -66,7 +65,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) UserManager.getAccount(getPrimaryOwner()), account);
     }
 
     /**
@@ -77,10 +76,10 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
      * @param account        user account
      * @return true iff transfer was a success
      */
-    public boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance += transferAmount;
-            if (account instanceof Account_Asset) {
+            if (account instanceof AccountAsset) {
                 account.balance += transferAmount;
             } else {
                 account.balance -= transferAmount;
@@ -93,14 +92,14 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
 
     private void undoTransfer(double transferAmount, Account account) {
         balance -= transferAmount;
-        if (account instanceof Account_Asset) {
+        if (account instanceof AccountAsset) {
             account.balance -= transferAmount;
         } else {
             account.balance += transferAmount;
         }
     }
 
-    private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, Customer user, Account account) {
         return validWithdrawal(transferAmount) && user.hasAccount(account);
     }
 

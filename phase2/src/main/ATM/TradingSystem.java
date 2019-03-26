@@ -36,12 +36,12 @@ public class TradingSystem {
         if (buy_offers.containsKey(item)) {
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            User_Customer user = tradeoffer.getTradeUser();
+            Customer user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = buy_offers.get(item);
             for (int i = 0; i < offers.size(); i++) {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
-                User_Customer other_user = offers.get(i).getTradeUser();
+                Customer other_user = offers.get(i).getTradeUser();
                 //Checks if quantities are the same, price is better, and buyers has enough money
                 if (other_quantity == quantity && other_price > price
                         && other_user.getPrimary().getBalance() > other_price) {
@@ -69,12 +69,12 @@ public class TradingSystem {
         if (sell_offers.containsKey(item)) {
             int quantity = tradeoffer.getQuantity();
             int price = tradeoffer.getPrice();
-            User_Customer user = tradeoffer.getTradeUser();
+            Customer user = tradeoffer.getTradeUser();
             ArrayList<TradeOffer> offers = sell_offers.get(item);
             for (int i = 0; i < offers.size(); i++) {
                 int other_quantity = offers.get(i).getQuantity();
                 int other_price = offers.get(i).getPrice();
-                User_Customer other_user = offers.get(i).getTradeUser();
+                Customer other_user = offers.get(i).getTradeUser();
                 if (other_quantity == quantity && other_price < price
                         && user.getPrimary().getBalance() > other_price) {
                     //Money will be exchanged.
@@ -96,7 +96,7 @@ public class TradingSystem {
 
     }
 
-    public void removeOffer(String item, User_Customer user, boolean sell) {
+    public void removeOffer(String item, Customer user, boolean sell) {
         if (sell) {
             ArrayList<TradeOffer> offers = sell_offers.get(item);
             for (int i = 0; i < offers.size(); i++) {

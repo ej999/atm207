@@ -1,20 +1,19 @@
 package ATM;
 
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * A savings account.
  */
-class Account_Asset_Saving extends Account_Asset implements Observer, Account_Transferable {
-    private static final String type = Account_Asset_Saving.class.getName();
+class Saving extends AccountAsset implements Observer, AccountTransferable {
+    private static final String type = Saving.class.getName();
 
-    public Account_Asset_Saving(String id, double balance, User_Customer owner) {
+    public Saving(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
-    Account_Asset_Saving(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    Saving(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 

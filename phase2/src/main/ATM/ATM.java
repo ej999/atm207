@@ -64,14 +64,14 @@ public class ATM extends Application {
         // If the HashMap of User objects is empty or deleted, recreate the default state here.
         if (UserManager.account_map.isEmpty()) {
             // Instantiate accounts and users for demo.
-            UserManager.createAccount(User_Employee_BankManager.class.getName(), "jen", "1234");
-            UserManager.createAccount(User_Employee_Teller.class.getName(), "pete", "1234");
-            UserManager.createAccount(User_Customer.class.getName(), "steve", "1234");
-            AccountManager.addAccount(Account_Asset_Chequing.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 1234);
-            AccountManager.addAccount(Account_Debt_LineOfCredit.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 4321);
-            AccountManager.addAccount(Account_Asset_Saving.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 1000);
-            AccountManager.addAccount(Account_Debt_CreditCard.class.getName(), ((User_Customer) UserManager.getAccount("steve")), 420);
-            System.out.println(((User_Customer) UserManager.getAccount("steve")).getAccounts());
+            UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
+            UserManager.createAccount(Teller.class.getName(), "pete", "1234");
+            UserManager.createAccount(Customer.class.getName(), "steve", "1234");
+            AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getAccount("steve")), 1234);
+            AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getAccount("steve")), 4321);
+            AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getAccount("steve")), 1000);
+            AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getAccount("steve")), 420);
+            System.out.println(((Customer) UserManager.getAccount("steve")).getAccounts());
             // Save to FireBase database.
             serialization.serialize();
         }
@@ -213,13 +213,13 @@ public class ATM extends Application {
 
                     // At this point the user has been created so we can create the options screen
 
-                    if (user instanceof User_Employee_BankManager) {
+                    if (user instanceof BankManager) {
                         createBMOptionsScreen();
                         window.setScene(BMOptions);
-                    } else if (user instanceof User_Employee_Teller) {
+                    } else if (user instanceof Teller) {
                         createTellerOptionsScreen();
                         window.setScene(tellerOptions);
-                    } else if (user instanceof User_Customer) {
+                    } else if (user instanceof Customer) {
                         createCustomerOptionsScreen();
                         window.setScene(customerOptions);
                     }

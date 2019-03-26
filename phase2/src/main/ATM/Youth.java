@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.Observable;
 
@@ -13,9 +12,9 @@ import java.util.Observable;
  * Youth account is qualified to people under 20 years old.
  */
 //TODO refactor student to youth
-    //TODO: wouldn't it make more sense to make this class extend Account_Asset?
-class Account_Youth extends Account implements Account_Transferable {
-    private static final String type = Account_Youth.class.getName();
+//TODO: wouldn't it make more sense to make this class extend AccountAsset?
+class Youth extends Account implements AccountTransferable {
+    private static final String type = Youth.class.getName();
     int transactions;
     int maxTransactions;
     int transferLimit;
@@ -24,7 +23,7 @@ class Account_Youth extends Account implements Account_Transferable {
     // Transactions, student account has maximum 20 transfers that they can have
     // TODO: Interest, age, email
     // Default 20 transactions, 250 transferTotal
-    public Account_Youth(String id, double balance, User_Customer owner) {
+    public Youth(String id, double balance, Customer owner) {
         super(id, balance, owner);
         this.transactions = 20;
         this.transferTotal = 250;
@@ -36,7 +35,7 @@ class Account_Youth extends Account implements Account_Transferable {
 
 //    //TODO: check age of owners
 //    //TODO combine owner1 and owner2 to List of owners.
-//    Account_Youth(double balance, ArrayList<User_Customer> owners) {
+//    Youth(double balance, ArrayList<Customer> owners) {
 ////        super(balance, owner1, owner2);
 //    }
 
@@ -145,7 +144,7 @@ class Account_Youth extends Account implements Account_Transferable {
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
         transferTotal += transferAmount;
-        return transferToAnotherUser(transferAmount, (User_Customer) UserManager.getAccount(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) UserManager.getAccount(getPrimaryOwner()), account);
 
     }
 
@@ -157,10 +156,10 @@ class Account_Youth extends Account implements Account_Transferable {
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, User_Customer user, Account account) {
+    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
             balance -= transferAmount;
-            if (account instanceof Account_Asset) {
+            if (account instanceof AccountAsset) {
                 account.balance += transferAmount;
             } else {
                 account.balance -= transferAmount;
@@ -176,7 +175,7 @@ class Account_Youth extends Account implements Account_Transferable {
         balance += transferAmount;
         transactions -= 1;
         transferTotal -= transferAmount;
-        if (account instanceof Account_Asset) {
+        if (account instanceof AccountAsset) {
             account.balance -= transferAmount;
         } else {
             account.balance += transferAmount;
@@ -184,7 +183,7 @@ class Account_Youth extends Account implements Account_Transferable {
 
     }
 
-    private boolean validTransfer(double transferAmount, User_Customer user, Account account) {
+    private boolean validTransfer(double transferAmount, Customer user, Account account) {
         return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }

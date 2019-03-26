@@ -1,18 +1,18 @@
 package ATM;
 
-abstract class Account_Debt extends Account {
+abstract class AccountDebt extends Account {
 
     private static final double DEBT_CAPACITY = 10000;
 
-    public Account_Debt(String id, double balance, User_Customer owner) {
+    public AccountDebt(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
-    Account_Debt(String id, User_Customer owner) {
+    AccountDebt(String id, Customer owner) {
         super(id, owner);
     }
 
-    Account_Debt(String id, double balance, User_Customer owner1, User_Customer owner2) {
+    AccountDebt(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }
 
