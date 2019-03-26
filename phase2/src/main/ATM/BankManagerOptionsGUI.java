@@ -37,15 +37,26 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Logout");
         addOptions();
 
-        // TODO: Then we need handlers for all nine buttons...
+        getOption(0).setOnAction(event -> readAlertsScreen());
+        getOption(1).setOnAction(event -> createUserScreen());
+        getOption(2).setOnAction(event -> createBankAccountScreen());
+        getOption(3).setOnAction(event -> restockATMScreen());
+        getOption(4).setOnAction(event -> undoTransactionsScreen());
+        getOption(6).setOnAction(event -> clearBankDataScreen());
 
-        GridPane gridPane = createFormPane();
-        addOptionsToLayout(gridPane);
-        addMessageToOptionsScreen("What can we do for you today?", gridPane);
-        optionsScreen = new Scene(gridPane, 325, 450);
-        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
-        return optionsScreen;
+        return generateOptionsScreen(325,450);
     }
 
+    public void createUserScreen() {
+        //TODO
+    }
+
+    public void restockATMScreen() {
+        //TODO
+    }
+
+    public void clearBankDataScreen() {
+        //TODO
+    }
 
 }

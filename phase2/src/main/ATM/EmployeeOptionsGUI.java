@@ -35,12 +35,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         getOption(1).setOnAction(event -> createBankAccountScreen());
         getOption(3).setOnAction(event -> undoTransactionsScreen());
 
-        GridPane gridPane = createFormPane();
-        addOptionsToLayout(gridPane);
-        addMessageToOptionsScreen("How can we help you today?", gridPane);
-        optionsScreen = new Scene(gridPane, 300, 300);
-        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
-        return optionsScreen;
+        return generateOptionsScreen(325,300);
     }
 
     void readAlertsScreen() {

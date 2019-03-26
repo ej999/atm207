@@ -21,33 +21,62 @@ public class CustomerOptionsGUI extends OptionsGUI{ //extends OptionsGUI{
 
     @Override
     public Scene createOptionsScreen() {
-        Button button1 = new Button("Withdraw");
-        Button button2 = new Button("Deposit");
-        Button button3 = new Button("Pay Bill");
-        Button button4 = new Button("Transfer");
-        Button button5 = new Button("Check Balance");
-        Button button6 = new Button("Logout");
+        addOptionText("Show my account summary");
+        addOptionText("Pay a Bill");
+        addOptionText("Make a Transfer between my Accounts");
+        addOptionText("Make a Transfer to another User");
+        addOptionText("Cash/Cheque Deposit");
+        addOptionText("Cash Withdrawal");
+        addOptionText("Request Creating an Account");
+        addOptionText("Change Primary Account");
+        addOptionText("Change Password");
+        addOptionText("Logout");
+        addOptions();
 
-        button6.setOnAction(event -> logoutHandler());
+        getOption(0).setOnAction(event -> showAccountSummaryScreen());
+        getOption(1).setOnAction(event -> payBillScreen());
+        getOption(2).setOnAction(event -> makeTransferBetweenScreen());
+        getOption(3).setOnAction(event -> makeTransferAnotherScreen());
+        getOption(4).setOnAction(event -> depositScreen());
+        getOption(5).setOnAction(event -> withdrawalScreen());
+        getOption(6).setOnAction(event -> requestAccountScreen());
+        getOption(7).setOnAction(event -> changePrimaryScreen());
+        getOption(8).setOnAction(event -> changePasswordScreen());
+        getOption(9).setOnAction(event -> logoutHandler());
 
+        return generateOptionsScreen(350,450);
+    }
 
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.setVgap(10);
+    public void showAccountSummaryScreen() {
+        //TODO
+    }
 
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
-        gridPane.add(button5, 0, 6);
+    public void payBillScreen() {
+        //TODO
+    }
 
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0, 0, 2, 1);
+    public void makeTransferBetweenScreen() {
+        //TODO
+    }
 
-        return new Scene(gridPane, 300, 300);
+    public void makeTransferAnotherScreen() {
+        //TODO
+    }
+
+    public void depositScreen() {
+        //TODO
+    }
+
+    public void withdrawalScreen() {
+        //TODO
+    }
+
+    public void requestAccountScreen() {
+        //TODO
+    }
+
+    public void changePrimaryScreen() {
+        //TODO
     }
 }
 

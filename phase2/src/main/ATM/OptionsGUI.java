@@ -52,6 +52,21 @@ public abstract class OptionsGUI {
     }
 
     /**
+     * Combine layout and controls to form Options Screen
+     * @param width of screen
+     * @param height of screen
+     * @return
+     */
+    public Scene generateOptionsScreen(int width, int height) {
+        GridPane gridPane = createFormPane();
+        addOptionsToLayout(gridPane);
+        addMessageToOptionsScreen("What can we do for you today?", gridPane);
+        optionsScreen = new Scene(gridPane, width, height);
+        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        return optionsScreen;
+    }
+
+    /**
      * Populates Option Screen with all the options
      * @param layout gridPane
      */
