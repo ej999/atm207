@@ -1,6 +1,8 @@
 package ATM;
 
 import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -27,8 +29,8 @@ class Options {
         this.options = new LinkedHashMap<>();
 
         // create, display. and allow logged-in user to select option.
-        createOptions();
         while (this.user != null) {
+            createOptions();
             displayOptions();
             selectOptions();
 
@@ -135,12 +137,32 @@ class Options {
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Creating User... Enter user type (" + UserManager.getTypesOfUsers() + "): ");
-        String type = reader.next();
+        String type = "ATM." + reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        UserManager.createUser(type, username, password);
+        boolean created = UserManager.createUser(type, username, password);
+        if (created && type.equals(User_Customer.class.getName())) {
+            setDobPrompt(username);
+        }
+    }
+
+    private void setDobPrompt(String username) {
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Would you like to set the Date of Birth as well? (Y/N): ");
+        String confirm = reader.next().toUpperCase();
+
+        if (confirm.equals("Y")) {
+            System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
+            try {
+                String dob = LocalDate.parse(reader.next()).toString();
+                ((User_Customer) UserManager.getUser(username)).setDob(dob);
+                System.out.println("Date of Birth for " + username + " is set to " + dob + ".");
+            } catch (DateTimeException e) {
+                System.err.println("Are you sure you born on a day that doesn't exist?");
+            }
+        }
     }
 
     private String selectAccountTypePrompt() {

@@ -14,7 +14,7 @@ final class UserManager {
     // A mapping of username to User.
     static HashMap<String, User> user_map = new HashMap<>();
 
-    static final List<Class> typesOfUsers = Arrays.asList(
+    private static final List<Class> typesOfUsers = Arrays.asList(
             User_Customer.class,
             User_Employee_BankManager.class,
             User_Employee_Teller.class
@@ -23,8 +23,8 @@ final class UserManager {
     UserManager() {
     }
 
-    // Return as String, not Class.
-    public static List<String> getTypesOfUsers() {
+    // Return as List of Strings, not List of Classes.
+    static List<String> getTypesOfUsers() {
         List<String> types = new ArrayList<>();
 
         for (Class type : typesOfUsers) {
@@ -34,26 +34,29 @@ final class UserManager {
         return types;
     }
 
-    static void createUser(String type, String username, String password) {
+    static boolean createUser(String type, String username, String password) {
         if (isPresent(username)) {
             System.err.println("Username already exists. User account is not created.");
+            return false;
         } else {
             try {
-                Class<?> clazz = Class.forName("ATM." + type);
+                Class<?> clazz = Class.forName(type);
                 Constructor<?> cTor = clazz.getConstructor(String.class, String.class);
                 User newUser = (User) cTor.newInstance(username, password);
 
                 addUser(newUser);
                 System.out.println("A User: \"" + newUser + "\", is successfully created.");
-            } catch (NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                return true;
+            } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 System.err.println("User type is not valid. Please retry.");
+                return false;
             }
         }
     }
 
     private static void addUser(User user) {
         // Username should be unique.
-        if (user_map.containsKey(user))
+        if (!user_map.containsKey(user.getUsername()))
             user_map.putIfAbsent(user.getUsername(), user);
     }
 
