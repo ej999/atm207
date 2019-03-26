@@ -34,7 +34,7 @@ abstract class Account_Debt extends Account {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
-            updateMostRecentTransaction("Withdrawal", withdrawalAmount, null);
+            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
         }
     }
 
@@ -51,7 +51,7 @@ abstract class Account_Debt extends Account {
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
             balance -= depositAmount;
-            updateMostRecentTransaction("Deposit", depositAmount, null);
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
             System.out.println("valid deposit");
         } else {
             System.out.println("invalid deposit");

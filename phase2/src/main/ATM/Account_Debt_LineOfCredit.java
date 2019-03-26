@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.EmptyStackException;
 
 class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transferable {
 
@@ -47,10 +48,14 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
                 System.out.println("File has been written.");
             }
             balance += amount;
-            updateMostRecentTransaction("PayBill", amount, null);
+            transactionHistory.push(new Transaction("PayBill", amount, null));
             return true;
         }
         return false;
+    }
+
+    public void undoPaybill(double amount) {
+        balance -= amount;
     }
 
     /**
@@ -80,11 +85,7 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
             } else {
                 account.balance -= transferAmount;
             }
-            if (user == UserManager.getUser(getPrimaryOwner())) {
-                updateMostRecentTransaction("TransferBetweenAccounts", transferAmount, account);
-            } else {
-                updateMostRecentTransaction("TransferToAnotherUser", transferAmount, account);
-            }
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
             return true;
         }
         return false;
@@ -103,29 +104,56 @@ class Account_Debt_LineOfCredit extends Account_Debt implements Account_Transfer
         return validWithdrawal(transferAmount) && user.hasAccount(account);
     }
 
-    @Override
-    void undoMostRecentTransaction() {
-        super.undoMostRecentTransaction();
-        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
-                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
-            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
-        }
-    }
+//    @Override
+//    void undoMostRecentTransaction() {
+//        super.undoMostRecentTransaction();
+//        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
+//                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
+//            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
+//        }
+//    }
+
+//    @Override
+//    public String toString() {
+//        String mostRecentTransactionString;
+//
+//        if (getMostRecentTransaction() == null) {
+//            mostRecentTransactionString = "n/a";
+//        } else if (getMostRecentTransaction().get("Type") == "Withdrawal") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return "Line of Credit\t\t" + new Date(dateOfCreation) + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
+//    }
 
     @Override
-    public String toString() {
-        String mostRecentTransactionString;
+    boolean undoTransactions(int n) {
+        if (n > 0) {
+            for (int i = 0; i < n; i++) {
+                try {
+                    Transaction transaction = transactionHistory.pop();
+                    String type = transaction.getType();
 
-        if (getMostRecentTransaction() == null) {
-            mostRecentTransactionString = "n/a";
-        } else if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
-        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
-        } else {
-            mostRecentTransactionString = "n/a";
+                    if (transaction.getType().equals("Withdrawal")) {
+                        undoWithdrawal(transaction.getAmount());
+                    } else if (transaction.getType().equals("Deposit")) {
+                        undoDeposit(transaction.getAmount());
+                    } else if (transaction.getType().equals("Transfer")) {
+                        undoTransfer(transaction.getAmount(), transaction.getAccount());
+                    } else if (type.equals("PayBill")) {
+                        undoPaybill(transaction.getAmount());
+                    }
+
+                } catch (EmptyStackException e) {
+                    System.out.println("All transactions on this account have been undone");
+                }
+            }
+            return true;
         }
-
-        return "Line of Credit\t\t" + new Date(dateOfCreation) + "\t" + balance + ((balance == 0) ? " " : "") + "\t\t" + mostRecentTransactionString;
+        return false;
     }
 }

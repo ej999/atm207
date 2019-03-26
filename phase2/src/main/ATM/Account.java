@@ -18,21 +18,17 @@ abstract class Account {
 
     // Since username is unique, we use username here instead of User_Customer object.
     private final ArrayList<String> owners = new ArrayList<>();
-    /**
-     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
-     */
-    private final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
-        {
-            put("Type", "");
-            put("Amount", 0.00);
-            put("Account", null);
-        }
-    };
-    // An array of account holders
-    /*
-    The most recent transaction is at the beginning. Behaves like a stack.
-     */
-    //    ArrayList<Transaction> transactionHistory;
+//    /**
+//     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
+//     */
+//    private final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
+//        {
+//            put("Type", "");
+//            put("Amount", 0.00);
+//            put("Account", null);
+//        }
+//    };
+
     Stack<Transaction> transactionHistory;
 
     Account(double balance, User_Customer owner) {
@@ -74,23 +70,27 @@ abstract class Account {
 
     public abstract String getType();
 
-    HashMap<String, Object> getMostRecentTransaction() {
-        return mostRecentTransaction;
-    }
-
-    void updateMostRecentTransaction(String type, double amount, Account account) {
-        mostRecentTransaction.put("Type", type);
-        mostRecentTransaction.put("Amount", amount);
-        mostRecentTransaction.put("Account", account);
-    }
-
-    void undoMostRecentTransaction() {
-        if (mostRecentTransaction.get("Type").equals("Withdrawal")) {
-            undoWithdrawal((Double) mostRecentTransaction.get("Amount"));
-        } else if (mostRecentTransaction.get("Type") == "Deposit") {
-            undoDeposit((Double) mostRecentTransaction.get("Amount"));
+    Transaction getMostRecentTransaction() {
+        try {
+            return transactionHistory.peek();
+        } catch (EmptyStackException e) {
+            return null;
         }
     }
+
+//    void updateMostRecentTransaction(String type, double amount, Account account) {
+//        mostRecentTransaction.put("Type", type);
+//        mostRecentTransaction.put("Amount", amount);
+//        mostRecentTransaction.put("Account", account);
+//    }
+
+//    void undoMostRecentTransaction() {
+//        if (mostRecentTransaction.get("Type").equals("Withdrawal")) {
+//            undoWithdrawal((Double) mostRecentTransaction.get("Amount"));
+//        } else if (mostRecentTransaction.get("Type") == "Deposit") {
+//            undoDeposit((Double) mostRecentTransaction.get("Amount"));
+//        }
+//    }
 
     //TODO see if it's needed
     public Long getDateOfCreation() {
@@ -101,14 +101,13 @@ abstract class Account {
      * Undoes the n most recent transactions.
      *
      * @param n transactions to be undone
+     * @return true iff n transactions have been successfully undone, otherwise return false
      */
-    void undoTransactions(int n) {
+    boolean undoTransactions(int n) {
         if (n > 0) {
-
             for (int i = 0; i < n; i++) {
                 try {
                     Transaction transaction = transactionHistory.pop();
-
                     if (transaction.getType().equals("Withdrawal")) {
                         undoWithdrawal(transaction.getAmount());
                     } else if (transaction.getType().equals("Deposit")) {
@@ -118,7 +117,9 @@ abstract class Account {
                     System.out.println("All transactions on this account have been undone");
                 }
             }
+            return true;
         }
+        return false;
     }
 
     abstract void deposit(double depositAmount);
@@ -128,17 +129,20 @@ abstract class Account {
     /**
      * Deposit money into their account by reading individual lines from deposits.txt
      */
-    void depositMoney() throws IOException {
-        Path path = Paths.get(inputFilePath);
-        try (BufferedReader fileInput = Files.newBufferedReader(path)) {
-            String line = fileInput.readLine();
-            while (line != null) { // Reading from a file will produce null at the end.
-                double amountToDeposit = Double.valueOf(line.substring(1));
-                deposit(amountToDeposit);
-                line = fileInput.readLine();
-            }
-        }
-    }
+    /*
+    In the final version, customer can deposit simply by entering the amount. No need to read from deposits.txt
+     */
+//    void depositMoney() throws IOException {
+//        Path path = Paths.get(inputFilePath);
+//        try (BufferedReader fileInput = Files.newBufferedReader(path)) {
+//            String line = fileInput.readLine();
+//            while (line != null) { // Reading from a file will produce null at the end.
+//                double amountToDeposit = Double.valueOf(line.substring(1));
+//                deposit(amountToDeposit);
+//                line = fileInput.readLine();
+//            }
+//        }
+//    }
 
     abstract void withdraw(double withdrawalAmount);
 
@@ -184,6 +188,26 @@ abstract class Account {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String mostRecentTransactionString;
+        if (getMostRecentTransaction() == null) {
+            mostRecentTransactionString = "n/a";
+        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn.";
+        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited.";
+        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred.";
+        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
+            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment.";
+        } else {
+            mostRecentTransactionString = "n/a";
+        }
+
+        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
     }
 
 }

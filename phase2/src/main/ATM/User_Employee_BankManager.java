@@ -31,14 +31,23 @@ class User_Employee_BankManager extends User_Employee {
         Cash.cashDeposit(cashList);
     }
 
+//    /**
+//     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
+//     * except for paying bills.
+//     *
+//     * @param account account involved
+//     */
+//    void undoMostRecentTransaction(Account account) {
+//        account.undoMostRecentTransaction();
+//    }
+
     /**
-     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
-     * except for paying bills.
-     *
-     * @param account account involved
+     * Undo the n most recent transactions
+     * @param account bank account
+     * @param n number of transactions
      */
-    void undoMostRecentTransaction(Account account) {
-        account.undoMostRecentTransaction();
+    void undoTransactions(Account account, int n) {
+        account.undoTransactions(n);
     }
 
     void setMaxTransactions(Account_Youth account, int transactionsAmount) {
