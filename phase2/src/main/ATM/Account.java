@@ -11,7 +11,7 @@ abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private static final String inputFilePath = "phase2/src/resources/deposits.txt";
 
-    //    private final int accountNumber;
+    private final int accountNumber;
     // Store as timestamp instead of Date object.
     final long dateOfCreation;
     double balance;
@@ -40,9 +40,23 @@ abstract class Account {
         this.owners.add(owner.getUsername());
         this.dateOfCreation = new Date().getTime();
         this.transactionHistory = new Stack<Transaction>();
-//todo truman: work on account number
-//        for ()
-//        this.accountNumber =
+
+        boolean validAccountNumber = false;
+        int accountNumber = 0;
+        while (!validAccountNumber) {
+            accountNumber = (int) ((Math.random() * 9000000) + 1000000);
+            validAccountNumber = true;
+            for (Account account : AccountManager.account_list) {
+                if (account.getAccountNumber() == accountNumber) {
+                    validAccountNumber = false;
+                }
+            }
+        }
+        this.accountNumber = accountNumber;
+    }
+
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
     Account(User_Customer owner) {
