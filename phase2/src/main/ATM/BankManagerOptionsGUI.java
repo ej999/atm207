@@ -27,42 +27,23 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
     @Override
     public Scene createOptionsScreen() {
-        // Options for Bank Manager.
-        Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create login for user");
-        Button button3 = new Button("Create bank account for user");
-        Button button4 = new Button("Restock ATM");
-        Button button5 = new Button("Undo transaction");
-        Button button6 = new Button("Change password");
-        Button button7 = new Button("Load custom bank data");
-        Button button8 = new Button("Clear all bank data");
-        Button button9 = new Button("Logout");
+        addOptionText("Read alerts");
+        addOptionText("Create user");
+        addOptionText("Create bank account for user");
+        addOptionText("Restock ATM");
+        addOptionText("Undo transactions");
+        addOptionText("Change password");
+        addOptionText("Clear all bank data");
+        addOptionText("Logout");
+        addOptions();
 
         // TODO: Then we need handlers for all nine buttons...
-        button6.setOnAction(event -> window.setScene(changePasswordScreen()));
-        button9.setOnAction(event -> logoutHandler());
 
-
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.setVgap(10);
-
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
-        gridPane.add(button6, 0, 6);
-        gridPane.add(button7, 0, 7);
-        gridPane.add(button8, 0, 8);
-        gridPane.add(button9, 0, 9);
-
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0, 0, 2, 1);
+        GridPane gridPane = createFormPane();
+        addOptionsToLayout(gridPane);
+        addMessageToOptionsScreen("What can we do for you today?", gridPane);
         optionsScreen = new Scene(gridPane, 300, 450);
-
+//        optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         return optionsScreen;
     }
 

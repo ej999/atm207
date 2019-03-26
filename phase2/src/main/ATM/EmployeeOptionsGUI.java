@@ -10,6 +10,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * GUI for employee options.
  */
@@ -21,30 +24,33 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
     @Override
     public Scene createOptionsScreen() {
-        Button button1 = new Button("Read alerts");
-        Button button2 = new Button("Create bank account for user");
-        Button button3 = new Button("Change password");
-        Button button4 = new Button("Undo transactions");
-        Button button5 = new Button("Logout");
+        addOptionText("Read alerts");
+        addOptionText("Create bank account for user");
+        addOptionText("Change password");
+        addOptionText("Undo transactions");
+        addOptionText("Logout");
+        addOptions();
 
-        button3.setOnAction(event -> window.setScene(changePasswordScreen()));
-        button5.setOnAction(event -> logoutHandler());
-
-        // TODO: Then we need handlers for the rest of the buttons
+        getOption(0).setOnAction(event -> readAlertsScreen());
+        getOption(1).setOnAction(event -> createBankAccountScreen());
+        getOption(3).setOnAction(event -> undoTransactionsScreen());
 
         GridPane gridPane = createFormPane();
+        addOptionsToLayout(gridPane);
+        addMessageToOptionsScreen("How can we help you today?", gridPane);
+        optionsScreen = new Scene(gridPane, 300, 300);
+        return optionsScreen;
+    }
 
-        // Use for loop
-        gridPane.add(button1, 0, 1);
-        gridPane.add(button2, 0, 2);
-        gridPane.add(button3, 0, 3);
-        gridPane.add(button4, 0, 4);
-        gridPane.add(button5, 0, 5);
+    void readAlertsScreen() {
+        //TODO
+    }
 
-        Text message = new Text("How can we help you today?");
-        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(message, 0, 0, 2, 1);
+    void createBankAccountScreen() {
+        //TODO
+    }
 
-        return new Scene(gridPane, 300, 300);
+    void undoTransactionsScreen() {
+        //TODO
     }
 }
