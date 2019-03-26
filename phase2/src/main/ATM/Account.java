@@ -1,11 +1,9 @@
 package ATM;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 abstract class Account {
     double balance;
@@ -173,25 +171,26 @@ abstract class Account {
         }
         return false;
     }
+//TODO:truman make it compatible with firebase
 
-    @Override
-    public String toString() {
-        String mostRecentTransactionString;
-        if (getMostRecentTransaction() == null) {
-            mostRecentTransactionString = "n/a";
-        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn.";
-        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited.";
-        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred.";
-        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
-            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment.";
-        } else {
-            mostRecentTransactionString = "n/a";
-        }
-
-        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
-    }
+//    @Override
+//    public String toString() {
+//        String mostRecentTransactionString;
+//        if (getMostRecentTransaction() == null) {
+//            mostRecentTransactionString = "n/a";
+//        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn.";
+//        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited.";
+//        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred.";
+//        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment.";
+//        } else {
+//            mostRecentTransactionString = "n/a";
+//        }
+//
+//        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
+//    }
 
 }
