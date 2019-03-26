@@ -69,9 +69,9 @@ public class ATM extends Application {
         // If the HashMap of User objects is empty or deleted, recreate the default state here.
         if (UserManager.user_map.isEmpty()) {
             // Instantiate accounts and users for demo.
-            UserManager.createUser("BankManager", "jen", "1234");
-            UserManager.createUser("Teller", "pete", "1234");
-            UserManager.createUser("Customer", "steve", "1234");
+            UserManager.createUser(User_Employee_BankManager.class.getName(), "jen", "1234");
+            UserManager.createUser(User_Employee_Teller.class.getName(), "pete", "1234");
+            UserManager.createUser(User_Customer.class.getName(), "steve", "1234");
             AccountManager.addAccount("CHEQUING", ((User_Customer) UserManager.getUser("steve")), 1234);
             AccountManager.addAccount("LINEOFCREDIT", ((User_Customer) UserManager.getUser("steve")), 4321);
             AccountManager.addAccount("SAVINGS", ((User_Customer) UserManager.getUser("steve")), 1000);

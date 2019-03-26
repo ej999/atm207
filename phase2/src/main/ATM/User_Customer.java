@@ -18,10 +18,11 @@ class User_Customer extends User {
     private final ArrayList<Account> accounts;
     private Account primary;
     private Inventory goods = new Inventory();
-    //TODO: personal details
-    private int age;
-    // Date of Birth
+
     private String dob;
+    //TODO make age ueful
+    private int age;
+    //TODO: make creitscore work
     private int creditScore;
     // credit Score should have a default value
     // each month if the customer payed everything on time it should be increased by a little amount
@@ -44,8 +45,12 @@ class User_Customer extends User {
         return dob;
     }
 
-    public int getAge() {
-        return age;
+    void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    int getAge() {
+        return (int) LocalDate.parse(dob).until(LocalDate.now(), ChronoUnit.YEARS);
     }
 
     public String getType() {

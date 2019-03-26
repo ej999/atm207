@@ -21,10 +21,11 @@ import javafx.stage.Window;
  */
 public abstract class OptionsGUI {
     Stage window;
-    Scene welcomeScreen, optionsScreen;
+    Scene optionsScreen;
+    private Scene welcomeScreen;
     User user;
 
-    public OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         this.window = mainWindow;
         this.welcomeScreen = welcomeScreen;
         this.user = user;
@@ -35,20 +36,9 @@ public abstract class OptionsGUI {
     /**
      * When user clicks 'logout'
      */
-    public void logoutHandler() {
-        //Every time the user logs out, the UserManager's contents will be serialized and saved.
-        UserManagerSerialization backUp = new UserManagerSerialization();
-        //TODO truman
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(backUp);
-//            out.close();
-//            fileOut.close();
-//            System.err.print("Serialized data saved. ");
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
+    void logoutHandler() {
+        UserManagerSerialization serialization = new UserManagerSerialization();
+        serialization.serialize();
 
         showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
                 "Your account has been logged out. Thank you for choosing CSC207 Bank!");
@@ -57,9 +47,10 @@ public abstract class OptionsGUI {
 
     /**
      * Common layout for the various scenes
+     *
      * @return gridPane layout
      */
-    public GridPane createFormPane() {
+    GridPane createFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -126,14 +117,14 @@ public abstract class OptionsGUI {
         });
     }
 
-    public Scene changePasswordScreen() {
+    Scene changePasswordScreen() {
         GridPane grid = createFormPane();
         addUIControlsToPasswordScreen(grid);
         //TODO: change dimensions so that everything fits
-        return new Scene(grid, 300,275);
+        return new Scene(grid, 300, 275);
     }
 
-    public void setPasswordHandler() {
+    private void setPasswordHandler() {
         showAlert(Alert.AlertType.CONFIRMATION, window, "Password changed",
                 "Your password has been changed.");
         window.setScene(optionsScreen);
@@ -147,7 +138,7 @@ public abstract class OptionsGUI {
      * @param title     title of window
      * @param message   alert message
      */
-    public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
