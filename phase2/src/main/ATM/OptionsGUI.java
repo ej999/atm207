@@ -86,19 +86,8 @@ public abstract class OptionsGUI {
      * When user clicks 'logout'
      */
     public void logoutHandler() {
-        //Every time the user logs out, the UserManager's contents will be serialized and saved.
-        UserManagerSerialization backUp = new UserManagerSerialization();
-        //TODO truman
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream("phase2/src/resources/LoginManagerStorage.txt");
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(backUp);
-//            out.close();
-//            fileOut.close();
-//            System.err.print("Serialized data saved. ");
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
+        UserManagerSerialization serialization = new UserManagerSerialization();
+        serialization.serialize();
 
         showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
                 "Your account has been logged out. Thank you for choosing CSC207 Bank!");
