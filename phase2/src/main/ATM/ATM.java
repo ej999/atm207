@@ -1,17 +1,12 @@
 package ATM;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -117,10 +112,9 @@ public class ATM extends Application {
      * Main entry point of a JavaFX application. This is where the user interface is created and made visible.
      *
      * @param primaryStage the main window
-     * @throws Exception
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         /*
         A bit of terminology
         stage - window
@@ -197,40 +191,37 @@ public class ATM extends Application {
         grid.add(actionTarget, 1, 6);
         actionTarget.setId("actiontarget");
 
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String username = userTextField.getText();
-                String password = pwBox.getText();
+        btn.setOnAction(event -> {
+            String username = userTextField.getText();
+            String password = pwBox.getText();
 
-                if (username.isEmpty()) {
-                    actionTarget.setText("Please enter your username");
-                } else if (password.isEmpty()) {
-                    actionTarget.setText("Please enter your password");
+            if (username.isEmpty()) {
+                actionTarget.setText("Please enter your username");
+            } else if (password.isEmpty()) {
+                actionTarget.setText("Please enter your password");
+            } else {
+
+                boolean authResult = UserManager.auth(username, password);
+
+                if (!authResult) {
+                    actionTarget.setText("Login attempt failed");
                 } else {
-
-                    boolean authResult = UserManager.auth(username, password);
-
-                    if (!authResult) {
-                        actionTarget.setText("Login attempt failed");
-                    } else {
-                        user = UserManager.getUser(username);
-                        showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
-                                "Hi " + username);
+                    user = UserManager.getUser(username);
+                    showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
+                            "Hi " + username);
 
 
-                        // At this point the user has been created so we can create the options screen
+                    // At this point the user has been created so we can create the options screen
 
-                        if (user instanceof User_Employee_BankManager) {
-                            createBMOptionsScreen();
-                            window.setScene(BMOptions);
-                        } else if (user instanceof User_Employee_Teller) {
-                            createTellerOptionsScreen();
-                            window.setScene(tellerOptions);
-                        } else if (user instanceof User_Customer) {
-                            createCustomerOptionsScreen();
-                            window.setScene(customerOptions);
-                        }
+                    if (user instanceof User_Employee_BankManager) {
+                        createBMOptionsScreen();
+                        window.setScene(BMOptions);
+                    } else if (user instanceof User_Employee_Teller) {
+                        createTellerOptionsScreen();
+                        window.setScene(tellerOptions);
+                    } else if (user instanceof User_Customer) {
+                        createCustomerOptionsScreen();
+                        window.setScene(customerOptions);
                     }
                 }
             }
