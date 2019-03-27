@@ -223,9 +223,6 @@ class Options {
     }
 
     private void logoutPrompt() {
-        //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
-        ATM.serialization.serializeAll();
-
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
 
