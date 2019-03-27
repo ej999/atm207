@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 /**
  * GUI for customer options.
  */
-public class CustomerOptionsGUI extends OptionsGUI { //extends OptionsGUI{
+public class CustomerOptionsGUI extends OptionsGUI {
 
     public CustomerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
