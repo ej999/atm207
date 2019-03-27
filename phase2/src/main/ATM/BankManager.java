@@ -23,7 +23,7 @@ class BankManager extends UserEmployee {
     }
 
     void restockMachine(Map<Integer, Integer> deposits) {
-        Cash.cashDeposit(deposits);
+        new Cash().cashDeposit(deposits);
     }
 
 //    /**

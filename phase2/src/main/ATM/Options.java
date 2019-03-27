@@ -31,6 +31,8 @@ class Options {
 
             // Since a Thread cannot be restarted, options has to be recreated every time after a user selects an option.
             options.clear();
+
+            ATM.serialization.serializeAll();
         }
     }
 
@@ -197,29 +199,37 @@ class Options {
      */
     private void restockPrompt() {
         Scanner reader = new Scanner(System.in);
-        StringBuilder print = new StringBuilder();
 
-        Map<Integer, Integer> restock = new HashMap<>();
+        Map<Integer, Integer> restock = selectBillsPrompt();
+
+        ((BankManager) current_user).restockMachine(restock);
+        System.out.println("are successfully restocked. ");
+    }
+
+    private Map<Integer, Integer> selectBillsPrompt() {
+        Scanner reader = new Scanner(System.in);
+
+        StringBuilder print = new StringBuilder();
+        Map<Integer, Integer> selectedBills = new HashMap<>();
         for (Integer d : Cash.DENOMINATIONS) {
             System.out.print("Enter amount of $" + d + " dollar bill: ");
             int amount = reader.nextInt();
 
-            restock.put(d, amount);
+            selectedBills.put(d, amount);
             print.append(amount).append(" of $").append(d).append("-bill, ");
         }
-
-        ((BankManager) current_user).restockMachine(restock);
-        System.out.println(print + "are successfully restocked. ");
+        System.out.println(print);
+        return selectedBills;
     }
 
     private void logoutPrompt() {
         //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
-        new ManagersSerialization().serialize();
+        ATM.serialization.serializeAll();
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
 
-        // Logout the current user by assigning the current_user to null.
+        // Logout the current user.
         this.current_user = null;
     }
 
@@ -228,8 +238,7 @@ class Options {
 //                " Note that it must be stored in the phase1 folder");
 //        Scanner reader1 = new Scanner(System.in);
 //        String answer = reader1.nextLine();
-//        ManagersSerialization custom_loader = new ManagersSerialization();
-//        HashMap<String, User> custom_map = custom_loader.loadCustom(answer);
+//        HashMap<String, User> custom_map = ManagersSerialization.loadCustom(answer);
 //        UserManager.user_map = custom_map;
 //    }
 
@@ -238,7 +247,7 @@ class Options {
         Scanner reader2 = new Scanner(System.in);
         String answer = reader2.nextLine();
         if (answer.equals("Y")) {
-            new ManagersSerialization().deleteDatabase();
+            ManagersSerialization.deleteDatabase();
             System.out.println("Data has been cleared. Good Luck!");
             System.exit(0);
         }
@@ -355,16 +364,24 @@ class Options {
     }
 
     private void depositPrompt() {
-        Account primary = AccountManager.getAccount(((Customer) current_user).getPrimary());
-
+        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) current_user).getPrimary());
         Scanner reader = new Scanner(System.in);
-//        System.out.println("Please make sure to ready your cash/cheque in deposit.txt");
-//        System.out.print("Enter any key to proceed... ");
-//        reader.next();
 
-        System.out.println("How much would you like to deposit?");
-        double amount = Double.valueOf(reader.next());
-        primary.deposit(amount);
+        System.out.print("Are you depositing [1] cash or [2] cheque? ");
+        int option = 0;
+        while (option > 3 || option < 1) {
+            option = reader.nextInt();
+        }
+
+        if (option == 1) {
+            Map<Integer, Integer> depositedBills = selectBillsPrompt();
+            primary.depositBill(depositedBills);
+
+        } else {
+            System.out.print("How much would you like to deposit? ");
+            double amount = Double.valueOf(reader.next());
+            primary.deposit(amount);
+        }
     }
 
     private void payBillPrompt() {

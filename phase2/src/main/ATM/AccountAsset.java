@@ -48,7 +48,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount);
+                new Cash().isThereEnoughBills(withdrawalAmount);
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     void withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && condition) {
             balance -= withdrawalAmount;
-            Cash.cashWithdrawal(withdrawalAmount);
+            new Cash().cashWithdrawal(withdrawalAmount);
             transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
         }
     }
@@ -68,7 +68,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     @Override
     void undoWithdrawal(double withdrawalAmount) {
         balance += withdrawalAmount;
-        Cash.undoCashWithdrawal(withdrawalAmount);
+        new Cash().cashWithdrawal(-withdrawalAmount);
     }
 
     @Override

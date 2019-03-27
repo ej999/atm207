@@ -49,7 +49,7 @@ class Youth extends Account implements AccountTransferable {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);
+                new Cash().isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     /**
@@ -61,7 +61,7 @@ class Youth extends Account implements AccountTransferable {
     void withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && (condition)) {
             balance -= withdrawalAmount;
-            Cash.cashWithdrawal(withdrawalAmount);
+            new Cash().cashWithdrawal(withdrawalAmount);
             transactions += 1;
             transactionHistory.push(new Transaction("Withdraw", withdrawalAmount, null));
         }
@@ -114,7 +114,7 @@ class Youth extends Account implements AccountTransferable {
     void undoWithdrawal(double withdrawalAmount) {
         balance += withdrawalAmount;
         transactions -= 1;
-        Cash.undoCashWithdrawal(withdrawalAmount);
+        new Cash().cashWithdrawal(-withdrawalAmount);
     }
 
     @Override

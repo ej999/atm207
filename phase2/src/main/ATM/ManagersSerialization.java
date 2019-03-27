@@ -14,56 +14,50 @@ import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * A helper class that operate serialization on UserManager and AccountManager, and save data to FireBase database.
+ * An observer class that operate serialization in real-time, save and retrieve data to FireBase database.
  */
 final class ManagersSerialization {
-    private FireBaseDBAccess fbDb;
+    static void deleteDatabase() {
+        FireBaseDBAccess.save(0, "", "");
 
-    ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess();
+        ATM.log.info("FireBase database is set to empty.");
     }
 
-    // Deserialize JSON from FireBase to a HashMap of User object, and assign it to user_map in UserManager.
     void deserialize() {
-        HashMap<String, Object> user_map_temp = fbDb.retrieveAll("Users");
-        // Downcast Object value to User value.
+        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in UserManager.
+        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
+
         HashMap<String, User> user_map = new HashMap<>();
         for (String username : user_map_temp.keySet()) {
             Object object = user_map_temp.get(username);
-            if (object instanceof User) {
-                user_map.put(username, (User) object);
-            }
+            user_map.put(username, (User) object);
         }
         UserManager.user_map = user_map;
 
-
-        HashMap<String, Object> account_list_temp = fbDb.retrieveAll("Accounts");
-        // Downcast Object value to Account value.
+        // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in AccountManager.
+        HashMap<String, Object> account_list_temp = FireBaseDBAccess.retrieveAll("Accounts", true);
         HashMap<String, Account> account_map = new HashMap<>();
         for (String n : account_list_temp.keySet()) {
             Object object = account_list_temp.get(n);
-            if (object instanceof Account) {
-                account_map.put(n, (Account) object);
-            }
+            account_map.put(n, (Account) object);
         }
         AccountManager.account_map = account_map;
 
-
-//        HashMap<String, Object> bills_temp = fbDb.retrieveAll("Bills");
-//        // Downcast Object value to Integer value.
-//        HashMap<String, Integer> bills = new HashMap<>();
-//        for (String n : bills_temp.keySet()) {
-//            Object object = bills_temp.get(n);
-//            if (object instanceof Integer) {
-//                bills.put(n, (Integer) object);
-//            }
-//        }
-//        Cash.ATMBills = bills;
+        // Deserialize JSON from /Bills directory in FireBase to a HashMap of Integer, and assign it to ATMBills in Cash.
+        HashMap<String, Object> bills_temp = FireBaseDBAccess.retrieveAll("Bills", false);
+        // Downcast Object value to Integer value.
+        HashMap<String, Integer> bills = new HashMap<>();
+        for (String n : bills_temp.keySet()) {
+            Object object = bills_temp.get(n);
+            bills.put(n, Math.toIntExact((Long) object));
+        }
+        Cash.ATMBills = bills;
 
 
         // FireBase has no native support for arrays, so we re-create these variables: https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
         for (String id : AccountManager.account_map.keySet()) {
             Account account = AccountManager.getAccount(id);
+
             if (account.getTransactionHistory() == null) {
                 account.transactionHistory = new Stack<Transaction>();
             }
@@ -76,21 +70,17 @@ final class ManagersSerialization {
             }
         }
 
-        // REMOVE BEFORE SUBMISSION
-        System.err.println("DEBUGGING: UserManager.user_map = " + UserManager.user_map);
-        System.err.println("DEBUGGING: AccountManager.user_map = " + AccountManager.account_map);
+        ATM.log.info("Deserialize UserManager.user_map = " + UserManager.user_map);
+        ATM.log.info("Deserialize AccountManager.account_map = " + AccountManager.account_map);
+        ATM.log.info("Deserialize Cash.ATMBill = " + Cash.ATMBills);
     }
 
-    // All the data structures stored in suffix-Manager classes will be serialize to JSON after a action is performed by User.
-    void serialize() {
-        fbDb.saveAll(UserManager.user_map, "Users");
-        fbDb.saveAll(AccountManager.account_map, "Accounts");
-        fbDb.saveAll(Cash.ATMBills, "Bills/Bill");
-        System.err.print("Serialized data saved. ");
-    }
+    void serializeAll() {
+        FireBaseDBAccess.saveAll(UserManager.user_map, "Users");
+        FireBaseDBAccess.saveAll(AccountManager.account_map, "Accounts");
+        FireBaseDBAccess.saveAll(Cash.ATMBills, "Bills");
 
-    void deleteDatabase() {
-        fbDb.save(0, "", "");
+        ATM.log.info("ATMBills is serialized and saved.");
     }
 
 //    HashMap<String, User> loadCustom(String filename) {
@@ -108,21 +98,18 @@ final class ManagersSerialization {
 //
 //    }
 
-
     /**
-     * A helper class for ManagersSerialization that allow read and write to FireBase project.
+     * A helper class that allow read and write to FireBase project.
      */
-    final class FireBaseDBAccess {
-        private boolean initialized = false;
-        private DatabaseReference databaseRef;
+    static final class FireBaseDBAccess {
+        static private DatabaseReference databaseRef;
 
-        FireBaseDBAccess() {
-            if (!initialized) {
-                initFireBase();
-            }
+
+        static {
+            initFireBase();
         }
 
-        private void initFireBase() {
+        static private void initFireBase() {
             try {
                 // FireBase private key generated when creating service account.
                 FileInputStream serviceAccount = new FileInputStream("./phase2/src/resources/serviceAccountKey.json");
@@ -137,20 +124,17 @@ final class ManagersSerialization {
 
                 // Get a reference to our database.
                 databaseRef = FirebaseDatabase.getInstance().getReference("/");
-
-                initialized = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        void save(Object item, String child, String key) {
+        static void save(Object item, String child, String key) {
+            CountDownLatch latch = new CountDownLatch(1);
             if (item != null) {
                 // Get existing child or new child will be created.
                 DatabaseReference childRef = databaseRef.child(child).child(key);
 
-                // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-                CountDownLatch latch = new CountDownLatch(1);
 
                 childRef.setValue(item, (error, ref) -> latch.countDown());
 
@@ -163,39 +147,16 @@ final class ManagersSerialization {
             }
         }
 
-        void saveAll(HashMap item_map, String child) {
+        static void saveAll(HashMap item_map, String child) {
+            CountDownLatch latch = new CountDownLatch(1);
             if (item_map != null) {
                 // Get existing child or new child will be created.
                 DatabaseReference childRef = databaseRef.child(child);
-
-                // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-                CountDownLatch latch = new CountDownLatch(1);
 
                 childRef.setValueAsync(item_map);
                 latch.countDown();
 
                 try {
-                    // Wait for FireBase to save record.
-                    latch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        void push(Object item, String child) {
-            if (item != null) {
-                // Get existing child or will bee created new child.
-                DatabaseReference childRef = databaseRef.child(child);
-
-                // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-                CountDownLatch latch = new CountDownLatch(1);
-
-                childRef.push().setValueAsync(item);
-                System.out.println("Record pushed!");
-
-                try {
-                    // Wait for FireBase to save record.
                     latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -206,12 +167,10 @@ final class ManagersSerialization {
         /**
          * Return a HashMap of all the child items as their objects in database.
          */
-        HashMap<String, Object> retrieveAll(String child) {
+        static HashMap<String, Object> retrieveAll(String child, boolean toClass) {
+            CountDownLatch latch = new CountDownLatch(1);
             // Get existing child or will bee created new child.
             DatabaseReference childRef = databaseRef.child(child);
-
-            // Using countDownLatch here to prevent the JVM from exiting before the thread is still running.
-            CountDownLatch latch = new CountDownLatch(1);
 
             HashMap<String, Object> object_map = new HashMap<>();
 
@@ -220,9 +179,16 @@ final class ManagersSerialization {
                 public void onDataChange(DataSnapshot snapshot) {
                     for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                         try {
-                            Class classOfObj = Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
-                            Object object = json2object(childSnapshot.getValue(), classOfObj);
-                            object_map.put(childSnapshot.getKey(), object);
+                            if (toClass) {
+                                // Convert JSON to class
+                                Class classOfObj = Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
+                                Gson gson = new Gson();
+                                Object object = gson.fromJson(childSnapshot.getValue().toString(), classOfObj);
+
+                                object_map.put(childSnapshot.getKey(), object);
+                            } else {
+                                object_map.put(childSnapshot.getKey(), childSnapshot.getValue());
+                            }
                         } catch (ClassNotFoundException e) {
                             e.getStackTrace();
                         }
@@ -236,7 +202,6 @@ final class ManagersSerialization {
             });
 
             try {
-                // Wait for FireBase to save record.
                 latch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -244,11 +209,22 @@ final class ManagersSerialization {
             return object_map;
         }
 
-        // Helper method that convert object from JSON using Gson.
-        private <T> T json2object(Object ob, Class<T> classOfT) {
-            Gson gson = new Gson();
-            return gson.fromJson(ob.toString(), classOfT);
-        }
+//        void push(Object item, String child) {
+//            if (item != null) {
+//                // Get existing child or will bee created new child.
+//                DatabaseReference childRef = databaseRef.child(child);
+//
+//                childRef.push().setValueAsync(item);
+//                System.out.println("Record pushed!");
+//
+//                try {
+//                    // Wait for FireBase to save record.
+//                    latch.await();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
 }

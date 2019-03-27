@@ -99,8 +99,7 @@ public abstract class OptionsGUI {
      * When user clicks 'logout'
      */
     public void logoutHandler() {
-        ManagersSerialization serialization = new ManagersSerialization();
-        serialization.serialize();
+        ATM.serialization.serializeAll();
 
         showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
                 "Your account has been logged out. Thank you for choosing CSC207 Bank!");

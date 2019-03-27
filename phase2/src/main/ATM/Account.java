@@ -1,9 +1,6 @@
 package ATM;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EmptyStackException;
-import java.util.Stack;
+import java.util.*;
 
 abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
@@ -43,6 +40,22 @@ abstract class Account {
 
     Account(String id, Customer owner1, Customer owner2) {
         this(id, 0, owner1, owner2);
+    }
+
+    // TODO may need to make abstract and move it to another hierarchy
+    void depositBill(Map<Integer, Integer> depositedBills) {
+        int depositAmount = 0;
+        for (Integer d : depositedBills.keySet()) {
+            depositAmount += d * depositedBills.get(d);
+        }
+
+        if (depositAmount > 0) {
+            balance += depositAmount;
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
+            new Cash().cashDeposit(depositedBills);
+        } else {
+            System.out.println("invalid deposit");
+        }
     }
 
     public Stack<Transaction> getTransactionHistory() {
@@ -111,23 +124,6 @@ abstract class Account {
 
     abstract void undoDeposit(double depositAmount);
 
-    /**
-     * Deposit money into their account by reading individual lines from deposits.txt
-     */
-    /*
-    In the final version, customer can deposit simply by entering the amount. No need to read from deposits.txt
-     */
-//    void depositMoney() throws IOException {
-//        Path path = Paths.get(inputFilePath);
-//        try (BufferedReader fileInput = Files.newBufferedReader(path)) {
-//            String line = fileInput.readLine();
-//            while (line != null) { // Reading from a file will produce null at the end.
-//                double amountToDeposit = Double.valueOf(line.substring(1));
-//                deposit(amountToDeposit);
-//                line = fileInput.readLine();
-//            }
-//        }
-//    }
     abstract void withdraw(double withdrawalAmount);
 
     abstract void undoWithdrawal(double withdrawalAmount);

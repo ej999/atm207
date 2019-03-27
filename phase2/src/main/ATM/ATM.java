@@ -13,46 +13,64 @@ import javafx.stage.Window;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * An ATM that allows customers and employees to conduct a range of financial transactions and operations by using
- * their user accounts. It is displayed on both PrintStream and GUI.
+ * An ATM that allows customers and employees to conduct a range of financial transactions and operations.
+ * It is displayed on both PrintStream and GUI.
  */
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application {
+    // For debugging
+    static final Logger log = Logger.getLogger("Custom");
+    // Declare as a static variable so it could be added as observer.
+    static ManagersSerialization serialization;
+
     private Stage window;
     private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
     private User user;
 
     public static void main(String[] args) {
-        // Disable java.util.logging, since we are using PrintStream to interact with users.
-        Logger.getLogger("").setLevel(Level.OFF);
+        serialization = new ManagersSerialization();
 
-        // Load the Maps of User and Account objects to their respected Manager class from FireBase database.
-        ManagersSerialization serialization = new ManagersSerialization();
+        Logger.getLogger("").setLevel(Level.OFF);
+        // change argument to Level.OFF to disable java.util.logging for debugging.
+        Logger.getLogger("Custom").setLevel(Level.ALL);
+
         serialization.deserialize();
 
-        // If the Map of User objects is empty or deleted, then create a demo and save it .
-        if (UserManager.user_map.isEmpty() || AccountManager.account_map.isEmpty()) {
-            UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
-            UserManager.createAccount(Teller.class.getName(), "pete", "1234");
-            UserManager.createAccount(Customer.class.getName(), "steve", "1234");
+        // If the any of the following groups of objects is empty or deleted, then create a demo and save it .
+        if (UserManager.user_map.isEmpty() || AccountManager.account_map.isEmpty() || Cash.ATMBills.isEmpty()) {
+            if (UserManager.user_map.isEmpty()) {
+                UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
+                UserManager.createAccount(Teller.class.getName(), "pete", "1234");
+                UserManager.createAccount(Customer.class.getName(), "steve", "1234");
+            }
 
-            AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getUser("steve")), 1234);
-            AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getUser("steve")), 4321);
-            AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getUser("steve")), 1000);
-            AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getUser("steve")), 420);
+            if (AccountManager.account_map.isEmpty()) {
+                AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getUser("steve")), 1234);
+                AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getUser("steve")), 4321);
+                AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getUser("steve")), 1000);
+                AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getUser("steve")), 420);
+            }
+
+            if (Cash.ATMBills.isEmpty()) {
+                Cash.ATMBills = new HashMap<>();
+                for (int d : Cash.DENOMINATIONS) {
+                    Cash.ATMBills.put(String.valueOf(d), 50);
+                }
+            }
 
             // Save to FireBase database.
-            serialization.serialize();
+            serialization.serializeAll();
         }
 
-        //Java FX -> invoke start method
-        launch(args);
+        // Java FX -> invoke start method
+//        launch(args);
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -71,12 +89,7 @@ public class ATM extends Application {
         }
     }
 
-    /**
-     * Allow user to login by entering username and password.
-     * <p>
-     * It will return the User if the login is valid; otherwise, it'll consistently asking user to
-     * enter username and password.
-     */
+    // It will return the User if the login is valid; otherwise, it'll continuity asking user to retry.
     private static User authPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 

@@ -20,7 +20,7 @@ abstract class AccountDebt extends Account {
     boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 &&
                 withdrawalAmount % 5 == 0 &&
-                Cash.isThereEnoughBills(withdrawalAmount) &&
+                new Cash().isThereEnoughBills(withdrawalAmount) &&
                 balance < DEBT_CAPACITY;
     }
 
@@ -33,7 +33,7 @@ abstract class AccountDebt extends Account {
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
-            Cash.cashWithdrawal(withdrawalAmount);
+            new Cash().cashWithdrawal(withdrawalAmount);
             transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
         }
     }
@@ -41,7 +41,7 @@ abstract class AccountDebt extends Account {
     @Override
     void undoWithdrawal(double amount) {
         balance -= amount;
-        Cash.undoCashWithdrawal(amount);
+        new Cash().cashWithdrawal(-amount);
     }
 
     /*

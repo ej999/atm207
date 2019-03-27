@@ -209,7 +209,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         proceed.setOnAction(event -> {
-            new ManagersSerialization().deleteDatabase();
+            ManagersSerialization.deleteDatabase();
             showAlert(Alert.AlertType.CONFIRMATION, window, "Cleared", "Data has been cleared. Good Luck!");
             window.close();
             System.exit(0);
