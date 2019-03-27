@@ -20,14 +20,14 @@ final class Cash {
      * Cash initially starts with 50 bills for every denomination.
      */
     // SortedMap is used here to make sure the denominations is in ascending order.
-    static SortedMap<Integer, Integer> bills;
+    static SortedMap<Integer, Integer> ATMBills;
 
     static {
         DENOMINATIONS = Collections.unmodifiableList(Arrays.asList(5, 10, 20, 50));
 
-        bills = new TreeMap<>();
+        ATMBills = new TreeMap<>();
         for (int d : DENOMINATIONS) {
-            bills.put(d, 50);
+            ATMBills.put(d, 50);
         }
     }
 
@@ -37,7 +37,7 @@ final class Cash {
      * @return true iff amount of any denomination goes below 20
      */
     static boolean isAmountBelowTwenty() {
-        for (int n : bills.values()) {
+        for (int n : ATMBills.values()) {
             if (n < 20) {
                 return true;
             }
@@ -62,13 +62,13 @@ final class Cash {
         // Open the file for writing and write to it.
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
             //TODO improve
-            out.println(bills);
+            out.println(ATMBills);
         }
     }
 
     static void cashDeposit(Map<Integer, Integer> deposits) {
         for (int d : deposits.keySet()) {
-            bills.put(d, bills.get(d) + deposits.get(d));
+            ATMBills.put(d, ATMBills.get(d) + deposits.get(d));
         }
     }
 
@@ -79,10 +79,10 @@ final class Cash {
     private static SortedMap<Integer, Integer> getDenominator(double amount) {
         double remainder = amount;
         SortedMap<Integer, Integer> returnBills = new TreeMap<>();
-        List<Integer> denominator = new ArrayList<>(bills.keySet());
+        List<Integer> denominator = new ArrayList<>(ATMBills.keySet());
 
         for (int d = denominator.size() - 1; d >= 0; d--) {
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator.get(d)), bills.get(denominator.get(d)));
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator.get(d)), ATMBills.get(denominator.get(d)));
             returnBills.put(denominator.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * denominator.get(d);
         }
@@ -123,7 +123,7 @@ final class Cash {
         for (int denominator : numberOfBills.keySet()) {
             int amountOfBills = numberOfBills.get(denominator);
 
-            bills.put(denominator, bills.get(denominator) - amountOfBills);
+            ATMBills.put(denominator, ATMBills.get(denominator) - amountOfBills);
             total += denominator * amountOfBills;
 
             print.append(amountOfBills).append(" of $").append(denominator).append("-bill, ");
