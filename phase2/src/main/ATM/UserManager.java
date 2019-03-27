@@ -72,8 +72,11 @@ final class UserManager {
         if (isPresent(username) && user.getPassword().equals(password)) {
             return true;
         } else {
-            synchronized (System.out) {
-                System.err.println("Wrong username or password. Please try again.");
+            System.err.println("Wrong username or password. Please try again.");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                System.err.println("Ouch!");
             }
             return false;
         }

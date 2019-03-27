@@ -34,7 +34,7 @@ public class ATM extends Application {
         Logger.getLogger("").setLevel(Level.OFF);
 
         // Load the Maps of User and Account objects to their respected Manager class from FireBase database.
-        UserManagerSerialization serialization = new UserManagerSerialization();
+        ManagersSerialization serialization = new ManagersSerialization();
         serialization.deserialize();
 
         // Firebase known bug: https://stackoverflow.com/questions/48462093/storing-empty-arrays-in-firebase
@@ -87,7 +87,7 @@ public class ATM extends Application {
      * It will return the User if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
-    private static synchronized User authPrompt() {
+    private static User authPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);
