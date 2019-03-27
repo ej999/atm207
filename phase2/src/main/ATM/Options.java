@@ -201,7 +201,7 @@ class Options {
 
         Map<Integer, Integer> restock = new HashMap<>();
         for (Integer d : Cash.DENOMINATIONS) {
-            System.out.print("Enter amount of $" + d + " dollar bills: ");
+            System.out.print("Enter amount of $" + d + " dollar ATM_bill: ");
             int amount = reader.nextInt();
 
             restock.put(d, amount);
@@ -214,7 +214,7 @@ class Options {
 
     private void logoutPrompt() {
         //Every time the user logs out, the UserManager's contents will be serialized and saved to FireBase database.
-        new UserManagerSerialization().serialize();
+        new ManagersSerialization().serialize();
 
         System.out.println("Your account has been logged out. Thank you for choosing CSC207 Bank!");
         System.out.println("===========================================================\n");
@@ -228,7 +228,7 @@ class Options {
 //                " Note that it must be stored in the phase1 folder");
 //        Scanner reader1 = new Scanner(System.in);
 //        String answer = reader1.nextLine();
-//        UserManagerSerialization custom_loader = new UserManagerSerialization();
+//        ManagersSerialization custom_loader = new ManagersSerialization();
 //        HashMap<String, User> custom_map = custom_loader.loadCustom(answer);
 //        UserManager.user_map = custom_map;
 //    }
@@ -238,7 +238,7 @@ class Options {
         Scanner reader2 = new Scanner(System.in);
         String answer = reader2.nextLine();
         if (answer.equals("Y")) {
-            new UserManagerSerialization().deleteDatabase();
+            new ManagersSerialization().deleteDatabase();
             System.out.println("Data has been cleared. Good Luck!");
             System.exit(0);
         }

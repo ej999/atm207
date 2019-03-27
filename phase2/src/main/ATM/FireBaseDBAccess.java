@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * A helper class for UserManagerSerialization that allow read and write to FireBase project.
+ * A helper class for ManagersSerialization that allow read and write to FireBase project.
  */
 final class FireBaseDBAccess {
     private static boolean initialized = false;

@@ -5,10 +5,10 @@ import java.util.HashMap;
 /**
  * A helper class that operate serialization on UserManager and AccountManager, and save data to FireBase database.
  */
-final class UserManagerSerialization {
+final class ManagersSerialization {
     private FireBaseDBAccess fbDb;
 
-    UserManagerSerialization() {
+    ManagersSerialization() {
         this.fbDb = new FireBaseDBAccess();
     }
 
@@ -59,7 +59,7 @@ final class UserManagerSerialization {
 //        try {
 //            FileInputStream file = new FileInputStream("phase2/src/resources/" + filename + ".txt");
 //            ObjectInputStream object = new ObjectInputStream(file);
-//            UserManagerSerialization backup = (UserManagerSerialization) object.readObject();
+//            ManagersSerialization backup = (ManagersSerialization) object.readObject();
 //            object.close();
 //            file.close();
 //            return backup.user_map;

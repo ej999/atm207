@@ -73,6 +73,11 @@ final class UserManager {
             return true;
         } else {
             System.err.println("Wrong username or password. Please try again.");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                System.err.println("Ouch!");
+            }
             return false;
         }
     }

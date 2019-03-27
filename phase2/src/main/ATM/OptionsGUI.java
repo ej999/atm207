@@ -102,7 +102,7 @@ public abstract class OptionsGUI {
      * When user clicks 'logout'
      */
     public void logoutHandler() {
-        UserManagerSerialization serialization = new UserManagerSerialization();
+        ManagersSerialization serialization = new ManagersSerialization();
         serialization.serialize();
 
         showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
