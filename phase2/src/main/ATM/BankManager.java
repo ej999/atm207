@@ -29,7 +29,7 @@ class BankManager extends UserEmployee {
 
 //    /**
 //     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
-//     * except for paying bills.
+//     * except for paying ATM_bill.
 //     *
 //     * @param account account involved
 //     */
