@@ -22,7 +22,6 @@ class BankManager extends UserEmployee {
         return type;
     }
 
-    //TODO is this necessary? couldn't we just run Cash.cashDeposit()?
     void restockMachine(Map<Integer, Integer> deposits) {
         Cash.cashDeposit(deposits);
     }

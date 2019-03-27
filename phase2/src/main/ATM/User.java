@@ -6,8 +6,6 @@ package ATM;
 abstract class User {
     private final String username;
     private String password;
-    //TODO: any login user (e.g. employees) should have accounts, not just customers
-
 
     User(String username, String password) {
         this.username = username;

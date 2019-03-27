@@ -146,7 +146,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 //                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
 //            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
 //        }
-//        //TODO: how about pay bill?
+//
 //    }
 
     @Override

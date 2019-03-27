@@ -150,7 +150,7 @@ abstract class Account {
 
     /**
      * Add another owner to this account.
-     *
+     * TODO: newOwner should be the username
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */

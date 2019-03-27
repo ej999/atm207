@@ -273,7 +273,7 @@ class Options {
      * Gets customer by username and displays all their accounts
      * Select an account from input and tell that account to undo the last transaction
      * only Bank Manager can access this
-     * TODO: Now the bank manager can undo n transactions.
+     * TODO: Now the bank manager can undo n most recent transactions.
      */
     private void undoPrompt() {
         Scanner reader = new Scanner(System.in);
