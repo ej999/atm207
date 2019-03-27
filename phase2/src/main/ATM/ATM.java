@@ -14,7 +14,6 @@ import javafx.stage.Window;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,16 +36,7 @@ public class ATM extends Application {
         ManagersSerialization serialization = new ManagersSerialization();
         serialization.deserialize();
 
-        // Firebase known bug: https://stackoverflow.com/questions/48462093/storing-empty-arrays-in-firebase
-        for (String id : AccountManager.account_map.keySet()) {
-            Account account = AccountManager.getAccount(id);
-            if (account.getTransactionHistory() == null) {
-                account.transactionHistory = new Stack<Transaction>();
-            }
-        }
-
-
-        // If the Map of User objects is empty or deleted, then create a demo.
+        // If the Map of User objects is empty or deleted, then create a demo and save it .
         if (UserManager.user_map.isEmpty() || AccountManager.account_map.isEmpty()) {
             UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
             UserManager.createAccount(Teller.class.getName(), "pete", "1234");

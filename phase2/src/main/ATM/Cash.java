@@ -17,7 +17,7 @@ final class Cash {
      * Map denomination to quantity
      * Cash initially starts with 50 bills for every denomination.
      */
-    static final HashMap<String, Integer> ATMBills;
+    static HashMap<String, Integer> ATMBills;
     private static final String outputFilePath = "phase2/src/resources/alerts.txt";
 
     static {

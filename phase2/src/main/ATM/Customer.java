@@ -16,9 +16,10 @@ import java.util.List;
 class Customer extends User {
 
     private static final String type = Customer.class.getName();
-    private final List<String> accounts;
+    List<String> accounts;
     private String primary;
     private Inventory goods = new Inventory();
+    private double netTotal;
 
     private String dob;
     //TODO make age useful
@@ -96,13 +97,18 @@ class Customer extends User {
     }
 
     // The total of their debt account balances subtracted from the total of their asset account balances.
-    private double netTotal() {
+    public double getNetTotal() {
         double sum = 0;
         for (String a : this.accounts) {
             sum += AccountManager.getAccount(a).getBalance();
         }
-        return sum;
+        netTotal = sum;
+        return netTotal;
     }
+
+//    public double getNetTotal() {
+//        return netTotal;
+//    }
 
     // add a line of request in the alerts.text
     private void requestHelp(String s) throws IOException {
@@ -135,14 +141,14 @@ class Customer extends User {
 //
 //        }
 //
-//        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
+//        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal);
 //
 //        return returnMessage.toString();
 //    }
 
     @Override
     public String toString() {
-        return "Customer with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
+        return "Customer " + getUsername() + " has a net total of ";
     }
 
     public String getPrimary() {
