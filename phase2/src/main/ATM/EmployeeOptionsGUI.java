@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,11 +102,10 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String username = usernameInput.getText();
-            String accountType = typeChoice.getValue();
+            String accountType = "ATM." + typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
-            if (UserManager.isPresent(username) && accountType != null) {
-                //TODO: account cannot be created for some reason (AccountManager)
+            if (UserManager.isPresent(username)) {
                 AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
@@ -118,38 +118,17 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     }
 
     void undoTransactionsScreen() {
-        //TODO
-        /*
-        Username: <username>
-        Select Account: <Account picker>
-        Number of transactions to undo: <n>
-        <Cancel> <Submit>
-         */
         GridPane grid = createFormPane();
 
         Label usernameLbl = new Label("Username of Customer:");
         TextField usernameInput = new TextField();
         usernameInput.setPromptText("username");
 
-
-
-//                    if (UserManager.isPresent(usernameLbl.getText())) {
-////                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
-//                ((User_Employee_BankManager) user).undoTransactions(account2undo, Integer.valueOf(numberInput.getText()));
-//                System.out.println("Undo successful.");
-//            } else {
-//                System.out.print("User not found. Try again? (Y/N)");
-//                String proceed = reader.next().toUpperCase().trim();
-//                if (proceed.equals("N")) finished = true;
-//            }
-
         Button accountPicker = new Button("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-        // Once username has been entered, get their accounts
         HBox hbox = new HBox(choiceBox);
 
-        Label n = new Label("How many:");
+        Label n = new Label("Number of transactions\nto undo:");
         TextField numberInput = new TextField();
 
         Button submit = new Button("Submit");
@@ -171,30 +150,36 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         grid.add(actionTarget, 1, 5);
 
         accountPicker.setOnAction(event -> {
-//            String usernameEntered = usernameInput.getText();
-//            if (UserManager.isPresent(usernameEntered)) {
-//                ArrayList<Account> accounts = (UserManager.getUser(usernameEntered));
-//                System.out.println(accounts); // null but why???
-//                for(Account account : accounts) {
-//                    String choice = account.getClass().getName() + " " + account.getAccountNumber();
-//                    choiceBox.getItems().add(choice);
-//                }
-//            }
+            actionTarget.setFill(Color.FIREBRICK);
+            // Add user's account entries to ComboBox
+            String username = usernameInput.getText();
+            if (UserManager.isPresent(username)) {
+                List<Account> accounts = AccountManager.getListOfAccounts(username);
+                for (Account a : accounts) {
+                    String choice = a.getClass().getName() + " " + a.getId();
+                    choiceBox.getItems().add(choice);
+                }
+            } else {
+                actionTarget.setText("User doesn't exists");
+            }
         });
+
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         submit.setOnAction(event -> {
             actionTarget.setFill(Color.FIREBRICK);
-            //TODO
-            // assume numberInput is a number for now...
-//            if (UserManager.isPresent(usernameLbl.getText())) {
-////                Account account2undo = selectAccountPrompt((User_Customer) UserManager.getUser(username));
-//                ((User_Employee_BankManager) user).undoTransactions(account2undo, Integer.valueOf(numberInput.getText()));
-//                System.out.println("Undo successful.");
-//            } else {
-//                System.out.print("User not found. Try again? (Y/N)");
-//                String proceed = reader.next().toUpperCase().trim();
-//                if (proceed.equals("N")) finished = true;
-//            }
+            String username = usernameInput.getText();
+            int num = Integer.valueOf(numberInput.getText());
+            // What I'm trying to do is to get account obj user has selected
+            if (UserManager.isPresent(username)) {
+                String[] aInfo = choiceBox.getValue().split("\\s+");
+                String aID = aInfo[1];
+                Account account2undo = AccountManager.getAccount(aID);
+                account2undo.undoTransactions(num);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Undone", "Undo successful");
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "User not found");
+            }
+            window.setScene(optionsScreen);
         });
 
         window.setScene(new Scene(grid));

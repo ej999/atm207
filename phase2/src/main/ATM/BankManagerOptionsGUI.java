@@ -51,7 +51,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         return generateOptionsScreen(325, 450);
     }
 
-    public void createUserScreen() {
+    private void createUserScreen() {
         GridPane gridPane = createFormPane();
 
         Label userType = new Label("User Type:");
@@ -86,7 +86,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = choiceBox.getValue();
+            String type = "ATM." + choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
             boolean created = UserManager.createAccount(type, username, password);
@@ -102,15 +102,17 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    public void createDOBScreen(String username) {
+    private void createDOBScreen(String username) {
         GridPane gridPane = createFormPane();
 
-        Label question = new Label("Would you like to set the Date of Birth as well?");
+        Label question = new Label("Would you like to set the\nDate of Birth as well?");
         Button yes = new Button("Yes");
         Button no = new Button("No");
         HBox hbBtn = new HBox(10);
         hbBtn.getChildren().add(yes);
         hbBtn.getChildren().add(no);
+
+        Button submit = new Button("Submit");
 
         gridPane.add(question, 0, 0);
         gridPane.add(hbBtn, 1, 0);
@@ -124,23 +126,29 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             actionTarget.setFill(Color.BLACK);
             actionTarget.setText("Enter Date of Birth (YYYY-MM-DD):");
             gridPane.add(dobInput, 1, 3);
+            gridPane.add(submit, 1, 4);
 
-            String _dob = dobInput.getText();
-
-            try {
-                String dob = LocalDate.parse(_dob).toString();
-                ((Customer) UserManager.getUser(username)).setDob(dob);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob + ".");
-            } catch (DateTimeException e) {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");
-            }
+            submit.setOnAction(event1 -> {
+                String _dob = dobInput.getText();
+                System.out.println(_dob);
+                System.out.println(username);
+                try {
+                    String dob = LocalDate.parse(_dob).toString();
+                    ((Customer) UserManager.getUser(username)).setDob(dob);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob + ".");
+                } catch (DateTimeException e) {
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");
+                } finally {
+                    window.setScene(optionsScreen);
+                }
+            });
         });
 
-        window.setScene(new Scene(gridPane));
+        window.setScene(new Scene(gridPane, 400, 400));
 
     }
 
-    public void restockATMScreen() {
+    private void restockATMScreen() {
         GridPane grid = createFormPane();
 
         Button cancel = new Button("Cancel");
@@ -179,12 +187,13 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
             ((BankManager) user).restockMachine(restock);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success!");
+            window.setScene(optionsScreen);
         });
 
         window.setScene(new Scene(grid));
     }
 
-    public void clearBankDataScreen() {
+    private void clearBankDataScreen() {
         GridPane grid = createFormPane();
 
         Label warningLbl = new Label("\"WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");

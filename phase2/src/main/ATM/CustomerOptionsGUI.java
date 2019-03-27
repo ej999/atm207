@@ -1,7 +1,13 @@
 package ATM;
 
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.util.List;
 
 /**
  * GUI for customer options.
@@ -40,26 +46,83 @@ public class CustomerOptionsGUI extends OptionsGUI {
         return generateOptionsScreen(350, 450);
     }
 
-    public void showAccountSummaryScreen() {
+    private void showAccountSummaryScreen() {
         //TODO
         /*
         e.g.' Customer with username "steve" and password "cat" '
         table view
-        Account | balance | date
-        OK
+        Primary | Account Type | Creation Data | balance | Most Recent Transac
+        OK -> net total
          */
+        GridPane gridPane = createFormPane();
+//        TableView<String> tableView = new TableView<>();
+        // not doing table view, too much time...
+
+
+        //        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
+//                "\u001B[0m");
+        //        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
+        window.setScene(new Scene(gridPane));
     }
 
-    public void payBillScreen() {
+    private void payBillScreen() {
         //TODO
         /*
+        choose account
         enter amount
         non-user account name
         Cancel | Pay
          */
+        GridPane gridPane = createFormPane();
+        Label chooseLbl = new Label("Choose account:");
+//        ChoiceBox<String> choices = new ChoiceBox<>();
+//
+//        List<String> accounts = ((Customer) user).getAccounts();
+//        for(String a : accounts) {
+//
+//        }
+
+//        Scanner reader = new Scanner(System.in);
+//
+//        System.out.println();
+//        List<String> accounts = customer.getAccounts();
+//        int i = 1;
+//        for (String a : accounts) {
+//            if (!AccountManager.getAccount(a).getClass().getName().contains(exclusion)) {
+//                System.out.println("[" + i + "] " + AccountManager.getAccount(a));
+//                i++;
+//            }
+//        }
+//
+//        int option = -99;
+//        while (option > accounts.size() || option < 0) {
+//            System.out.print("Please select an account: ");
+//            option = reader.nextInt();
+//        }
+//        return AccountManager.getAccount(accounts.get(option - 1));
+
+//        Account account = selectAccountPrompt((Customer) current_user, "CreditCard");
+//
+//        Scanner reader = new Scanner(System.in);
+//        System.out.print("Please enter the amount you would like to pay: ");
+//        double amount = reader.nextDouble();
+//        System.out.print("Please enter the non-user account you would like to pay: ");
+//        String payee = reader.next();
+//
+//
+//        try {
+//            if (((AccountTransferable) account).payBill(amount, payee)) {
+//                System.out.println("Bill has been paid.");
+//            } else {
+//                System.err.println("Payment is unsuccessful.");
+//            }
+//        } catch (IOException e) {
+//            // do nothing?
+//        }
+        window.setScene(new Scene(gridPane));
     }
 
-    public void makeTransferBetweenScreen() {
+    private void makeTransferBetweenScreen() {
         //TODO
         /*
         choicebox
@@ -68,44 +131,56 @@ public class CustomerOptionsGUI extends OptionsGUI {
         amount
         Cancel | Transfer
          */
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 
-    public void makeTransferAnotherScreen() {
+    private void makeTransferAnotherScreen() {
         //TODO
         /*
         username:
         amount:
         Cancel | Transfer
          */
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 
-    public void depositScreen() {
+    private void depositScreen() {
         //TODO
         /*
         amount:
         Cancel | Deposit
          */
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 
-    public void withdrawalScreen() {
+    private void withdrawalScreen() {
         //TODO
         /*
         Select account drop-down
         amount
         Cancel | Withdraw
          */
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 
-    public void requestAccountScreen() {
+    private void requestAccountScreen() {
         //TODO
         /*
         Select account type picker drop-down CHOICE-BOX control element
         Cancel | Request
          */
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 
-    public void changePrimaryScreen() {
+    private void changePrimaryScreen() {
         //TODO
+        GridPane gridPane = createFormPane();
+        window.setScene(new Scene(gridPane));
     }
 }
 
