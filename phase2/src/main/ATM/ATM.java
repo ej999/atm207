@@ -87,7 +87,7 @@ public class ATM extends Application {
      * It will return the User if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
-    private static User authPrompt() {
+    private static synchronized User authPrompt() {
         System.out.println("Welcome to CSC207 Banking Service!");
 
         Scanner reader = new Scanner(System.in);

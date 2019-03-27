@@ -156,7 +156,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         for (Integer d : Cash.DENOMINATIONS) {
             // Label
-            Label dLabel = new Label("Enter amount of $" + d + " dollar bills: ");
+            Label dLabel = new Label("Enter amount of $" + d + " dollar ATM_bill: ");
             grid.add(dLabel, 0, rowIndex);
 
             // TextField
@@ -178,7 +178,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.bills + ".");
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.ATMBills + ".");
         });
 
         window.setScene(new Scene(grid));
