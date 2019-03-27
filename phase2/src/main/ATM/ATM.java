@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An ATM that allows customers and employees to conduct a range of financial transactions and operations by using
@@ -28,6 +30,9 @@ public class ATM extends Application {
     private User user;
 
     public static void main(String[] args) {
+        // Disable java.util.logging, since we are using PrintStream to interact with users.
+        Logger.getLogger("").setLevel(Level.OFF);
+
         // Load the Maps of User and Account objects to their respected Manager class from FireBase database.
         UserManagerSerialization serialization = new UserManagerSerialization();
         serialization.deserialize();
