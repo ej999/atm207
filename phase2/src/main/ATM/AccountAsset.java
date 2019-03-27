@@ -58,7 +58,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * @param condition        additional condition in order to successfully withdraw
      */
     void withdraw(double withdrawalAmount, boolean condition) {
-        if (validWithdrawal(withdrawalAmount) && (condition)) {
+        if (validWithdrawal(withdrawalAmount) && condition) {
             balance -= withdrawalAmount;
             Cash.cashWithdrawal(withdrawalAmount);
             transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
@@ -94,7 +94,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) UserManager.getAccount(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) UserManager.getUser(getPrimaryOwner()), account);
     }
 
     /**

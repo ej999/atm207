@@ -1,22 +1,17 @@
 package ATM;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -82,7 +77,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
         Label typeLbl = new Label("Type of Bank Account:");
         ChoiceBox<String> typeChoice= new ChoiceBox<>();
-        List<String> accountTypes = AccountManager.getTypesOfAccounts();
+        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             typeChoice.getItems().add(type);
@@ -111,10 +106,10 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
             if (UserManager.isPresent(username) && accountType != null) {
                 //TODO: account cannot be created for some reason (AccountManager)
-                AccountManager.addAccount(accountType, (Customer) UserManager.getAccount(username));
+                AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error","The username does not exist. No account has been created." );
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again.");
             }
             window.setScene(optionsScreen);
         });
@@ -178,7 +173,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         accountPicker.setOnAction(event -> {
 //            String usernameEntered = usernameInput.getText();
 //            if (UserManager.isPresent(usernameEntered)) {
-//                ArrayList<Account> accounts = (UserManager.getAccount(usernameEntered));
+//                ArrayList<Account> accounts = (UserManager.getUser(usernameEntered));
 //                System.out.println(accounts); // null but why???
 //                for(Account account : accounts) {
 //                    String choice = account.getClass().getName() + " " + account.getAccountNumber();

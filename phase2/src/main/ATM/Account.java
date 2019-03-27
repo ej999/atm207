@@ -12,7 +12,7 @@ abstract class Account {
     private final String id;
     private final ArrayList<String> owners = new ArrayList<>();
     double balance;
-//    /**
+    //    /**
 //     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
 //     */
 //    private final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
@@ -43,6 +43,10 @@ abstract class Account {
 
     Account(String id, Customer owner1, Customer owner2) {
         this(id, 0, owner1, owner2);
+    }
+
+    public Stack<Transaction> getTransactionHistory() {
+        return transactionHistory;
     }
 
     public String getId() {

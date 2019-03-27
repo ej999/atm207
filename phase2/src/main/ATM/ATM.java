@@ -14,10 +14,11 @@ import javafx.stage.Window;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * An ATM that allows customers and employees to conduct a range of financial transactions and operations by using
- * their login accounts. It is displayed on both PrintStream and GUI.
+ * their user accounts. It is displayed on both PrintStream and GUI.
  */
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
@@ -25,12 +26,60 @@ public class ATM extends Application {
     private Stage window;
     private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
     private User user;
-    private boolean helped = false;
+
+    public static void main(String[] args) {
+        // Load the Maps of User and Account objects to their respected Manager class from FireBase database.
+        UserManagerSerialization serialization = new UserManagerSerialization();
+        serialization.deserialize();
+
+        // Firebase known bug: https://stackoverflow.com/questions/48462093/storing-empty-arrays-in-firebase
+        for (String id : AccountManager.account_map.keySet()) {
+            Account account = AccountManager.getAccount(id);
+            if (account.getTransactionHistory() == null) {
+                account.transactionHistory = new Stack<Transaction>();
+            }
+        }
+
+
+        // If the Map of User objects is empty or deleted, then create a demo.
+        if (UserManager.user_map.isEmpty() || AccountManager.account_map.isEmpty()) {
+            UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
+            UserManager.createAccount(Teller.class.getName(), "pete", "1234");
+            UserManager.createAccount(Customer.class.getName(), "steve", "1234");
+
+            AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getUser("steve")), 1234);
+            AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getUser("steve")), 4321);
+            AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getUser("steve")), 1000);
+            AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getUser("steve")), 420);
+
+            // Save to FireBase database.
+            serialization.serialize();
+        }
+
+        //Java FX -> invoke start method
+//        launch(args);
+
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        int now = (calendar.get(Calendar.MONTH));
+
+        // The ATM should displays User interface all the time, until it is being shut down.
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            // Constantly checking if now is the start of the month.
+            now = new ATMSystem().checkMonth(now);
+
+            // A login session.
+            User user = authPrompt();
+            new Options(user);
+        }
+    }
 
     /**
      * Allow user to login by entering username and password.
      * <p>
-     * It will return the User account if the login is valid; otherwise, it'll consistently asking user to
+     * It will return the User if the login is valid; otherwise, it'll consistently asking user to
      * enter username and password.
      */
     private static User authPrompt() {
@@ -49,51 +98,10 @@ public class ATM extends Application {
 
             authResult = UserManager.auth(username, password);
         }
-        user = UserManager.getAccount(username);
+        user = UserManager.getUser(username);
 
         System.out.println("\nUser success. Hi " + user.getUsername() + "!");
         return user;
-    }
-
-
-    public static void main(String[] args) {
-        // Load the HashMap of User objects from FireBase database whenever a ATM is restarted or turned on.
-        UserManagerSerialization serialization = new UserManagerSerialization();
-        serialization.deserialize();
-
-        // If the HashMap of User objects is empty or deleted, recreate the default state here.
-        if (UserManager.account_map.isEmpty()) {
-            // Instantiate accounts and users for demo.
-            UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
-            UserManager.createAccount(Teller.class.getName(), "pete", "1234");
-            UserManager.createAccount(Customer.class.getName(), "steve", "1234");
-            AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getAccount("steve")), 1234);
-            AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getAccount("steve")), 4321);
-            AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getAccount("steve")), 1000);
-            AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getAccount("steve")), 420);
-            System.out.println(((Customer) UserManager.getAccount("steve")).getAccounts());
-            // Save to FireBase database.
-            serialization.serialize();
-        }
-
-        //Java FX -> invoke start method
-        launch(args);
-
-        Date today = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(today);
-        int now = (calendar.get(Calendar.MONTH));
-
-        // The ATM should displays User interface all the time, until it is being shut down.
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            // Constantly checking if now is the start of the month.
-            now = new ATMSystem().checkMonth(now);
-
-            // A login session.
-            User user = authPrompt();
-            new Options(user);
-        }
     }
 
     @Override
@@ -206,7 +214,7 @@ public class ATM extends Application {
                 if (!authResult) {
                     actionTarget.setText("Login attempt failed");
                 } else {
-                    user = UserManager.getAccount(username);
+                    user = UserManager.getUser(username);
                     showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                             "Hi " + username);
 
