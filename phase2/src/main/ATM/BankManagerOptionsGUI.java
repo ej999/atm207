@@ -164,7 +164,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         for (Integer d : Cash.DENOMINATIONS) {
             // Label
-            Label dLabel = new Label("Enter amount of $" + d + " dollar bills: ");
+            Label dLabel = new Label("Enter amount of $" + d + " dollar ATM_bill: ");
             grid.add(dLabel, 0, rowIndex);
 
             // TextField
@@ -186,7 +186,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success!");
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.ATMBills + ".");
             window.setScene(optionsScreen);
         });
 
@@ -209,7 +209,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         proceed.setOnAction(event -> {
-            new UserManagerSerialization().deleteDatabase();
+            new ManagersSerialization().deleteDatabase();
             showAlert(Alert.AlertType.CONFIRMATION, window, "Cleared", "Data has been cleared. Good Luck!");
             window.close();
             System.exit(0);
