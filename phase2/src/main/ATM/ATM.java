@@ -57,7 +57,7 @@ public class ATM extends Application {
         }
 
         //Java FX -> invoke start method
-//        launch(args);
+        launch(args);
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
