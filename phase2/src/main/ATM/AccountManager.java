@@ -10,38 +10,27 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A static class that manage all existing bank accounts.
+ * A static class that manage all Bank Accounts.
  */
 final class AccountManager {
     private static final ATMSystem myATM = new ATMSystem();
-    // A list of existing bank accounts
+    // List of simple name of Account types.
+    static List<String> TYPES_OF_ACCOUNTS;
+    // A mapping of id to the Bank Account
     static HashMap<String, Account> account_map = new HashMap<>();
 
-    // By using reflections, all Account types are automatically added to the List even when we implement a new type.
-    private static List<Class<? extends Account>> TYPES_OF_ACCOUNTS() {
+    static {
+        // By using reflections, all Account types are automatically added to the List even when we implement a new type.
         Set<Class<? extends Account>> subType = new Reflections("ATM").getSubTypesOf(Account.class);
 
-        List<Class<? extends Account>> types_of_accounts = new ArrayList<>();
-
-        // Check if the subclass is abstract.
+        List<String> types_of_accounts = new ArrayList<>();
         for (Class<? extends Account> type : subType) {
+            // Check if the subclass is abstract.
             if (!Modifier.isAbstract(type.getModifiers())) {
-                types_of_accounts.add(type);
+                types_of_accounts.add(type.getSimpleName());
             }
         }
-
-        return types_of_accounts;
-    }
-
-    // Return as List of Strings; not List of Classes.
-    static List<String> getTypesOfAccounts() {
-        List<String> types = new ArrayList<>();
-
-        for (Class type : TYPES_OF_ACCOUNTS()) {
-            types.add(type.getSimpleName());
-        }
-
-        return types;
+        TYPES_OF_ACCOUNTS = types_of_accounts;
     }
 
     //TODO GIC has unique parameter

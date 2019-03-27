@@ -3,7 +3,7 @@ package ATM;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Map;
 
 
 //import java.util.Account;
@@ -22,13 +22,9 @@ class BankManager extends UserEmployee {
         return type;
     }
 
-    /**
-     * Bank Manager has the ability to restock cash machine.
-     *
-     * @param cashList amount of denominations [fives, tens, twenties, fifties]
-     */
-    void restockMachine(ArrayList<Integer> cashList) {
-        Cash.cashDeposit(cashList);
+    //TODO is this necessary? couldn't we just run Cash.cashDeposit()?
+    void restockMachine(Map<Integer, Integer> deposits) {
+        Cash.cashDeposit(deposits);
     }
 
 //    /**

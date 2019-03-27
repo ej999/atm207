@@ -12,7 +12,7 @@ final class UserManagerSerialization {
         this.fbDb = new FireBaseDBAccess();
     }
 
-    // Deserialize JSON from FireBase to a HashMap of User object, and assign it to account_map in UserManager.
+    // Deserialize JSON from FireBase to a HashMap of User object, and assign it to user_map in UserManager.
     void deserialize() {
         HashMap<String, Object> user_map_temp = fbDb.retrieveAll("Users");
 
@@ -24,7 +24,7 @@ final class UserManagerSerialization {
                 user_map.put(username, (User) object);
             }
         }
-        UserManager.account_map = user_map;
+        UserManager.user_map = user_map;
 
 
         HashMap<String, Object> account_list_temp = fbDb.retrieveAll("Accounts");
@@ -40,13 +40,13 @@ final class UserManagerSerialization {
         AccountManager.account_map = account_map;
 
         // REMOVE BEFORE SUBMISSION
-        System.err.println("For debugging only: UserManager.account_map = " + UserManager.account_map);
-        System.err.println("For debugging only: AccountManager.account_map = " + AccountManager.account_map);
+        System.err.println("DEBUGGING: UserManager.user_map = " + UserManager.user_map);
+        System.err.println("DEBUGGING: AccountManager.user_map = " + AccountManager.account_map);
     }
 
     // All the data structures stored in suffix-Manager classes will be serialize to JSON after a action is performed by User.
     void serialize() {
-        fbDb.saveAll(UserManager.account_map, "Users");
+        fbDb.saveAll(UserManager.user_map, "Users");
         fbDb.saveAll(AccountManager.account_map, "Accounts");
         System.err.print("Serialized data saved. ");
     }
@@ -62,10 +62,10 @@ final class UserManagerSerialization {
 //            UserManagerSerialization backup = (UserManagerSerialization) object.readObject();
 //            object.close();
 //            file.close();
-//            return backup.account_map;
+//            return backup.user_map;
 //        } catch (IOException | ClassNotFoundException f) {
 //            //f.printStackTrace();
-//            return UserManager.account_map;
+//            return UserManager.user_map;
 //        }
 //
 //    }

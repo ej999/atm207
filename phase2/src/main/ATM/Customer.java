@@ -17,7 +17,7 @@ class Customer extends User {
 
     private static final String type = Customer.class.getName();
     private final List<String> accounts;
-    private Account primary;
+    private String primary;
     private Inventory goods = new Inventory();
 
     private String dob;
@@ -67,7 +67,7 @@ class Customer extends User {
         accounts.add(account.getId());
         // If a user has only one checking account, it will be the default destination for any deposits.
         if (primary == null && account instanceof Chequing) {
-            primary = account;
+            primary = account.getId();
         }
     }
 
@@ -126,7 +126,7 @@ class Customer extends User {
         returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
                 "\u001B[0m");
         for (String id : getAccounts()) {
-            if (AccountManager.getAccount(id) == primary) {
+            if (AccountManager.getAccount(id).equals(primary)) {
                 returnMessage.append("\nX\t\t\t").append(AccountManager.getAccount(id));
             } else {
                 returnMessage.append("\n\t\t\t").append(AccountManager.getAccount(id));
@@ -144,13 +144,13 @@ class Customer extends User {
 //        return "Customer with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
 //    }
 
-    Account getPrimary() {
+    public String getPrimary() {
         return primary;
     }
 
     void setPrimary(Account primary) {
         if (primary instanceof Chequing) {
-            this.primary = primary;
+            this.primary = primary.getId();
             System.out.println("Account is successfully set to primary.");
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary.");

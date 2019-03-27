@@ -65,7 +65,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) UserManager.getAccount(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) UserManager.getUser(getPrimaryOwner()), account);
     }
 
     /**

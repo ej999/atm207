@@ -11,37 +11,26 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A static class that manage all existing user accounts.
+ * A static class that manage all User.
  */
 final class UserManager {
-    // A mapping of username to the existing User.
-    static HashMap<String, User> account_map = new HashMap<>();
+    // List of simple name of User types.
+    static final List<String> USER_TYPE_NAMES;
+    // A mapping of Username to the User.
+    static HashMap<String, User> user_map = new HashMap<>();
 
-    // By using reflections, all User types are automatically added to the List even when we implement a new type.
-    private static List<Class<? extends User>> TYPES_OF_ACCOUNTS() {
+    static {
+        // By using Reflections, all the actual (non-abstract) User types are automatically added to the List even when we implement a new one.
         Set<Class<? extends User>> subType = new Reflections("ATM").getSubTypesOf(User.class);
 
-        List<Class<? extends User>> types_of_accounts = new ArrayList<>();
-
-        // Check if the subclass is abstract.
+        List<String> types_of_users = new ArrayList<>();
         for (Class<? extends User> type : subType) {
+            // Check if the subclass is non-abstract.
             if (!Modifier.isAbstract(type.getModifiers())) {
-                types_of_accounts.add(type);
+                types_of_users.add(type.getSimpleName());
             }
         }
-
-        return types_of_accounts;
-    }
-
-    // Return as List of Strings; not List of Classes.
-    static List<String> getTypesOfAccounts() {
-        List<String> types = new ArrayList<>();
-
-        for (Class type : TYPES_OF_ACCOUNTS()) {
-            types.add(type.getSimpleName());
-        }
-
-        return types;
+        USER_TYPE_NAMES = types_of_users;
     }
 
     static boolean createAccount(String type, String username, String password) {
@@ -55,7 +44,7 @@ final class UserManager {
                 Constructor<?> cTor = clazz.getConstructor(String.class, String.class);
                 User newUser = (User) cTor.newInstance(username, password);
 
-                account_map.putIfAbsent(newUser.getUsername(), newUser);
+                user_map.putIfAbsent(newUser.getUsername(), newUser);
                 System.out.println("A User: \"" + newUser + "\", is successfully created.");
                 return true;
             } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -65,22 +54,25 @@ final class UserManager {
         }
     }
 
-    static User getAccount(String username) {
-        return account_map.get(username);
+    static User getUser(String username) {
+        return user_map.get(username);
     }
 
 
     static boolean isPresent(String username) {
-        User user = account_map.get(username);
-        return user != null;
+        return user_map.get(username) != null;
+    }
+
+    static boolean isCustomer(String username) {
+        return isPresent(username) && user_map.get(username) instanceof Customer;
     }
 
     static boolean auth(String username, String password) {
-        User user = account_map.get(username);
+        User user = user_map.get(username);
         if (isPresent(username) && user.getPassword().equals(password)) {
             return true;
         } else {
-            System.err.println("The login attempt failed. Please double-check your username and password.");
+            System.err.println("Wrong username or password. Please try again.");
             return false;
         }
     }

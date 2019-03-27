@@ -4,34 +4,39 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 /**
- * A utility class that handles cash storage, withdrawal, deposit of $5, $10, $20, and $50 bills.
+ * A utility class that handles cash storage, withdrawal, deposit of bills.
  */
 final class Cash {
+
+    // The denominations that accepted by the ATM.
+    static final List<Integer> DENOMINATIONS;
+    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
+    //TODO sync to firebase
     /**
      * Map denomination to quantity
-     * Cash initially starts with fifty bills of every denomination
+     * Cash initially starts with 50 bills for every denomination.
      */
-    private static final HashMap<String, Integer> bills = new HashMap<String, Integer>() {
-        {
-            put("five", 50);
-            put("ten", 50);
-            put("twenty", 50);
-            put("fifty", 50);
+    // SortedMap is used here to make sure the denominations is in ascending order.
+    static SortedMap<Integer, Integer> bills;
+
+    static {
+        DENOMINATIONS = Collections.unmodifiableList(Arrays.asList(5, 10, 20, 50));
+
+        bills = new TreeMap<>();
+        for (int d : DENOMINATIONS) {
+            bills.put(d, 50);
         }
-    };
-    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
+    }
 
     /**
      * Check the quantity of denominations
      *
      * @return true iff amount of any denomination goes below 20
      */
-    static private boolean isAmountBelowTwenty() {
+    static boolean isAmountBelowTwenty() {
         for (int n : bills.values()) {
             if (n < 20) {
                 return true;
@@ -41,15 +46,14 @@ final class Cash {
     }
 
     /**
-     * //TODO look into this
      * Send an alert to alerts.txt iff isAmountBelowTwenty
      */
-    static private void checkDenom() {
+    static void checkDenom() {
         if (isAmountBelowTwenty()) {
             try {
                 sendAlert();
             } catch (IOException e) {
-                // do nothing?
+                System.err.println("Failed to send alert notification about insufficient bill stock.");
             }
         }
     }
@@ -57,40 +61,33 @@ final class Cash {
     static private void sendAlert() throws IOException {
         // Open the file for writing and write to it.
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
+            //TODO improve
             out.println(bills);
         }
     }
 
-    /*
-    When Bank Manager restocks the machine
-    cashList: [fives, tens, twenties, fifties]
-     */
-    static void cashDeposit(ArrayList<Integer> cashList) {
-        bills.put("five", bills.get("five") + cashList.get(0));
-        bills.put("ten", bills.get("ten") + cashList.get(1));
-        bills.put("twenty", bills.get("twenty") + cashList.get(2));
-        bills.put("fifty", bills.get("fifty") + cashList.get(3));
+    static void cashDeposit(Map<Integer, Integer> deposits) {
+        for (int d : deposits.keySet()) {
+            bills.put(d, bills.get(d) + deposits.get(d));
+        }
     }
 
     /**
-     * return a List [fifty, twenty, ten, five] of cash that contains the number of bills that will be withdrawn
-     * according to the withdrawal amount and the inventory.
+     * return the sorted mapping of denominators to the number of bills that will be withdrawn according to the
+     * withdrawal amount and the inventory.
      */
-    private static ArrayList<Integer> getDenominator(double amount) {
+    private static SortedMap<Integer, Integer> getDenominator(double amount) {
         double remainder = amount;
+        SortedMap<Integer, Integer> returnBills = new TreeMap<>();
+        List<Integer> denominator = new ArrayList<>(bills.keySet());
 
-        int fiftyWithdrawn = Math.min((int) Math.floor(remainder / 50), bills.get("fifty"));
-        remainder -= fiftyWithdrawn * 50;
+        for (int d = denominator.size() - 1; d >= 0; d--) {
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator.get(d)), bills.get(denominator.get(d)));
+            returnBills.put(denominator.get(d), denominatorWithdrawn);
+            remainder -= denominatorWithdrawn * denominator.get(d);
+        }
 
-        int twentyWithdrawn = Math.min((int) Math.floor(remainder / 20), bills.get("twenty"));
-        remainder -= twentyWithdrawn * 20;
-
-        int tenWithdrawn = Math.min((int) Math.floor(remainder / 10), bills.get("ten"));
-        remainder -= tenWithdrawn * 10;
-
-        int fiveWithdrawn = Math.min((int) Math.floor(remainder / 5), bills.get("five"));
-
-        return new ArrayList<>(Arrays.asList(fiftyWithdrawn, twentyWithdrawn, tenWithdrawn, fiveWithdrawn));
+        return returnBills;
     }
 
     /**
@@ -100,9 +97,14 @@ final class Cash {
      * @return true iff there is enough bills for amount
      */
     static boolean isThereEnoughBills(double amount) {
-        ArrayList<Integer> numberOfBills = getDenominator(amount);
-        double total = numberOfBills.get(0) * 50 + numberOfBills.get(1) * 20 + numberOfBills.get(2) * 10 +
-                numberOfBills.get(3) * 5;
+        Map<Integer, Integer> numberOfBills = getDenominator(amount);
+
+        double total = 0;
+
+        for (int denominator : numberOfBills.keySet()) {
+            total += denominator * numberOfBills.get(denominator);
+        }
+
         return amount == total;
     }
 
@@ -113,24 +115,21 @@ final class Cash {
      * TODO
      */
     static void cashWithdrawal(double amount) {
-        ArrayList<Integer> denominator = getDenominator(amount);
+        Map<Integer, Integer> numberOfBills = getDenominator(amount);
 
-        bills.put("fifty", bills.get("fifty") - denominator.get(0));
+        StringBuilder print = new StringBuilder();
+        int total = 0;
 
-        bills.put("twenty", bills.get("twenty") - denominator.get(1));
+        for (int denominator : numberOfBills.keySet()) {
+            int amountOfBills = numberOfBills.get(denominator);
 
-        bills.put("ten", bills.get("ten") - denominator.get(2));
+            bills.put(denominator, bills.get(denominator) - amountOfBills);
+            total += denominator * amountOfBills;
 
-        bills.put("five", bills.get("five") - denominator.get(3));
-
+            print.append(amountOfBills).append(" of $").append(denominator).append("-bill, ");
+        }
         checkDenom();
-        int totalAmount = denominator.get(0) * 50 + denominator.get(1) * 20 + denominator.get(2) * 10 + denominator.get(3) * 5;
-        //TODO
-        System.out.println("\nTotal amount of $" + totalAmount + ": " + denominator.get(0) + " fifty-dollar bills, " +
-                denominator.get(1) + " twenty-dollar bills, " + denominator.get(2) + " ten-dollar bills, " + denominator.get(3) +
-                " five-dollar bills have be withdrawn. ");
-        System.out.println("Please note that the actual withdrawal amount may be differ " +
-                "due to the fact that five-dollar note is the lowest denomination");
+        System.out.println(print + "in total of " + total + " have been withdrawn.");
     }
 
     static void undoCashWithdrawal(double amount) {

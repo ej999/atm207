@@ -44,9 +44,9 @@ public class TradingSystem {
                 Customer other_user = offers.get(i).getTradeUser();
                 //Checks if quantities are the same, price is better, and buyers has enough money
                 if (other_quantity == quantity && other_price > price
-                        && other_user.getPrimary().getBalance() > other_price) {
-                    user.getPrimary().deposit(other_price);
-                    other_user.getPrimary().withdraw(other_price);
+                        && AccountManager.getAccount(other_user.getPrimary()).getBalance() > other_price) {
+                    AccountManager.getAccount(user.getPrimary()).deposit(other_price);
+                    AccountManager.getAccount(other_user.getPrimary()).withdraw(other_price);
                     System.out.println("Offer made");
                     offers.remove(i);
 
@@ -76,10 +76,10 @@ public class TradingSystem {
                 int other_price = offers.get(i).getPrice();
                 Customer other_user = offers.get(i).getTradeUser();
                 if (other_quantity == quantity && other_price < price
-                        && user.getPrimary().getBalance() > other_price) {
+                        && AccountManager.getAccount((user.getPrimary())).getBalance() > other_price) {
                     //Money will be exchanged.
-                    user.getPrimary().withdraw(other_price);
-                    other_user.getPrimary().deposit(other_price);
+                    AccountManager.getAccount(user.getPrimary()).withdraw(other_price);
+                    AccountManager.getAccount(other_user.getPrimary()).deposit(other_price);
                     System.out.println("Offer made");
                     offers.remove(i);
                 }
