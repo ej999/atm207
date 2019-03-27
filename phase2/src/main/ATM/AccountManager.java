@@ -11,6 +11,9 @@ import java.util.Set;
 
 /**
  * A static class that manage all Bank Accounts.
+ * <p>
+ * To implement new type of Account, create a class that extends any Account- class.
+ * No change of code in AccountManagers needed.
  */
 final class AccountManager {
     private static final ATMSystem myATM = new ATMSystem();

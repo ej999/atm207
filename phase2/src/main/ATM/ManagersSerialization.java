@@ -39,6 +39,7 @@ final class ManagersSerialization {
         }
         AccountManager.account_map = account_map;
 
+
         // REMOVE BEFORE SUBMISSION
         System.err.println("DEBUGGING: UserManager.user_map = " + UserManager.user_map);
         System.err.println("DEBUGGING: AccountManager.user_map = " + AccountManager.account_map);
@@ -48,10 +49,11 @@ final class ManagersSerialization {
     void serialize() {
         fbDb.saveAll(UserManager.user_map, "Users");
         fbDb.saveAll(AccountManager.account_map, "Accounts");
+        fbDb.saveAll(Cash.ATMBills, "Bills");
         System.err.print("Serialized data saved. ");
     }
 
-    public void deleteDatabase() {
+    void deleteDatabase() {
         fbDb.save(0, "", "");
     }
 

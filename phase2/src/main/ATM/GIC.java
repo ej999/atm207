@@ -42,20 +42,20 @@ class GIC extends AccountAsset implements Observer, AccountTransferable {
     }
 
     @Override
-    // withdrawing money from GIC causes the payout date to be extended by the period of time
+        // withdrawing money from GIC causes the payout date to be extended by the period of time
     void withdraw(double withdrawalAmount) {
 
         super.withdraw(withdrawalAmount, (balance - withdrawalAmount) >= 0);
         endDate = LocalDate.now().plus(period);
     }
 
-//    @Override
+    //    @Override
 //    public String toString() {
 //        return "GIC\t\t\t\t" + startDate + " - " + endDate + "\t" + balance + "\t" + rate + "\t\t";
 //    }\
-    public boolean checkToday(){
+    public boolean checkToday() {
         LocalDate today = LocalDate.now();
-        return  today.equals(endDate);
+        return today.equals(endDate);
 
     }
 

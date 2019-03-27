@@ -28,7 +28,7 @@ class BankManager extends UserEmployee {
 
 //    /**
 //     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
-//     * except for paying ATM_bill.
+//     * except for paying bill.
 //     *
 //     * @param account account involved
 //     */
@@ -38,8 +38,9 @@ class BankManager extends UserEmployee {
 
     /**
      * Undo the n most recent transactions
+     *
      * @param account bank account
-     * @param n number of transactions
+     * @param n       number of transactions
      */
     void undoTransactions(Account account, int n) {
         account.undoTransactions(n);

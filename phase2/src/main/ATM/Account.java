@@ -151,11 +151,12 @@ abstract class Account {
     /**
      * Add another owner to this account.
      * TODO: newOwner should be the username
+     *
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */
     public boolean addOwner(Customer newOwner) {
-        if (!owners.contains(newOwner)) {
+        if (!owners.contains(newOwner.getUsername())) {
             owners.add(newOwner.getUsername());
             return true;
         }
@@ -167,8 +168,9 @@ abstract class Account {
     }
 
     public boolean removeOwner(Customer owner) {
-        if (isJoint() && owners.contains(owner)) {
-            owners.remove(owner);
+        // An account has to have at least one owner.
+        if (isJoint() && owners.contains(owner.getUsername())) {
+            owners.remove(owner.getUsername());
             return true;
         }
         return false;

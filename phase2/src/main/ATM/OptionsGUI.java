@@ -1,7 +1,5 @@
 package ATM;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -55,7 +53,6 @@ public abstract class OptionsGUI {
      *
      * @param width  of screen
      * @param height of screen
-     * @return
      */
     public Scene generateOptionsScreen(int width, int height) {
         GridPane gridPane = createFormPane();
@@ -155,31 +152,26 @@ public abstract class OptionsGUI {
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 5);
 
-        save.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                actionTarget.setFill(Color.FIREBRICK);
-                String realOldPass = user.getPassword();
-                String oldPassTyped = oldPassField.getText();
-                String newPass = pwBox.getText();
-                String newPassAgain = pwBox1.getText();
+        save.setOnAction(event -> {
+            actionTarget.setFill(Color.FIREBRICK);
+            String realOldPass = user.getPassword();
+            String oldPassTyped = oldPassField.getText();
+            String newPass1 = pwBox.getText();
+            String newPassAgain = pwBox1.getText();
 
-                if (!realOldPass.equals(oldPassTyped)) {
-                    actionTarget.setText("Old password incorrect");
-                } else if (!newPass.equals(newPassAgain)) {
-                    actionTarget.setText("Check new password");
-                } else if (newPass.isEmpty()) {
-                    actionTarget.setText("New password cannot be empty");
-                } else {
-                    user.setPassword(newPass);
-                    setPasswordHandler();
-                }
+            if (!realOldPass.equals(oldPassTyped)) {
+                actionTarget.setText("Old password incorrect");
+            } else if (!newPass1.equals(newPassAgain)) {
+                actionTarget.setText("Check new password");
+            } else if (newPass1.isEmpty()) {
+                actionTarget.setText("New password cannot be empty");
+            } else {
+                user.setPassword(newPass1);
+                setPasswordHandler();
             }
         });
 
-        cancel.setOnAction(e -> {
-            window.setScene(optionsScreen);
-        });
+        cancel.setOnAction(e -> window.setScene(optionsScreen));
     }
 
     public void changePasswordScreen() {

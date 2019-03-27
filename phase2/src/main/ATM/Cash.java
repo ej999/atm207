@@ -13,21 +13,26 @@ final class Cash {
 
     // The denominations that accepted by the ATM.
     static final List<Integer> DENOMINATIONS;
-    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
-    //TODO sync to firebase
     /**
      * Map denomination to quantity
      * Cash initially starts with 50 bills for every denomination.
      */
-    // SortedMap is used here to make sure the denominations is in ascending order.
-    static SortedMap<Integer, Integer> ATMBills;
+    static final HashMap<String, Integer> ATMBills;
+    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
 
     static {
-        DENOMINATIONS = Collections.unmodifiableList(Arrays.asList(5, 10, 20, 50));
+        /*
+          To implement new denominations, edit the list below. No change of other code is needed.
+         */
+        List<Integer> denominations = Arrays.asList(5, 20, 10, 50);
 
-        ATMBills = new TreeMap<>();
+        // Make sure it is in ascending order and immutable.
+        Collections.sort(denominations);
+        DENOMINATIONS = Collections.unmodifiableList(denominations);
+
+        ATMBills = new HashMap<>();
         for (int d : DENOMINATIONS) {
-            ATMBills.put(d, 50);
+            ATMBills.put(String.valueOf(d), 50);
         }
     }
 
@@ -36,7 +41,7 @@ final class Cash {
      *
      * @return true iff amount of any denomination goes below 20
      */
-    static boolean isAmountBelowTwenty() {
+    private static boolean isAmountBelowTwenty() {
         for (int n : ATMBills.values()) {
             if (n < 20) {
                 return true;
@@ -48,7 +53,7 @@ final class Cash {
     /**
      * Send an alert to alerts.txt iff isAmountBelowTwenty
      */
-    static void checkDenom() {
+    private static void checkDenom() {
         if (isAmountBelowTwenty()) {
             try {
                 sendAlert();
@@ -68,7 +73,7 @@ final class Cash {
 
     static void cashDeposit(Map<Integer, Integer> deposits) {
         for (int d : deposits.keySet()) {
-            ATMBills.put(d, ATMBills.get(d) + deposits.get(d));
+            ATMBills.put(String.valueOf(d), ATMBills.get(String.valueOf(d)) + deposits.get(d));
         }
     }
 
@@ -79,12 +84,11 @@ final class Cash {
     private static SortedMap<Integer, Integer> getDenominator(double amount) {
         double remainder = amount;
         SortedMap<Integer, Integer> returnBills = new TreeMap<>();
-        List<Integer> denominator = new ArrayList<>(ATMBills.keySet());
 
-        for (int d = denominator.size() - 1; d >= 0; d--) {
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator.get(d)), ATMBills.get(denominator.get(d)));
-            returnBills.put(denominator.get(d), denominatorWithdrawn);
-            remainder -= denominatorWithdrawn * denominator.get(d);
+        for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), ATMBills.get(String.valueOf(DENOMINATIONS.get(d))));
+            returnBills.put(DENOMINATIONS.get(d), denominatorWithdrawn);
+            remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }
 
         return returnBills;
@@ -123,7 +127,7 @@ final class Cash {
         for (int denominator : numberOfBills.keySet()) {
             int amountOfBills = numberOfBills.get(denominator);
 
-            ATMBills.put(denominator, ATMBills.get(denominator) - amountOfBills);
+            ATMBills.put(String.valueOf(denominator), ATMBills.get(String.valueOf(denominator)) - amountOfBills);
             total += denominator * amountOfBills;
 
             print.append(amountOfBills).append(" of $").append(denominator).append("-bill, ");

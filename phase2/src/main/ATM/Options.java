@@ -201,7 +201,7 @@ class Options {
 
         Map<Integer, Integer> restock = new HashMap<>();
         for (Integer d : Cash.DENOMINATIONS) {
-            System.out.print("Enter amount of $" + d + " dollar ATM_bill: ");
+            System.out.print("Enter amount of $" + d + " dollar bill: ");
             int amount = reader.nextInt();
 
             restock.put(d, amount);

@@ -12,6 +12,9 @@ import java.util.Set;
 
 /**
  * A static class that manage all User.
+ * <p>
+ * To implement new type of User, create a class that extends any User- class.
+ * No change of code in UserManager needed.
  */
 final class UserManager {
     // List of simple name of User types.

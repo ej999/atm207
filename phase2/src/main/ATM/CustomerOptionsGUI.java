@@ -1,14 +1,9 @@
 package ATM;
 
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.util.List;
-import javax.swing.*;
 
 /**
  * GUI for customer options.

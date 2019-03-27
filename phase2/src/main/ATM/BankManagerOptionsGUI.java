@@ -164,7 +164,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         for (Integer d : Cash.DENOMINATIONS) {
             // Label
-            Label dLabel = new Label("Enter amount of $" + d + " dollar ATM_bill: ");
+            Label dLabel = new Label("Enter amount of $" + d + " dollar bill: ");
             grid.add(dLabel, 0, rowIndex);
 
             // TextField

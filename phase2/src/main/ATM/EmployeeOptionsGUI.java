@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,8 +64,8 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         }
 
         HBox hbox = new HBox(listView);
-        grid.add(hbox,0,0);
-        grid.add(hbBtn,0,1);
+        grid.add(hbox, 0, 0);
+        grid.add(hbBtn, 0, 1);
         window.setScene(new Scene(grid, 400, 350));
     }
 
@@ -77,7 +76,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         TextField usernameInput = new TextField();
 
         Label typeLbl = new Label("Type of Bank Account:");
-        ChoiceBox<String> typeChoice= new ChoiceBox<>();
+        ChoiceBox<String> typeChoice = new ChoiceBox<>();
         List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
@@ -93,11 +92,11 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         hbBtn.getChildren().add(cancel);
         hbBtn.getChildren().add(create);
 
-        gridPane.add(usernameLbl,0,0);
-        gridPane.add(usernameInput,1,0);
-        gridPane.add(typeLbl,0,1);
-        gridPane.add(hbox,1,1);
-        gridPane.add(hbBtn,1,2);
+        gridPane.add(usernameLbl, 0, 0);
+        gridPane.add(usernameInput, 1, 0);
+        gridPane.add(typeLbl, 0, 1);
+        gridPane.add(hbox, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
@@ -138,13 +137,13 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         hbBtn.getChildren().add(cancel);
         hbBtn.getChildren().add(submit);
 
-        grid.add(usernameLbl,0,0);
-        grid.add(usernameInput,1,0);
-        grid.add(accountPicker,0,1);
-        grid.add(hbox, 1,1);
-        grid.add(n,0,2);
-        grid.add(numberInput,1,2);
-        grid.add(hbBtn,1,3);
+        grid.add(usernameLbl, 0, 0);
+        grid.add(usernameInput, 1, 0);
+        grid.add(accountPicker, 0, 1);
+        grid.add(hbox, 1, 1);
+        grid.add(n, 0, 2);
+        grid.add(numberInput, 1, 2);
+        grid.add(hbBtn, 1, 3);
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 5);
