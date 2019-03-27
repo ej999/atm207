@@ -3,6 +3,8 @@ package ATM;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+
 /**
  * GUI for customer options.
  */
@@ -68,6 +70,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
         amount
         Cancel | Transfer
          */
+//        JComboBox<Account> accountsFrom = new JComboBox<Account>();
+//        JComboBox<Account> accountsTo = new JComboBox<Account>();
+//        for (int i = 0; (user.accounts).length(); i++) {
+//            accountsFrom.addItem(user.accounts.get(i));
+//            accountsTo.addItem(user.accounts.get(i));
+//        }
     }
 
     public void makeTransferAnotherScreen() {
