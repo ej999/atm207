@@ -11,7 +11,8 @@ import javafx.stage.Stage;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * GUI for Bank Manager.
@@ -56,7 +57,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         Label userType = new Label("User Type:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        for(String type : UserManager.getTypesOfAccounts()) {
+        for (String type : UserManager.USER_TYPE_NAMES) {
             choiceBox.getItems().add(type);
         }
 
@@ -73,13 +74,13 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         hbBtn.getChildren().add(cancel);
         hbBtn.getChildren().add(create);
 
-        gridPane.add(userType, 0,0);
-        gridPane.add(choiceBox, 1,0);
-        gridPane.add(usernameLbl, 0,1);
-        gridPane.add(usernameInput, 1,1);
-        gridPane.add(passwordLbl, 0,2);
-        gridPane.add(passwordField, 1,2);
-        gridPane.add(hbBtn, 1,3);
+        gridPane.add(userType, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(usernameLbl, 0, 1);
+        gridPane.add(usernameInput, 1, 1);
+        gridPane.add(passwordLbl, 0, 2);
+        gridPane.add(passwordField, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
 
         // I'm not gonna check the validity of password
 
@@ -111,8 +112,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         hbBtn.getChildren().add(yes);
         hbBtn.getChildren().add(no);
 
-        gridPane.add(question,0,0);
-        gridPane.add(hbBtn,1,0);
+        gridPane.add(question, 0, 0);
+        gridPane.add(hbBtn, 1, 0);
 
         final Text actionTarget = new Text();
         TextField dobInput = new TextField();
@@ -122,16 +123,16 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         yes.setOnAction(event -> {
             actionTarget.setFill(Color.BLACK);
             actionTarget.setText("Enter Date of Birth (YYYY-MM-DD):");
-            gridPane.add(dobInput,1,3);
+            gridPane.add(dobInput, 1, 3);
 
             String _dob = dobInput.getText();
 
             try {
                 String dob = LocalDate.parse(_dob).toString();
-                ((Customer) UserManager.getAccount(username)).setDob(dob);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success","Date of Birth for " + username + " is set to " + dob + "." );
+                ((Customer) UserManager.getUser(username)).setDob(dob);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob + ".");
             } catch (DateTimeException e) {
-                showAlert(Alert.AlertType.ERROR, window, "Error","Are you sure you born on a day that doesn't exist?" );
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");
             }
         });
 
@@ -142,17 +143,6 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     public void restockATMScreen() {
         GridPane grid = createFormPane();
 
-        Label five = new Label("Enter amount of 5 dollar bills:");
-        Label ten = new Label("Enter amount of 10 dollar bills:");
-        Label twenty = new Label("Enter amount of 20 dollar bills:");
-        Label fifty = new Label("Enter amount of 50 dollar bills:");
-
-        // Assume inputs are correct...
-        TextField fiveI = new TextField();
-        TextField tenI = new TextField();
-        TextField twentyI = new TextField();
-        TextField fiftyI = new TextField();
-
         Button cancel = new Button("Cancel");
         Button restock_ = new Button("Restock");
         HBox hbBtn = new HBox(10);
@@ -160,23 +150,33 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         hbBtn.getChildren().add(cancel);
         hbBtn.getChildren().add(restock_);
 
-        grid.add(five,0,0);
-        grid.add(fiveI,1,0);
-        grid.add(ten,0,1);
-        grid.add(tenI,1,1);
-        grid.add(twenty,0,2);
-        grid.add(twentyI,1,2);
-        grid.add(fifty,0,3);
-        grid.add(fiftyI,1,3);
-        grid.add(hbBtn,1,4);
+        int rowIndex = 0;
+
+        HashMap<Integer, TextField> textField = new HashMap<>();
+
+        for (Integer d : Cash.DENOMINATIONS) {
+            // Label
+            Label dLabel = new Label("Enter amount of $" + d + " dollar bills: ");
+            grid.add(dLabel, 0, rowIndex);
+
+            // TextField
+            TextField dTextField = new TextField();
+            grid.add(dTextField, 1, rowIndex);
+            textField.put(d, dTextField);
+
+            rowIndex++;
+        }
+
+        grid.add(hbBtn, 1, 4);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         restock_.setOnAction(event -> {
-            ArrayList<Integer> restock = new ArrayList<>();
-            restock.add(Integer.valueOf(fiveI.getText()));
-            restock.add(Integer.valueOf(tenI.getText()));
-            restock.add(Integer.valueOf(twentyI.getText()));
-            restock.add(Integer.valueOf(fiftyI.getText()));
+            Map<Integer, Integer> restock = new HashMap<>();
+
+            for (Integer d : textField.keySet()) {
+                restock.put(d, Integer.valueOf(textField.get(d).getText()));
+            }
+
             ((BankManager) user).restockMachine(restock);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success!");
         });
