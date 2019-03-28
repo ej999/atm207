@@ -1,9 +1,14 @@
 package ATM;
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * GUI for customer options.
@@ -63,59 +68,62 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void payBillScreen() {
-        //TODO
-        /*
-        choose account
-        enter amount
-        non-user account name
-        Cancel | Pay
-         */
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Choose account:");
-//        ChoiceBox<String> choices = new ChoiceBox<>();
-//
-//        List<String> accounts = ((Customer) user).getAccounts();
-//        for(String a : accounts) {
-//
-//        }
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-//        Scanner reader = new Scanner(System.in);
-//
-//        System.out.println();
-//        List<String> accounts = customer.getAccounts();
-//        int i = 1;
-//        for (String a : accounts) {
-//            if (!AccountManager.getAccount(a).getClass().getName().contains(exclusion)) {
-//                System.out.println("[" + i + "] " + AccountManager.getAccount(a));
-//                i++;
-//            }
-//        }
-//
-//        int option = -99;
-//        while (option > accounts.size() || option < 0) {
-//            System.out.print("Please select an account: ");
-//            option = reader.nextInt();
-//        }
-//        return AccountManager.getAccount(accounts.get(option - 1));
+        // Add user's accounts as entries to ComboBox
+        String username = user.getUsername();
+        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals("ATM.CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
 
-//        Account account = selectAccountPrompt((Customer) current_user, "CreditCard");
-//
-//        Scanner reader = new Scanner(System.in);
-//        System.out.print("Please enter the amount you would like to pay: ");
-//        double amount = reader.nextDouble();
-//        System.out.print("Please enter the non-user account you would like to pay: ");
-//        String payee = reader.next();
-//
-//
-//        try {
-//            if (((AccountTransferable) account).payBill(amount, payee)) {
-//                System.out.println("Bill has been paid.");
-//            } else {
-//                System.err.println("Payment is unsuccessful.");
-//            }
-//        } catch (IOException e) {
-//            // do nothing?
-//        }
+        Label amountLbl = new Label("Amount:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        Label name = new Label("Non-user account name:");
+        TextField nameInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Pay");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(amountLbl, 0, 1);
+        gridPane.add(amountInput, 1, 1);
+        gridPane.add(name, 0, 2);
+        gridPane.add(nameInput, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            // [type, id] -> id -> account with id <id>
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            Account account = AccountManager.getAccount(aID);
+            double amount = Double.valueOf(amountInput.getText());
+            String payee = nameInput.getText();
+            try {
+                if (((AccountTransferable) account).payBill(amount, payee)) {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Bill has been paid.");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Payment is unsuccessful.");
+                }
+            } catch (IOException e) {
+                // do nothing?
+            }
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 
