@@ -25,13 +25,13 @@ import java.util.HashMap;
  */
 
 public class TradingSystem {
-    HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
-    HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
+    static HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
+    static HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
 
     TradingSystem() {
     }
 
-    public void addSellOffer(String item, TradeOffer tradeoffer) {
+    static public void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, true)){
@@ -49,7 +49,7 @@ public class TradingSystem {
 
     }
 
-    public void addBuyOffer(String item, TradeOffer tradeoffer) {
+    static public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, false)){
@@ -66,9 +66,9 @@ public class TradingSystem {
         }
 
     }
-//This method implies that a customer can't for instance put two buy offers for the same item
-    public void removeOffer(String item, Customer user, boolean sell) {
-        if (sell) {
+//Note: This method will remove all buy or sell offers of a user for a certain item
+    static public void removeOffer(String item, Customer user, boolean selling) {
+        if (selling) {
             ArrayList<TradeOffer> offers = sell_offers.get(item);
             for (int i = 0; i < offers.size(); i++) {
                 if (offers.get(i).getTradeUser() == user) {
@@ -87,12 +87,14 @@ public class TradingSystem {
         }
     }
 
-    public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling){
+    static public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling){
         HashMap<String, ArrayList<TradeOffer>> offers_map;
-        Customer seller;
-        Customer buyer;
-        int sell_price;
-        int buy_price;
+        //default values, but these will never get used
+        Customer seller = tradeoffer.getTradeUser();
+        Customer buyer = tradeoffer.getTradeUser();
+        int sell_price = 0;
+        int buy_price = 0;
+
         if (selling){
             offers_map = buy_offers; //Because if we're selling, we're look for buy offers.
             sell_price = tradeoffer.getPrice();
@@ -125,7 +127,6 @@ public class TradingSystem {
                 System.out.println("Offer made");
                 offers.remove(i);
                 return true;
-
             }
         }
         return false;

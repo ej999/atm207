@@ -88,6 +88,10 @@ class Options {
 
             options.put("Change Password", new Thread(this::setPasswordPrompt));
 
+            options.put("Add sell offer", new Thread(this::addSellOffer));
+
+            options.put("Add buy offer", new Thread(this::addBuyOffer));
+
             options.put("Logout", new Thread(this::logoutPrompt));
         }
     }
@@ -444,20 +448,30 @@ class Options {
         ((BankManager) current_user).readAlerts();
     }
 //WIP
-//    private void tradePrompt() {
-//        Scanner reader = new Scanner(System.in);
-//        System.out.println("Would you like to: 1) Put up a trade offer 2) Remove a trade");
-//        int choice = reader.nextInt();
-//
-//    }
-//
-//    private void makeTrade(){
-//        System.out.println("Would you like to BUY or SELL?");
-//        Scanner reader = new Scanner(System.in);
-//        String choice = reader.nextLine();
-//        System.out.println("What item would you like to sell?");
-//
-//    }
+    private void addSellOffer() {
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What item you like to sell?");
+        String item = reader.nextLine();
+        System.out.println("How much do you have? (in grams)");
+        int quantity = reader.nextInt();
+        System.out.println("How much are you selling it for? (in dollars)");
+        int price = reader.nextInt();
+        TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) current_user);
+        TradingSystem.addSellOffer(item, tradeoffer);
+    }
+
+    private void addBuyOffer() {
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What item you like to buy?");
+        String item = reader.nextLine();
+        System.out.println("How much do you want? (in grams)");
+        int quantity = reader.nextInt();
+        System.out.println("How much are you buying it for? (in dollars)");
+        int price = reader.nextInt();
+        TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) current_user);
+        TradingSystem.addBuyOffer(item, tradeoffer);
+    }
+
 }
 
 
