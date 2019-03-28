@@ -69,11 +69,13 @@ abstract class Account {
     public abstract String getType();
 
     private Transaction getMostRecentTransaction() {
+        Transaction mostRecentTransaction;
         try {
-            return transactionHistory.peek();
+            mostRecentTransaction = transactionHistory.peek();
         } catch (EmptyStackException e) {
             return null;
         }
+        return mostRecentTransaction;
     }
 
 //    void updateMostRecentTransaction(String type, double amount, Account account) {
@@ -146,14 +148,13 @@ abstract class Account {
 
     /**
      * Add another owner to this account.
-     * TODO: newOwner should be the username
      *
      * @param newOwner account holder
      * @return true iff newOwner is distinct
      */
-    public boolean addOwner(Customer newOwner) {
-        if (!owners.contains(newOwner.getUsername())) {
-            owners.add(newOwner.getUsername());
+    public boolean addOwner(String newOwner) {
+        if (!owners.contains(newOwner)) {
+            owners.add(newOwner);
             return true;
         }
         return false;
@@ -163,10 +164,10 @@ abstract class Account {
         return owners.size() > 1;
     }
 
-    public boolean removeOwner(Customer owner) {
+    public boolean removeOwner(String owner) {
         // An account has to have at least one owner.
-        if (isJoint() && owners.contains(owner.getUsername())) {
-            owners.remove(owner.getUsername());
+        if (isJoint() && owners.contains(owner)) {
+            owners.remove(owner);
             return true;
         }
         return false;

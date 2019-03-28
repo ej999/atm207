@@ -22,7 +22,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Make a Transfer to another User");
         addOptionText("Cash/Cheque Deposit");
         addOptionText("Cash Withdrawal");
-        addOptionText("Request Creating an Account");
+        addOptionText("Request Creating an Account"); // Customer can request for a joint account
+//        addOptionText("make Joint Account"); //TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");

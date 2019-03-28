@@ -27,6 +27,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     public Scene createOptionsScreen() {
         addOptionText("Read alerts");
         addOptionText("Create bank account for user");
+//        addOptionText("Create joint account"); // TODO
         addOptionText("Change password");
         addOptionText("Undo transactions");
         addOptionText("Logout");
