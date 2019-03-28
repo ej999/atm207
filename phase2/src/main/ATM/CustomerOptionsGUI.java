@@ -8,7 +8,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * GUI for customer options.
@@ -29,6 +31,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Cash Withdrawal");
         addOptionText("Request Creating an Account"); // Customer can request for a joint account
 //        addOptionText("make Joint Account"); //TODO
+//        addOptionText("Show transaction history"); //TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -158,12 +161,96 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void depositScreen() {
-        //TODO
-        /*
-        amount:
-        Cancel | Deposit
-         */
         GridPane gridPane = createFormPane();
+
+        Button cancel = new Button("Cancel");
+        Button depoCash = new Button("Deposit Cash");
+        Button depoCheque = new Button("Deposit Cheque");
+
+        gridPane.add(cancel, 0, 0);
+        gridPane.add(depoCash, 1, 0);
+        gridPane.add(depoCheque, 2, 0);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        depoCash.setOnAction(event -> depoCashScreen());
+        depoCheque.setOnAction(event -> depoChequeScreen());
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void depoCashScreen() {
+        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) user).getPrimary());
+        GridPane grid = createFormPane();
+
+        Button goBack = new Button("Go Back");
+        Button deposit = new Button("Deposit");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(goBack);
+        hbBtn.getChildren().add(deposit);
+
+        HashMap<Integer, TextField> textField = new HashMap<>(); // d -> input
+        int rowIndex = 0;
+
+        // This part is very similar to restockingScreen
+        // Adding all labels and text fields
+        for (Integer d : Cash.DENOMINATIONS) {
+            // Label
+            Label dLabel = new Label("Amount of $" + d + " dollar bills:");
+            grid.add(dLabel, 0, rowIndex);
+
+            // TextField
+            TextField dTextField = new TextField();
+            grid.add(dTextField, 1, rowIndex);
+            textField.put(d, dTextField);
+
+            rowIndex++;
+        }
+
+        grid.add(hbBtn, 1, 4);
+
+        // Handlers
+        goBack.setOnAction(event -> depoCashScreen());
+        deposit.setOnAction(event -> {
+            // d -> quantity
+            Map<Integer, Integer> depositedBills = new HashMap<>();
+
+            for (Integer d : textField.keySet()) {
+                depositedBills.put(d, Integer.valueOf(textField.get(d).getText()));
+            }
+            primary.depositBill(depositedBills);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Amount successfully deposited");
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(grid));
+    }
+
+    private void depoChequeScreen() {
+        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) user).getPrimary());
+        GridPane gridPane = createFormPane();
+
+        Button goBack = new Button("Go Back");
+        Button deposit = new Button("Deposit");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(goBack);
+        hbBtn.getChildren().add(deposit);
+
+        Label amountLbl = new Label("Amount to deposit:");
+        TextField amountInput = new TextField();
+
+        gridPane.add(amountLbl, 0, 0);
+        gridPane.add(amountInput, 1, 0);
+        gridPane.add(hbBtn, 1, 1);
+
+        goBack.setOnAction(event -> depositScreen());
+        deposit.setOnAction(event -> {
+            primary.deposit(Double.valueOf(amountInput.getText()));
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "Amount successfully deposited");
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 
