@@ -136,13 +136,61 @@ public class CustomerOptionsGUI extends OptionsGUI {
         amount
         Cancel | Transfer
          */
-        //        JComboBox<Account> accountsFrom = new JComboBox<Account>();
-//        JComboBox<Account> accountsTo = new JComboBox<Account>();
-//        for (int i = 0; (user.accounts).length(); i++) {
-//            accountsFrom.addItem(user.accounts.get(i));
-//            accountsTo.addItem(user.accounts.get(i));
-//        }
         GridPane gridPane = createFormPane();
+        Label chooseLbl = new Label("Choose account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        ChoiceBox<String> otherChoiceBox = new ChoiceBox<>();
+
+        // Add user's accounts as entries to ComboBox
+        String username = user.getUsername();
+        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals("ATM.CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+                otherChoiceBox.getItems().add(choice);
+            }
+        }
+
+        Label amountLbl = new Label("Amount:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        Label transferLbl = new Label("Transfer To:");
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Transfer");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(amountLbl, 0, 1);
+        gridPane.add(amountInput, 1, 1);
+        gridPane.add(transferLbl, 0, 2);
+        gridPane.add(otherChoiceBox, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            // [type, id] -> id -> account with id <id>
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            String[] oInfo = otherChoiceBox.getValue().split("\\s+");
+            String oID = oInfo[1];
+            Account account = AccountManager.getAccount(aID);
+            Account otherAccount = AccountManager.getAccount(oID);
+            double amount = Double.valueOf(amountInput.getText());
+            if (((AccountTransferable) account).transferBetweenAccounts(amount, otherAccount)) {
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful.");
+            }
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 
