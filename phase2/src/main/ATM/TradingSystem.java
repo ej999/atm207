@@ -34,23 +34,8 @@ public class TradingSystem {
     public void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
-            int quantity = tradeoffer.getQuantity();
-            int price = tradeoffer.getPrice();
-            Customer user = tradeoffer.getTradeUser();
-            ArrayList<TradeOffer> offers = buy_offers.get(item);
-            for (int i = 0; i < offers.size(); i++) {
-                int other_quantity = offers.get(i).getQuantity();
-                int other_price = offers.get(i).getPrice();
-                Customer other_user = offers.get(i).getTradeUser();
-                //Checks if quantities are the same, price is better, and buyers has enough money
-                if (other_quantity == quantity && other_price > price
-                        && AccountManager.getAccount(other_user.getPrimary()).getBalance() > other_price) {
-                    AccountManager.getAccount(user.getPrimary()).deposit(other_price);
-                    AccountManager.getAccount(other_user.getPrimary()).withdraw(other_price);
-                    System.out.println("Offer made");
-                    offers.remove(i);
-
-                }
+            if (!makeTrade(item, tradeoffer, true)){
+                sell_offers.get(item).add(tradeoffer);
             }
 
         }
@@ -67,22 +52,8 @@ public class TradingSystem {
     public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
-            int quantity = tradeoffer.getQuantity();
-            int price = tradeoffer.getPrice();
-            Customer user = tradeoffer.getTradeUser();
-            ArrayList<TradeOffer> offers = sell_offers.get(item);
-            for (int i = 0; i < offers.size(); i++) {
-                int other_quantity = offers.get(i).getQuantity();
-                int other_price = offers.get(i).getPrice();
-                Customer other_user = offers.get(i).getTradeUser();
-                if (other_quantity == quantity && other_price < price
-                        && AccountManager.getAccount((user.getPrimary())).getBalance() > other_price) {
-                    //Money will be exchanged.
-                    AccountManager.getAccount(user.getPrimary()).withdraw(other_price);
-                    AccountManager.getAccount(other_user.getPrimary()).deposit(other_price);
-                    System.out.println("Offer made");
-                    offers.remove(i);
-                }
+            if (!makeTrade(item, tradeoffer, false)){
+                buy_offers.get(item).add(tradeoffer);
             }
 
         }
@@ -95,7 +66,7 @@ public class TradingSystem {
         }
 
     }
-
+//This method implies that a customer can't for instance put two buy offers for the same item
     public void removeOffer(String item, Customer user, boolean sell) {
         if (sell) {
             ArrayList<TradeOffer> offers = sell_offers.get(item);
@@ -114,6 +85,51 @@ public class TradingSystem {
                 }
             }
         }
+    }
+
+    public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling){
+        HashMap<String, ArrayList<TradeOffer>> offers_map;
+        Customer seller;
+        Customer buyer;
+        int sell_price;
+        int buy_price;
+        if (selling){
+            offers_map = buy_offers; //Because if we're selling, we're look for buy offers.
+            sell_price = tradeoffer.getPrice();
+            seller = tradeoffer.getTradeUser();
+        }
+        else {
+            offers_map = sell_offers;
+            buy_price = tradeoffer.getPrice();
+            buyer = tradeoffer.getTradeUser();
+        }
+
+        int quantity = tradeoffer.getQuantity();
+        ArrayList<TradeOffer> offers = offers_map.get(item);
+
+        for (int i = 0; i < offers.size(); i++) {
+            if (selling){
+                buy_price = offers.get(i).getPrice();
+                buyer = offers.get(i).getTradeUser();
+            }
+            else {
+                sell_price = offers.get(i).getPrice();
+                seller = offers.get(i).getTradeUser();
+            }
+            int other_quantity = offers.get(i).getQuantity();
+
+            if (other_quantity == quantity && buy_price >= sell_price
+                    && AccountManager.getAccount(buyer.getPrimary()).getBalance() > buy_price) {
+                AccountManager.getAccount(seller.getPrimary()).deposit(buy_price);
+                AccountManager.getAccount(buyer.getPrimary()).withdraw(buy_price);
+                System.out.println("Offer made");
+                offers.remove(i);
+                return true;
+
+            }
+        }
+        return false;
+
     }
 
 }
