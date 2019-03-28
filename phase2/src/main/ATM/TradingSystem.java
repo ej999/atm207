@@ -133,4 +133,21 @@ public class TradingSystem {
 
     }
 
+    static public ArrayList<String> seeOffers(String item, boolean selling){
+        HashMap<String, ArrayList<TradeOffer>> offers_map;
+        ArrayList<String> returned = new ArrayList<>();
+        if (selling){
+            offers_map = sell_offers;
+        }
+        else {
+            offers_map = buy_offers;
+        }
+        ArrayList<TradeOffer> offers = offers_map.get(item);
+        for(int i = 0; i < offers.size(); i++){
+            returned.add(offers.get(i).toString());
+        }
+        return returned;
+    }
+
+
 }

@@ -472,6 +472,20 @@ class Options {
         TradingSystem.addBuyOffer(item, tradeoffer);
     }
 
+    private void seeOffers(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Would you like to see sell offers of buy offers? (S/B)");
+        boolean choice_bool = false;
+        String choice = reader.nextLine();
+        if (choice.equals("S")){
+            choice_bool = true;
+        }
+        System.out.println("Which item would you like to see offers for?)");
+        String item = reader.nextLine();
+        ArrayList<String> sell_offers = TradingSystem.seeOffers(item, choice_bool);
+        System.out.println(sell_offers);
+    }
+
 }
 
 
