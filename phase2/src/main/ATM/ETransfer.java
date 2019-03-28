@@ -31,4 +31,13 @@ public class ETransfer extends Transaction{
     public String getQuestion(){
         return this.question;
     }
+
+    public boolean hasBeenDeposited(){
+        return this.verified;
+    }
+
+    public String getRecipient(){
+        return this.recipient;
+    }
+
 }
