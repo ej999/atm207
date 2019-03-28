@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * GUI for Bank Manager.
+ * //TODO: refactor
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     /**

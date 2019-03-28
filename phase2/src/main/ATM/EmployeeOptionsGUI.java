@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * GUI for employee options.
+ * //TODO: refactor
  */
 public class EmployeeOptionsGUI extends OptionsGUI {
 
