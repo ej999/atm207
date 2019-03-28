@@ -2,11 +2,9 @@ package ATM;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -17,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GUI for common options across all users.
@@ -200,6 +199,55 @@ public abstract class OptionsGUI {
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+
+    public HBox getTwoButtons(String first, String second) {
+        /*
+        first | second
+        e.g. Cancel | Submit
+         */
+        Button firstBtn = new Button(first);
+        Button secondBtn = new Button(second);
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(firstBtn);
+        hbBtn.getChildren().add(secondBtn);
+        return hbBtn;
+    }
+
+    public ChoiceBox<String> getBankAccounts(String exclusion) {
+        /*
+        drop-down of this user's accounts, excluding account <exclusion>
+         */
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        String username = user.getUsername();
+        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals(exclusion)) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
+        return choiceBox;
+    }
+
+    public void addControlsToLayout(GridPane gridPane, List<Label> labels, List<Node> controls, HBox buttons) {
+        /*
+        Like this ->
+        label : control
+        label : control
+            .
+            .
+            .
+        two buttons
+         */
+        int r = 0;
+        for (; r < labels.size(); r++) {
+            gridPane.add(labels.get(r), 0, r);
+            gridPane.add(controls.get(r), 1, r);
+        }
+        gridPane.add(buttons, 1, r);
     }
 
 }

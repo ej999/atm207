@@ -1,6 +1,7 @@
 package ATM;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -8,12 +9,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * GUI for customer options.
+ * TODO: some methods contain duplicate code.
  */
 public class CustomerOptionsGUI extends OptionsGUI {
 
@@ -131,14 +134,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void makeTransferBetweenScreen() {
-        //TODO
-        /*
-        choicebox
-        transfer FROM
-        transfer TO
-        amount
-        Cancel | Transfer
-         */
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
@@ -303,13 +298,36 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void withdrawalScreen() {
-        //TODO
-        /*
-        Select account drop-down
-        amount
-        Cancel | Withdraw
-         */
         GridPane gridPane = createFormPane();
+
+        Label chooseLbl = new Label("Choose account:");
+        ChoiceBox<String> choiceBox = getBankAccounts("no exclusion");
+
+        Label amountLbl = new Label("Amount to Withdraw:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        HBox hbBtn = getTwoButtons("Cancel", "Withdraw");
+
+        List<Label> labels = new ArrayList<>();
+        labels.add(chooseLbl);
+        labels.add(amountLbl);
+        List<Node> controls = new ArrayList<>();
+        controls.add(choiceBox);
+        controls.add(amountInput);
+
+        addControlsToLayout(gridPane, labels, controls, hbBtn);
+
+        ((Button) hbBtn.getChildren().get(0)).setOnAction(event -> window.setScene(optionsScreen));
+        ((Button) hbBtn.getChildren().get(1)).setOnAction(event -> {
+            Account account = getAccountFromChoiceBox(choiceBox);
+            double amount = Double.valueOf(amountInput.getText());
+            double actualAmount = amount - amount % 5;
+            account.withdraw(actualAmount);
+            String message = "$" + actualAmount + " withdrawn";
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", message);
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 
@@ -327,6 +345,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
         //TODO
         GridPane gridPane = createFormPane();
         window.setScene(new Scene(gridPane));
+    }
+
+    private Account getAccountFromChoiceBox(ChoiceBox<String> choiceBox) {
+        /*
+        choiceBox like this ->
+        ATM.<account> <id>
+            .
+            .
+            .
+         */
+        String[] aInfo = choiceBox.getValue().split("\\s+");
+        String aID = aInfo[1];
+        return AccountManager.getAccount(aID);
     }
 }
 
