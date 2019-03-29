@@ -145,7 +145,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             });
         });
 
-        window.setScene(new Scene(gridPane, 400, 400));
+        window.setScene(new Scene(gridPane, 400, 200));
 
     }
 

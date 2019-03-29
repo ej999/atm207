@@ -369,6 +369,11 @@ class Options {
     }
 
     private void depositPrompt() {
+        if (!((Customer) current_user).hasPrimary()) {
+            System.out.println("Deposit cannot be made since you have no primary accounts. Request a new account in the main menu.");
+            return;
+        }
+
         Chequing primary = (Chequing) AccountManager.getAccount(((Customer) current_user).getPrimary());
         Scanner reader = new Scanner(System.in);
 

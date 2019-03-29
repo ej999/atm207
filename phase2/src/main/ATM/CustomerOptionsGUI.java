@@ -315,6 +315,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
         depoCash.setOnAction(event -> depoCashScreen());
         depoCheque.setOnAction(event -> depoChequeScreen());
 
+        if (!((Customer) user).hasPrimary()) {
+            window.setScene(optionsScreen);
+            showAlert(Alert.AlertType.ERROR, window, "Error", "Deposit cannot be made since you have no primary accounts. " +
+                    "Request a new account in the main menu.");
+        }
+
         window.setScene(new Scene(gridPane));
     }
 

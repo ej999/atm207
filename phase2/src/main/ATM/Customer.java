@@ -172,6 +172,10 @@ class Customer extends User {
         return primary;
     }
 
+    public boolean hasPrimary() {
+        return primary != null;
+    }
+
     void setPrimary(Account primary) {
         if (primary instanceof Chequing) {
             this.primary = primary.getId();
