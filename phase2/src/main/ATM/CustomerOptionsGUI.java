@@ -38,8 +38,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Cash Withdrawal");
         addOptionText("Request Creating an Account");
         addOptionText("Make a Preexisting Account Joint");
-        // addSellOffer //TODO
-        // addBuyOffer //TODO
+        addOptionText("Add an item for Sale");
         // seeOffers // TODO
         // eTransfers // TODO
         addOptionText("Change Primary Account");
@@ -56,9 +55,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
         getOption(8).setOnAction(event -> accountToJointScreen());
-        getOption(9).setOnAction(event -> changePrimaryScreen());
-        getOption(10).setOnAction(event -> changePasswordScreen());
-        getOption(11).setOnAction(event -> logoutHandler());
+        getOption(9).setOnAction(event -> addSellOfferScreen());
+        getOption(10).setOnAction(event -> changePrimaryScreen());
+        getOption(11).setOnAction(event -> changePasswordScreen());
+        getOption(12).setOnAction(event -> logoutHandler());
 
         return generateOptionsScreen(500, 350);
     }
@@ -758,6 +758,45 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private void addSellOfferScreen() {
         //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForSale = new Label("What item would you like to sell?");
+        TextField itemInput = new TextField();
+
+        Label itemQuantity = new Label("How much do you have? (in grams)");
+        TextField quantityInput = new TextField();
+
+        Label itemPricing= new Label("How much are you selling it for? (in dollars)");
+        TextField priceInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Add");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForSale, 0, 0);
+        gridPane.add(itemInput, 1, 0);
+        gridPane.add(itemQuantity, 0, 1);
+        gridPane.add(quantityInput, 1, 1);
+        gridPane.add(itemPricing, 0, 2);
+        gridPane.add(priceInput, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemInput.getText();
+            int quantity = Integer.valueOf(quantityInput.getText());
+            int price = Integer.valueOf(priceInput.getText());
+            TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) user);
+            TradingSystem.addSellOffer(item, tradeoffer);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void addBuyOfferScreen() {
