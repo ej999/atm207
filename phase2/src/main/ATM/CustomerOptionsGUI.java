@@ -148,6 +148,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
+            } else {
+                String choice = accountName + " " + a.getId();
+                otherChoiceBox.getItems().add(choice);
             }
         }
 
