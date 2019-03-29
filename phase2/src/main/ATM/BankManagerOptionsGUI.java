@@ -39,6 +39,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Undo transactions");
         addOptionText("Change password");
         addOptionText("Clear all bank data");
+        addOptionText("Set youth max transactions");
+        addOptionText("Set youth max transfers");
         addOptionText("Logout");
         addOptions();
 
@@ -48,6 +50,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(3).setOnAction(event -> restockATMScreen());
         getOption(4).setOnAction(event -> undoTransactionsScreen());
         getOption(6).setOnAction(event -> clearBankDataScreen());
+        getOption(7).setOnAction(event -> setYouthTransactionsScreen());
+        getOption(8).setOnAction(event -> setYouthTransfersScreen());
 
         return generateOptionsScreen(325, 450);
     }
@@ -218,5 +222,89 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         window.setScene(new Scene(grid));
     }
+
+    private void setYouthTransactionsScreen() {
+        GridPane grid = createFormPane();
+
+        Label youthLabel = new Label("Choose User with Youth Account:");
+        TextField youthUser = new TextField();
+        Label transactionLabel = new Label("Choose Number of Max Transactions:");
+        TextField transactions = new TextField();
+        Button set = new Button("Set");
+        Button cancel = new Button("Cancel");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(set);
+
+        grid.add(youthLabel, 0, 0);
+        grid.add(youthUser, 1, 0);
+        grid.add(transactionLabel, 0, 1);
+        grid.add(transactions, 1, 1);
+        grid.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        set.setOnAction(event -> {
+            int amount = Integer.valueOf(transactions.getText());
+            String youthAccount = youthUser.getText();
+            if (ATM.userManager.isPresent(youthAccount)) {
+                Account youth = (ATM.accountManager.getAccount(youthAccount));
+                if (youth instanceof Youth) {
+                    ((BankManager) this.user).setMaxTransactions((Youth) youth,amount);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
+                } else {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit failed");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit has been set");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(grid));
+    }
+
+
+    private void setYouthTransfersScreen() {
+        GridPane grid = createFormPane();
+
+        Label youthLabel = new Label("Choose User with Youth Account:");
+        TextField youthUser = new TextField();
+        Label transactionLabel = new Label("Choose Transfer Limit:");
+        TextField transactions = new TextField();
+        Button set = new Button("Set");
+        Button cancel = new Button("Cancel");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(set);
+
+        grid.add(youthLabel, 0, 0);
+        grid.add(youthUser, 1, 0);
+        grid.add(transactionLabel, 0, 1);
+        grid.add(transactions, 1, 1);
+        grid.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        set.setOnAction(event -> {
+            int amount = Integer.valueOf(transactions.getText());
+            String youthAccount = youthUser.getText();
+            if (ATM.userManager.isPresent(youthAccount)) {
+                Account youth = (ATM.accountManager.getAccount(youthAccount));
+                if (youth instanceof Youth) {
+                    ((BankManager) this.user).setTransferLimit((Youth) youth,amount);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
+                } else {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit failed");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit has been set");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(grid));
+    }
+
 
 }

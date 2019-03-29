@@ -32,11 +32,18 @@ public class Inventory {
         }
     }
 
-    void addItem(String item, Integer amount) {
+    void depositItem(String item, Integer amount) {
         if (storage.containsKey(item)) {
             storage.put(item, storage.get(item) + amount);
         } else {
             storage.put(item, amount);
+        }
+    }
+
+    void withdrawItem(String item, Integer amount){
+        if (storage.containsKey(item)) {
+            if (storage.get(item) >= amount)
+            storage.put(item, storage.get(item) - amount);
         }
     }
 
