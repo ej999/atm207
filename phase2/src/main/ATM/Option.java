@@ -1,6 +1,5 @@
 package ATM;
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class Option {
@@ -46,7 +45,7 @@ public class Option {
             input_fields.put("password", Arrays.asList(String.class, Collections.emptyList()));
             createUser.setInputFields(input_fields);
 
-            createUser.setExecution(new Thread(UserManager::createAccount));
+//            createUser.setExecution(new Thread(UserManager::createAccount));
 
 
 
