@@ -24,7 +24,8 @@ final class AccountManager {
 
     static {
         // By using reflections, all Account types are automatically added to the List even when we implement a new type.
-        Set<Class<? extends Account>> subType = new Reflections("ATM").getSubTypesOf(Account.class);
+        String packageName = AccountManager.class.getPackage().getName();
+        Set<Class<? extends Account>> subType = new Reflections(packageName).getSubTypesOf(Account.class);
 
         List<String> types_of_accounts = new ArrayList<>();
         for (Class<? extends Account> type : subType) {
@@ -52,10 +53,10 @@ final class AccountManager {
                 myATM.addObserver((Saving) newAccount);
             }
 
-            System.out.println("A User: \"" + newAccount + "\", is successfully created.");
+            System.out.println("A User: \"" + newAccount + "\", is successfully created");
             return newAccount;
         } catch (Exception e) {
-            System.err.println("Invalid account type. Please try again.");
+            System.err.println("Invalid account type. Please try again");
             return null;
         }
     }
@@ -84,7 +85,7 @@ final class AccountManager {
         if (account != null) {
             User.addAccount(account);
             System.out.println("A " + accountType + " account with $" + amount + " balance is successfully created for "
-                    + User.getUsername() + ". ");
+                    + User.getUsername());
         }
     }
 

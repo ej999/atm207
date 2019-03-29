@@ -180,7 +180,7 @@ public abstract class OptionsGUI {
 
     public void setPasswordHandler() {
         showAlert(Alert.AlertType.CONFIRMATION, window, "Password changed",
-                "Your password has been changed.");
+                "Your password has been changed");
         window.setScene(optionsScreen);
     }
 

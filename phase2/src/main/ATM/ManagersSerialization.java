@@ -21,7 +21,7 @@ final class ManagersSerialization {
     static void deleteDatabase() {
         FireBaseDBAccess.save(0, "", "");
 
-        Logger.getLogger("Custom").info("FireBase database is set to empty.");
+        Logger.getLogger("Custom").info("FireBase database is set to empty");
     }
 
     void deserialize() {
@@ -81,7 +81,7 @@ final class ManagersSerialization {
         FireBaseDBAccess.saveAll(AccountManager.account_map, "Accounts");
         FireBaseDBAccess.saveAll(Cash.ATMBills, "Bills");
 
-        Logger.getLogger("Custom").info("ATMBills is serialized and saved.");
+        Logger.getLogger("Custom").info("ATMBills is serialized and saved");
     }
 
 //    HashMap<String, User> loadCustom(String filename) {

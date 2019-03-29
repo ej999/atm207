@@ -30,13 +30,13 @@ class Chequing extends AccountAsset implements AccountTransferable {
 //        if (getMostRecentTransaction() == null) {
 //            mostRecentTransactionString = "n/a";
 //        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn";
 //        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited";
 //        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred";
 //        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment";
 //        } else {
 //            mostRecentTransactionString = "n/a";
 //        }

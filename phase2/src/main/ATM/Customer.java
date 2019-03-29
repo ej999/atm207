@@ -122,13 +122,13 @@ class Customer extends User {
 
     // add a line of string in alert that request for new account
     void requestAccount(String accountType) throws IOException {
-        String n = new Date() + ": Requesting to create " + accountType + " account from " + this.getUsername() + ".";
+        String n = new Date() + ": Requesting to create " + accountType + " account from " + this.getUsername();
         requestHelp(n);
     }
 
     void requestJointAccount(String accountType, String username) throws IOException {
         String n = new Date() + ": Requesting to create an " + accountType + " joint account from " + this.getUsername() +
-                " and " + username + ".";
+                " and " + username;
         requestHelp(n);
     }
 
@@ -164,9 +164,9 @@ class Customer extends User {
     void setPrimary(Account primary) {
         if (primary instanceof Chequing) {
             this.primary = primary.getId();
-            System.out.println("Account is successfully set to primary.");
+            System.out.println("Account is successfully set to primary");
         } else {
-            throw new IllegalArgumentException("Only chequing account can be set to primary.");
+            throw new IllegalArgumentException("Only chequing account can be set to primary");
         }
     }
 

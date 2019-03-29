@@ -87,7 +87,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = "ATM." + choiceBox.getValue();
+            String type = Option.class.getPackage().getName() + "." + choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
             boolean created = UserManager.createAccount(type, username, password);
@@ -136,7 +136,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                 try {
                     String dob = LocalDate.parse(_dob).toString();
                     ((Customer) UserManager.getUser(username)).setDob(dob);
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob + ".");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob);
                 } catch (DateTimeException e) {
                     showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");
                 } finally {
@@ -187,7 +187,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.ATMBills + ".");
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.ATMBills);
             window.setScene(optionsScreen);
         });
 

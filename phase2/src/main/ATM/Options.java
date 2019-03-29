@@ -136,9 +136,9 @@ class Options {
                 }
                 i++;
             }
-            System.err.println("The option [" + selected + "] is not valid. Please double-checked the number you entered.");
+            System.err.println("The option [" + selected + "] is not valid. Please double-checked the number you entered");
         } catch (InputMismatchException e) {
-            System.err.println("The option is not valid. Please double-checked the number you entered.");
+            System.err.println("The option is not valid. Please double-checked the number you entered");
         }
 
 
@@ -150,7 +150,7 @@ class Options {
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Creating User... Enter user type " + UserManager.USER_TYPE_NAMES + ": ");
-        String type = "ATM." + reader.next();
+        String type = Option.class.getPackage().getName() + "." + reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
@@ -172,7 +172,7 @@ class Options {
             try {
                 String dob = LocalDate.parse(reader.next()).toString();
                 ((Customer) UserManager.getUser(username)).setDob(dob);
-                System.out.println("Date of Birth for " + username + " is set to " + dob + ".");
+                System.out.println("Date of Birth for " + username + " is set to " + dob);
             } catch (DateTimeException e) {
                 System.err.println("Are you sure you born on a day that doesn't exist?");
             }
@@ -182,7 +182,7 @@ class Options {
     private String selectAccountTypePrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Enter account type " + AccountManager.TYPES_OF_ACCOUNTS + ": ");
-        return "ATM." + reader.next();
+        return Option.class.getPackage().getName() + reader.next();
     }
 
     /**
@@ -196,7 +196,7 @@ class Options {
             String accountType = selectAccountTypePrompt();
             AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
         } else {
-            System.err.println("Invalid customer. Please try again.");
+            System.err.println("Invalid customer. Please try again");
         }
     }
 
@@ -225,7 +225,7 @@ class Options {
             selectedBills.put(d, amount);
             print.append(amount).append(" of $").append(d).append("-bill, ");
         }
-        System.out.println(print + "have been withdrawn.");
+        System.out.println(print);
         return selectedBills;
     }
 
@@ -297,7 +297,7 @@ class Options {
             if (UserManager.isPresent(username)) {
                 Account account2undo = selectAccountPrompt((Customer) UserManager.getUser(username));
                 ((BankManager) current_user).undoTransactions(account2undo, 1);
-                System.out.println("Undo successful.");
+                System.out.println("Undo successful");
                 finished = true;
             } else {
                 System.err.print("User not found. Try again? (Y/N)");
@@ -320,7 +320,7 @@ class Options {
      * tells the LoginCustomer to set chosen account as primary
      */
     private void setPrimaryPrompt() {
-        System.out.println("\nA primary chequing account will be the default destination for deposits.");
+        System.out.println("\nA primary chequing account will be the default destination for deposits");
 
         if (((Customer) current_user).hasMoreThanOneChequing()) {
             System.out.println("\n\u001B[1mAccount Type\t\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
@@ -338,8 +338,9 @@ class Options {
             int selected = reader.nextInt();
             ((Customer) current_user).setPrimary(AccountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
         } else {
+            //TODO create custom exception
             System.err.println("Sorry, you can only change your primary account if you have more than one chequing " +
-                    "account.\nHowever, you are welcome to request creating a new chequing account on main menu.");
+                    "account.\nHowever, you are welcome to request creating a new chequing account on main menu");
         }
 
 
@@ -400,9 +401,9 @@ class Options {
 
         try {
             if (((AccountTransferable) account).payBill(amount, payee)) {
-                System.out.println("Bill has been paid.");
+                System.out.println("Bill has been paid");
             } else {
-                System.err.println("Payment is unsuccessful.");
+                System.err.println("Payment is unsuccessful");
             }
         } catch (IOException e) {
             // do nothing?
@@ -421,9 +422,9 @@ class Options {
         double amount = reader.nextDouble();
 
         if (((AccountTransferable) from).transferBetweenAccounts(amount, to)) {
-            System.out.println("Transfer is successful.");
+            System.out.println("Transfer is successful");
         } else {
-            System.err.println("Transfer is unsuccessful.");
+            System.err.println("Transfer is unsuccessful");
         }
     }
 
@@ -441,9 +442,9 @@ class Options {
         if (UserManager.isPresent(username)) {
             Customer user = (Customer) UserManager.getUser(username);
             ((AccountTransferable) from).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()));
-            System.out.println("Transfer is successful.");
+            System.out.println("Transfer is successful");
         } else {
-            System.err.println("The username does not exist. Transfer is cancelled.");
+            System.err.println("The username does not exist. Transfer is cancelled");
         }
     }
 

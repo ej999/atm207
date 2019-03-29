@@ -2,8 +2,8 @@ Sun Mar 10 04:05:47 EDT 2019: Requesting to create Chequing account from 1.
 Sun Mar 10 04:05:49 EDT 2019: Requesting to create Saving account from 1.
 Sun Mar 10 13:01:18 EDT 2019: Requesting to create Chequing account from 1.
 Sun Mar 10 16:21:35 EDT 2019: Requesting to create Chequing account from steve.
-{5=1, 10=2, 20=3, 50=4}
-{5=1, 10=50, 20=50, 50=10}
+Bill stock is running low: {5=1, 10=2, 20=3, 50=4}
+Bill stock is running low: {5=1, 10=50, 20=50, 50=10}
 Thu Mar 28 21:41:18 EDT 2019: Requesting to create ATM.Saving account from steve.
 Fri Mar 29 00:11:02 EDT 2019: Requesting to create CreditLine account from steve.
 Fri Mar 29 00:15:21 EDT 2019: Requesting to create an GIC joint account from steveand steve.

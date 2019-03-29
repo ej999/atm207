@@ -74,7 +74,7 @@ class Youth extends Account implements AccountTransferable {
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
                 out.println(message);
-                System.out.println("File has been written.");
+                System.out.println("File has been written");
             }
             balance += amount;
             transactionHistory.push(new Transaction("PayBill", amount, null));
@@ -202,9 +202,9 @@ class Youth extends Account implements AccountTransferable {
 //        String mostRecentTransactionString;
 //
 //        if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn";
 //        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited";
 //        } else {
 //            mostRecentTransactionString = "n/a";
 //        }

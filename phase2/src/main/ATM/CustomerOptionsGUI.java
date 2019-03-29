@@ -1,7 +1,6 @@
 package ATM;
 
 import javafx.geometry.Pos;
-import javafx.scene.LightBase;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -84,7 +83,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = AccountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals("ATM.CreditCard")) {
+            if (!accountName.equals(Option.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
@@ -121,9 +120,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String payee = nameInput.getText();
             try {
                 if (((AccountTransferable) account).payBill(amount, payee)) {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Bill has been paid.");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Bill has been paid");
                 } else {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Payment is unsuccessful.");
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Payment is unsuccessful");
                 }
             } catch (IOException e) {
                 // do nothing?
@@ -145,7 +144,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = AccountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals("ATM.CreditCard")) {
+            if (!accountName.equals(Option.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
@@ -186,9 +185,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Account otherAccount = AccountManager.getAccount(oID);
             double amount = Double.valueOf(amountInput.getText());
             if (((AccountTransferable) account).transferBetweenAccounts(amount, otherAccount)) {
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made.");
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful.");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
             }
             window.setScene(optionsScreen);
         });
@@ -409,10 +408,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
                 window.setScene(optionsScreen);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong.");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong");
             }
 
         });
@@ -451,7 +450,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
             window.setScene(optionsScreen);
         });
 
