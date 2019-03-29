@@ -25,3 +25,5 @@ User steve paid $80.0 to Jason on 2019-03-29T03:04:57.428
 User steve paid $100.0 to Lucy on 2019-03-29T04:33:36.360
 
 User steve paid $250.0 to Luke on 2019-03-29T04:47:48.704
+
+User steve paid $4500.0 to Rent on 2019-03-29T05:37:38.394

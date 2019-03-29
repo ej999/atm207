@@ -119,12 +119,14 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     }
 
     void undoTransactionsScreen() {
+        // TODO: fix choose account btn
         GridPane grid = createFormPane();
 
         Label usernameLbl = new Label("Username of Customer:");
         TextField usernameInput = new TextField();
         usernameInput.setPromptText("username");
 
+//        Label accountLbl = new Label("Choose account:");
         Button accountPicker = new Button("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         HBox hbox = new HBox(choiceBox);
@@ -142,6 +144,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         grid.add(usernameLbl, 0, 0);
         grid.add(usernameInput, 1, 0);
         grid.add(accountPicker, 0, 1);
+//        grid.add(accountLbl,0,1);
         grid.add(hbox, 1, 1);
         grid.add(n, 0, 2);
         grid.add(numberInput, 1, 2);
@@ -149,6 +152,21 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 5);
+
+//        usernameInput.setOn(event -> {
+//            actionTarget.setFill(Color.FIREBRICK);
+//            // Add user's account entries to ComboBox
+//            String username = usernameInput.getText();
+//            if (UserManager.isPresent(username)) {
+//                List<Account> accounts = AccountManager.getListOfAccounts(username);
+//                for (Account a : accounts) {
+//                    String choice = a.getClass().getName() + " " + a.getId();
+//                    choiceBox.getItems().add(choice);
+//                }
+//            } else {
+//                actionTarget.setText("User doesn't exists");
+//            }
+//        });
 
         accountPicker.setOnAction(event -> {
             actionTarget.setFill(Color.FIREBRICK);
@@ -184,5 +202,23 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(grid));
+    }
+
+    private void createJointAccountScreen() {
+        /* TODO
+        Would you like to make a preexisting account joint or open a new one?
+
+        Pre ->
+        Enter username of primary holder:
+        Enter username of secondary holder:
+        Select account to be made joint: <non-joint accounts from primary holder>
+        Cancel | Make account joint
+
+        Open new one ->
+        Enter username of primary holder:
+        Enter username of secondary holder:
+        Select account:
+        Cancel | Open a new joint account
+         */
     }
 }

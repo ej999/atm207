@@ -38,10 +38,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Cash/Cheque Deposit");
         addOptionText("Cash Withdrawal");
         addOptionText("Request Creating an Account");
-//        addOptionText("make existing account Joint Account"); //TODO
+        addOptionText("Make a Preexisting Account Joint");
         // addSellOffer //TODO
         // addBuyOffer //TODO
         // seeOffers // TODO
+        // eTransfers // TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -55,9 +56,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(5).setOnAction(event -> depositScreen());
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
-        getOption(8).setOnAction(event -> changePrimaryScreen());
-        getOption(9).setOnAction(event -> changePasswordScreen());
-        getOption(10).setOnAction(event -> logoutHandler());
+        getOption(8).setOnAction(event -> accountToJointScreen());
+        getOption(9).setOnAction(event -> changePrimaryScreen());
+        getOption(10).setOnAction(event -> changePasswordScreen());
+        getOption(11).setOnAction(event -> logoutHandler());
 
         return generateOptionsScreen(500, 350);
     }
@@ -550,19 +552,41 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void changePrimaryScreen() {
-        //TODO David
-        /*
-        A primary chequing account will be the default destination for deposits.
-        actionTarget text
-        if hasMoreThanOne:
-            Select new primary account: <choiceBox>
-            Cancel | Change
-        else:
-            set actionTarget to ""Sorry, you can only change your primary account if you have more than one chequing " +
-                    "account.\nHowever, you are welcome to request creating a new chequing account in the main menu."
-            Ok
-         */
         GridPane gridPane = createFormPane();
+        Label selectLbl = new Label("Select new primary account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            if (a instanceof Chequing) {
+                choiceBox.getItems().add(a.getType() + " " + a.getId());
+            }
+        }
+
+        HBox hbBtn = getTwoButtons("Cancel", "Change Primary Account");
+        Button cancel = (Button) hbBtn.getChildren().get(0);
+        Button change = (Button) hbBtn.getChildren().get(1);
+
+        gridPane.add(selectLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(hbBtn, 1, 1);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        change.setOnAction(event -> {
+            if (!((Customer) user).hasMoreThanOneChequing()) {
+                String message = "Sorry, you can only change your primary account if you have more than one chequing " +
+                        "account.\nHowever, you are welcome to request creating a new chequing account in the main menu.";
+                showAlert(Alert.AlertType.INFORMATION, window, "Info", message);
+            } else {
+                String id = choiceBox.getValue().split("\\s+")[1];
+                Account newPrime = AccountManager.getAccount(id);
+                ((Customer) user).setPrimary(newPrime);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Confirmation", "Your primary account has been changed.");
+            }
+
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 
@@ -627,13 +651,53 @@ public class CustomerOptionsGUI extends OptionsGUI {
         return transactions;
     }
 
-    private void accountToJoint() {
-        //TODO David
-        /*
-        Select non-joint account: choiceBox
-        Enter username of secondary holder:
-        Cancel | Request joint account
-         */
+    private void accountToJointScreen() {
+        GridPane gridPane = createFormPane();
+        Label selectLbl = new Label("Select non-joint account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            if (!a.isJoint()) {
+                choiceBox.getItems().add(a.getType() + " " + a.getId());
+            }
+        }
+
+        Label usernameLbl = new Label("Enter username of secondary holder:");
+        TextField input = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button request = new Button("Request joint account");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(request);
+
+        gridPane.add(selectLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(usernameLbl, 0, 1);
+        gridPane.add(input, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        request.setOnAction(event -> {
+            String username = input.getText();
+            if (UserManager.isPresent(username) && UserManager.getUser(username) instanceof Customer) {
+                String accountType = choiceBox.getValue().split("\\s+")[0];
+                String accountID = choiceBox.getValue().split("\\s+")[1];
+                try {
+                    ((Customer) user).requestAccountToJoint(accountType, accountID, username);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
+            } else {
+                showAlert(Alert.AlertType.WARNING, window, "Warning", "Cannot find user " + username + " in our system.");
+                window.setScene(optionsScreen);
+            }
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void addSellOfferScreen() {

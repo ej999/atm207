@@ -97,11 +97,15 @@ class Customer extends User {
     }
 
     // The total of their debt account balances subtracted from the total of their asset account balances.
-    // TODO: Something is wrong!
     public double getNetTotal() {
         double sum = 0;
         for (String a : this.accounts) {
-            sum += AccountManager.getAccount(a).getBalance();
+            Account acc = AccountManager.getAccount(a);
+            if (acc instanceof AccountDebt) {
+                sum -= acc.getBalance();
+            } else {
+                sum += acc.getBalance();
+            }
         }
         netTotal = sum;
         return netTotal;
@@ -128,9 +132,15 @@ class Customer extends User {
     }
 
     void requestJointAccount(String accountType, String username) throws IOException {
-        String n = new Date() + ": Requesting to create an " + accountType + " joint account from " + this.getUsername() +
+        String n = new Date() + ": Requesting to create " + accountType + " joint account from " + this.getUsername() +
                 " and " + username;
         requestHelp(n);
+    }
+
+    void requestAccountToJoint(String accountType, String accountId, String username) throws IOException {
+        String request = new Date() + ": Requesting to change " + accountType + " with ID " + accountId + " from " +
+                this.getUsername() + " to a joint account with secondary holder " + username;
+        requestHelp(request);
     }
 
     //TODO truman: causing issue when deserializing from Firebase.
