@@ -42,9 +42,9 @@ class Saving extends AccountAsset implements Observer, AccountTransferable {
 //        if (getMostRecentTransaction() == null) {
 //            mostRecentTransactionString = "n/a";
 //        } else if (getMostRecentTransaction().get("Type") == "Withdrawal") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " withdrawn";
 //        } else if (getMostRecentTransaction().get("Type") == "Deposit") {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited.";
+//            mostRecentTransactionString = "$" + getMostRecentTransaction().get("Amount") + " deposited";
 //        } else {
 //            mostRecentTransactionString = "n/a";
 //        }

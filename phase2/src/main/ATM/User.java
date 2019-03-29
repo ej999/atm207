@@ -27,7 +27,7 @@ abstract class User {
             System.out.println("Password should not be empty. Your password has not been changed");
         } else {
             password = p;
-            System.out.println("Password is set successfully.");
+            System.out.println("Password is set successfully");
         }
     }
 }

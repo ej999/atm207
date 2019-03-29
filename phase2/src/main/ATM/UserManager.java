@@ -24,7 +24,8 @@ final class UserManager {
 
     static {
         // By using Reflections, all the actual (non-abstract) User types are automatically added to the List even when we implement a new one.
-        Set<Class<? extends User>> subType = new Reflections("ATM").getSubTypesOf(User.class);
+        String packageName = UserManager.class.getPackage().getName();
+        Set<Class<? extends User>> subType = new Reflections(packageName).getSubTypesOf(User.class);
 
         List<String> types_of_users = new ArrayList<>();
         for (Class<? extends User> type : subType) {
@@ -38,7 +39,7 @@ final class UserManager {
 
     static boolean createAccount(String type, String username, String password) {
         if (isPresent(username)) {
-            System.err.println("Username already exists. Please try again.");
+            System.err.println("Username already exists. Please try again");
             return false;
         } else {
             try {
@@ -48,10 +49,10 @@ final class UserManager {
                 User newUser = (User) cTor.newInstance(username, password);
 
                 user_map.putIfAbsent(newUser.getUsername(), newUser);
-                System.out.println("A User: \"" + newUser + "\", is successfully created.");
+                System.out.println("A User: \"" + newUser + "\", is successfully created");
                 return true;
             } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                System.err.println("Invalid user type. Please try again.");
+                System.err.println("Invalid user type. Please try again");
                 return false;
             }
         }
@@ -75,7 +76,7 @@ final class UserManager {
         if (isPresent(username) && user.getPassword().equals(password)) {
             return true;
         } else {
-            System.err.println("Wrong username or password. Please try again.");
+            System.err.println("Wrong username or password. Please try again");
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {

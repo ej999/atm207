@@ -73,7 +73,7 @@ public class TradingSystem {
             for (int i = 0; i < offers.size(); i++) {
                 if (offers.get(i).getTradeUser() == user) {
                     offers.remove(i);
-                    System.out.println("Sell offer removed.");
+                    System.out.println("Sell offer removed");
                 }
             }
         } else {
@@ -81,7 +81,7 @@ public class TradingSystem {
             for (int i = 0; i < offers.size(); i++) {
                 if (offers.get(i).getTradeUser() == user) {
                     offers.remove(i);
-                    System.out.println("Buy offer removed.");
+                    System.out.println("Buy offer removed");
                 }
             }
         }

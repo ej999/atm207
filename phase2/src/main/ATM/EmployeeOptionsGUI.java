@@ -103,14 +103,14 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String username = usernameInput.getText();
-            String accountType = "ATM." + typeChoice.getValue();
+            String accountType = Option.class.getPackage().getName() + typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
             if (UserManager.isPresent(username)) {
                 AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again.");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
             }
             window.setScene(optionsScreen);
         });

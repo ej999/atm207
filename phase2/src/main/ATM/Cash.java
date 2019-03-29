@@ -11,7 +11,6 @@ import java.util.*;
  * TODO optimize the usage of methods
  */
 final class Cash {
-    // The denominations that accepted by the ATM.
     static final List<Integer> DENOMINATIONS;
     private static final String outputFilePath = "phase2/src/resources/alerts.txt";
     // Mapping denomination to quantity
@@ -43,21 +42,20 @@ final class Cash {
     /**
      * Send an alert to alerts.txt iff isAmountBelowTwenty
      */
-    private void checkDenom() {
+    private void checkDenominator() {
         if (isAmountBelowTwenty()) {
             try {
-                sendAlert();
+                sendAlert("Bill stock is running low: " + ATMBills);
             } catch (IOException e) {
-                System.err.println("Failed to send alert notification about insufficient bill stock.");
+                System.err.println("Failed to send alert notification about insufficient bill stock");
             }
         }
     }
 
-    private void sendAlert() throws IOException {
+    private void sendAlert(String message) throws IOException {
         // Open the file for writing and write to it.
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
-            //TODO improve
-            out.println(ATMBills);
+            out.println(message);
         }
     }
 
@@ -111,8 +109,8 @@ final class Cash {
 
             print.append(amountOfBills).append(" of $").append(denominator).append("-bill, ");
         }
-        checkDenom();
-        System.out.println(print + "in total of " + total + " have been withdrawn.");
+        checkDenominator();
+        System.out.println(print + "in total of " + total + " have been withdrawn");
     }
 
     void cashDeposit(Map<Integer, Integer> deposits) {

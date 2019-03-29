@@ -112,13 +112,13 @@ public class ATM extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-//        System.err.println("Inside init() method! Perform necessary initializations here.");
+//        System.err.println("Inside init() method! Perform necessary initializations here");
     }
 
 //    @Override
 //    public void stop() throws Exception {
 //        super.stop();
-//        System.err.println("Inside stop() method! Destroy resources. Perform Cleanup.");
+//        System.err.println("Inside stop() method! Destroy resources. Perform Cleanup");
 //    }
 
     /**
