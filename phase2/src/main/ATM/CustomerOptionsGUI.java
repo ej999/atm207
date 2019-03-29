@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -177,7 +176,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = AccountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals(Option.class.getPackage().getName() + ".CreditCard")) {
+            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
@@ -238,7 +237,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = AccountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals(Option.class.getPackage().getName() + ".CreditCard")) {
+            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);

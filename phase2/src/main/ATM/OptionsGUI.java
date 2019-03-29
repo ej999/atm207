@@ -63,7 +63,7 @@ public abstract class OptionsGUI {
     }
 
     /**
-     * Populates Option Screen with all the options
+     * Populates Options Screen with all the options
      *
      * @param layout gridPane
      */

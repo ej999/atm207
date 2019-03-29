@@ -20,10 +20,15 @@ import java.util.logging.Logger;
 
 /**
  * An ATM that allows customers and employees to conduct a range of financial transactions and operations.
- * It is displayed on both PrintStream and GUI.
+ * It is displayed on GUI.
  */
-
+//TODO: A User: "Customer NewUser! has a net total of ", is successfully created
+// TODO: 2019-03-29 check if there's static class 
+// TODO: 2019-03-29 controller class 
+// TODO: 2019-03-29 consider ading custom exception
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
+// TODO: 2019-03-29 single responsibility: deligating chuncky methods into inner class
+// TODO: 2019-03-29 make -manager classes non static ,instantiate them here!!!
 public class ATM extends Application {
     // Declare as a static variable so it could be added as observer.
     static ManagersSerialization serialization;

@@ -152,6 +152,7 @@ final class ManagersSerialization {
             CountDownLatch latch = new CountDownLatch(1);
             if (item_map != null) {
                 // Get existing child or new child will be created.
+                // TODO: 2019-03-29 unwrap object variable into common type before serializing, and vise versa.
                 DatabaseReference childRef = databaseRef.child(child);
 
                 childRef.setValueAsync(item_map);
