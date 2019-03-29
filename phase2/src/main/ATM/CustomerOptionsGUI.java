@@ -1,6 +1,7 @@
 package ATM;
 
 import javafx.geometry.Pos;
+import javafx.scene.LightBase;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -33,7 +34,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Cash/Cheque Deposit");
         addOptionText("Cash Withdrawal");
         addOptionText("Request Creating an Account"); // Customer can request for a joint account
-//        addOptionText("make Joint Account"); //TODO
+//        addOptionText("make existing account Joint Account"); //TODO
 //        addOptionText("Show transaction history"); //TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
@@ -335,12 +336,125 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void requestAccountScreen() {
-        //TODO
         /*
+        Would you like to make a joint account?
+        Yes | No | Cancel
+
+        If No...
+        Select account type picker drop-down CHOICE-BOX control element
+        Cancel | Request
+
+        If Yes...
+        Enter username of secondary holder:
         Select account type picker drop-down CHOICE-BOX control element
         Cancel | Request
          */
         GridPane gridPane = createFormPane();
+
+        Label joint = new Label("Would you like to make a joint account?");
+        Button yes = new Button("Yes");
+        Button no = new Button("No");
+        Button cancel = new Button("Cancel");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(yes);
+        hbBtn.getChildren().add(no);
+        hbBtn.getChildren().add(cancel);
+
+        gridPane.add(joint, 0, 0);
+        gridPane.add(hbBtn, 1, 1);
+
+        yes.setOnAction(event -> requestJointAccountScreen());
+        no.setOnAction(event -> requestNonJointAccountScreen());
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void requestJointAccountScreen() {
+        /*
+        Enter username of secondary holder:
+        Select account type picker drop-down CHOICE-BOX control element
+        Cancel | Request
+         */
+        GridPane gridPane = createFormPane();
+
+        Label usernameSecondary = new Label("Enter username of secondary holder:");
+        TextField input = new TextField();
+        Label accountTypeLbl = new Label("Select account type:");
+        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
+        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
+
+        for (String type : accountTypes) {
+            accountTypeDropDown.getItems().add(type);
+        }
+
+        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        Button cancel = (Button) hbBtn.getChildren().get(0);
+        Button request = (Button) hbBtn.getChildren().get(1);
+
+        gridPane.add(usernameSecondary, 0, 0);
+        gridPane.add(input, 1, 0);
+        gridPane.add(accountTypeLbl, 0, 1);
+        gridPane.add(accountTypeDropDown, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        request.setOnAction(event -> {
+            String username = input.getText();
+            String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
+            if (!username.equals(user.getUsername()) && UserManager.isPresent(username) && UserManager.getUser(username) instanceof Customer) {
+                try {
+                    ((Customer) user).requestJointAccount(accountType, username);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
+                window.setScene(optionsScreen);
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong.");
+            }
+
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void requestNonJointAccountScreen() {
+        /*
+        Select account type using picker drop-down CHOICE-BOX control element
+        Cancel | Request
+         */
+        GridPane gridPane = createFormPane();
+
+        Label accountTypeLbl = new Label("Select account type:");
+        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
+        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
+
+        for (String type : accountTypes) {
+            accountTypeDropDown.getItems().add(type);
+        }
+
+        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        Button cancel = (Button) hbBtn.getChildren().get(0);
+        Button request = (Button) hbBtn.getChildren().get(1);
+
+        gridPane.add(accountTypeLbl, 0, 0);
+        gridPane.add(accountTypeDropDown, 1, 0);
+        gridPane.add(hbBtn, 1, 1);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        request.setOnAction(event -> {
+            String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
+            try {
+                ((Customer) user).requestAccount(accountType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
 

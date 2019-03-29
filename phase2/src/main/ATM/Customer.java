@@ -126,6 +126,12 @@ class Customer extends User {
         requestHelp(n);
     }
 
+    void requestJointAccount(String accountType, String username) throws IOException {
+        String n = new Date() + ": Requesting to create an " + accountType + " joint account from " + this.getUsername() +
+                " and " + username + ".";
+        requestHelp(n);
+    }
+
     //TODO truman: causing issue when deserializing from Firebase.
 //    @Override
 //    public String toString() {
