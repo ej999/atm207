@@ -97,6 +97,7 @@ class Customer extends User {
     }
 
     // The total of their debt account balances subtracted from the total of their asset account balances.
+    // TODO: Something is wrong!
     public double getNetTotal() {
         double sum = 0;
         for (String a : this.accounts) {
@@ -154,7 +155,7 @@ class Customer extends User {
 
     @Override
     public String toString() {
-        return "Customer " + getUsername() + " has a net total of ";
+        return "Customer " + getUsername() + " has a net total of " + getNetTotal();
     }
 
     public String getPrimary() {

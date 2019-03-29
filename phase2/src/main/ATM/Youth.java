@@ -63,7 +63,7 @@ class Youth extends Account implements AccountTransferable {
             balance -= withdrawalAmount;
             new Cash().cashWithdrawal(withdrawalAmount);
             transactions += 1;
-            transactionHistory.push(new Transaction("Withdraw", withdrawalAmount, null));
+            transactionHistory.push(new Transaction("Withdraw", withdrawalAmount, null, this.getClass().getName()));
         }
     }
 
@@ -77,7 +77,7 @@ class Youth extends Account implements AccountTransferable {
                 System.out.println("File has been written.");
             }
             balance += amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null));
+            transactionHistory.push(new Transaction("PayBill", amount, null, this.getClass().getName()));
             return true;
         }
         return false;
@@ -122,7 +122,7 @@ class Youth extends Account implements AccountTransferable {
         if ((depositAmount > 0) && (transactions < maxTransactions)) {
             balance += depositAmount;
             transactions += 1;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
         } else {
             System.out.println("invalid deposit");
         }
@@ -164,7 +164,7 @@ class Youth extends Account implements AccountTransferable {
             } else {
                 account.balance -= transferAmount;
             }
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
             transactions += 1;
             return true;
         }

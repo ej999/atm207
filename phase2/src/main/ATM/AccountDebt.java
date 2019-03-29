@@ -24,6 +24,12 @@ abstract class AccountDebt extends Account {
                 balance < DEBT_CAPACITY;
     }
 
+    //TODO: figure out balance of debt accounts
+//    @Override
+//    public double getBalance() {
+//        return -balance;
+//    }
+
     /**
      * Withdraw money from an account (This will increase <balance> since you owe money)
      *
@@ -34,7 +40,7 @@ abstract class AccountDebt extends Account {
         if (validWithdrawal(withdrawalAmount)) {
             balance += withdrawalAmount;
             new Cash().cashWithdrawal(withdrawalAmount);
-            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
+            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
 
@@ -51,7 +57,7 @@ abstract class AccountDebt extends Account {
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
             balance -= depositAmount;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
             System.out.println("valid deposit");
         } else {
             System.out.println("invalid deposit");

@@ -1,19 +1,23 @@
 package ATM;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.LightBase;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * GUI for customer options.
@@ -28,50 +32,138 @@ public class CustomerOptionsGUI extends OptionsGUI {
     @Override
     public Scene createOptionsScreen() {
         addOptionText("Show my account summary");
+        addOptionText("Show transaction history");
         addOptionText("Pay a Bill");
         addOptionText("Make a Transfer between my Accounts");
         addOptionText("Make a Transfer to another User");
         addOptionText("Cash/Cheque Deposit");
         addOptionText("Cash Withdrawal");
-        addOptionText("Request Creating an Account"); // Customer can request for a joint account
+        addOptionText("Request Creating an Account");
 //        addOptionText("make existing account Joint Account"); //TODO
-//        addOptionText("Show transaction history"); //TODO
+        // addSellOffer //TODO
+        // addBuyOffer //TODO
+        // seeOffers // TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
         addOptions();
 
         getOption(0).setOnAction(event -> showAccountSummaryScreen());
-        getOption(1).setOnAction(event -> payBillScreen());
-        getOption(2).setOnAction(event -> makeTransferBetweenScreen());
-        getOption(3).setOnAction(event -> makeTransferAnotherScreen());
-        getOption(4).setOnAction(event -> depositScreen());
-        getOption(5).setOnAction(event -> withdrawalScreen());
-        getOption(6).setOnAction(event -> requestAccountScreen());
-        getOption(7).setOnAction(event -> changePrimaryScreen());
-        getOption(8).setOnAction(event -> changePasswordScreen());
-        getOption(9).setOnAction(event -> logoutHandler());
+        getOption(1).setOnAction(event -> showTransactionHistory());
+        getOption(2).setOnAction(event -> payBillScreen());
+        getOption(3).setOnAction(event -> makeTransferBetweenScreen());
+        getOption(4).setOnAction(event -> makeTransferAnotherScreen());
+        getOption(5).setOnAction(event -> depositScreen());
+        getOption(6).setOnAction(event -> withdrawalScreen());
+        getOption(7).setOnAction(event -> requestAccountScreen());
+        getOption(8).setOnAction(event -> changePrimaryScreen());
+        getOption(9).setOnAction(event -> changePasswordScreen());
+        getOption(10).setOnAction(event -> logoutHandler());
 
-        return generateOptionsScreen(350, 450);
+        return generateOptionsScreen(500, 350);
     }
 
     private void showAccountSummaryScreen() {
-        //TODO
-        /*
-        e.g.' Customer with username "steve" and password "cat" '
-        table view
-        Primary | Account Type | Creation Data | balance | Most Recent Transac
-        OK -> net total
-         */
-        GridPane gridPane = createFormPane();
-//        TableView<String> tableView = new TableView<>();
-        // not doing table view, too much time...
+        // Start with the columns
+        TableColumn<AccountSummary, String> primCol = new TableColumn<>("PRIMARY");
+        primCol.setMinWidth(50);
+        primCol.setCellValueFactory(new PropertyValueFactory<>("isPrimary"));
 
+        TableColumn<AccountSummary, String> typeCol = new TableColumn<>("TYPE");
+        typeCol.setMinWidth(150);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
-        //        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
-//                "\u001B[0m");
-        //        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal());
-        window.setScene(new Scene(gridPane));
+        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("CREATION DATE");
+        dateCol.setMinWidth(150);
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
+
+        TableColumn<AccountSummary, Double> balCol = new TableColumn<>("BALANCE");
+        balCol.setMinWidth(100);
+        balCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
+
+        TableColumn<AccountSummary, String> recCol = new TableColumn<>("MOST RECENT TRANSACTION");
+        recCol.setMinWidth(300);
+        recCol.setCellValueFactory(new PropertyValueFactory<>("mostRecent"));
+
+        TableView<AccountSummary> table = new TableView<>();
+        table.setItems(getSummary());
+        table.getColumns().addAll(primCol, typeCol, dateCol, balCol, recCol);
+
+        Button goBack = new Button("Go Back");
+        goBack.setOnAction(event -> {
+            String netTotal = "Your net total is $" + ((Customer) user).getNetTotal();
+            showAlert(Alert.AlertType.INFORMATION, window, "NetTotal", netTotal);
+            window.setScene(optionsScreen);
+        });
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(goBack);
+
+        VBox vBox = new VBox();
+        vBox.getChildren().add(table);
+        vBox.getChildren().add(hbBtn);
+
+        window.setScene(new Scene(vBox, 700, 400));
+    }
+
+    private ObservableList<AccountSummary> getSummary() {
+        ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
+        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            AccountSummary sum;
+            Transaction mostRecent = a.getMostRecentTransaction();
+            String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date_ = new Date(a.getDateOfCreation());
+            String date = dateFormat.format(date_);
+
+            if (a.getId().equals(((Customer) user).getPrimary())) {
+                sum = new AccountSummary("X", a.getClass().getName(), date,
+                        a.getBalance(), recent);
+            } else {
+                sum = new AccountSummary("", a.getClass().getName(), date,
+                        a.getBalance(), recent);
+            }
+            summaries.add(sum);
+        }
+        return summaries;
+    }
+
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+
+        public AccountSummary(String p, String t, String d, double b, String r) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
     }
 
     private void payBillScreen() {
@@ -197,7 +289,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void makeTransferAnotherScreen() {
-        //TODO
+        //TODO Jason
         /*
         username:
         amount:
@@ -459,7 +551,18 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void changePrimaryScreen() {
-        //TODO
+        //TODO David
+        /*
+        A primary chequing account will be the default destination for deposits.
+        actionTarget text
+        if hasMoreThanOne:
+            Select new primary account: <choiceBox>
+            Cancel | Change
+        else:
+            set actionTarget to ""Sorry, you can only change your primary account if you have more than one chequing " +
+                    "account.\nHowever, you are welcome to request creating a new chequing account in the main menu."
+            Ok
+         */
         GridPane gridPane = createFormPane();
         window.setScene(new Scene(gridPane));
     }
@@ -476,5 +579,75 @@ public class CustomerOptionsGUI extends OptionsGUI {
         String aID = aInfo[1];
         return AccountManager.getAccount(aID);
     }
+
+    private void showTransactionHistory() {
+        // Start with the columns
+        TableColumn<Transaction, String> dateCol = new TableColumn<>("DATE");
+//        dateCol.setMinWidth(200);
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        TableColumn<Transaction, String> typeCol = new TableColumn<>("TYPE");
+        typeCol.setMinWidth(100);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Transaction, Double> amountCol = new TableColumn<>("AMOUNT");
+        amountCol.setMinWidth(100);
+        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+
+        TableColumn<Transaction, String> bnkAcc = new TableColumn<>("ACCOUNT");
+        bnkAcc.setMinWidth(200);
+        bnkAcc.setCellValueFactory(new PropertyValueFactory<>("accountType"));
+
+        TableView<Transaction> table = new TableView<>();
+        table.setItems(getTransaction());
+        table.getColumns().addAll(dateCol, typeCol, amountCol, bnkAcc);
+
+        Button goBack = new Button("Go Back");
+        goBack.setOnAction(event -> window.setScene(optionsScreen));
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(goBack);
+
+//        GridPane gridPane = createFormPane();
+//        gridPane.add(table,0,0);
+//        gridPane.add(hbBtn,1,1);
+
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(table);
+        vBox.getChildren().add(hbBtn);
+
+        window.setScene(new Scene(vBox, 550, 300));
+    }
+
+    private ObservableList<Transaction> getTransaction() {
+        ObservableList<Transaction> transactions = FXCollections.observableArrayList();
+        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            transactions.addAll(a.getTransactionHistory());
+        }
+        return transactions;
+    }
+
+    private void accountToJoint() {
+        //TODO David
+        /*
+        Select non-joint account: choiceBox
+        Enter username of secondary holder:
+        Cancel | Request joint account
+         */
+    }
+
+    private void addSellOfferScreen() {
+        //TODO: Jason
+    }
+
+    private void addBuyOfferScreen() {
+        //TODO: Jason
+    }
+
+    private void seeOffersScreen() {
+        //TODO: Jason
+    }
+
 }
 

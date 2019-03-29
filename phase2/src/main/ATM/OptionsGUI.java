@@ -57,7 +57,7 @@ public abstract class OptionsGUI {
         GridPane gridPane = createFormPane();
         addOptionsToLayout(gridPane);
         addMessageToOptionsScreen("What can we do for you today?", gridPane);
-        optionsScreen = new Scene(gridPane, width, height);
+        optionsScreen = new Scene(gridPane);
         optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         return optionsScreen;
     }
@@ -68,9 +68,42 @@ public abstract class OptionsGUI {
      * @param layout gridPane
      */
     public void addOptionsToLayout(GridPane layout) {
+        // TODO: make layout into a grid
+//        for (int i = 1; i <= options.size(); i++) {
+//            layout.add(options.get(i - 1), 0, i);
+//        }
+
         for (int i = 1; i <= options.size(); i++) {
-            layout.add(options.get(i - 1), 0, i);
+            if ((i - 1) % 2 == 0) {
+                layout.add(options.get(i - 1), 0, i);
+            } else {
+                layout.add(options.get(i - 1), 1, i - 1);
+            }
         }
+
+//        ArrayList<Button> arr = options.clone();
+//        int row = 1;
+//        int col = 0;
+//        for (Button b : options) {
+//            layout.add(b,col,row);
+//            col = row % 2;
+//            row++;
+//        }
+
+
+//        int row = 1;
+//        int j = 0;
+//
+//        while (i <= options.size()) {
+//            layout.add(options.get(j),0,row);
+//            layout.add(options.get(j+1),1,row);
+//            i++;
+//            j+=2;
+//        }
+//        for (int i = 1; i < options.size(); i+=2) {
+//            layout.add(options.get(i - 1), 0, i);
+//            layout.add(options.get(i), 1, i);
+//        }
     }
 
     /**

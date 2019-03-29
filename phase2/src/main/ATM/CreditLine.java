@@ -47,7 +47,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
                 System.out.println("File has been written.");
             }
             balance += amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null));
+            transactionHistory.push(new Transaction("PayBill", amount, null, this.getClass().getName()));
             return true;
         }
         return false;
@@ -84,7 +84,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
             } else {
                 account.balance -= transferAmount;
             }
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
             return true;
         }
         return false;

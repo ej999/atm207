@@ -17,3 +17,11 @@ X			Chequing			Sun Mar 10 13:03:31 EDT 2019	1234.0		n/a
 User u paid 50.0 to someone on 2019-03-10T16:54:19.453
 
 User steve paid $82.5 to Freedom Mobile on 2019-03-28T12:32:00.931
+
+User steve paid $100.0 to Truman on 2019-03-29T02:58:05.117
+
+User steve paid $80.0 to Jason on 2019-03-29T03:04:57.428
+
+User steve paid $100.0 to Lucy on 2019-03-29T04:33:36.360
+
+User steve paid $250.0 to Luke on 2019-03-29T04:47:48.704

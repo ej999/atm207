@@ -36,7 +36,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
                 out.println(message);
             }
             balance -= amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null));
+            transactionHistory.push(new Transaction("PayBill", amount, null, this.getClass().getName()));
             return true;
         }
         return false;
@@ -61,7 +61,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
         if (validWithdrawal(withdrawalAmount) && condition) {
             balance -= withdrawalAmount;
             new Cash().cashWithdrawal(withdrawalAmount);
-            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null));
+            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
 
@@ -75,7 +75,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
             balance += depositAmount;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
         } else {
             System.out.println("invalid deposit");
         }
@@ -119,7 +119,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 //                transactionHistory.push(new Transaction("TransferToAnotherUser", transferAmount, account));
 //            }
             // Simplify things
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account));
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
             return true;
         }
         return false;

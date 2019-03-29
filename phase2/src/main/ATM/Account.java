@@ -4,8 +4,8 @@ import java.util.*;
 
 abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
-    private static final String inputFilePath = "phase2/src/resources/deposits.txt";
-    final long dateOfCreation;
+    private static final String inputFilePath = "phase2/src/resources/deposits.txt"; // useless
+    private final long dateOfCreation;
     private final String id;
     private final ArrayList<String> owners = new ArrayList<>();
     double balance;
@@ -51,7 +51,7 @@ abstract class Account {
 
         if (depositAmount > 0) {
             balance += depositAmount;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null));
+            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
             new Cash().cashDeposit(depositedBills);
         } else {
             System.out.println("invalid deposit");
@@ -68,7 +68,7 @@ abstract class Account {
 
     public abstract String getType();
 
-    private Transaction getMostRecentTransaction() {
+    public Transaction getMostRecentTransaction() {
         Transaction mostRecentTransaction;
         try {
             mostRecentTransaction = transactionHistory.peek();

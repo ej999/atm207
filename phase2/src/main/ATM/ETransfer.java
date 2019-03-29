@@ -11,7 +11,7 @@ public class ETransfer extends Transaction{
 
 
     public ETransfer(Customer sender, Account senderAccount, Account recipientAccount, String q, String a, double amount){
-        super("ETransfer", amount, recipientAccount); //recipientAccount just for placedholder; receiver can
+        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName()); //recipientAccount just for placedholder; receiver can
         //choose which account to deposit to
         this.senderAccount = senderAccount;
         this.question = q;
