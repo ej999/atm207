@@ -92,7 +92,10 @@ class Options {
 
             options.put("Add buy offer", new Thread(this::addBuyOffer));
 
+            options.put("See offers", new Thread(this::seeOffers));
+
             options.put("Logout", new Thread(this::logoutPrompt));
+
         }
     }
 
