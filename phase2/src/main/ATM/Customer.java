@@ -78,7 +78,7 @@ class Customer extends User {
 
     boolean hasAccount(Account account) {
         for (String a : this.accounts) {
-            if (AccountManager.getAccount(a).equals(account)) {
+            if (ATM.accountManager.getAccount(a).equals(account)) {
                 return true;
             }
 
@@ -89,7 +89,7 @@ class Customer extends User {
     boolean hasMoreThanOneChequing() {
         int i = 0;
         for (String a : this.accounts) {
-            if (AccountManager.getAccount(a) instanceof Chequing) {
+            if (ATM.accountManager.getAccount(a) instanceof Chequing) {
                 i++;
             }
         }
@@ -100,7 +100,7 @@ class Customer extends User {
     public double getNetTotal() {
         double sum = 0;
         for (String a : this.accounts) {
-            Account acc = AccountManager.getAccount(a);
+            Account acc = ATM.accountManager.getAccount(a);
             if (acc instanceof AccountDebt) {
                 sum -= acc.getBalance();
             } else {
@@ -150,10 +150,10 @@ class Customer extends User {
 //        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
 //                "\u001B[0m");
 //        for (String id : getAccounts()) {
-//            if (AccountManager.getAccount(id).equals(primary)) {
-//                returnMessage.append("\nX\t\t\t").append(AccountManager.getAccount(id));
+//            if (ATM.accountManager.getAccount(id).equals(primary)) {
+//                returnMessage.append("\nX\t\t\t").append(ATM.accountManager.getAccount(id));
 //            } else {
-//                returnMessage.append("\n\t\t\t").append(AccountManager.getAccount(id));
+//                returnMessage.append("\n\t\t\t").append(ATM.accountManager.getAccount(id));
 //            }
 //
 //        }

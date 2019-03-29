@@ -94,7 +94,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) UserManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) ATM.userManager.getUser(getPrimaryOwner()), account);
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
             } else {
                 account.balance -= transferAmount;
             }
-//            if (user == UserManager.getUser(getPrimaryOwner())) {
+//            if (user == ATM.userManager.getUser(getPrimaryOwner())) {
 //                transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
 //            } else {
 //                transactionHistory.push(new Transaction("TransferToAnotherUser", transferAmount, account));

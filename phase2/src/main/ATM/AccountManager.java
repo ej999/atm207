@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A static class that manage all Bank Accounts.
+ * A class that manage all Bank Accounts.
  * <p>
  * To implement new type of Account, create a class that extends any Account- class.
  * No change of code in AccountManagers needed.
  */
 final class AccountManager {
-    private static final ATMSystem myATM = new ATMSystem();
     // List of simple name of Account types.
-    static List<String> TYPES_OF_ACCOUNTS;
+    final List<String> TYPES_OF_ACCOUNTS;
+    private final ATMSystem myATM = new ATMSystem();
     // A mapping of id to the Bank Account
-    static HashMap<String, Account> account_map = new HashMap<>();
+    HashMap<String, Account> account_map = new HashMap<>();
 
-    static {
+    AccountManager() {
         // By using reflections, all Account types are automatically added to the List even when we implement a new type.
         String packageName = AccountManager.class.getPackage().getName();
         Set<Class<? extends Account>> subType = new Reflections(packageName).getSubTypesOf(Account.class);
@@ -38,7 +38,7 @@ final class AccountManager {
     }
 
     //TODO GIC has unique parameter
-    private static Account createAccount(String type, Customer owner, double initialAmount) {
+    private Account createAccount(String type, Customer owner, double initialAmount) {
         try {
             // Creating a new instance by getting the proper constructor; instead of using switch cases.
             Class<?> clazz = Class.forName(type);
@@ -61,11 +61,11 @@ final class AccountManager {
         }
     }
 
-    static Account getAccount(String id) {
+    Account getAccount(String id) {
         return account_map.get(id);
     }
 
-    static List<Account> getListOfAccounts(String username) {
+    List<Account> getListOfAccounts(String username) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (String key : account_map.keySet()) {
             if (account_map.get(key).getOwners().contains(username)) {
@@ -75,12 +75,12 @@ final class AccountManager {
         return accountsOwned;
     }
 
-    static boolean isPresent(String id) {
+    boolean isPresent(String id) {
         Account account = account_map.get(id);
         return account != null;
     }
 
-    static void addAccount(String accountType, Customer User, double amount) {
+    void addAccount(String accountType, Customer User, double amount) {
         Account account = createAccount(accountType, User, amount);
         if (account != null) {
             User.addAccount(account);
@@ -89,11 +89,11 @@ final class AccountManager {
         }
     }
 
-    static void addAccount(String accountType, Customer User) {
+    void addAccount(String accountType, Customer User) {
         addAccount(accountType, User, 0);
     }
 
-    private static String idGenerator() {
+    private String idGenerator() {
         boolean validId = false;
         String id = null;
         while (!validId) {

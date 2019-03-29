@@ -79,7 +79,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
         Label typeLbl = new Label("Type of Bank Account:");
         ChoiceBox<String> typeChoice = new ChoiceBox<>();
-        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
+        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             typeChoice.getItems().add(type);
@@ -106,8 +106,8 @@ public class EmployeeOptionsGUI extends OptionsGUI {
             String accountType = Options.class.getPackage().getName() + typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
-            if (UserManager.isPresent(username)) {
-                AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
+            if (ATM.userManager.isPresent(username)) {
+                ATM.accountManager.addAccount(accountType, (Customer) ATM.userManager.getUser(username));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
@@ -157,8 +157,8 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 //            actionTarget.setFill(Color.FIREBRICK);
 //            // Add user's account entries to ComboBox
 //            String username = usernameInput.getText();
-//            if (UserManager.isPresent(username)) {
-//                List<Account> accounts = AccountManager.getListOfAccounts(username);
+//            if (ATM.userManager.isPresent(username)) {
+//                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
 //                for (Account a : accounts) {
 //                    String choice = a.getClass().getName() + " " + a.getId();
 //                    choiceBox.getItems().add(choice);
@@ -172,8 +172,8 @@ public class EmployeeOptionsGUI extends OptionsGUI {
             actionTarget.setFill(Color.FIREBRICK);
             // Add user's account entries to ComboBox
             String username = usernameInput.getText();
-            if (UserManager.isPresent(username)) {
-                List<Account> accounts = AccountManager.getListOfAccounts(username);
+            if (ATM.userManager.isPresent(username)) {
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
                     String choice = a.getClass().getName() + " " + a.getId();
                     choiceBox.getItems().add(choice);
@@ -189,10 +189,10 @@ public class EmployeeOptionsGUI extends OptionsGUI {
             String username = usernameInput.getText();
             int num = Integer.valueOf(numberInput.getText());
             // What I'm trying to do is to get account obj user has selected
-            if (UserManager.isPresent(username)) {
+            if (ATM.userManager.isPresent(username)) {
                 String[] aInfo = choiceBox.getValue().split("\\s+");
                 String aID = aInfo[1];
-                Account account2undo = AccountManager.getAccount(aID);
+                Account account2undo = ATM.accountManager.getAccount(aID);
                 account2undo.undoTransactions(num);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Undone", "Undo successful");
             } else {
