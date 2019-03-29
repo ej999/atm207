@@ -192,4 +192,8 @@ class Customer extends User {
     public void setCreditScore(int creditScore) {
         this.creditScore = creditScore;
     }
+
+    public Inventory getGoods(){
+        return goods;
+    }
 }
