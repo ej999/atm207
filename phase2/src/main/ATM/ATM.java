@@ -25,8 +25,6 @@ import java.util.logging.Logger;
 
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 public class ATM extends Application {
-    // For debugging
-    static final Logger log = Logger.getLogger("Custom");
     // Declare as a static variable so it could be added as observer.
     static ManagersSerialization serialization;
 
@@ -37,9 +35,8 @@ public class ATM extends Application {
     public static void main(String[] args) {
         serialization = new ManagersSerialization();
 
+        // Comment out the following to disable java.util.logging for debugging.
         Logger.getLogger("").setLevel(Level.OFF);
-        // change argument to Level.OFF to disable java.util.logging for debugging.
-        Logger.getLogger("Custom").setLevel(Level.ALL);
 
         serialization.deserialize();
 

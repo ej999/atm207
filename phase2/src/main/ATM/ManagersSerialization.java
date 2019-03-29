@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 
 /**
  * An observer class that operate serialization in real-time, save and retrieve data to FireBase database.
@@ -20,7 +21,7 @@ final class ManagersSerialization {
     static void deleteDatabase() {
         FireBaseDBAccess.save(0, "", "");
 
-        ATM.log.info("FireBase database is set to empty.");
+        Logger.getLogger("Custom").info("FireBase database is set to empty.");
     }
 
     void deserialize() {
@@ -70,9 +71,9 @@ final class ManagersSerialization {
             }
         }
 
-        ATM.log.info("Deserialize UserManager.user_map = " + UserManager.user_map);
-        ATM.log.info("Deserialize AccountManager.account_map = " + AccountManager.account_map);
-        ATM.log.info("Deserialize Cash.ATMBill = " + Cash.ATMBills);
+        Logger.getLogger("Custom").info("Deserialize UserManager.user_map = " + UserManager.user_map);
+        Logger.getLogger("Custom").info("Deserialize AccountManager.account_map = " + AccountManager.account_map);
+        Logger.getLogger("Custom").info("Deserialize Cash.ATMBill = " + Cash.ATMBills);
     }
 
     void serializeAll() {
@@ -80,7 +81,7 @@ final class ManagersSerialization {
         FireBaseDBAccess.saveAll(AccountManager.account_map, "Accounts");
         FireBaseDBAccess.saveAll(Cash.ATMBills, "Bills");
 
-        ATM.log.info("ATMBills is serialized and saved.");
+        Logger.getLogger("Custom").info("ATMBills is serialized and saved.");
     }
 
 //    HashMap<String, User> loadCustom(String filename) {

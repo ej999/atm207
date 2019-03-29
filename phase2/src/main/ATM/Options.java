@@ -92,7 +92,10 @@ class Options {
 
             options.put("Add buy offer", new Thread(this::addBuyOffer));
 
+            options.put("See offers", new Thread(this::seeOffers));
+
             options.put("Logout", new Thread(this::logoutPrompt));
+
         }
     }
 
@@ -222,7 +225,7 @@ class Options {
             selectedBills.put(d, amount);
             print.append(amount).append(" of $").append(d).append("-bill, ");
         }
-        System.out.println(print);
+        System.out.println(print + "have been withdrawn.");
         return selectedBills;
     }
 
