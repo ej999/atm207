@@ -87,7 +87,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = Option.class.getPackage().getName() + "." + choiceBox.getValue();
+            String type = Options.class.getPackage().getName() + "." + choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
             boolean created = UserManager.createAccount(type, username, password);

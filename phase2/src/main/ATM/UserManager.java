@@ -37,7 +37,7 @@ final class UserManager {
         USER_TYPE_NAMES = types_of_users;
     }
 
-    static boolean createAccount(String type, String username, String password) {
+    public static boolean createAccount(String type, String username, String password) {
         if (isPresent(username)) {
             System.err.println("Username already exists. Please try again");
             return false;

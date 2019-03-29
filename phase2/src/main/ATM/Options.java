@@ -150,7 +150,7 @@ class Options {
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Creating User... Enter user type " + UserManager.USER_TYPE_NAMES + ": ");
-        String type = Option.class.getPackage().getName() + "." + reader.next();
+        String type = Options.class.getPackage().getName() + "." + reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
@@ -182,7 +182,7 @@ class Options {
     private String selectAccountTypePrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Enter account type " + AccountManager.TYPES_OF_ACCOUNTS + ": ");
-        return Option.class.getPackage().getName() + reader.next();
+        return Options.class.getPackage().getName() + reader.next();
     }
 
     /**

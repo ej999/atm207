@@ -103,7 +103,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String username = usernameInput.getText();
-            String accountType = Option.class.getPackage().getName() + typeChoice.getValue();
+            String accountType = Options.class.getPackage().getName() + typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
             if (UserManager.isPresent(username)) {

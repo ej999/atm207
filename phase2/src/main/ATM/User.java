@@ -6,7 +6,6 @@ package ATM;
 abstract class User {
     private final String username;
     private String password;
-//    private List<Option>;
 
     User(String username, String password) {
         this.username = username;
