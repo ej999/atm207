@@ -295,7 +295,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // Add user's accounts as entries to ComboBox
         String username = user.getUsername();
-        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -330,12 +330,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             // [type, id] -> id -> account with id <id>
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = AccountManager.getAccount(aID);
+            Account account = ATM.accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
-            if (UserManager.isPresent(otherAccount)) {
-                Customer user = (Customer) UserManager.getUser(username);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()))) {
+            if (ATM.userManager.isPresent(otherAccount)) {
+                Customer user = (Customer) ATM.userManager.getUser(username);
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimary()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
