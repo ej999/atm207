@@ -23,7 +23,13 @@ public class Inventory {
     }
 
     Integer itemAmount(String item) {
-        return storage.get(item);
+
+        if (itemExists(item)) {
+            return storage.get(item);
+        }
+        else {
+            return 0;
+        }
     }
 
     void addItem(String item, Integer amount) {
@@ -33,4 +39,5 @@ public class Inventory {
             storage.put(item, amount);
         }
     }
+
 }

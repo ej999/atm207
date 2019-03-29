@@ -38,8 +38,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Cash Withdrawal");
         addOptionText("Request Creating an Account");
         addOptionText("Make a Preexisting Account Joint");
-        // addSellOffer //TODO
-        // addBuyOffer //TODO
+        addOptionText("Add an item for Sale");
         // seeOffers // TODO
         // eTransfers // TODO
         addOptionText("Change Primary Account");
@@ -56,9 +55,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
         getOption(8).setOnAction(event -> accountToJointScreen());
-        getOption(9).setOnAction(event -> changePrimaryScreen());
-        getOption(10).setOnAction(event -> changePasswordScreen());
-        getOption(11).setOnAction(event -> logoutHandler());
+        getOption(9).setOnAction(event -> addSellOfferScreen());
+        getOption(10).setOnAction(event -> changePrimaryScreen());
+        getOption(11).setOnAction(event -> changePasswordScreen());
+        getOption(12).setOnAction(event -> logoutHandler());
 
         return generateOptionsScreen(500, 350);
     }
@@ -289,15 +289,66 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void makeTransferAnotherScreen() {
-        //TODO Jason
-        /*
-        username:
-        amount:
-        Cancel | Transfer
-         */
         GridPane gridPane = createFormPane();
+        Label chooseLbl = new Label("Choose account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        // Add user's accounts as entries to ComboBox
+        String username = user.getUsername();
+        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
+
+        Label otherName = new Label("User to transfer to");
+        TextField otherNameInput = new TextField();
+
+        Label amountLbl = new Label("Amount:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Transfer");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(amountLbl, 0, 1);
+        gridPane.add(amountInput, 1, 1);
+        gridPane.add(otherName, 1, 2);
+        gridPane.add(otherNameInput, 1, 3);
+        gridPane.add(hbBtn, 1, 4);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            // [type, id] -> id -> account with id <id>
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            Account account = AccountManager.getAccount(aID);
+            double amount = Double.valueOf(amountInput.getText());
+            String otherAccount = otherNameInput.getText();
+            if (UserManager.isPresent(otherAccount)) {
+                Customer user = (Customer) UserManager.getUser(username);
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()))) {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
+                } else {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
+            }
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
+
 
     private void depositScreen() {
         GridPane gridPane = createFormPane();
@@ -707,6 +758,45 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private void addSellOfferScreen() {
         //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForSale = new Label("What item would you like to sell?");
+        TextField itemInput = new TextField();
+
+        Label itemQuantity = new Label("How much do you have? (in grams)");
+        TextField quantityInput = new TextField();
+
+        Label itemPricing= new Label("How much are you selling it for? (in dollars)");
+        TextField priceInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Add");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForSale, 0, 0);
+        gridPane.add(itemInput, 1, 0);
+        gridPane.add(itemQuantity, 0, 1);
+        gridPane.add(quantityInput, 1, 1);
+        gridPane.add(itemPricing, 0, 2);
+        gridPane.add(priceInput, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemInput.getText();
+            int quantity = Integer.valueOf(quantityInput.getText());
+            int price = Integer.valueOf(priceInput.getText());
+            TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) user);
+            TradingSystem.addSellOffer(item, tradeoffer);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void addBuyOfferScreen() {
