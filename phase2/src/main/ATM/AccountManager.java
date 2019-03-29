@@ -41,7 +41,6 @@ final class AccountManager {
         try {
             // Creating a new instance by getting the proper constructor; instead of using switch cases.
             Class<?> clazz = Class.forName(type);
-
             // The constructor has to be declared public, otherwise ...........
             Constructor<?> cTor = clazz.getConstructor(String.class, double.class, Customer.class);
 

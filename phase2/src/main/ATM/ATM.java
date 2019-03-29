@@ -41,6 +41,8 @@ public class ATM extends Observable {
         new Thread(() -> Application.launch(ATMFrame.class)).start();
         ATMFrame atmFrame = new ATMFrame();
         // do something with atmFrame...
+        //TODO problem occurred after transferring money and logout in GUI
+        // found out caused by RecentTransaction and Transaction in database cannot be deserialized.
 
 
         Date today = new Date();
@@ -48,16 +50,16 @@ public class ATM extends Observable {
         calendar.setTime(today);
         int now = (calendar.get(Calendar.MONTH));
 
-//        // The ATM should displays User interface all the time, until it is being shut down.
-//        //noinspection InfiniteLoopStatement
-//        while (true) {
-//            // Constantly checking if now is the start of the month.
+        // The ATM should displays User interface all the time, until it is being shut down.
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            // Constantly checking if now is the start of the month.
 //            now = isNewMonth(now);
-//
-//            // A login session.
-//            User user = authPrompt();
-//            new Options(user);
-//        }
+
+            // A login session.
+            User user = authPrompt();
+            new Options(user);
+        }
     }
 
     private static void createDemoData() {

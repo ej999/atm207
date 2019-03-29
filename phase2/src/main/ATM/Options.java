@@ -182,7 +182,7 @@ class Options {
     private String selectAccountTypePrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Enter account type " + ATM.accountManager.TYPES_OF_ACCOUNTS + ": ");
-        return Options.class.getPackage().getName() + reader.next();
+        return Options.class.getPackage().getName() + "." + reader.next();
     }
 
     /**
