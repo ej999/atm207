@@ -28,7 +28,7 @@ class Customer extends User {
     private int creditScore;
     // credit Score should have a default value
     // each month if the customer payed everything on time it should be increased by a little amount
-    // if anything is unpayed pass a certain deadline(30 days) the score should decrease drastically
+    // if anything is unpayed pass a the start of next month deadline the score should decrease drastically
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 

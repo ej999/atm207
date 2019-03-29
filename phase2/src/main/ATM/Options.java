@@ -494,6 +494,26 @@ class Options {
         System.out.println(sell_offers);
     }
 
+    private void addToInventory(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What item would you like to deposit?");
+        String item = reader.nextLine();
+        System.out.println("How much of it would you like to add? (in grams)");
+        int amount = reader.nextInt();
+        Customer current_customer = (Customer) current_user;
+        current_customer.getGoods().depositItem(item, amount);
+    }
+
+    private void removeFromInventory(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What item would you like to withdraw?");
+        String item = reader.nextLine();
+        System.out.println("How much of it would you like to remove? (in grams)");
+        int amount = reader.nextInt();
+        Customer current_customer = (Customer) current_user;
+        current_customer.getGoods().withdrawItem(item, amount);
+    }
+
 }
 
 

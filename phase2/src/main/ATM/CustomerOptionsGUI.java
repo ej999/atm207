@@ -39,7 +39,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Request Creating an Account");
         addOptionText("Make a Preexisting Account Joint");
         addOptionText("Add an item for Sale");
-        // seeOffers // TODO
+        addOptionText("Request an item for Sale");
+        addOptionText("See Offers");
         // eTransfers // TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
@@ -56,9 +57,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(7).setOnAction(event -> requestAccountScreen());
         getOption(8).setOnAction(event -> accountToJointScreen());
         getOption(9).setOnAction(event -> addSellOfferScreen());
-        getOption(10).setOnAction(event -> changePrimaryScreen());
-        getOption(11).setOnAction(event -> changePasswordScreen());
-        getOption(12).setOnAction(event -> logoutHandler());
+        getOption(10).setOnAction(event -> addBuyOfferScreen());
+        getOption(11).setOnAction(event -> seeOffersScreen());
+        getOption(12).setOnAction(event -> changePrimaryScreen());
+        getOption(13).setOnAction(event -> changePasswordScreen());
+        getOption(14).setOnAction(event -> logoutHandler());
 
         return generateOptionsScreen(500, 350);
     }
@@ -757,7 +760,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void addSellOfferScreen() {
-        //TODO: Jason
         GridPane gridPane = createFormPane();
 
         Label itemForSale = new Label("What item would you like to sell?");
@@ -800,10 +802,71 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void addBuyOfferScreen() {
-        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForBuy = new Label("What item would you like to buy");
+        TextField itemInput = new TextField();
+
+        Label itemQuantityBuy = new Label("How much do you want? (in grams)");
+        TextField quantityInput = new TextField();
+
+        Label itemPricingBuy = new Label("How much are you buying it for? (in dollars)");
+        TextField priceInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Add");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForBuy, 0, 0);
+        gridPane.add(itemInput, 1, 0);
+        gridPane.add(itemQuantityBuy, 0, 1);
+        gridPane.add(quantityInput, 1, 1);
+        gridPane.add(itemPricingBuy, 0, 2);
+        gridPane.add(priceInput, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemInput.getText();
+            int quantity = Integer.valueOf(quantityInput.getText());
+            int price = Integer.valueOf(priceInput.getText());
+            TradeOffer buyOffer = new TradeOffer(quantity, price, (Customer) user);
+            TradingSystem.addBuyOffer(item, buyOffer);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been requested");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void seeOffersScreen() {
+        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemOffers = new Label("Would you like to see sell offers of buy offers?");
+        Button cancel = new Button("Cancel");
+        Button buy = new Button("Buy");
+        Button sell = new Button("Sell");
+
+        gridPane.add(cancel, 0, 0);
+        gridPane.add(buy, 1, 0);
+        gridPane.add(sell, 2, 0);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        buy.setOnAction(event -> seeOffersBuyScreen());
+        sell.setOnAction(event -> seeOffersSellScreen());
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void seeOffersSellScreen() {
+        //TODO: Jason
+    }
+    private void seeOffersBuyScreen() {
         //TODO: Jason
     }
 
