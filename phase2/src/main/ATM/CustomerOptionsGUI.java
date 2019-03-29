@@ -290,15 +290,66 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void makeTransferAnotherScreen() {
-        //TODO Jason
-        /*
-        username:
-        amount:
-        Cancel | Transfer
-         */
         GridPane gridPane = createFormPane();
+        Label chooseLbl = new Label("Choose account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        // Add user's accounts as entries to ComboBox
+        String username = user.getUsername();
+        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals(Option.class.getPackage().getName() + ".CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
+
+        Label otherName = new Label("User to transfer to");
+        TextField otherNameInput = new TextField();
+
+        Label amountLbl = new Label("Amount:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Transfer");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(amountLbl, 0, 1);
+        gridPane.add(amountInput, 1, 1);
+        gridPane.add(otherName, 1, 2);
+        gridPane.add(otherNameInput, 1, 3);
+        gridPane.add(hbBtn, 1, 4);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            // [type, id] -> id -> account with id <id>
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            Account account = AccountManager.getAccount(aID);
+            double amount = Double.valueOf(amountInput.getText());
+            String otherAccount = otherNameInput.getText();
+            if (UserManager.isPresent(otherAccount)) {
+                Customer user = (Customer) UserManager.getUser(username);
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()))) {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
+                } else {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
+            }
+            window.setScene(optionsScreen);
+        });
+
         window.setScene(new Scene(gridPane));
     }
+
 
     private void depositScreen() {
         GridPane gridPane = createFormPane();
