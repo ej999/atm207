@@ -25,7 +25,7 @@ final class ManagersSerialization {
     }
 
     void deserialize() {
-        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in UserManager.
+        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
         HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
 
         HashMap<String, User> user_map = new HashMap<>();
@@ -33,16 +33,16 @@ final class ManagersSerialization {
             Object object = user_map_temp.get(username);
             user_map.put(username, (User) object);
         }
-        UserManager.user_map = user_map;
+        ATM.userManager.user_map = user_map;
 
-        // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in AccountManager.
+        // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in ATM.accountManager.
         HashMap<String, Object> account_list_temp = FireBaseDBAccess.retrieveAll("Accounts", true);
         HashMap<String, Account> account_map = new HashMap<>();
         for (String n : account_list_temp.keySet()) {
             Object object = account_list_temp.get(n);
             account_map.put(n, (Account) object);
         }
-        AccountManager.account_map = account_map;
+        ATM.accountManager.account_map = account_map;
 
         // Deserialize JSON from /Bills directory in FireBase to a HashMap of Integer, and assign it to ATMBills in Cash.
         HashMap<String, Object> bills_temp = FireBaseDBAccess.retrieveAll("Bills", false);
@@ -56,29 +56,29 @@ final class ManagersSerialization {
 
 
         // FireBase has no native support for arrays, so we re-create these variables: https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
-        for (String id : AccountManager.account_map.keySet()) {
-            Account account = AccountManager.getAccount(id);
+        for (String id : ATM.accountManager.account_map.keySet()) {
+            Account account = ATM.accountManager.getAccount(id);
 
             if (account.getTransactionHistory() == null) {
                 account.transactionHistory = new Stack<Transaction>();
             }
         }
 
-        for (String username : UserManager.user_map.keySet()) {
-            User user = UserManager.getUser(username);
+        for (String username : ATM.userManager.user_map.keySet()) {
+            User user = ATM.userManager.getUser(username);
             if (user instanceof Customer && ((Customer) user).getAccounts() == null) {
                 ((Customer) user).accounts = new ArrayList<>();
             }
         }
 
-        Logger.getLogger("Custom").info("Deserialize UserManager.user_map = " + UserManager.user_map);
-        Logger.getLogger("Custom").info("Deserialize AccountManager.account_map = " + AccountManager.account_map);
+        Logger.getLogger("Custom").info("Deserialize ATM.userManager.user_map = " + ATM.userManager.user_map);
+        Logger.getLogger("Custom").info("Deserialize ATM.accountManager.account_map = " + ATM.accountManager.account_map);
         Logger.getLogger("Custom").info("Deserialize Cash.ATMBill = " + Cash.ATMBills);
     }
 
     void serializeAll() {
-        FireBaseDBAccess.saveAll(UserManager.user_map, "Users");
-        FireBaseDBAccess.saveAll(AccountManager.account_map, "Accounts");
+        FireBaseDBAccess.saveAll(ATM.userManager.user_map, "Users");
+        FireBaseDBAccess.saveAll(ATM.accountManager.account_map, "Accounts");
         FireBaseDBAccess.saveAll(Cash.ATMBills, "Bills");
 
         Logger.getLogger("Custom").info("ATMBills is serialized and saved");
@@ -94,7 +94,7 @@ final class ManagersSerialization {
 //            return backup.user_map;
 //        } catch (IOException | ClassNotFoundException f) {
 //            //f.printStackTrace();
-//            return UserManager.user_map;
+//            return ATM.userManager.user_map;
 //        }
 //
 //    }

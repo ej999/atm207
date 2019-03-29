@@ -254,7 +254,7 @@ public abstract class OptionsGUI {
          */
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         String username = user.getUsername();
-        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(exclusion)) {

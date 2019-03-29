@@ -144,7 +144,7 @@ class Youth extends Account implements AccountTransferable {
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
         transactions += 1;
         transferTotal += transferAmount;
-        return transferToAnotherUser(transferAmount, (Customer) UserManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, (Customer) ATM.userManager.getUser(getPrimaryOwner()), account);
 
     }
 

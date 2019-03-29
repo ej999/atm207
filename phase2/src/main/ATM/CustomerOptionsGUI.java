@@ -108,7 +108,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<AccountSummary> getSummary() {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
-        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
@@ -173,7 +173,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // Add user's accounts as entries to ComboBox
         String username = user.getUsername();
-        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -208,7 +208,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             // [type, id] -> id -> account with id <id>
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = AccountManager.getAccount(aID);
+            Account account = ATM.accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String payee = nameInput.getText();
             try {
@@ -234,7 +234,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // Add user's accounts as entries to ComboBox
         String username = user.getUsername();
-        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -274,8 +274,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String aID = aInfo[1];
             String[] oInfo = otherChoiceBox.getValue().split("\\s+");
             String oID = oInfo[1];
-            Account account = AccountManager.getAccount(aID);
-            Account otherAccount = AccountManager.getAccount(oID);
+            Account account = ATM.accountManager.getAccount(aID);
+            Account otherAccount = ATM.accountManager.getAccount(oID);
             double amount = Double.valueOf(amountInput.getText());
             if (((AccountTransferable) account).transferBetweenAccounts(amount, otherAccount)) {
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
@@ -295,7 +295,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // Add user's accounts as entries to ComboBox
         String username = user.getUsername();
-        List<Account> accounts = AccountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -330,12 +330,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             // [type, id] -> id -> account with id <id>
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = AccountManager.getAccount(aID);
+            Account account = ATM.accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
-            if (UserManager.isPresent(otherAccount)) {
-                Customer user = (Customer) UserManager.getUser(username);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()))) {
+            if (ATM.userManager.isPresent(otherAccount)) {
+                Customer user = (Customer) ATM.userManager.getUser(username);
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimary()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
@@ -375,7 +375,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void depoCashScreen() {
-        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimary());
         GridPane grid = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -423,7 +423,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void depoChequeScreen() {
-        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimary());
         GridPane gridPane = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -532,7 +532,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         TextField input = new TextField();
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
+        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);
@@ -552,7 +552,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         request.setOnAction(event -> {
             String username = input.getText();
             String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
-            if (!username.equals(user.getUsername()) && UserManager.isPresent(username) && UserManager.getUser(username) instanceof Customer) {
+            if (!username.equals(user.getUsername()) && ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
                 try {
                     ((Customer) user).requestJointAccount(accountType, username);
                 } catch (IOException e) {
@@ -578,7 +578,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = AccountManager.TYPES_OF_ACCOUNTS;
+        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);
@@ -612,7 +612,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select new primary account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a instanceof Chequing) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
@@ -635,7 +635,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 showAlert(Alert.AlertType.INFORMATION, window, "Info", message);
             } else {
                 String id = choiceBox.getValue().split("\\s+")[1];
-                Account newPrime = AccountManager.getAccount(id);
+                Account newPrime = ATM.accountManager.getAccount(id);
                 ((Customer) user).setPrimary(newPrime);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Confirmation", "Your primary account has been changed.");
             }
@@ -656,7 +656,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
          */
         String[] aInfo = choiceBox.getValue().split("\\s+");
         String aID = aInfo[1];
-        return AccountManager.getAccount(aID);
+        return ATM.accountManager.getAccount(aID);
     }
 
     private void showTransactionHistory() {
@@ -700,7 +700,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<Transaction> getTransaction() {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             transactions.addAll(a.getTransactionHistory());
         }
@@ -712,7 +712,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select non-joint account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = AccountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (!a.isJoint()) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
@@ -738,7 +738,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         request.setOnAction(event -> {
             String username = input.getText();
-            if (UserManager.isPresent(username) && UserManager.getUser(username) instanceof Customer) {
+            if (ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
                 String accountType = choiceBox.getValue().split("\\s+")[0];
                 String accountID = choiceBox.getValue().split("\\s+")[1];
                 try {

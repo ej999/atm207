@@ -24,11 +24,12 @@ import java.util.logging.Logger;
  */
 //TODO: A User: "Customer NewUser! has a net total of ", is successfully created
 // TODO: 2019-03-29 check if there's static class 
-// TODO: 2019-03-29 controller class 
-// TODO: 2019-03-29 consider ading custom exception
+// TODO: 2019-03-29 controller class -> all -manager class should be an object variable inside a controller
+// TODO: 2019-03-29 consider adding custom exception
 //TODO ATM class no longer extends to Observable. Check how it affects the program.
 // TODO: 2019-03-29 single responsibility: deligating chuncky methods into inner class
 // TODO: 2019-03-29 make -manager classes non static ,instantiate them here!!!
+// TODO: 2019-03-29 make Options obsolete
 public class ATM extends Application {
     // Declare as a static variable so it could be added as observer.
     static ManagersSerialization serialization;
@@ -36,6 +37,14 @@ public class ATM extends Application {
     private Stage window;
     private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
     private User user;
+
+    static UserManager userManager;
+    static AccountManager accountManager;
+
+    static {
+        ATM.userManager = new UserManager();
+        ATM.accountManager = new AccountManager();
+    }
 
     public static void main(String[] args) {
         serialization = new ManagersSerialization();
@@ -46,18 +55,18 @@ public class ATM extends Application {
         serialization.deserialize();
 
         // If the any of the following groups of objects is empty or deleted, then create a demo and save it .
-        if (UserManager.user_map.isEmpty() || AccountManager.account_map.isEmpty() || Cash.ATMBills.isEmpty()) {
-            if (UserManager.user_map.isEmpty()) {
-                UserManager.createAccount(BankManager.class.getName(), "jen", "1234");
-                UserManager.createAccount(Teller.class.getName(), "pete", "1234");
-                UserManager.createAccount(Customer.class.getName(), "steve", "1234");
+        if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || Cash.ATMBills.isEmpty()) {
+            if (userManager.user_map.isEmpty()) {
+                userManager.createAccount(BankManager.class.getName(), "jen", "1234");
+                userManager.createAccount(Teller.class.getName(), "pete", "1234");
+                userManager.createAccount(Customer.class.getName(), "steve", "1234");
             }
 
-            if (AccountManager.account_map.isEmpty()) {
-                AccountManager.addAccount(Chequing.class.getName(), ((Customer) UserManager.getUser("steve")), 1234);
-                AccountManager.addAccount(CreditLine.class.getName(), ((Customer) UserManager.getUser("steve")), 4321);
-                AccountManager.addAccount(Saving.class.getName(), ((Customer) UserManager.getUser("steve")), 1000);
-                AccountManager.addAccount(CreditCard.class.getName(), ((Customer) UserManager.getUser("steve")), 420);
+            if (accountManager.account_map.isEmpty()) {
+                accountManager.addAccount(Chequing.class.getName(), ((Customer) userManager.getUser("steve")), 1234);
+                accountManager.addAccount(CreditLine.class.getName(), ((Customer) userManager.getUser("steve")), 4321);
+                accountManager.addAccount(Saving.class.getName(), ((Customer) userManager.getUser("steve")), 1000);
+                accountManager.addAccount(CreditCard.class.getName(), ((Customer) userManager.getUser("steve")), 420);
             }
 
             if (Cash.ATMBills.isEmpty()) {
@@ -106,9 +115,9 @@ public class ATM extends Application {
             System.out.print("Please enter your password: ");
             String password = reader.next();
 
-            authResult = UserManager.auth(username, password);
+            authResult = userManager.auth(username, password);
         }
-        user = UserManager.getUser(username);
+        user = userManager.getUser(username);
 
         System.out.println("\nUser success. Hi " + user.getUsername() + "!");
         return user;
@@ -219,12 +228,12 @@ public class ATM extends Application {
                 actionTarget.setText("Please enter your password");
             } else {
 
-                boolean authResult = UserManager.auth(username, password);
+                boolean authResult = userManager.auth(username, password);
 
                 if (!authResult) {
                     actionTarget.setText("Login attempt failed");
                 } else {
-                    user = UserManager.getUser(username);
+                    user = userManager.getUser(username);
                     showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
                             "Hi " + username);
 

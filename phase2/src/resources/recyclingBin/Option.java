@@ -58,12 +58,12 @@ public class Option {
         Option createUser = new Option();
         createUser.setDisplayName("Create an user");
         HashMap<String, List> input_fields = new HashMap<>();
-        input_fields.put("user type", Arrays.asList(String.class, UserManager.USER_TYPE_NAMES));
+        input_fields.put("user type", Arrays.asList(String.class, userManager.USER_TYPE_NAMES));
         input_fields.put("username", Collections.singletonList(String.class));
         input_fields.put("password", Arrays.asList(String.class, Collections.emptyList()));
         createUser.setInputList(input_fields);
         try {
-            Method method = UserManager.class.getMethod("createAccount", String.class, String.class, String.class);
+            Method method = userManager.class.getMethod("createAccount", String.class, String.class, String.class);
             createUser.setExecution(method);
         } catch (NoSuchMethodException e) {
             System.out.println("ouch!");

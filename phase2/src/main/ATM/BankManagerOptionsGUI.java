@@ -58,7 +58,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         Label userType = new Label("User Type:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        for (String type : UserManager.USER_TYPE_NAMES) {
+        for (String type : ATM.userManager.USER_TYPE_NAMES) {
             choiceBox.getItems().add(type);
         }
 
@@ -90,7 +90,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             String type = Options.class.getPackage().getName() + "." + choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
-            boolean created = UserManager.createAccount(type, username, password);
+            boolean created = ATM.userManager.createAccount(type, username, password);
 
             if (created && type.equals(Customer.class.getName())) {
                 createDOBScreen(username);
@@ -135,7 +135,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                 System.out.println(username);
                 try {
                     String dob = LocalDate.parse(_dob).toString();
-                    ((Customer) UserManager.getUser(username)).setDob(dob);
+                    ((Customer) ATM.userManager.getUser(username)).setDob(dob);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Date of Birth for " + username + " is set to " + dob);
                 } catch (DateTimeException e) {
                     showAlert(Alert.AlertType.ERROR, window, "Error", "Are you sure you born on a day that doesn't exist?");

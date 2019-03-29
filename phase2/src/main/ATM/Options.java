@@ -149,13 +149,13 @@ class Options {
      */
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Creating User... Enter user type " + UserManager.USER_TYPE_NAMES + ": ");
+        System.out.print("Creating User... Enter user type " + ATM.userManager.USER_TYPE_NAMES + ": ");
         String type = Options.class.getPackage().getName() + "." + reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        boolean created = UserManager.createAccount(type, username, password);
+        boolean created = ATM.userManager.createAccount(type, username, password);
 
         if (created && type.equals(Customer.class.getName())) {
             setDobPrompt(username);
@@ -171,7 +171,7 @@ class Options {
             System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
             try {
                 String dob = LocalDate.parse(reader.next()).toString();
-                ((Customer) UserManager.getUser(username)).setDob(dob);
+                ((Customer) ATM.userManager.getUser(username)).setDob(dob);
                 System.out.println("Date of Birth for " + username + " is set to " + dob);
             } catch (DateTimeException e) {
                 System.err.println("Are you sure you born on a day that doesn't exist?");
@@ -181,7 +181,7 @@ class Options {
 
     private String selectAccountTypePrompt() {
         Scanner reader = new Scanner(System.in);
-        System.out.print("Enter account type " + AccountManager.TYPES_OF_ACCOUNTS + ": ");
+        System.out.print("Enter account type " + ATM.accountManager.TYPES_OF_ACCOUNTS + ": ");
         return Options.class.getPackage().getName() + reader.next();
     }
 
@@ -192,9 +192,9 @@ class Options {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
-        if (UserManager.isPresent(username) && UserManager.isCustomer(username)) {
+        if (ATM.userManager.isPresent(username) && ATM.userManager.isCustomer(username)) {
             String accountType = selectAccountTypePrompt();
-            AccountManager.addAccount(accountType, (Customer) UserManager.getUser(username));
+            ATM.accountManager.addAccount(accountType, (Customer) ATM.userManager.getUser(username));
         } else {
             System.err.println("Invalid customer. Please try again");
         }
@@ -243,7 +243,7 @@ class Options {
 //        Scanner reader1 = new Scanner(System.in);
 //        String answer = reader1.nextLine();
 //        HashMap<String, User> custom_map = ManagersSerialization.loadCustom(answer);
-//        UserManager.user_map = custom_map;
+//        ATM.userManager.user_map = custom_map;
 //    }
 
     private void clearDataPrompt() {
@@ -268,8 +268,8 @@ class Options {
         List<String> accounts = customer.getAccounts();
         int i = 1;
         for (String a : accounts) {
-            if (!AccountManager.getAccount(a).getClass().getName().contains(exclusion)) {
-                System.out.println("[" + i + "] " + AccountManager.getAccount(a));
+            if (!ATM.accountManager.getAccount(a).getClass().getName().contains(exclusion)) {
+                System.out.println("[" + i + "] " + ATM.accountManager.getAccount(a));
                 i++;
             }
         }
@@ -279,7 +279,7 @@ class Options {
             System.out.print("Please select an account: ");
             option = reader.nextInt();
         }
-        return AccountManager.getAccount(accounts.get(option - 1));
+        return ATM.accountManager.getAccount(accounts.get(option - 1));
     }
 
     /**
@@ -294,8 +294,8 @@ class Options {
         while (!finished) {
             System.out.print("Enter username: ");
             String username = reader.next();
-            if (UserManager.isPresent(username)) {
-                Account account2undo = selectAccountPrompt((Customer) UserManager.getUser(username));
+            if (ATM.userManager.isPresent(username)) {
+                Account account2undo = selectAccountPrompt((Customer) ATM.userManager.getUser(username));
                 ((BankManager) current_user).undoTransactions(account2undo, 1);
                 System.out.println("Undo successful");
                 finished = true;
@@ -327,8 +327,8 @@ class Options {
                     "\u001B[0m");
             int i = 1;
             for (String a : ((Customer) current_user).getAccounts()) {
-                if (AccountManager.getAccount(a) instanceof Chequing) {
-                    System.out.println("[" + i + "] " + AccountManager.getAccount(a));
+                if (ATM.accountManager.getAccount(a) instanceof Chequing) {
+                    System.out.println("[" + i + "] " + ATM.accountManager.getAccount(a));
                 }
                 i++;
             }
@@ -336,7 +336,7 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((Customer) current_user).setPrimary(AccountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
+            ((Customer) current_user).setPrimary(ATM.accountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
         } else {
             //TODO create custom exception
             System.err.println("Sorry, you can only change your primary account if you have more than one chequing " +
@@ -374,7 +374,7 @@ class Options {
             return;
         }
 
-        Chequing primary = (Chequing) AccountManager.getAccount(((Customer) current_user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimary());
         Scanner reader = new Scanner(System.in);
 
         System.out.print("Are you depositing [1] cash or [2] cheque? ");
@@ -444,9 +444,9 @@ class Options {
         System.out.print("Please enter the amount you would like to transfer: ");
         double amount = reader.nextDouble();
 
-        if (UserManager.isPresent(username)) {
-            Customer user = (Customer) UserManager.getUser(username);
-            ((AccountTransferable) from).transferToAnotherUser(amount, user, AccountManager.getAccount(user.getPrimary()));
+        if (ATM.userManager.isPresent(username)) {
+            Customer user = (Customer) ATM.userManager.getUser(username);
+            ((AccountTransferable) from).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimary()));
             System.out.println("Transfer is successful");
         } else {
             System.err.println("The username does not exist. Transfer is cancelled");
