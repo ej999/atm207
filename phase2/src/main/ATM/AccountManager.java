@@ -18,7 +18,6 @@ import java.util.Set;
 final class AccountManager {
     // List of simple name of Account types.
     final List<String> TYPES_OF_ACCOUNTS;
-    private final ATMSystem myATM = new ATMSystem();
     // A mapping of id to the Bank Account
     HashMap<String, Account> account_map = new HashMap<>();
 
@@ -50,7 +49,8 @@ final class AccountManager {
             Account newAccount = (Account) cTor.newInstance(id, initialAmount, owner);
             account_map.put(newAccount.getId(), newAccount);
             if (newAccount instanceof Saving) {
-                myATM.addObserver((Saving) newAccount);
+                //TODO observer
+//                ATM.addObserver((Saving) newAccount);
             }
 
             System.out.println("A User: \"" + newAccount + "\", is successfully created");

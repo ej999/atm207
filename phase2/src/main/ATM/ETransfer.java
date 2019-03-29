@@ -1,16 +1,18 @@
 package ATM;
 
-/** a single instance of an etransfer**/
-public class ETransfer extends Transaction{
-    private String question;
-    private String answer;
+/**
+ * a single instance of an etransfer
+ **/
+public class ETransfer extends Transaction {
     Customer sender;
     Account senderAccount;
+    private String question;
+    private String answer;
     private boolean verified = false;
     private String recipient;
 
 
-    public ETransfer(Customer sender, Account senderAccount, Account recipientAccount, String q, String a, double amount){
+    public ETransfer(Customer sender, Account senderAccount, Account recipientAccount, String q, String a, double amount) {
         super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName()); //recipientAccount just for placedholder; receiver can
         //choose which account to deposit to
         this.senderAccount = senderAccount;
@@ -21,22 +23,22 @@ public class ETransfer extends Transaction{
     }
 
     public boolean verifyQuestion(String input) {
-       if(this.answer.equals(input)) {
-           this.verified = true;
+        if (this.answer.equals(input)) {
+            this.verified = true;
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public String getQuestion(){
+    public String getQuestion() {
         return this.question;
     }
 
-    public boolean hasBeenDeposited(){
+    public boolean hasBeenDeposited() {
         return this.verified;
     }
 
-    public String getRecipient(){
+    public String getRecipient() {
         return this.recipient;
     }
 

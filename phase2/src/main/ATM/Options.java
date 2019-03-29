@@ -205,8 +205,6 @@ class Options {
      * Only the Bank Manager is able to access this.
      */
     private void restockPrompt() {
-        Scanner reader = new Scanner(System.in);
-
         Map<Integer, Integer> restock = selectBillsPrompt();
 
         ((BankManager) current_user).restockMachine(restock);
@@ -456,7 +454,8 @@ class Options {
     private void readAlertPrompt() {
         ((BankManager) current_user).readAlerts();
     }
-//WIP
+
+    //WIP
     private void addSellOffer() {
         Scanner reader = new Scanner(System.in);
         System.out.println("What item you like to sell?");
@@ -481,12 +480,12 @@ class Options {
         TradingSystem.addBuyOffer(item, tradeoffer);
     }
 
-    private void seeOffers(){
+    private void seeOffers() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Would you like to see sell offers of buy offers? (S/B)");
         boolean choice_bool = false;
         String choice = reader.nextLine();
-        if (choice.equals("S")){
+        if (choice.equals("S")) {
             choice_bool = true;
         }
         System.out.println("Which item would you like to see offers for?)");

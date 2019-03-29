@@ -26,8 +26,7 @@ public class Inventory {
 
         if (itemExists(item)) {
             return storage.get(item);
-        }
-        else {
+        } else {
             return 0;
         }
     }

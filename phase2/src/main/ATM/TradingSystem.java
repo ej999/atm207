@@ -35,7 +35,7 @@ public class TradingSystem {
     static public void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
-            if (!makeTrade(item, tradeoffer, true)){
+            if (!makeTrade(item, tradeoffer, true)) {
                 sell_offers.get(item).add(tradeoffer);
             }
 
@@ -53,7 +53,7 @@ public class TradingSystem {
     static public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
-            if (!makeTrade(item, tradeoffer, false)){
+            if (!makeTrade(item, tradeoffer, false)) {
                 buy_offers.get(item).add(tradeoffer);
             }
 
@@ -67,7 +67,8 @@ public class TradingSystem {
         }
 
     }
-//Note: This method will remove all buy or sell offers of a user for a certain item
+
+    //Note: This method will remove all buy or sell offers of a user for a certain item
     static public void removeOffer(String item, Customer user, boolean selling) {
         if (selling) {
             ArrayList<TradeOffer> offers = sell_offers.get(item);
@@ -88,7 +89,7 @@ public class TradingSystem {
         }
     }
 
-    static public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling){
+    static public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         //default values, but these will never get used
         Customer seller = tradeoffer.getTradeUser();
@@ -96,12 +97,11 @@ public class TradingSystem {
         int sell_price = 0;
         int buy_price = 0;
 
-        if (selling){
+        if (selling) {
             offers_map = buy_offers; //Because if we're selling, we're look for buy offers.
             sell_price = tradeoffer.getPrice();
             seller = tradeoffer.getTradeUser();
-        }
-        else {
+        } else {
             offers_map = sell_offers;
             buy_price = tradeoffer.getPrice();
             buyer = tradeoffer.getTradeUser();
@@ -111,11 +111,10 @@ public class TradingSystem {
         ArrayList<TradeOffer> offers = offers_map.get(item);
 
         for (int i = 0; i < offers.size(); i++) {
-            if (selling){
+            if (selling) {
                 buy_price = offers.get(i).getPrice();
                 buyer = offers.get(i).getTradeUser();
-            }
-            else {
+            } else {
                 sell_price = offers.get(i).getPrice();
                 seller = offers.get(i).getTradeUser();
             }
@@ -124,9 +123,9 @@ public class TradingSystem {
             //
 
             if (other_quantity == quantity && buy_price >= sell_price
-                    ) {
+            ) {
                 //AccountManager.getAccount(seller.getPrimary()).deposit(buy_price);
-               // AccountManager.getAccount(buyer.getPrimary()).withdraw(buy_price);
+                // AccountManager.getAccount(buyer.getPrimary()).withdraw(buy_price);
                 //buyer.getGoods().addItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
@@ -137,23 +136,22 @@ public class TradingSystem {
 
     }
 
-    static public ArrayList<String> seeOffers(String item, boolean selling){
+    static public ArrayList<String> seeOffers(String item, boolean selling) {
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         ArrayList<String> returned = new ArrayList<>();
-        if (selling){
+        if (selling) {
             offers_map = sell_offers;
-        }
-        else {
+        } else {
             offers_map = buy_offers;
         }
         ArrayList<TradeOffer> offers = offers_map.get(item);
-        for(int i = 0; i < offers.size(); i++){
+        for (int i = 0; i < offers.size(); i++) {
             returned.add(offers.get(i).toString());
         }
         return returned;
     }
 
-    static public boolean sellPossible(Customer seller, int sell_amount, String item){
+    static public boolean sellPossible(Customer seller, int sell_amount, String item) {
         return seller.getGoods().itemAmount(item) >= sell_amount;
     }
 

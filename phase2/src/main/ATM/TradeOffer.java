@@ -23,7 +23,7 @@ public class TradeOffer {
         return this.tradeUser;
     }
 
-    public String toString(){
+    public String toString() {
         return "User:" + this.tradeUser.getUsername() + " Quantity:" + this.quantity +
                 " Price:" + this.price;
     }

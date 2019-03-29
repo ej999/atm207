@@ -172,10 +172,6 @@ class Customer extends User {
         return primary;
     }
 
-    public boolean hasPrimary() {
-        return primary != null;
-    }
-
     void setPrimary(Account primary) {
         if (primary instanceof Chequing) {
             this.primary = primary.getId();
@@ -183,6 +179,10 @@ class Customer extends User {
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary");
         }
+    }
+
+    public boolean hasPrimary() {
+        return primary != null;
     }
 
     public int getCreditScore() {
@@ -193,7 +193,7 @@ class Customer extends User {
         this.creditScore = creditScore;
     }
 
-    public Inventory getGoods(){
+    public Inventory getGoods() {
         return goods;
     }
 }
