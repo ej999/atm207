@@ -760,43 +760,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-
-        AccountSummary(String p, String t, String d, double b, String r) {
-            this.isPrimary = p;
-            this.accountType = t;
-            this.creationDate = d;
-            this.balance = b;
-            this.mostRecent = r;
-        }
-
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
-
-        public String getAccountType() {
-            return this.accountType;
-        }
-
-        public String getCreationDate() {
-            return this.creationDate;
-        }
-
-        public double getBalance() {
-            return this.balance;
-        }
-
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
-
-    }
-
     private void addBuyOfferScreen() {
         GridPane gridPane = createFormPane();
 
@@ -865,6 +828,43 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private void seeOffersBuyScreen() {
         //TODO: Jason
+    }
+
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+
+        AccountSummary(String p, String t, String d, double b, String r) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
     }
 
 }

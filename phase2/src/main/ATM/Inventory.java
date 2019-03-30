@@ -39,10 +39,10 @@ public class Inventory {
         }
     }
 
-    void withdrawItem(String item, Integer amount){
+    void withdrawItem(String item, Integer amount) {
         if (storage.containsKey(item)) {
             if (storage.get(item) >= amount)
-            storage.put(item, storage.get(item) - amount);
+                storage.put(item, storage.get(item) - amount);
         }
     }
 

@@ -250,7 +250,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setMaxTransactions((Youth) youth,amount);
+                    ((BankManager) this.user).setMaxTransactions((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit failed");
@@ -292,7 +292,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setTransferLimit((Youth) youth,amount);
+                    ((BankManager) this.user).setTransferLimit((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit failed");
