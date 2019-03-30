@@ -8,7 +8,7 @@ public class ETransfer extends Transaction {
     AccountTransferable senderAccount;
     private String question;
     private String answer;
-    private boolean verified = false;
+    private boolean deposited = false;
     private String recipient;
 
 
@@ -24,7 +24,6 @@ public class ETransfer extends Transaction {
 
     public boolean verifyQuestion(String input) {
         if (this.answer.equals(input)) {
-            this.verified = true;
             return true;
         }
         return false;
@@ -35,15 +34,18 @@ public class ETransfer extends Transaction {
     }
 
     public boolean hasBeenDeposited() {
-        return this.verified;
+        return this.deposited;
     }
 
     public String getRecipient() {
         return this.recipient;
     }
 
-    public void unVerify(){
-        this.verified = false;
+    public void deposit(){
+        this.deposited = true;
+    }
+    public void undeposit(){
+        this.deposited = false;
     }
 
 }

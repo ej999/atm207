@@ -41,24 +41,58 @@ final public class ETransferManager {
         // returns true if successful
         ETransfer oldest = null;
         for (ETransfer e: allTransfers){
-            if (e.getRecipient().equals(recipient)){
+            if (e.getRecipient().equals(recipient) && !e.hasBeenDeposited()){
                 oldest = e;
                 break;
             }
         }
         if (oldest != null && oldest.verifyQuestion(response)){
             if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), (Customer)ATM.userManager.getUser(recipient), account)){
+                oldest.deposit();
                 return true;
             }
             else{
-                oldest.unVerify();
+                //oldest.undeposit();
             }
         }
         return false;
     }
 
-    static void validateAll(List<String> responses, Account account){
+    static boolean validateAll(List<String> responses, Account account, String recipient){
         // verifies from most oldest to newest unverified transfers and deposits all amounts into recipient's account
+        // deposits only when all of the responses are verified and correct
+        // precondition: responses.size() == getAll.size()
+        List<ETransfer> transfers = new ArrayList<>();
+        for (ETransfer e: allTransfers){
+            if (e.getRecipient().equals(recipient)){
+                transfers.add(e);
+            }
+        }
+        for (int i = 0; i < responses.size(); i++){
+            boolean verified;
+            try{
+                verified = transfers.get(i).verifyQuestion(responses.get(i));
+            }
+            catch(IndexOutOfBoundsException iloveit){
+                iloveit.printStackTrace();
+                return false;
+            }
+            if (!verified){
+//                for (ETransfer e: transfers)
+//                    e.undeposit();
+                return false;
+            }
+        }
+        for (ETransfer e: transfers){
+            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), (Customer)ATM.userManager.getUser(recipient), account);
+            if (successful){
+                e.deposit();
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
     }
 
     static void request(String requester, String requestee, Double amount){
