@@ -21,7 +21,8 @@ class Youth extends Account implements AccountTransferable {
     int transferTotal;
 
     // Transactions, student account has maximum 20 transfers that they can have
-    // TODO: Interest, age, email
+    // TODO: Interest, age
+    // TODO: When user reaches 20, change to chequing
     // Default 20 transactions, 250 transferTotal
     public Youth(String id, double balance, Customer owner) {
         super(id, balance, owner);

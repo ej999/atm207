@@ -6,14 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * A customer with username, password, list of their accounts, primary chequing account, and net total.
  */
-class Customer extends User {
+class Customer extends User implements Observer {
 
     private static final String type = Customer.class.getName();
     List<String> accounts;
@@ -35,12 +33,14 @@ class Customer extends User {
     public Customer(String username, String password) {
         super(username, password);
         this.accounts = new ArrayList<>();
+        this.creditScore = 100;
     }
 
     public Customer(String username, String password, LocalDate dob) {
         this(username, password);
         this.dob = dob.toString();
         this.age = (int) dob.until(LocalDate.now(), ChronoUnit.YEARS);
+        this.creditScore = 100;
     }
 
     public String getDob() {
@@ -58,6 +58,27 @@ class Customer extends User {
     public String getType() {
         return type;
     }
+
+
+    /**
+     * It should observe today's date and get called when necessary.
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if ((boolean) arg) {
+            List<Account> accounts = ATM.accountManager.getListOfAccounts(getUsername());
+            for (Account a : accounts) {
+                if (a instanceof AccountDebt) {
+                    if (a.balance <= 0) {
+                        creditScore += 1;
+                    } else {
+                        creditScore -= 10;
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * By default, first chequing account added is the primary account.

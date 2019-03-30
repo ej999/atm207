@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 // TODO: 2019-03-29 check if there's static class 
 // TODO: 2019-03-29 controller class -> all -manager class should be an object variable inside a controller
 // TODO: 2019-03-29 consider adding custom exception
-//TODO ATM class no longer extends to Observable. Check how it affects the program.
 // TODO: 2019-03-29 single responsibility: delegating chuncky methods into inner class
 // TODO: 2019-03-29 make Options obsolete
 public class ATM extends Observable {

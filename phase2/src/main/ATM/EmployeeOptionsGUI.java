@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -42,7 +43,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     }
 
     void readAlertsScreen() {
-        GridPane grid = createFormPane();
+//        GridPane grid = createFormPane();
         ListView<String> listView = new ListView<>();
 
         Button goBack = new Button("Go Back");
@@ -66,9 +67,12 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         }
 
         HBox hbox = new HBox(listView);
-        grid.add(hbox, 0, 0);
-        grid.add(hbBtn, 0, 1);
-        window.setScene(new Scene(grid, 400, 350));
+//        grid.add(hbox, 0, 0);
+//        grid.add(hbBtn, 0, 1);
+        VBox vBox = new VBox();
+        vBox.getChildren().add(listView);
+        vBox.getChildren().add(hbBtn);
+        window.setScene(new Scene(vBox, 400, 350));
     }
 
     void createBankAccountScreen() {
@@ -119,7 +123,6 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     }
 
     void undoTransactionsScreen() {
-        // TODO: fix choose account btn
         GridPane grid = createFormPane();
 
         Label usernameLbl = new Label("Username of Customer:");
@@ -152,21 +155,6 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 5);
-
-//        usernameInput.setOn(event -> {
-//            actionTarget.setFill(Color.FIREBRICK);
-//            // Add user's account entries to ComboBox
-//            String username = usernameInput.getText();
-//            if (ATM.userManager.isPresent(username)) {
-//                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
-//                for (Account a : accounts) {
-//                    String choice = a.getClass().getName() + " " + a.getId();
-//                    choiceBox.getItems().add(choice);
-//                }
-//            } else {
-//                actionTarget.setText("User doesn't exists");
-//            }
-//        });
 
         accountPicker.setOnAction(event -> {
             actionTarget.setFill(Color.FIREBRICK);
@@ -205,7 +193,7 @@ public class EmployeeOptionsGUI extends OptionsGUI {
     }
 
     private void createJointAccountScreen() {
-        /* TODO
+        /*
         Would you like to make a preexisting account joint or open a new one?
 
         Pre ->
@@ -220,5 +208,142 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         Select account:
         Cancel | Open a new joint account
          */
+        GridPane gridPane = createFormPane();
+        Label question = new Label("Would you like to make a preexisting account joint or open a new one?");
+        Button pre = new Button("Make a preexisting account joint");
+        Button openNew = new Button("Open a new one");
+        Button cancel = new Button("Cancel");
+
+        HBox hbBtn = new HBox();
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+
+        gridPane.add(question, 0, 0, 2, 1);
+        gridPane.add(pre, 0, 1);
+        gridPane.add(openNew, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        pre.setOnAction(event -> makePreexistingJointAccountScreen());
+        openNew.setOnAction(event -> openNewBankAccountScreen());
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void makePreexistingJointAccountScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label primaryLbl = new Label("Enter username of primary holder");
+        TextField primaryTextField = new TextField();
+
+        Label secondaryLbl = new Label("Enter username of secondary holder:");
+        TextField secondaryTextField = new TextField();
+
+        Button select = new Button("Select account to be made joint:");
+        ChoiceBox<String> choices = new ChoiceBox<>();
+
+        Button cancel = new Button("Cancel");
+        Button make = new Button("Make account joint");
+        HBox hbBtn = new HBox();
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(make);
+
+        gridPane.add(primaryLbl, 0, 0);
+        gridPane.add(primaryTextField, 1, 0);
+        gridPane.add(secondaryLbl, 0, 1);
+        gridPane.add(secondaryTextField, 1, 1);
+        gridPane.add(select, 0, 2);
+        gridPane.add(choices, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        select.setOnAction(event -> {
+            String username = primaryTextField.getText();
+            if (ATM.userManager.isCustomer(username)) {
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+                for (Account a : accounts) {
+                    if (!a.isJoint()) {
+                        choices.getItems().add(a.getType() + " " + a.getId());
+                    }
+                }
+            } else {
+                showAlert(Alert.AlertType.WARNING, window, "Warning", username + " doesn't exist in our system.");
+            }
+        });
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        make.setOnAction(event -> {
+            String secondary = secondaryTextField.getText();
+            if (ATM.userManager.isCustomer(secondary)) {
+                String id = choices.getValue().split("\\w+")[1];
+                Account account = ATM.accountManager.getAccount(id);
+                account.addOwner(secondary);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
+            } else {
+                showAlert(Alert.AlertType.WARNING, window, "Warning", secondary + " doesn't exist in our system.");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void openNewBankAccountScreen() {
+        /*
+        Enter username of primary holder:
+        Enter username of secondary holder:
+        Select account:
+        Cancel | Open a new joint account
+         */
+        GridPane gridPane = createFormPane();
+
+        Label primaryLbl = new Label("Enter username of primary holder");
+        TextField primaryTextField = new TextField();
+
+        Label secondaryLbl = new Label("Enter username of secondary holder:");
+        TextField secondaryTextField = new TextField();
+
+        Label select = new Label("Select account:");
+        ChoiceBox<String> choices = new ChoiceBox<>();
+
+        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+
+        for (String type : accountTypes) {
+            choices.getItems().add(type);
+        }
+
+        Button cancel = new Button("Cancel");
+        Button open = new Button("Open a new joint account");
+        HBox hbBtn = new HBox();
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(open);
+
+        gridPane.add(primaryLbl, 0, 0);
+        gridPane.add(primaryTextField, 1, 0);
+        gridPane.add(secondaryLbl, 0, 1);
+        gridPane.add(secondaryTextField, 1, 1);
+        gridPane.add(select, 0, 2);
+        gridPane.add(choices, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        open.setOnAction(event -> {
+            String primary = primaryTextField.getText();
+            String secondary = secondaryTextField.getText();
+            if (ATM.userManager.isCustomer(secondary) && ATM.userManager.isCustomer(primary)) {
+                User primaryUser = ATM.userManager.getUser(primary);
+                User secondaryUser = ATM.userManager.getUser(secondary);
+                String type = choices.getValue();
+//                ATM.accountManager.addAccount(type, (Customer) primaryUser);
+                // TODO: add joint account to both users
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid usernames");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 }

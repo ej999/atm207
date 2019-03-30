@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public abstract class OptionsGUI {
     User user;
     private ArrayList<Button> options = new ArrayList<>();
     private ArrayList<String> optionsText = new ArrayList<>();
+//    private ArrayList<Method> handlers = new ArrayList<>();
     /*
     This is the idea for options screen: optionsText(programmer's part) -> create buttons -> create layout with buttons
     So basically create the Options screen is semi-automatically done for you.
@@ -46,6 +48,14 @@ public abstract class OptionsGUI {
     public Button getOption(int i) {
         return options.get(i);
     }
+
+    public int getOptionsSize() {
+        return options.size();
+    }
+
+//    public void addHandler(Method method) {
+//        handlers.add(method);
+//    }
 
     /**
      * Combine layout and controls to form Options Screen
@@ -68,11 +78,6 @@ public abstract class OptionsGUI {
      * @param layout gridPane
      */
     public void addOptionsToLayout(GridPane layout) {
-        // TODO: make layout into a grid
-//        for (int i = 1; i <= options.size(); i++) {
-//            layout.add(options.get(i - 1), 0, i);
-//        }
-
         for (int i = 1; i <= options.size(); i++) {
             if ((i - 1) % 2 == 0) {
                 layout.add(options.get(i - 1), 0, i);
@@ -80,30 +85,6 @@ public abstract class OptionsGUI {
                 layout.add(options.get(i - 1), 1, i - 1);
             }
         }
-
-//        ArrayList<Button> arr = options.clone();
-//        int row = 1;
-//        int col = 0;
-//        for (Button b : options) {
-//            layout.add(b,col,row);
-//            col = row % 2;
-//            row++;
-//        }
-
-
-//        int row = 1;
-//        int j = 0;
-//
-//        while (i <= options.size()) {
-//            layout.add(options.get(j),0,row);
-//            layout.add(options.get(j+1),1,row);
-//            i++;
-//            j+=2;
-//        }
-//        for (int i = 1; i < options.size(); i+=2) {
-//            layout.add(options.get(i - 1), 0, i);
-//            layout.add(options.get(i), 1, i);
-//        }
     }
 
     /**
