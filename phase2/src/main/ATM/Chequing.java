@@ -8,11 +8,13 @@ import java.util.List;
 class Chequing extends AccountAsset {
     private static final String type = Chequing.class.getName();
 
-    Chequing(String id, List<Customer> owners) {
+    @SuppressWarnings("unused")
+    public Chequing(String id, List<Customer> owners) {
         super(id, owners);
     }
 
-    Chequing(String id, Customer owner) {
+    @SuppressWarnings("unused")
+    public Chequing(String id, Customer owner) {
         super(id, owner);
     }
 
