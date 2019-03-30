@@ -22,11 +22,7 @@ class Customer extends User implements Observer {
     private String dob;
     //TODO make age useful
     private int age;
-    //TODO: make creitscore work
     private int creditScore;
-    // credit Score should have a default value
-    // each month if the customer payed everything on time it should be increased by a little amount
-    // if anything is unpayed pass a the start of next month deadline the score should decrease drastically
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 

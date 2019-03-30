@@ -14,7 +14,6 @@ class CreditCard extends AccountDebt {
         super(id, balance, owner);
     }
 
-
     CreditCard(String id, double balance, Customer owner1, Customer owner2) {
         super(id, balance, owner1, owner2);
     }

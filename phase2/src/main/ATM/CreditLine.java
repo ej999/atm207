@@ -35,10 +35,10 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      *
      * @param amount      transfer amount
      * @param accountName non-user's account name
-     * @return true if bill has been payed successfully
+     * @return true iff bill has been payed successfully
      */
     public boolean payBill(double amount, String accountName) throws IOException {
-        if (amount > 0) {
+        if (amount > 0 && checkDebtCapacity(amount)) {
             String message = "\nUser " + this.getPrimaryOwner() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
@@ -47,7 +47,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
                 System.out.println("File has been written");
             }
             balance += amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null, this.getClass().getName()));
+            transactionHistory.push(new Transaction("PayBill", amount, null, type));
             return true;
         }
         return false;
@@ -84,7 +84,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
             } else {
                 account.balance -= transferAmount;
             }
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
+            transactionHistory.push(new Transaction("Transfer", transferAmount, account, type));
             return true;
         }
         return false;
@@ -102,15 +102,6 @@ class CreditLine extends AccountDebt implements AccountTransferable {
     private boolean validTransfer(double transferAmount, Customer user, Account account) {
         return validWithdrawal(transferAmount) && user.hasAccount(account);
     }
-
-//    @Override
-//    void undoMostRecentTransaction() {
-//        super.undoMostRecentTransaction();
-//        if (getMostRecentTransaction().get("Type").equals("TransferBetweenAccounts") ||
-//                getMostRecentTransaction().get("Type").equals("TransferToAnotherUser")) {
-//            undoTransfer((Double) getMostRecentTransaction().get("Amount"), (Account) getMostRecentTransaction().get("Account"));
-//        }
-//    }
 
 //    @Override
 //    public String toString() {

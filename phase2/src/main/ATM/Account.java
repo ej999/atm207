@@ -4,21 +4,11 @@ import java.util.*;
 
 abstract class Account {
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
-    private static final String inputFilePath = "phase2/src/resources/deposits.txt"; // useless
+    //    private static final String inputFilePath = "phase2/src/resources/deposits.txt"; // useless
     private final long dateOfCreation;
     private final String id;
     private final ArrayList<String> owners = new ArrayList<>();
     double balance;
-    //    /**
-//     * Possible types include: Withdrawal, Deposit, TransferBetweenAccounts, TransferToAnotherUser, PayBill
-//     */
-//    private final HashMap<String, Object> mostRecentTransaction = new HashMap<String, Object>() {
-//        {
-//            put("Type", "");
-//            put("Amount", 0.00);
-//            put("Account", null);
-//        }
-//    };
     Stack<Transaction> transactionHistory;
 
     Account(String id, double balance, Customer owner) {

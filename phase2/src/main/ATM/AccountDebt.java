@@ -4,7 +4,7 @@ abstract class AccountDebt extends Account {
 
     private static final double DEBT_CAPACITY = 10000;
 
-    public AccountDebt(String id, double balance, Customer owner) {
+    AccountDebt(String id, double balance, Customer owner) {
         super(id, balance, owner);
     }
 
@@ -16,19 +16,22 @@ abstract class AccountDebt extends Account {
         super(id, balance, owner1, owner2);
     }
 
-    // Withdrawal is valid only when amount
     boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 &&
                 withdrawalAmount % 5 == 0 &&
                 new Cash().isThereEnoughBills(withdrawalAmount) &&
-                balance < DEBT_CAPACITY;
+                checkDebtCapacity(withdrawalAmount);
     }
 
-    //TODO: figure out balance of debt accounts
-//    @Override
-//    public double getBalance() {
-//        return -balance;
-//    }
+    /**
+     * All Debt accounts should have a maximum amount of debt you can incur.
+     *
+     * @param amount involved in transaction
+     * @return true iff amount does not increase balance past DEBT_CAPACITY.
+     */
+    boolean checkDebtCapacity(double amount) {
+        return balance + amount <= DEBT_CAPACITY;
+    }
 
     /**
      * Withdraw money from an account (This will increase <balance> since you owe money)
