@@ -14,8 +14,9 @@ import java.util.logging.Logger;
 // TODO: 2019-03-29 check if there's static class 
 // TODO: 2019-03-29 controller class -> all -manager class should be an object variable inside a controller
 // TODO: 2019-03-29 consider adding custom exception
-// TODO: 2019-03-29 single responsibility: delegating chuncky methods into inner class
+// TODO: 2019-03-29 single responsibility: delegating chunky methods into inner class
 // TODO: 2019-03-29 make Options obsolete
+// TODO: 2019-03-30 display as Joint- if it's joint account.
 public class ATM extends Observable {
     // Declare all its components as static variables.
     static ManagersSerialization serialization;
@@ -40,8 +41,6 @@ public class ATM extends Observable {
         new Thread(() -> Application.launch(ATMFrame.class)).start();
         ATMFrame atmFrame = new ATMFrame();
         // do something with atmFrame...
-        //TODO problem occurred after transferring money and logout in GUI
-        // found out caused by RecentTransaction and Transaction in database cannot be deserialized.
 
 
         Date today = new Date();
@@ -71,10 +70,10 @@ public class ATM extends Observable {
             }
 
             if (accountManager.account_map.isEmpty()) {
-                accountManager.addAccount(Chequing.class.getName(), ((Customer) userManager.getUser("steve")), 1234);
-                accountManager.addAccount(CreditLine.class.getName(), ((Customer) userManager.getUser("steve")), 4321);
-                accountManager.addAccount(Saving.class.getName(), ((Customer) userManager.getUser("steve")), 1000);
-                accountManager.addAccount(CreditCard.class.getName(), ((Customer) userManager.getUser("steve")), 420);
+                accountManager.addAccount(Chequing.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 1234);
+                accountManager.addAccount(CreditLine.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 4321);
+                accountManager.addAccount(Saving.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 1000);
+                accountManager.addAccount(CreditCard.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 420);
             }
 
             if (Cash.ATMBills.isEmpty()) {
@@ -83,9 +82,6 @@ public class ATM extends Observable {
                     Cash.ATMBills.put(String.valueOf(d), 50);
                 }
             }
-
-            // Save to FireBase database.
-            serialization.serializeAll();
         }
     }
 
