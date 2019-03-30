@@ -70,10 +70,10 @@ public class ATM extends Observable {
             }
 
             if (accountManager.account_map.isEmpty()) {
-                accountManager.addAccount(Chequing.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 1234);
-                accountManager.addAccount(CreditLine.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 4321);
-                accountManager.addAccount(Saving.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 1000);
-                accountManager.addAccount(CreditCard.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))), 420);
+                accountManager.addAccount(Chequing.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(CreditLine.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(Saving.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(CreditCard.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
             }
 
             if (Cash.ATMBills.isEmpty()) {
