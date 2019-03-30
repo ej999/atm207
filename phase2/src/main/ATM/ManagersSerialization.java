@@ -123,7 +123,7 @@ final class ManagersSerialization {
                 FirebaseApp.initializeApp(options);
 
                 // Get a reference to our database.
-                databaseRef = FirebaseDatabase.getInstance().getReference("/");
+                databaseRef = FirebaseDatabase.getInstance().getReference("/debugging");
             } catch (IOException e) {
                 e.printStackTrace();
             }
