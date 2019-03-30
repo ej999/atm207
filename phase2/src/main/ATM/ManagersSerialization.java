@@ -25,14 +25,14 @@ final class ManagersSerialization {
     }
 
     void deserialize() {
-//        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
-//        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
-//        HashMap<String, User> user_map = new HashMap<>();
-//        for (String username : user_map_temp.keySet()) {
-//            Object object = user_map_temp.get(username);
-//            user_map.put(username, (User) object);
-//        }
-//        ATM.userManager.user_map = user_map;
+        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
+        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
+        HashMap<String, User> user_map = new HashMap<>();
+        for (String username : user_map_temp.keySet()) {
+            Object object = user_map_temp.get(username);
+            user_map.put(username, (User) object);
+        }
+        ATM.userManager.user_map = user_map;
 
         // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in ATM.accountManager.
         HashMap<String, Object> account_list_temp = FireBaseDBAccess.retrieveAll("Accounts", true);
@@ -123,7 +123,7 @@ final class ManagersSerialization {
                 FirebaseApp.initializeApp(options);
 
                 // Get a reference to our database.
-                databaseRef = FirebaseDatabase.getInstance().getReference("/debugging");
+                databaseRef = FirebaseDatabase.getInstance().getReference("/");
             } catch (IOException e) {
                 e.printStackTrace();
             }
