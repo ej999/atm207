@@ -1,17 +1,19 @@
 package ATM;
 
+import java.util.List;
+
 /**
  * A chequing account.
  */
-class Chequing extends AccountAsset implements AccountTransferable {
+class Chequing extends AccountAsset {
     private static final String type = Chequing.class.getName();
 
-    public Chequing(String id, double balance, Customer owner) {
-        super(id, balance, owner);
+    Chequing(String id, List<Customer> owners) {
+        super(id, owners);
     }
 
-    Chequing(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
+    Chequing(String id, Customer owner) {
+        super(id, owner);
     }
 
     @Override
@@ -21,7 +23,7 @@ class Chequing extends AccountAsset implements AccountTransferable {
 
     @Override
     void withdraw(double withdrawalAmount) {
-        super.withdraw(withdrawalAmount, balance > 0 & (balance - withdrawalAmount >= -100));
+        super.withdraw(withdrawalAmount, getBalance() > 0 & (getBalance() - withdrawalAmount >= -100));
     }
 
 //    @Override

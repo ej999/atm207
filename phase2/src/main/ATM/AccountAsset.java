@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.EmptyStackException;
+import java.util.List;
 
 /**
  * Asset accounts include Chequing and Savings Accounts.
  */
 abstract class AccountAsset extends Account implements AccountTransferable {
-
-    AccountAsset(String id, double balance, Customer owner) {
-        super(id, balance, owner);
+    AccountAsset(String id, List<Customer> owners) {
+        super(id, owners);
     }
 
-    AccountAsset(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
+    AccountAsset(String id, Customer owner) {
+        super(id, owner);
     }
 
     /**
@@ -28,26 +28,26 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * @return true if bill has been payed successfully
      */
     public boolean payBill(double amount, String accountName) throws IOException {
-        if (amount > 0 && (balance - amount) >= 0) {
+        if (amount > 0 && (getBalance() - amount) >= 0) {
             String message = "\nUser " + this.getPrimaryOwner() + " paid $" + amount + " to " + accountName + " on " +
                     LocalDateTime.now();
             // Open the file for writing and write to it.
             try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
                 out.println(message);
             }
-            balance -= amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null, this.getClass().getName()));
+            setBalance(getBalance() - amount);
+            getTransactionHistory().push(new Transaction("PayBill", amount, null, this.getClass().getName()));
             return true;
         }
         return false;
     }
 
-    public void undoPaybill(double amount) {
-        balance += amount;
+    private void undoPayBill(double amount) {
+        setBalance(getBalance() + amount);
     }
 
     private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
                 new Cash().isThereEnoughBills(withdrawalAmount);
     }
 
@@ -59,23 +59,23 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      */
     void withdraw(double withdrawalAmount, boolean condition) {
         if (validWithdrawal(withdrawalAmount) && condition) {
-            balance -= withdrawalAmount;
+            setBalance(getBalance() - withdrawalAmount);
             new Cash().cashWithdrawal(withdrawalAmount);
-            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
+            getTransactionHistory().push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
 
     @Override
     void undoWithdrawal(double withdrawalAmount) {
-        balance += withdrawalAmount;
+        setBalance(getBalance() + withdrawalAmount);
         new Cash().cashWithdrawal(-withdrawalAmount);
     }
 
     @Override
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
-            balance += depositAmount;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
+            setBalance(getBalance() + depositAmount);
+            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
         } else {
             System.out.println("invalid deposit");
         }
@@ -83,7 +83,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 
     @Override
     void undoDeposit(double depositAmount) {
-        balance -= depositAmount;
+        setBalance(getBalance() - depositAmount);
     }
 
     /**
@@ -94,11 +94,11 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) ATM.userManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
     }
 
     /**
-     * Transfer money from this account to another user's account (this will decrease their balance)
+     * Transfer money from this account to another user's account (this will decrease their getBalance())
      *
      * @param transferAmount amount to transfer
      * @param user           receives transferAmount
@@ -107,36 +107,36 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      */
     public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
-            balance -= transferAmount;
+            setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
-                account.balance += transferAmount;
+                account.setBalance(account.getBalance() + transferAmount);
             } else {
-                account.balance -= transferAmount;
+                account.setBalance(account.getBalance() - transferAmount);
             }
 //            if (user == ATM.userManager.getUser(getPrimaryOwner())) {
-//                transactionHistory.push(new Transaction("TransferBetweenAccounts", transferAmount, account));
+//                getTransactionHistory().push(new Transaction("TransferBetweenAccounts", transferAmount, account));
 //            } else {
-//                transactionHistory.push(new Transaction("TransferToAnotherUser", transferAmount, account));
+//                getTransactionHistory().push(new Transaction("TransferToAnotherUser", transferAmount, account));
 //            }
             // Simplify things
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
             return true;
         }
         return false;
     }
 
     private void undoTransfer(double transferAmount, Account account) {
-        balance += transferAmount;
+        setBalance(getBalance() + transferAmount);
         if (account instanceof AccountAsset) {
-            account.balance -= transferAmount;
+            setBalance(getBalance() - transferAmount);
         } else {
-            account.balance += transferAmount;
+            setBalance(getBalance() + transferAmount);
         }
 
     }
 
     private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account);
+        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && user.hasAccount(account);
     }
 
 //    @Override
@@ -150,11 +150,11 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 //    }
 
     @Override
-    boolean undoTransactions(int n) {
+    void undoTransactions(int n) {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 try {
-                    Transaction transaction = transactionHistory.pop();
+                    Transaction transaction = getTransactionHistory().pop();
                     String type = transaction.getType();
 
                     if (transaction.getType().equals("Withdrawal")) {
@@ -164,15 +164,13 @@ abstract class AccountAsset extends Account implements AccountTransferable {
                     } else if (transaction.getType().equals("Transfer")) {
                         undoTransfer(transaction.getAmount(), transaction.getAccount());
                     } else if (type.equals("PayBill")) {
-                        undoPaybill(transaction.getAmount());
+                        undoPayBill(transaction.getAmount());
                     }
 
                 } catch (EmptyStackException e) {
                     System.out.println("All transactions on this account have been undone");
                 }
             }
-            return true;
         }
-        return false;
     }
 }

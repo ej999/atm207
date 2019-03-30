@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.EmptyStackException;
+import java.util.List;
 
 class CreditLine extends AccountDebt implements AccountTransferable {
 
@@ -14,16 +15,14 @@ class CreditLine extends AccountDebt implements AccountTransferable {
     /**
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
-    CreditLine(String id, Customer owner) {
+    @SuppressWarnings({"unused"})
+    public CreditLine(String id, List<Customer> owners) {
+        super(id, owners);
+    }
+
+    @SuppressWarnings({"unused"})
+    public CreditLine(String id, Customer owner) {
         super(id, owner);
-    }
-
-    public CreditLine(String id, double balance, Customer owner) {
-        super(id, balance, owner);
-    }
-
-    CreditLine(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
     }
 
     public String getType() {
@@ -46,15 +45,15 @@ class CreditLine extends AccountDebt implements AccountTransferable {
                 out.println(message);
                 System.out.println("File has been written");
             }
-            balance += amount;
-            transactionHistory.push(new Transaction("PayBill", amount, null, type));
+            setBalance(getBalance() - amount);
+            getTransactionHistory().push(new Transaction("PayBill", amount, null, type));
             return true;
         }
         return false;
     }
 
-    public void undoPaybill(double amount) {
-        balance -= amount;
+    private void undoPayBill(double amount) {
+        setBalance(getBalance() - amount);
     }
 
     /**
@@ -65,7 +64,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) ATM.userManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
     }
 
     /**
@@ -78,24 +77,24 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      */
     public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
-            balance += transferAmount;
+            setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
-                account.balance += transferAmount;
+                account.setBalance(getBalance() + transferAmount);
             } else {
-                account.balance -= transferAmount;
+                account.setBalance(getBalance() - transferAmount);
             }
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account, type));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, type));
             return true;
         }
         return false;
     }
 
     private void undoTransfer(double transferAmount, Account account) {
-        balance -= transferAmount;
+        setBalance(getBalance() - transferAmount);
         if (account instanceof AccountAsset) {
-            account.balance -= transferAmount;
+            account.setBalance(getBalance() - transferAmount);
         } else {
-            account.balance += transferAmount;
+            account.setBalance(getBalance() + transferAmount);
         }
     }
 
@@ -121,11 +120,11 @@ class CreditLine extends AccountDebt implements AccountTransferable {
 //    }
 
     @Override
-    boolean undoTransactions(int n) {
+    void undoTransactions(int n) {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 try {
-                    Transaction transaction = transactionHistory.pop();
+                    Transaction transaction = getTransactionHistory().pop();
                     String type = transaction.getType();
 
                     if (transaction.getType().equals("Withdrawal")) {
@@ -135,15 +134,13 @@ class CreditLine extends AccountDebt implements AccountTransferable {
                     } else if (transaction.getType().equals("Transfer")) {
                         undoTransfer(transaction.getAmount(), transaction.getAccount());
                     } else if (type.equals("PayBill")) {
-                        undoPaybill(transaction.getAmount());
+                        undoPayBill(transaction.getAmount());
                     }
 
                 } catch (EmptyStackException e) {
                     System.out.println("All transactions on this account have been undone");
                 }
             }
-            return true;
         }
-        return false;
     }
 }

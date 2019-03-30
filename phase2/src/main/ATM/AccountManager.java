@@ -3,6 +3,7 @@ package ATM;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,9 @@ import java.util.Set;
  * No change of code in AccountManagers needed.
  */
 final class AccountManager {
-    // List of simple name of Account types.
+    // List of the simple names of Account types.
     final List<String> TYPES_OF_ACCOUNTS;
+
     // A mapping of id to the Bank Account
     HashMap<String, Account> account_map = new HashMap<>();
 
@@ -37,24 +39,26 @@ final class AccountManager {
     }
 
     //TODO GIC has unique parameter
-    private Account createAccount(String type, Customer owner, double initialAmount) {
+    private Account createAccount(String type, List<Customer> owners) {
         try {
             // Creating a new instance by getting the proper constructor; instead of using switch cases.
             Class<?> clazz = Class.forName(type);
             // The constructor has to be declared public, otherwise ...........
-            Constructor<?> cTor = clazz.getConstructor(String.class, double.class, Customer.class);
+            // TODO: 2019-03-30 overloading constructor
+            Constructor<?> cTor = clazz.getConstructor(String.class, List.class);
 
             String id = idGenerator();
-            Account newAccount = (Account) cTor.newInstance(id, initialAmount, owner);
+            Account newAccount = (Account) cTor.newInstance(id, owners);
             account_map.put(newAccount.getId(), newAccount);
-            if (newAccount instanceof Saving) {
-                //TODO observer
+            //TODO observer
+//            if (newAccount instanceof Saving) {
 //                ATM.addObserver((Saving) newAccount);
-            }
+//            }
 
-            System.out.println("A User: \"" + newAccount + "\", is successfully created");
+            System.out.println("An account: \"" + newAccount + "\", is successfully created");
             return newAccount;
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                InstantiationException | InvocationTargetException e) {
             System.err.println("Invalid account type. Please try again");
             return null;
         }
@@ -64,10 +68,10 @@ final class AccountManager {
         return account_map.get(id);
     }
 
-    List<Account> getListOfAccounts(String username) {
+    List<Account> getListOfAccounts(Customer customer) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (String key : account_map.keySet()) {
-            if (account_map.get(key).getOwners().contains(username)) {
+            if (account_map.get(key).getOwners().contains(customer)) {
                 accountsOwned.add(account_map.get(key));
             }
         }
@@ -79,17 +83,15 @@ final class AccountManager {
         return account != null;
     }
 
-    void addAccount(String accountType, Customer User, double amount) {
-        Account account = createAccount(accountType, User, amount);
+    void addAccount(String accountType, List<Customer> users) {
+        Account account = createAccount(accountType, users);
+        System.out.println(account);
         if (account != null) {
-            User.addAccount(account);
-            System.out.println("A " + accountType + " account with $" + amount + " balance is successfully created for "
-                    + User.getUsername());
+            for (Customer user : users) {
+                user.addAccount(account);
+                System.out.println("A " + accountType + " account is successfully created for " + user);
+            }
         }
-    }
-
-    void addAccount(String accountType, Customer User) {
-        addAccount(accountType, User, 0);
     }
 
     private String idGenerator() {

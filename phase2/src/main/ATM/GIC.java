@@ -2,39 +2,35 @@ package ATM;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * GIC account.
  * Money is locked up in this account for a period of time with high interest.
  * Withdrawing before the end of a period will result in the endDate being reset.
  */
-class GIC extends AccountAsset implements AccountTransferable {
+class GIC extends AccountAsset {
 
     private static final String type = GIC.class.getName();
-    double rate;
-    Period period;// in months
+    private double rate;
+    private Period period;// in months
     // period = Period.ofMonths(12)
-    LocalDate startDate;
-    LocalDate endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    GIC(String id, double balance, double rate, int p, Customer owner) {
-
-        super(id, balance, owner);
+    @SuppressWarnings({"WeakerAccess"})
+    public GIC(String id, double rate, int p, List<Customer> owners) {
+        super(id, owners);
         this.rate = rate;
         this.period = Period.ofMonths(p);
         startDate = LocalDate.now();
         endDate = startDate.plus(period);
     }
 
-    GIC(String id, double balance, double rate, Period period, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
-        this.rate = rate;
-        this.period = period;
-        startDate = LocalDate.now();
-        endDate = startDate.plus(period);
-
+    @SuppressWarnings({"unused"})
+    public GIC(String id, double rate, int p, Customer owner) {
+        this(id, rate, p, Collections.singletonList(owner));
     }
 
     public String getType() {
@@ -45,7 +41,7 @@ class GIC extends AccountAsset implements AccountTransferable {
         // withdrawing money from GIC causes the payout date to be extended by the period of time
     void withdraw(double withdrawalAmount) {
 
-        super.withdraw(withdrawalAmount, (balance - withdrawalAmount) >= 0);
+        super.withdraw(withdrawalAmount, (getBalance() - withdrawalAmount) >= 0);
         endDate = LocalDate.now().plus(period);
     }
 
@@ -59,18 +55,18 @@ class GIC extends AccountAsset implements AccountTransferable {
 
     }
 
-    public void timeSkipTo(int year, int month, int day){
-        LocalDate skipTo = LocalDate.of(year,month,day);
-        if (endDate.equals(skipTo) || endDate.isBefore(skipTo)){
-           balance += rate * balance;
-           endDate = endDate.plus(period);
+    public void timeSkipTo(int year, int month, int day) {
+        LocalDate skipTo = LocalDate.of(year, month, day);
+        if (endDate.equals(skipTo) || endDate.isBefore(skipTo)) {
+            setBalance(getBalance() + rate * getBalance());
+            endDate = endDate.plus(period);
         }
     }
 
     // not finish
     public void update() {
         if (checkToday()) {
-            balance += rate * balance;
+            setBalance(getBalance() + rate * getBalance());
             this.endDate = endDate.plus(period);
         }
     }

@@ -13,15 +13,16 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * GUI for employee options.
  * //TODO: refactor
  */
-public class EmployeeOptionsGUI extends OptionsGUI {
+class EmployeeOptionsGUI extends OptionsGUI {
 
-    public EmployeeOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    EmployeeOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 
@@ -107,11 +108,12 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String username = usernameInput.getText();
+            User user = ATM.userManager.getUser(username);
             String accountType = Options.class.getPackage().getName() + "." + typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
             if (ATM.userManager.isPresent(username)) {
-                ATM.accountManager.addAccount(accountType, (Customer) ATM.userManager.getUser(username));
+                ATM.accountManager.addAccount(accountType, Collections.singletonList((Customer) user));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
@@ -160,8 +162,9 @@ public class EmployeeOptionsGUI extends OptionsGUI {
             actionTarget.setFill(Color.FIREBRICK);
             // Add user's account entries to ComboBox
             String username = usernameInput.getText();
+            Customer user = (Customer) ATM.userManager.getUser(username);
             if (ATM.userManager.isPresent(username)) {
-                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(user);
                 for (Account a : accounts) {
                     String choice = a.getClass().getName() + " " + a.getId();
                     choiceBox.getItems().add(choice);
@@ -197,14 +200,14 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         Would you like to make a preexisting account joint or open a new one?
 
         Pre ->
-        Enter username of primary holder:
-        Enter username of secondary holder:
-        Select account to be made joint: <non-joint accounts from primary holder>
+        Enter username of primary owner:
+        Enter username of secondary owner:
+        Select account to be made joint: <non-joint accounts from primary owner>
         Cancel | Make account joint
 
         Open new one ->
-        Enter username of primary holder:
-        Enter username of secondary holder:
+        Enter username of primary owner:
+        Enter username of secondary owner:
         Select account:
         Cancel | Open a new joint account
          */
@@ -259,8 +262,9 @@ public class EmployeeOptionsGUI extends OptionsGUI {
 
         select.setOnAction(event -> {
             String username = primaryTextField.getText();
+            Customer customer = (Customer) ATM.userManager.getUser(username);
             if (ATM.userManager.isCustomer(username)) {
-                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(customer);
                 for (Account a : accounts) {
                     if (!a.isJoint()) {
                         choices.getItems().add(a.getType() + " " + a.getId());
@@ -274,10 +278,11 @@ public class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         make.setOnAction(event -> {
             String secondary = secondaryTextField.getText();
+            Customer secondaryHolder = (Customer) ATM.userManager.getUser(secondary);
             if (ATM.userManager.isCustomer(secondary)) {
                 String id = choices.getValue().split("\\w+")[1];
                 Account account = ATM.accountManager.getAccount(id);
-                account.addOwner(secondary);
+                account.addOwner(secondaryHolder);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
             } else {
                 showAlert(Alert.AlertType.WARNING, window, "Warning", secondary + " doesn't exist in our system.");

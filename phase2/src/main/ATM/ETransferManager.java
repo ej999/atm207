@@ -10,7 +10,7 @@ final public class ETransferManager {
 
     static void send(Customer sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount){
         User re = ATM.userManager.getUser(recipient);
-        Account recipientAccount = ATM.accountManager.getAccount(((Customer) re).getPrimary());
+        Account recipientAccount = ATM.accountManager.getAccount(((Customer) re).getPrimaryAccount());
         ETransfer transfer = new ETransfer(sender, senderAccount, recipientAccount, q, a, amount);
         allTransfers.add(transfer);
     }

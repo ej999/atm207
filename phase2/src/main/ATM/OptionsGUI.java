@@ -14,7 +14,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,8 @@ import java.util.List;
  */
 public abstract class OptionsGUI {
     Stage window;
-    Scene welcomeScreen, optionsScreen;
+    Scene optionsScreen;
+    private Scene welcomeScreen;
     User user;
     private ArrayList<Button> options = new ArrayList<>();
     private ArrayList<String> optionsText = new ArrayList<>();
@@ -33,7 +33,7 @@ public abstract class OptionsGUI {
     So basically create the Options screen is semi-automatically done for you.
      */
 
-    public OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         this.window = mainWindow;
         this.welcomeScreen = welcomeScreen;
         this.user = user;
@@ -41,11 +41,11 @@ public abstract class OptionsGUI {
 
     public abstract Scene createOptionsScreen();
 
-    public void addOptionText(String text) {
+    void addOptionText(String text) {
         optionsText.add(text);
     }
 
-    public Button getOption(int i) {
+    Button getOption(int i) {
         return options.get(i);
     }
 
@@ -63,7 +63,7 @@ public abstract class OptionsGUI {
      * @param width  of screen
      * @param height of screen
      */
-    public Scene generateOptionsScreen(int width, int height) {
+    Scene generateOptionsScreen(int width, int height) {
         GridPane gridPane = createFormPane();
         addOptionsToLayout(gridPane);
         addMessageToOptionsScreen("What can we do for you today?", gridPane);
@@ -77,7 +77,7 @@ public abstract class OptionsGUI {
      *
      * @param layout gridPane
      */
-    public void addOptionsToLayout(GridPane layout) {
+    private void addOptionsToLayout(GridPane layout) {
         for (int i = 1; i <= options.size(); i++) {
             if ((i - 1) % 2 == 0) {
                 layout.add(options.get(i - 1), 0, i);
@@ -90,7 +90,7 @@ public abstract class OptionsGUI {
     /**
      * Create all buttons with text from optionsText
      */
-    public void addOptions() {
+    void addOptions() {
         for (String text : optionsText) {
             Button btn = new Button(text);
             if (text.equals("Change password")) {
@@ -102,7 +102,7 @@ public abstract class OptionsGUI {
         }
     }
 
-    public void addMessageToOptionsScreen(String message, GridPane gridPane) {
+    private void addMessageToOptionsScreen(String message, GridPane gridPane) {
         Text _message = new Text(message);
         _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         gridPane.add(_message, 0, 0, 2, 1);
@@ -111,7 +111,7 @@ public abstract class OptionsGUI {
     /**
      * When user clicks 'logout'
      */
-    public void logoutHandler() {
+    void logoutHandler() {
         ATM.serialization.serializeAll();
 
         showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
@@ -124,7 +124,7 @@ public abstract class OptionsGUI {
      *
      * @return gridPane layout
      */
-    public GridPane createFormPane() {
+    GridPane createFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(25, 25, 25, 25));
@@ -186,13 +186,13 @@ public abstract class OptionsGUI {
         cancel.setOnAction(e -> window.setScene(optionsScreen));
     }
 
-    public void changePasswordScreen() {
+    void changePasswordScreen() {
         GridPane grid = createFormPane();
         addUIControlsToPasswordScreen(grid);
         window.setScene(new Scene(grid, 400, 275));
     }
 
-    public void setPasswordHandler() {
+    private void setPasswordHandler() {
         showAlert(Alert.AlertType.CONFIRMATION, window, "Password changed",
                 "Your password has been changed");
         window.setScene(optionsScreen);
@@ -206,7 +206,7 @@ public abstract class OptionsGUI {
      * @param title     title of window
      * @param message   alert message
      */
-    public void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -215,7 +215,7 @@ public abstract class OptionsGUI {
         alert.show();
     }
 
-    public HBox getTwoButtons(String first, String second) {
+    HBox getTwoButtons(String first, String second) {
         /*
         first | second
         e.g. Cancel | Submit
@@ -229,13 +229,14 @@ public abstract class OptionsGUI {
         return hbBtn;
     }
 
-    public ChoiceBox<String> getBankAccounts(String exclusion) {
+    ChoiceBox<String> getBankAccounts(String exclusion) {
         /*
         drop-down of this user's accounts, excluding account <exclusion>
          */
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        String username = user.getUsername();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+//        String username = user.getUsername();
+
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(exclusion)) {
@@ -246,7 +247,7 @@ public abstract class OptionsGUI {
         return choiceBox;
     }
 
-    public void addControlsToLayout(GridPane gridPane, List<Label> labels, List<Node> controls, HBox buttons) {
+    void addControlsToLayout(GridPane gridPane, List<Label> labels, List<Node> controls, HBox buttons) {
         /*
         Like this ->
         label : control

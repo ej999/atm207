@@ -1,19 +1,16 @@
 package ATM;
 
-abstract class AccountDebt extends Account {
+import java.util.List;
 
+abstract class AccountDebt extends Account {
     private static final double DEBT_CAPACITY = 10000;
 
-    AccountDebt(String id, double balance, Customer owner) {
-        super(id, balance, owner);
+    AccountDebt(String id, List<Customer> owners) {
+        super(id, owners);
     }
 
     AccountDebt(String id, Customer owner) {
         super(id, owner);
-    }
-
-    AccountDebt(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
     }
 
     boolean validWithdrawal(double withdrawalAmount) {
@@ -30,7 +27,7 @@ abstract class AccountDebt extends Account {
      * @return true iff amount does not increase balance past DEBT_CAPACITY.
      */
     boolean checkDebtCapacity(double amount) {
-        return balance + amount <= DEBT_CAPACITY;
+        return getBalance() + amount <= DEBT_CAPACITY;
     }
 
     /**
@@ -41,15 +38,15 @@ abstract class AccountDebt extends Account {
     @Override
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
-            balance += withdrawalAmount;
+            setBalance(getBalance() + withdrawalAmount);
             new Cash().cashWithdrawal(withdrawalAmount);
-            transactionHistory.push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
+            getTransactionHistory().push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
 
     @Override
     void undoWithdrawal(double amount) {
-        balance -= amount;
+        setBalance(getBalance() - amount);
         new Cash().cashWithdrawal(-amount);
     }
 
@@ -59,8 +56,8 @@ abstract class AccountDebt extends Account {
     @Override
     void deposit(double depositAmount) {
         if (depositAmount > 0) {
-            balance -= depositAmount;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
+            setBalance(getBalance() - depositAmount);
+            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
             System.out.println("valid deposit");
         } else {
             System.out.println("invalid deposit");
@@ -69,6 +66,6 @@ abstract class AccountDebt extends Account {
 
     @Override
     void undoDeposit(double depositAmount) {
-        balance += depositAmount;
+        setBalance(getBalance() + depositAmount);
     }
 }

@@ -15,7 +15,7 @@ class Customer extends User implements Observer {
 
     private static final String type = Customer.class.getName();
     List<String> accounts;
-    private String primary;
+    private String primaryAccount;
     private Inventory goods = new Inventory();
     private double netTotal;
 
@@ -61,18 +61,18 @@ class Customer extends User implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if ((boolean) arg) {
-            List<Account> accounts = ATM.accountManager.getListOfAccounts(getUsername());
-            for (Account a : accounts) {
-                if (a instanceof AccountDebt) {
-                    if (a.balance <= 0) {
-                        creditScore += 1;
-                    } else {
-                        creditScore -= 10;
-                    }
-                }
-            }
-        }
+//        if ((boolean) arg) {
+//            List<Account> accounts = ATM.accountManager.getListOfAccounts(getUsername());
+//            for (Account a : accounts) {
+//                if (a instanceof AccountDebt) {
+//                    if (a.balance <= 0) {
+//                        creditScore += 1;
+//                    } else {
+//                        creditScore -= 10;
+//                    }
+//                }
+//            }
+//        }
     }
 
 
@@ -84,8 +84,8 @@ class Customer extends User implements Observer {
     void addAccount(Account account) {
         accounts.add(account.getId());
         // If a user has only one checking account, it will be the default destination for any deposits.
-        if (primary == null && account instanceof Chequing) {
-            primary = account.getId();
+        if (primaryAccount == null && account instanceof Chequing) {
+            primaryAccount = account.getId();
         }
     }
 
@@ -113,8 +113,9 @@ class Customer extends User implements Observer {
         return i > 1;
     }
 
+    // TODO: 2019-03-30 add observer to setNetTotal
     // The total of their debt account balances subtracted from the total of their asset account balances.
-    public double getNetTotal() {
+    public void setNetTotal() {
         double sum = 0;
         for (String a : this.accounts) {
             Account acc = ATM.accountManager.getAccount(a);
@@ -125,12 +126,11 @@ class Customer extends User implements Observer {
             }
         }
         netTotal = sum;
-        return netTotal;
     }
 
-//    public double getNetTotal() {
-//        return netTotal;
-//    }
+    public double getNetTotal() {
+        return netTotal;
+    }
 
     // add a line of request in the alerts.text
     private void requestHelp(String s) throws IOException {
@@ -156,7 +156,7 @@ class Customer extends User implements Observer {
 
     void requestAccountToJoint(String accountType, String accountId, String username) throws IOException {
         String request = new Date() + ": Requesting to change " + accountType + " with ID " + accountId + " from " +
-                this.getUsername() + " to a joint account with secondary holder " + username;
+                this.getUsername() + " to a joint account with secondary owner " + username;
         requestHelp(request);
     }
 
@@ -167,7 +167,7 @@ class Customer extends User implements Observer {
 //        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
 //                "\u001B[0m");
 //        for (String id : getAccounts()) {
-//            if (ATM.accountManager.getAccount(id).equals(primary)) {
+//            if (ATM.accountManager.getAccount(id).equals(primaryAccount)) {
 //                returnMessage.append("\nX\t\t\t").append(ATM.accountManager.getAccount(id));
 //            } else {
 //                returnMessage.append("\n\t\t\t").append(ATM.accountManager.getAccount(id));
@@ -185,13 +185,13 @@ class Customer extends User implements Observer {
         return "Customer " + getUsername() + " has a net total of " + getNetTotal();
     }
 
-    public String getPrimary() {
-        return primary;
+    public String getPrimaryAccount() {
+        return primaryAccount;
     }
 
-    void setPrimary(Account primary) {
-        if (primary instanceof Chequing) {
-            this.primary = primary.getId();
+    void setPrimaryAccount(Account primaryAccount) {
+        if (primaryAccount instanceof Chequing) {
+            this.primaryAccount = primaryAccount.getId();
             System.out.println("Account is successfully set to primary");
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary");
@@ -199,7 +199,7 @@ class Customer extends User implements Observer {
     }
 
     public boolean hasPrimary() {
-        return primary != null;
+        return primaryAccount != null;
     }
 
     public int getCreditScore() {

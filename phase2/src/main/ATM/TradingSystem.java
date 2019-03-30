@@ -119,13 +119,13 @@ public class TradingSystem {
                 seller = offers.get(i).getTradeUser();
             }
             int other_quantity = offers.get(i).getQuantity();
-//&& AccountManager.getAccount(buyer.getPrimary()).getBalance() > buy_price add in later
+//&& AccountManager.getAccount(buyer.getPrimaryAccount()).getBalance() > buy_price add in later
             //
 
             if (other_quantity == quantity && buy_price >= sell_price
             ) {
-                //AccountManager.getAccount(seller.getPrimary()).deposit(buy_price);
-                // AccountManager.getAccount(buyer.getPrimary()).withdraw(buy_price);
+                //AccountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
+                // AccountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
                 //buyer.getGoods().addItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);

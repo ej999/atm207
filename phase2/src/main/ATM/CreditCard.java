@@ -1,21 +1,18 @@
 package ATM;
 
+import java.util.List;
+
 class CreditCard extends AccountDebt {
     private static final String type = CreditCard.class.getName();
 
-    /**
-     * Balance is set to 0.00 as default if an initial balance is not provided.
-     */
-    CreditCard(String id, Customer owner) {
+    @SuppressWarnings("unused")
+    public CreditCard(String id, List<Customer> owners) {
+        super(id, owners);
+    }
+
+    @SuppressWarnings("unused")
+    public CreditCard(String id, Customer owner) {
         super(id, owner);
-    }
-
-    public CreditCard(String id, double balance, Customer owner) {
-        super(id, balance, owner);
-    }
-
-    CreditCard(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
     }
 
     public String getType() {

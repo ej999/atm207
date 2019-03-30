@@ -5,9 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.EmptyStackException;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 /**
  * Youth account is qualified to people under 20 years old.
@@ -16,21 +14,22 @@ import java.util.Observer;
  */
 class Youth extends Account implements AccountTransferable, Observer {
     private static final String type = Youth.class.getName();
-    int transactions;
+    private int transactions;
     private int maxTransactions;
     private int transferLimit;
     private int transferTotal;
 
-    // owner's age must be less than 20
-    public Youth(String id, double balance, Customer owner) {
-        super(id, balance, owner);
+    @SuppressWarnings({"unused", "WeakerAccess"})
+    public Youth(String id, List<Customer> owners) {
+        super(id, owners);
         this.maxTransactions = 20;
         this.transferLimit = 250;
     }
 
-    // both owners' age must be less than 20
-    public Youth(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
+    // owner's age must be less than 20
+    @SuppressWarnings("unused")
+    public Youth(String id, Customer owner) {
+        this(id, Collections.singletonList(owner));
     }
 
     public String getType() {
@@ -50,17 +49,17 @@ class Youth extends Account implements AccountTransferable, Observer {
     }
 
     private boolean validWithdrawal(double withdrawalAmount) {
-        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && balance > 0 &&
+        return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
                 new Cash().isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     @Override
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
-            balance -= withdrawalAmount;
+            setBalance(getBalance() - withdrawalAmount);
             new Cash().cashWithdrawal(withdrawalAmount);
             transactions += 1;
-            transactionHistory.push(new Transaction("Withdraw", withdrawalAmount, null, type));
+            getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, type));
         }
     }
 
@@ -74,16 +73,16 @@ class Youth extends Account implements AccountTransferable, Observer {
                 out.println(message);
                 System.out.println("File has been written");
             }
-            balance -= amount;
+            setBalance(getBalance() - amount);
             transactions += 1;
-            transactionHistory.push(new Transaction("PayBill", amount, null, type));
+            getTransactionHistory().push(new Transaction("PayBill", amount, null, type));
             return true;
         }
         return false;
     }
 
-    public void undoPaybill(double amount) {
-        balance += amount;
+    private void undoPayBill(double amount) {
+        setBalance(getBalance() + amount);
         transactions -= 1;
     }
 
@@ -92,7 +91,7 @@ class Youth extends Account implements AccountTransferable, Observer {
      *
      * @param transactionsAmount the set amount of transactions
      */
-    public void setMaxTransactions(int transactionsAmount) {
+    void setMaxTransactions(int transactionsAmount) {
         maxTransactions = transactionsAmount;
     }
 
@@ -101,14 +100,14 @@ class Youth extends Account implements AccountTransferable, Observer {
      *
      * @param transferLimitAmount the set amount of transfers
      */
-    public void setTransferLimit(int transferLimitAmount) {
+    void setTransferLimit(int transferLimitAmount) {
         transferLimit = transferLimitAmount;
     }
 
 
     @Override
     void undoWithdrawal(double withdrawalAmount) {
-        balance += withdrawalAmount;
+        setBalance(getBalance() + withdrawalAmount);
         transactions -= 1;
         new Cash().cashWithdrawal(-withdrawalAmount);
     }
@@ -116,9 +115,9 @@ class Youth extends Account implements AccountTransferable, Observer {
     @Override
     void deposit(double depositAmount) {
         if ((depositAmount > 0) && (transactions < maxTransactions)) {
-            balance += depositAmount;
+            setBalance(getBalance() + depositAmount);
             transactions += 1;
-            transactionHistory.push(new Transaction("Deposit", depositAmount, null, type));
+            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, type));
         } else {
             System.out.println("invalid deposit");
         }
@@ -126,7 +125,7 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     @Override
     void undoDeposit(double depositAmount) {
-        balance -= depositAmount;
+        setBalance(getBalance() - depositAmount);
         transactions -= 1;
     }
 
@@ -138,7 +137,7 @@ class Youth extends Account implements AccountTransferable, Observer {
      * @return true if transfer was successful
      */
     public boolean transferBetweenAccounts(double transferAmount, Account account) {
-        return transferToAnotherUser(transferAmount, (Customer) ATM.userManager.getUser(getPrimaryOwner()), account);
+        return transferToAnotherUser(transferAmount, getPrimaryOwner(), account);
 
     }
 
@@ -152,13 +151,13 @@ class Youth extends Account implements AccountTransferable, Observer {
      */
     public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
         if (validTransfer(transferAmount, user, account)) {
-            balance -= transferAmount;
+            setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
-                account.balance += transferAmount;
+                account.setBalance(account.getBalance() + transferAmount);
             } else {
-                account.balance -= transferAmount;
+                account.setBalance(account.getBalance() - transferAmount);
             }
-            transactionHistory.push(new Transaction("Transfer", transferAmount, account, type));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, type));
             transactions += 1;
             transferTotal += transferAmount;
             return true;
@@ -167,19 +166,19 @@ class Youth extends Account implements AccountTransferable, Observer {
     }
 
     private void undoTransfer(double transferAmount, Account account) {
-        balance += transferAmount;
+        setBalance(getBalance() + transferAmount);
         transactions -= 1;
         transferTotal -= transferAmount;
         if (account instanceof AccountAsset) {
-            account.balance -= transferAmount;
+            account.setBalance(account.getBalance() - transferAmount);
         } else {
-            account.balance += transferAmount;
+            account.setBalance(account.getBalance() + transferAmount);
         }
 
     }
 
     private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return transferAmount > 0 && (balance - transferAmount) >= 0 && user.hasAccount(account) &&
+        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && user.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
 
@@ -199,11 +198,11 @@ class Youth extends Account implements AccountTransferable, Observer {
 //    }
 
     @Override
-    boolean undoTransactions(int n) {
+    void undoTransactions(int n) {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 try {
-                    Transaction transaction = transactionHistory.pop();
+                    Transaction transaction = getTransactionHistory().pop();
                     String type = transaction.getType();
 
                     if (transaction.getType().equals("Withdrawal")) {
@@ -213,15 +212,13 @@ class Youth extends Account implements AccountTransferable, Observer {
                     } else if (transaction.getType().equals("Transfer")) {
                         undoTransfer(transaction.getAmount(), transaction.getAccount());
                     } else if (type.equals("PayBill")) {
-                        undoPaybill(transaction.getAmount());
+                        undoPayBill(transaction.getAmount());
                     }
 
                 } catch (EmptyStackException e) {
                     System.out.println("All transactions on this account have been undone");
                 }
             }
-            return true;
         }
-        return false;
     }
 }

@@ -9,7 +9,7 @@ public class ETransfer extends Transaction {
     private String question;
     private String answer;
     private boolean verified = false;
-    private String recipient;
+    private Customer recipient;
 
 
     public ETransfer(Customer sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
@@ -38,7 +38,7 @@ public class ETransfer extends Transaction {
         return this.verified;
     }
 
-    public String getRecipient() {
+    public Customer getRecipient() {
         return this.recipient;
     }
 

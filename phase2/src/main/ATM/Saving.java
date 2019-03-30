@@ -1,21 +1,25 @@
 package ATM;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * A savings account.
  */
-class Saving extends AccountAsset implements Observer, AccountTransferable {
+class Saving extends AccountAsset implements Observer {
     private static final String type = Saving.class.getName();
 
-    public Saving(String id, double balance, Customer owner) {
-        super(id, balance, owner);
+    @SuppressWarnings({"unused"})
+    public Saving(String id, List<Customer> owners) {
+        super(id, owners);
     }
 
-    Saving(String id, double balance, Customer owner1, Customer owner2) {
-        super(id, balance, owner1, owner2);
+    @SuppressWarnings({"unused"})
+    public Saving(String id, Customer owner) {
+        super(id, owner);
     }
+
 
     public String getType() {
         return type;
@@ -23,7 +27,7 @@ class Saving extends AccountAsset implements Observer, AccountTransferable {
 
     @Override
     void withdraw(double withdrawalAmount) {
-        super.withdraw(withdrawalAmount, (balance - withdrawalAmount) >= 0);
+        super.withdraw(withdrawalAmount, (getBalance() - withdrawalAmount) >= 0);
     }
 
     /**
@@ -32,7 +36,7 @@ class Saving extends AccountAsset implements Observer, AccountTransferable {
     @Override
     public void update(Observable o, Object arg) {
         if ((boolean) arg) {
-            balance += 0.001 * balance;
+            setBalance(getBalance() + 0.001 * getBalance());
         }
     }
 

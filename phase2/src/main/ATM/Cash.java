@@ -9,6 +9,7 @@ import java.util.*;
 /**
  * A utility class that handles cash storage, withdrawal, deposit of bills.
  * TODO optimize the usage of methods
+ * // TODO: 2019-03-30 nonstatic
  */
 final class Cash {
     static final List<Integer> DENOMINATIONS;

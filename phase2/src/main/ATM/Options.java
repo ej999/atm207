@@ -192,9 +192,10 @@ class Options {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
+        Customer customer = (Customer) ATM.userManager.getUser(username);
         if (ATM.userManager.isPresent(username) && ATM.userManager.isCustomer(username)) {
             String accountType = selectAccountTypePrompt();
-            ATM.accountManager.addAccount(accountType, (Customer) ATM.userManager.getUser(username));
+            ATM.accountManager.addAccount(accountType, Collections.singletonList(customer));
         } else {
             System.err.println("Invalid customer. Please try again");
         }
@@ -234,15 +235,6 @@ class Options {
         // Logout the current user.
         this.current_user = null;
     }
-
-//    private void loadCustomPrompt() {
-//        System.out.println("Please enter the name of the file you want to load from (don't include its extension.)" +
-//                " Note that it must be stored in the phase1 folder");
-//        Scanner reader1 = new Scanner(System.in);
-//        String answer = reader1.nextLine();
-//        HashMap<String, User> custom_map = ManagersSerialization.loadCustom(answer);
-//        ATM.userManager.user_map = custom_map;
-//    }
 
     private void clearDataPrompt() {
         System.out.print("WARNING: Committing a fraud with value exceeding one million dollars might result in 14 year jail sentence! (Y/N): ");
@@ -334,7 +326,7 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((Customer) current_user).setPrimary(ATM.accountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
+            ((Customer) current_user).setPrimaryAccount(ATM.accountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
         } else {
             //TODO create custom exception
             System.err.println("Sorry, you can only change your primary account if you have more than one chequing " +
@@ -372,7 +364,7 @@ class Options {
             return;
         }
 
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
         Scanner reader = new Scanner(System.in);
 
         System.out.print("Are you depositing [1] cash or [2] cheque? ");
@@ -444,7 +436,7 @@ class Options {
 
         if (ATM.userManager.isPresent(username)) {
             Customer user = (Customer) ATM.userManager.getUser(username);
-            ((AccountTransferable) from).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimary()));
+            ((AccountTransferable) from).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimaryAccount()));
             System.out.println("Transfer is successful");
         } else {
             System.err.println("The username does not exist. Transfer is cancelled");
@@ -494,7 +486,7 @@ class Options {
         System.out.println(sell_offers);
     }
 
-    private void addToInventory(){
+    private void addToInventory() {
         Scanner reader = new Scanner(System.in);
         System.out.println("What item would you like to deposit?");
         String item = reader.nextLine();
@@ -504,7 +496,7 @@ class Options {
         current_customer.getGoods().depositItem(item, amount);
     }
 
-    private void removeFromInventory(){
+    private void removeFromInventory() {
         Scanner reader = new Scanner(System.in);
         System.out.println("What item would you like to withdraw?");
         String item = reader.nextLine();

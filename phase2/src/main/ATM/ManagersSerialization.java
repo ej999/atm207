@@ -25,15 +25,14 @@ final class ManagersSerialization {
     }
 
     void deserialize() {
-        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
-        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
-
-        HashMap<String, User> user_map = new HashMap<>();
-        for (String username : user_map_temp.keySet()) {
-            Object object = user_map_temp.get(username);
-            user_map.put(username, (User) object);
-        }
-        ATM.userManager.user_map = user_map;
+//        // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
+//        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
+//        HashMap<String, User> user_map = new HashMap<>();
+//        for (String username : user_map_temp.keySet()) {
+//            Object object = user_map_temp.get(username);
+//            user_map.put(username, (User) object);
+//        }
+//        ATM.userManager.user_map = user_map;
 
         // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in ATM.accountManager.
         HashMap<String, Object> account_list_temp = FireBaseDBAccess.retrieveAll("Accounts", true);
@@ -60,7 +59,7 @@ final class ManagersSerialization {
             Account account = ATM.accountManager.getAccount(id);
 
             if (account.getTransactionHistory() == null) {
-                account.transactionHistory = new Stack<Transaction>();
+                account.setTransactionHistory(new Stack<>());
             }
         }
 
@@ -124,7 +123,7 @@ final class ManagersSerialization {
                 FirebaseApp.initializeApp(options);
 
                 // Get a reference to our database.
-                databaseRef = FirebaseDatabase.getInstance().getReference("/");
+                databaseRef = FirebaseDatabase.getInstance().getReference("/debugging");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -186,7 +185,6 @@ final class ManagersSerialization {
                                 Class classOfObj = Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
                                 Gson gson = new Gson();
                                 Object object = gson.fromJson(childSnapshot.getValue().toString(), classOfObj);
-
                                 object_map.put(childSnapshot.getKey(), object);
                             } else {
                                 object_map.put(childSnapshot.getKey(), childSnapshot.getValue());

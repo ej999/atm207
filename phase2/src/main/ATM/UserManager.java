@@ -17,7 +17,7 @@ import java.util.Set;
  * No change of code in UserManager needed.
  */
 final class UserManager {
-    // List of simple name of User types.
+    // List of the simple names of User types.
     final List<String> USER_TYPE_NAMES;
 
     // A mapping of Username to the User.

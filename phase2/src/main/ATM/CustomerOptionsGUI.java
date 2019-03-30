@@ -23,7 +23,7 @@ import java.util.*;
  */
 public class CustomerOptionsGUI extends OptionsGUI {
 
-    public CustomerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    CustomerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 
@@ -111,7 +111,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<AccountSummary> getSummary() {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
@@ -120,7 +120,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Date date_ = new Date(a.getDateOfCreation());
             String date = dateFormat.format(date_);
 
-            if (a.getId().equals(((Customer) user).getPrimary())) {
+            if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
                 sum = new AccountSummary("X", a.getClass().getName(), date,
                         a.getBalance(), recent);
             } else {
@@ -132,51 +132,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
         return summaries;
     }
 
-    public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-
-        public AccountSummary(String p, String t, String d, double b, String r) {
-            this.isPrimary = p;
-            this.accountType = t;
-            this.creationDate = d;
-            this.balance = b;
-            this.mostRecent = r;
-        }
-
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
-
-        public String getAccountType() {
-            return this.accountType;
-        }
-
-        public String getCreationDate() {
-            return this.creationDate;
-        }
-
-        public double getBalance() {
-            return this.balance;
-        }
-
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
-
-    }
-
     private void payBillScreen() {
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        String username = user.getUsername();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -236,8 +198,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> otherChoiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        String username = user.getUsername();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -297,8 +258,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        String username = user.getUsername();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
@@ -337,8 +297,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
             if (ATM.userManager.isPresent(otherAccount)) {
-                Customer user = (Customer) ATM.userManager.getUser(username);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimary()))) {
+                if (((AccountTransferable) account).transferToAnotherUser(amount, (Customer) user, ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
@@ -352,33 +311,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-
-    private void depositScreen() {
-        GridPane gridPane = createFormPane();
-
-        Button cancel = new Button("Cancel");
-        Button depoCash = new Button("Deposit Cash");
-        Button depoCheque = new Button("Deposit Cheque");
-
-        gridPane.add(cancel, 0, 0);
-        gridPane.add(depoCash, 1, 0);
-        gridPane.add(depoCheque, 2, 0);
-
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        depoCash.setOnAction(event -> depoCashScreen());
-        depoCheque.setOnAction(event -> depoChequeScreen());
-
-        if (!((Customer) user).hasPrimary()) {
-            window.setScene(optionsScreen);
-            showAlert(Alert.AlertType.ERROR, window, "Error", "Deposit cannot be made since you have no primary accounts. " +
-                    "Request a new account in the main menu.");
-        }
-
-        window.setScene(new Scene(gridPane));
-    }
-
     private void depoCashScreen() {
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane grid = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -425,8 +359,33 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(grid));
     }
 
+
+    private void depositScreen() {
+        GridPane gridPane = createFormPane();
+
+        Button cancel = new Button("Cancel");
+        Button depoCash = new Button("Deposit Cash");
+        Button depoCheque = new Button("Deposit Cheque");
+
+        gridPane.add(cancel, 0, 0);
+        gridPane.add(depoCash, 1, 0);
+        gridPane.add(depoCheque, 2, 0);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        depoCash.setOnAction(event -> depoCashScreen());
+        depoCheque.setOnAction(event -> depoChequeScreen());
+
+        if (!((Customer) user).hasPrimary()) {
+            window.setScene(optionsScreen);
+            showAlert(Alert.AlertType.ERROR, window, "Error", "Deposit cannot be made since you have no primary accounts. " +
+                    "Request a new account in the main menu.");
+        }
+
+        window.setScene(new Scene(gridPane));
+    }
+
     private void depoChequeScreen() {
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimary());
+        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane gridPane = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -448,6 +407,55 @@ public class CustomerOptionsGUI extends OptionsGUI {
             primary.deposit(Double.valueOf(amountInput.getText()));
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "Amount successfully deposited");
             window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void requestJointAccountScreen() {
+        /*
+        Enter username of secondary owner:
+        Select account type picker drop-down CHOICE-BOX control element
+        Cancel | Request
+         */
+        GridPane gridPane = createFormPane();
+
+        Label usernameSecondary = new Label("Enter username of secondary owner:");
+        TextField input = new TextField();
+        Label accountTypeLbl = new Label("Select account type:");
+        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
+        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+
+        for (String type : accountTypes) {
+            accountTypeDropDown.getItems().add(type);
+        }
+
+        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        Button cancel = (Button) hbBtn.getChildren().get(0);
+        Button request = (Button) hbBtn.getChildren().get(1);
+
+        gridPane.add(usernameSecondary, 0, 0);
+        gridPane.add(input, 1, 0);
+        gridPane.add(accountTypeLbl, 0, 1);
+        gridPane.add(accountTypeDropDown, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        request.setOnAction(event -> {
+            String username = input.getText();
+            String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
+            if (!username.equals(user.getUsername()) && ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
+                try {
+                    ((Customer) user).requestJointAccount(accountType, username);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
+                window.setScene(optionsScreen);
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong");
+            }
+
         });
 
         window.setScene(new Scene(gridPane));
@@ -523,50 +531,40 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void requestJointAccountScreen() {
-        /*
-        Enter username of secondary holder:
-        Select account type picker drop-down CHOICE-BOX control element
-        Cancel | Request
-         */
+    private void changePrimaryScreen() {
         GridPane gridPane = createFormPane();
+        Label selectLbl = new Label("Select new primary account:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        Label usernameSecondary = new Label("Enter username of secondary holder:");
-        TextField input = new TextField();
-        Label accountTypeLbl = new Label("Select account type:");
-        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
-
-        for (String type : accountTypes) {
-            accountTypeDropDown.getItems().add(type);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        for (Account a : accounts) {
+            if (a instanceof Chequing) {
+                choiceBox.getItems().add(a.getType() + " " + a.getId());
+            }
         }
 
-        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        HBox hbBtn = getTwoButtons("Cancel", "Change Primary Account");
         Button cancel = (Button) hbBtn.getChildren().get(0);
-        Button request = (Button) hbBtn.getChildren().get(1);
+        Button change = (Button) hbBtn.getChildren().get(1);
 
-        gridPane.add(usernameSecondary, 0, 0);
-        gridPane.add(input, 1, 0);
-        gridPane.add(accountTypeLbl, 0, 1);
-        gridPane.add(accountTypeDropDown, 1, 1);
-        gridPane.add(hbBtn, 1, 2);
+        gridPane.add(selectLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(hbBtn, 1, 1);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        request.setOnAction(event -> {
-            String username = input.getText();
-            String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
-            if (!username.equals(user.getUsername()) && ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
-                try {
-                    ((Customer) user).requestJointAccount(accountType, username);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
-                window.setScene(optionsScreen);
+        change.setOnAction(event -> {
+            if (!((Customer) user).hasMoreThanOneChequing()) {
+                String message = "Sorry, you can only change your primary account if you have more than one chequing " +
+                        "account.\nHowever, you are welcome to request creating a new chequing account in the main menu.";
+                showAlert(Alert.AlertType.INFORMATION, window, "Info", message);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong");
+                String id = choiceBox.getValue().split("\\s+")[1];
+                Account newPrime = ATM.accountManager.getAccount(id);
+                ((Customer) user).setPrimaryAccount(newPrime);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Confirmation", "Your primary account has been changed.");
             }
 
+            window.setScene(optionsScreen);
         });
 
         window.setScene(new Scene(gridPane));
@@ -610,43 +608,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void changePrimaryScreen() {
-        GridPane gridPane = createFormPane();
-        Label selectLbl = new Label("Select new primary account:");
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+    private ObservableList<Transaction> getTransaction() {
+        ObservableList<Transaction> transactions = FXCollections.observableArrayList();
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
-            if (a instanceof Chequing) {
-                choiceBox.getItems().add(a.getType() + " " + a.getId());
-            }
+            transactions.addAll(a.getTransactionHistory());
         }
-
-        HBox hbBtn = getTwoButtons("Cancel", "Change Primary Account");
-        Button cancel = (Button) hbBtn.getChildren().get(0);
-        Button change = (Button) hbBtn.getChildren().get(1);
-
-        gridPane.add(selectLbl, 0, 0);
-        gridPane.add(choiceBox, 1, 0);
-        gridPane.add(hbBtn, 1, 1);
-
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        change.setOnAction(event -> {
-            if (!((Customer) user).hasMoreThanOneChequing()) {
-                String message = "Sorry, you can only change your primary account if you have more than one chequing " +
-                        "account.\nHowever, you are welcome to request creating a new chequing account in the main menu.";
-                showAlert(Alert.AlertType.INFORMATION, window, "Info", message);
-            } else {
-                String id = choiceBox.getValue().split("\\s+")[1];
-                Account newPrime = ATM.accountManager.getAccount(id);
-                ((Customer) user).setPrimary(newPrime);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Confirmation", "Your primary account has been changed.");
-            }
-
-            window.setScene(optionsScreen);
-        });
-
-        window.setScene(new Scene(gridPane));
+        return transactions;
     }
 
     private Account getAccountFromChoiceBox(ChoiceBox<String> choiceBox) {
@@ -701,28 +669,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(vBox, 550, 300));
     }
 
-    private ObservableList<Transaction> getTransaction() {
-        ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
-        for (Account a : accounts) {
-            transactions.addAll(a.getTransactionHistory());
-        }
-        return transactions;
-    }
-
     private void accountToJointScreen() {
         GridPane gridPane = createFormPane();
         Label selectLbl = new Label("Select non-joint account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             if (!a.isJoint()) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
 
-        Label usernameLbl = new Label("Enter username of secondary holder:");
+        Label usernameLbl = new Label("Enter username of secondary owner:");
         TextField input = new TextField();
 
         Button cancel = new Button("Cancel");
@@ -768,7 +727,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label itemQuantity = new Label("How much do you have? (in grams)");
         TextField quantityInput = new TextField();
 
-        Label itemPricing= new Label("How much are you selling it for? (in dollars)");
+        Label itemPricing = new Label("How much are you selling it for? (in dollars)");
         TextField priceInput = new TextField();
 
         Button cancel = new Button("Cancel");
@@ -799,6 +758,43 @@ public class CustomerOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
+    }
+
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+
+        AccountSummary(String p, String t, String d, double b, String r) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
     }
 
     private void addBuyOfferScreen() {
@@ -866,6 +862,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     private void seeOffersSellScreen() {
         //TODO: Jason
     }
+
     private void seeOffersBuyScreen() {
         //TODO: Jason
     }
