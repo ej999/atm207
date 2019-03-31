@@ -110,8 +110,8 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
             if (ATM.userManager.isCustomer(username)) {
                 User user = ATM.userManager.getUser(username);
-                int age = ((Customer) user).getAge();
-                if (accountType.equals("Youth")) {
+                if (accountType.equals("Youth") && ((Customer) user).getDob() != null) {
+                    int age = ((Customer) user).getAge();
                     if (age < 20) {
                         ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
                         showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
@@ -119,7 +119,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
                     } else {
                         showAlert(Alert.AlertType.ERROR, window, "Error", "You are not eligible for a Youth account.");
                     }
-                } else {
+                } else if (!accountType.equals("Youth")) {
                     ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
                     window.setScene(optionsScreen);
