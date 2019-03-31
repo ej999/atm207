@@ -194,6 +194,11 @@ class Customer extends User implements Observer {
                 this.getUsername() + " to a joint account with secondary owner " + username;
         requestHelp(request);
     }
+    void requestGICAccount(int month, double rate) throws IOException {
+        String request = new Date() + ": Requesting to create GIC account from " + this.getUsername() +
+                " with interest rate" + rate + "period " + month + "month";
+        requestHelp(request);
+    }
 
     String getPrimaryAccount() {
         return primaryAccount;
