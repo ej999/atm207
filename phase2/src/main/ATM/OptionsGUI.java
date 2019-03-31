@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GUI for common options across all users.
+ * A GUI for common options across all users.
  */
 public abstract class OptionsGUI {
     Stage window;
@@ -27,10 +27,11 @@ public abstract class OptionsGUI {
     private Scene welcomeScreen;
     private ArrayList<Button> options = new ArrayList<>();
     private ArrayList<String> optionsText = new ArrayList<>();
-//    private ArrayList<Method> handlers = new ArrayList<>();
+
     /*
-    This is the idea for options screen: optionsText(programmer's part) -> create buttons -> create layout with buttons
-    So basically create the Options screen is semi-automatically done for you.
+    This is the idea for options screen:
+        options text (programmer's part) -> create buttons -> create layout with buttons -> generate options screen
+        the programmer just needs to add in the options text.
      */
 
     OptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
@@ -49,24 +50,13 @@ public abstract class OptionsGUI {
         return options.get(i);
     }
 
-    public int getOptionsSize() {
-        return options.size();
-    }
-
-//    public void addHandler(Method method) {
-//        handlers.add(method);
-//    }
-
     /**
      * Combine layout and controls to form Options Screen
-     *
-     * @param width  of screen
-     * @param height of screen
      */
-    Scene generateOptionsScreen(int width, int height) {
+    Scene generateOptionsScreen() {
         GridPane gridPane = createFormPane();
         addOptionsToLayout(gridPane);
-        addMessageToOptionsScreen("What can we do for you today?", gridPane);
+        addMessageToOptionsScreen(gridPane);
         optionsScreen = new Scene(gridPane);
         optionsScreen.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
         return optionsScreen;
@@ -102,14 +92,14 @@ public abstract class OptionsGUI {
         }
     }
 
-    private void addMessageToOptionsScreen(String message, GridPane gridPane) {
-        Text _message = new Text(message);
-        _message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        gridPane.add(_message, 0, 0, 2, 1);
+    private void addMessageToOptionsScreen(GridPane gridPane) {
+        Text message = new Text("What can we do for you today?");
+        message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        gridPane.add(message, 0, 0, 2, 1);
     }
 
     /**
-     * When user clicks 'logout'
+     * When user selects 'logout'
      */
     void logoutHandler() {
         ATM.serialization.serializeAll();
@@ -234,8 +224,8 @@ public abstract class OptionsGUI {
         drop-down of this user's accounts, excluding account <exclusion>
          */
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
-//        String username = user.getUsername();
 
+        // TODO: accounts = []
         List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
             String accountName = a.getClass().getName();

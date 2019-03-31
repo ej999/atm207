@@ -15,15 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GUI for Bank Manager.
+ * A GUI for Bank Manager.
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
-    /**
-     * Constructor should take in main window, welcome screen, user? from ATM
-     * Let's think of some methods...
-     * - createBMOptionsScreen
-     * - createAlerts
-     */
 
     public BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
@@ -57,7 +51,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(9).setOnAction(event -> setYouthTransfersScreen());
         getOption(10).setOnAction(event -> ManageGICScreen());
 
-        return generateOptionsScreen(325, 450);
+        return generateOptionsScreen();
     }
 
     private void createUserScreen() {
@@ -328,8 +322,5 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         }
-
-
-
 
 }

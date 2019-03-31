@@ -16,8 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * GUI for customer options.
- * TODO: some methods contain duplicate code.
+ * A GUI for customer options.
  */
 public class CustomerOptionsGUI extends OptionsGUI {
 
@@ -63,7 +62,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(14).setOnAction(event -> logoutHandler());
 //        getOption(15).setOnAction(event -> InvestGICScreen);
 
-        return generateOptionsScreen(500, 350);
+        return generateOptionsScreen();
     }
 
     private void showAccountSummaryScreen() {

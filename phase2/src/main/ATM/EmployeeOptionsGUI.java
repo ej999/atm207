@@ -13,12 +13,13 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * GUI for employee options.
+ * A GUI for employee options.
  */
 class EmployeeOptionsGUI extends OptionsGUI {
 
@@ -41,11 +42,10 @@ class EmployeeOptionsGUI extends OptionsGUI {
         getOption(2).setOnAction(event -> createJointAccountScreen());
         getOption(4).setOnAction(event -> undoTransactionsScreen());
 
-        return generateOptionsScreen(325, 300);
+        return generateOptionsScreen();
     }
 
     void readAlertsScreen() {
-//        GridPane grid = createFormPane();
         ListView<String> listView = new ListView<>();
 
         Button goBack = new Button("Go Back");
@@ -68,9 +68,6 @@ class EmployeeOptionsGUI extends OptionsGUI {
             e.printStackTrace();
         }
 
-        HBox hbox = new HBox(listView);
-//        grid.add(hbox, 0, 0);
-//        grid.add(hbBtn, 0, 1);
         VBox vBox = new VBox();
         vBox.getChildren().add(listView);
         vBox.getChildren().add(hbBtn);
@@ -132,7 +129,6 @@ class EmployeeOptionsGUI extends OptionsGUI {
         TextField usernameInput = new TextField();
         usernameInput.setPromptText("username");
 
-//        Label accountLbl = new Label("Choose account:");
         Button accountPicker = new Button("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         HBox hbox = new HBox(choiceBox);
@@ -150,7 +146,6 @@ class EmployeeOptionsGUI extends OptionsGUI {
         grid.add(usernameLbl, 0, 0);
         grid.add(usernameInput, 1, 0);
         grid.add(accountPicker, 0, 1);
-//        grid.add(accountLbl,0,1);
         grid.add(hbox, 1, 1);
         grid.add(n, 0, 2);
         grid.add(numberInput, 1, 2);
