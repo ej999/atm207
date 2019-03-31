@@ -113,6 +113,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
         List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
         for (Account a : accounts) {
+
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
