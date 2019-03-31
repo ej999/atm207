@@ -32,7 +32,7 @@ public class TradingSystem {
     TradingSystem() {
     }
 
-     public void addSellOffer(String item, TradeOffer tradeoffer) {
+     static public void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, true)) {
@@ -54,7 +54,7 @@ public class TradingSystem {
 
     }}
 
-     public void addBuyOffer(String item, TradeOffer tradeoffer) {
+     static public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, false)) {
@@ -77,7 +77,7 @@ public class TradingSystem {
     }}
 
     //Note: This method will remove all buy or sell offers of a user for a certain item
-     public void removeOffer(String item, Customer user, boolean selling){
+     static public void removeOffer(String item, Customer user, boolean selling){
                 if (selling) {
                     ArrayList<TradeOffer> offers = sell_offers.get(item);
                     for (int i = 0; i < offers.size(); i++) {
@@ -98,7 +98,7 @@ public class TradingSystem {
             }
 
 
-     public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
+     static public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
 
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         //default values, but these will never get used
@@ -147,7 +147,7 @@ public class TradingSystem {
     }
 
 
-     public ArrayList<String> seeOffers(String item, boolean selling) {
+     static public ArrayList<String> seeOffers(String item, boolean selling) {
 
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         ArrayList<String> returned = new ArrayList<>();
