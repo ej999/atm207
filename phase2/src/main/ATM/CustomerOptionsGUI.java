@@ -941,6 +941,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
 //    private void InvestGICScreen(){
 //        Label DealsLabel = new Label("Choose a Deal");
 //        ChoiceBox<String> typeChoice = new ChoiceBox<>();
+
+        /*
+        Choose a Deal: drop-down
+
+
+        Cancel | Confirm
+         */
 //
 //    }
 
