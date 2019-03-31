@@ -26,7 +26,6 @@ class Youth extends Account implements AccountTransferable, Observer {
         this.transferLimit = 250;
     }
 
-    // owner's age must be less than 20
     @SuppressWarnings("unused")
     public Youth(String id, Customer owner) {
         this(id, Collections.singletonList(owner));
