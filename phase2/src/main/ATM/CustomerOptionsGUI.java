@@ -879,7 +879,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
@@ -909,7 +909,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
