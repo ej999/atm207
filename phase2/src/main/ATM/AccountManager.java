@@ -122,6 +122,7 @@ final class AccountManager {
                 }
             }
         }
+        System.out.println(id);
         return id;
     }
 }
