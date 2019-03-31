@@ -140,7 +140,7 @@ abstract class Account implements Serializable {
         this.balance = balance;
     }
 
-    String getPrimaryOwner() {
+    public String getPrimaryOwner() {
         // Assuming primary account owner.
         return primaryOwner;
     }
