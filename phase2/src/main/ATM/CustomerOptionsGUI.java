@@ -147,6 +147,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
             }
         }
 
+        System.out.println(accounts);
+
         Label amountLbl = new Label("Amount:");
         TextField amountInput = new TextField(); // assume user enters a number
 
@@ -343,7 +345,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         grid.add(hbBtn, 1, 4);
 
         // Handlers
-        goBack.setOnAction(event -> depoCashScreen());
+        goBack.setOnAction(event -> depositScreen());
         deposit.setOnAction(event -> {
             // d -> quantity
             Map<Integer, Integer> depositedBills = new HashMap<>();
