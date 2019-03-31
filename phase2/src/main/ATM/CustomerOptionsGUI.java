@@ -1126,61 +1126,61 @@ public class CustomerOptionsGUI extends OptionsGUI {
         if (oldest == null) {
             showAlert(Alert.AlertType.ERROR, window, "Error", "You have no incoming eTransfers");
             window.setScene(optionsScreen);
+        } else {
+            Label chooseLbl = new Label("Select account to deposit to");
+            ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+            // Add user's accounts as entries to ComboBox
+            List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+            for (Account a : accounts) {
+                String accountName = a.getClass().getName();
+                if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+                    String choice = accountName + " " + a.getId();
+                    choiceBox.getItems().add(choice);
+                } else {
+                    String choice = accountName + " " + a.getId();
+                    choiceBox.getItems().add(choice);
+                }
+            }
+
+            Label oldestLbl = new Label(oldest.toString());
+            Label questionLbl = new Label("Security question: " + oldest.getQuestion() + "?");
+
+            Label answerLbl = new Label("Enter answer: ");
+            TextField answerInput = new TextField();
+
+            Button cancel = new Button("Cancel");
+            Button pay = new Button("Transfer");
+            HBox hbBtn = new HBox(10);
+            hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+            hbBtn.getChildren().add(cancel);
+            hbBtn.getChildren().add(pay);
+
+            gridPane.add(chooseLbl, 0, 0);
+            gridPane.add(choiceBox, 1, 0);
+            gridPane.add(oldestLbl, 0, 2);
+            gridPane.add(questionLbl, 0, 3);
+            gridPane.add(answerLbl, 0, 4);
+            gridPane.add(answerInput, 1, 4);
+            gridPane.add(hbBtn, 1, 5);
+
+            cancel.setOnAction(event -> window.setScene(optionsScreen));
+            pay.setOnAction(event -> {
+                String[] aInfo = choiceBox.getValue().split("\\s+");
+                String aID = aInfo[1];
+                Account account = ATM.accountManager.getAccount(aID);
+                String answer = answerInput.getText();
+                boolean successful = ATM.eTransferManager.validate(answer, account, user.getUsername());
+                if (!successful) {
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again later.");
+                } else {
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
+                }
+                window.setScene(optionsScreen);
+            });
+
+            window.setScene(new Scene(gridPane));
         }
-        Label chooseLbl = new Label("Select account to deposit to");
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-
-        // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
-        for (Account a : accounts) {
-            String accountName = a.getClass().getName();
-            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
-                choiceBox.getItems().add(choice);
-            } else {
-                String choice = accountName + " " + a.getId();
-                choiceBox.getItems().add(choice);
-            }
-        }
-
-        Label oldestLbl = new Label(oldest.toString());
-        Label questionLbl = new Label("Security question: " + oldest.getQuestion() + "?");
-
-        Label answerLbl = new Label("Enter answer: ");
-        TextField answerInput = new TextField();
-
-        Button cancel = new Button("Cancel");
-        Button pay = new Button("Transfer");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(cancel);
-        hbBtn.getChildren().add(pay);
-
-        gridPane.add(chooseLbl, 0, 0);
-        gridPane.add(choiceBox, 1, 0);
-        gridPane.add(oldestLbl, 0, 2);
-        gridPane.add(questionLbl, 0, 3);
-        gridPane.add(answerLbl, 0, 4);
-        gridPane.add(answerInput, 1, 4);
-        gridPane.add(hbBtn, 1, 5);
-
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        pay.setOnAction(event -> {
-            String[] aInfo = choiceBox.getValue().split("\\s+");
-            String aID = aInfo[1];
-            Account account = ATM.accountManager.getAccount(aID);
-            String answer = answerInput.getText();
-            boolean successful = ATM.eTransferManager.validate(answer, account, user.getUsername());
-            if (!successful) {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again later.");
-            }
-            else {
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
-            }
-            window.setScene(optionsScreen);
-        });
-
-        window.setScene(new Scene(gridPane));
     }
 
     private void makeRequestScreen() {
@@ -1228,13 +1228,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         HashMap<String, Double> requests = ATM.eTransferManager.readRequests(user.getUsername());
         int i = 1;
-        String list = "";
+        StringBuilder list = new StringBuilder();
         for (String s : requests.keySet()) {
-            list += "" + i + ". " + s + " requested $" + requests.get(s) + "\n";
+            list.append(i).append(". ").append(s).append(" requested $").append(requests.get(s)).append("\n");
             i++;
         }
         showAlert(Alert.AlertType.CONFIRMATION, window, "You have " + requests.size() + " requests: ",
-                list);
+                list.toString());
 
         window.setScene(new Scene(gridPane));
         window.setScene(optionsScreen);
@@ -1264,29 +1264,29 @@ public class CustomerOptionsGUI extends OptionsGUI {
             return id;
         }
 
-        public List<String> getOwners() {
-            return owners;
-        }
+//        public List<String> getOwners() {
+//            return owners;
+//        }
 
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
+//        public String getIsPrimary() {
+//            return this.isPrimary;
+//        }
 
-        public String getAccountType() {
-            return this.accountType;
-        }
+//        public String getAccountType() {
+//            return this.accountType;
+//        }
 
-        public String getCreationDate() {
-            return this.creationDate;
-        }
+//        public String getCreationDate() {
+//            return this.creationDate;
+//        }
 
         public double getBalance() {
             return this.balance;
         }
 
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
+//        public String getMostRecent() {
+//            return this.mostRecent;
+//        }
 
     }
 
