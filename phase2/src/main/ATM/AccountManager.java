@@ -5,10 +5,7 @@ import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class that manage all Bank Accounts.
@@ -18,7 +15,7 @@ import java.util.Set;
  */
 final class AccountManager {
     // List of the simple names of Account types.
-    final List<String> TYPES_OF_ACCOUNTS;
+    final Collection<String> TYPES_OF_ACCOUNTS;
 
     // A mapping of id to the Bank Account
     HashMap<String, Account> account_map = new HashMap<>();
@@ -28,7 +25,7 @@ final class AccountManager {
         String packageName = AccountManager.class.getPackage().getName();
         Set<Class<? extends Account>> subType = new Reflections(packageName).getSubTypesOf(Account.class);
 
-        List<String> types_of_accounts = new ArrayList<>();
+        Collection<String> types_of_accounts = new ArrayList<>();
         for (Class<? extends Account> type : subType) {
             // Check if the subclass is abstract.
             if (!Modifier.isAbstract(type.getModifiers())) {

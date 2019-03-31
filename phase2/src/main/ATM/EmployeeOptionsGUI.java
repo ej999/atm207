@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,7 +82,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
         Label typeLbl = new Label("Type of Bank Account:");
         ChoiceBox<String> typeChoice = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             typeChoice.getItems().add(type);
@@ -307,7 +307,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         Label select = new Label("Select account:");
         ChoiceBox<String> choices = new ChoiceBox<>();
 
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             choices.getItems().add(type);

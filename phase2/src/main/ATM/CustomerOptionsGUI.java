@@ -423,7 +423,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         TextField input = new TextField();
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);
@@ -578,7 +578,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);

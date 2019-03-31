@@ -31,15 +31,10 @@ final class ManagersSerialization {
 
     void deserializeAll() {
         deserializeUsers();
-        System.out.println(ATM.userManager.user_map);
         deserializeAccounts();
-        System.out.println(ATM.accountManager.account_map);
         deserializeBills();
-        System.out.println(BanknoteManager.banknotes);
         deserializeETransfers();
-        System.out.println(ATM.eTransferManager.allTransfers);
         deserializeRequests();
-        System.out.println(ATM.eTransferManager.requests);
     }
 
     // Deserialize JSON from FireBase /Users directory, and assign it to ATM.userManager.user_map

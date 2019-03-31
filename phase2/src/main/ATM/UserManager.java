@@ -6,8 +6,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Set;
  */
 final class UserManager {
     // List of the simple names of User types.
-    final List<String> USER_TYPE_NAMES;
+    final Collection<String> USER_TYPE_NAMES;
 
     // A mapping of Username to the User.
     HashMap<String, User> user_map = new HashMap<>();
@@ -28,7 +28,7 @@ final class UserManager {
         String packageName = UserManager.class.getPackage().getName();
         Set<Class<? extends User>> subType = new Reflections(packageName).getSubTypesOf(User.class);
 
-        List<String> types_of_users = new ArrayList<>();
+        Collection<String> types_of_users = new ArrayList<>();
         for (Class<? extends User> type : subType) {
             // Check if the subclass is non-abstract.
             if (!Modifier.isAbstract(type.getModifiers())) {
