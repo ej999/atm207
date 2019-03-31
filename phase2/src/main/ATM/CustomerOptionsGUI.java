@@ -13,10 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GUI for customer options.
@@ -91,7 +88,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(primCol, typeCol, dateCol, balCol, recCol);
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, dateCol, balCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
