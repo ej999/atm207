@@ -477,7 +477,7 @@ class Options {
         if (choice.equals("S")) {
             choice_bool = true;
         }
-        System.out.println("Which item would you like to see offers for?)");
+        System.out.println("Which item would you like to see offers for?");
         String item = reader.nextLine();
         ArrayList<String> sell_offers = TradingSystem.seeOffers(item, choice_bool);
         System.out.println(sell_offers);
@@ -501,6 +501,12 @@ class Options {
         int amount = reader.nextInt();
         Customer current_customer = (Customer) current_user;
         current_customer.getGoods().withdrawItem(item, amount);
+    }
+
+    private void viewInventoryPrompt(){
+        Customer current_customer = (Customer) current_user;
+        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        System.out.println(inventory);
     }
 
 }
