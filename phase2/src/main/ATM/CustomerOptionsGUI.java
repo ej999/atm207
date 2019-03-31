@@ -39,6 +39,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Add an item for Sale");
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
+        addOptionText("Add to Inventory");
+        addOptionText("Remove from Inventory");
+        addOptionText("View Inventory");
         // eTransfers // TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
@@ -53,14 +56,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(5).setOnAction(event -> depositScreen());
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
+        getOption(8).setOnAction(event -> InvestGICScreen());
         getOption(9).setOnAction(event -> accountToJointScreen());
         getOption(10).setOnAction(event -> addSellOfferScreen());
         getOption(11).setOnAction(event -> addBuyOfferScreen());
         getOption(12).setOnAction(event -> seeOffersScreen());
-        getOption(13).setOnAction(event -> changePrimaryScreen());
-        getOption(14).setOnAction(event -> changePasswordScreen());
-        getOption(15).setOnAction(event -> logoutHandler());
-        getOption(8).setOnAction(event -> InvestGICScreen());
+        getOption(13).setOnAction(event -> addToInventoryScreen());
+        getOption(14).setOnAction(event -> removeFromInventoryScreen());
+        getOption(15).setOnAction(event -> viewInventoryScreen());
+        getOption(16).setOnAction(event -> changePrimaryScreen());
+        getOption(17).setOnAction(event -> changePasswordScreen());
+        getOption(18).setOnAction(event -> logoutHandler());
+
+//        getOption(15).setOnAction(event -> InvestGICScreen);
 
         return generateOptionsScreen();
     }
@@ -75,7 +83,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         typeCol.setMinWidth(150);
         typeCol.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
-        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("CREATION DATE");
+        TableColumn<AccountSummary, String> idCol = new TableColumn<>("ID");
+        idCol.setMinWidth(150);
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("DATE CREATED");
         dateCol.setMinWidth(150);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
 
@@ -83,13 +95,17 @@ public class CustomerOptionsGUI extends OptionsGUI {
         balCol.setMinWidth(100);
         balCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
+        TableColumn<AccountSummary, List<String>> ownerCol = new TableColumn<>("ACCOUNT HOLDERS");
+        ownerCol.setMinWidth(400);
+        ownerCol.setCellValueFactory(new PropertyValueFactory<>("owners"));
+
         TableColumn<AccountSummary, String> recCol = new TableColumn<>("MOST RECENT TRANSACTION");
         recCol.setMinWidth(300);
         recCol.setCellValueFactory(new PropertyValueFactory<>("mostRecent"));
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(Arrays.asList(primCol, typeCol, dateCol, balCol, recCol));
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, idCol, dateCol, balCol, ownerCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
@@ -105,7 +121,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         vBox.getChildren().add(table);
         vBox.getChildren().add(hbBtn);
 
-        window.setScene(new Scene(vBox, 700, 400));
+        window.setScene(new Scene(vBox, 1000, 400));
     }
 
     private ObservableList<AccountSummary> getSummary() {
@@ -118,11 +134,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
 
             if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent);
+                sum = new AccountSummary("X", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
             } else {
-                sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent);
+                sum = new AccountSummary("", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
             }
             summaries.add(sum);
         }
@@ -426,7 +442,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            accountTypeDropDown.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                accountTypeDropDown.getItems().add(type);
+            }
         }
 
         HBox hbBtn = getTwoButtons("Cancel", "Request");
@@ -581,7 +599,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            accountTypeDropDown.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                accountTypeDropDown.getItems().add(type);
+            }
         }
 
         HBox hbBtn = getTwoButtons("Cancel", "Request");
@@ -750,7 +770,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) user);
-            TradingSystem.addSellOffer(item, tradeoffer);
+            ATM.tradingsystem.addSellOffer(item, tradeoffer);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added");
 
             window.setScene(optionsScreen);
@@ -792,7 +812,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer buyOffer = new TradeOffer(quantity, price, (Customer) user);
-            TradingSystem.addBuyOffer(item, buyOffer);
+            ATM.tradingsystem.addBuyOffer(item, buyOffer);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been requested");
 
             window.setScene(optionsScreen);
@@ -842,7 +862,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
+            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, true);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
 
             window.setScene(optionsScreen);
@@ -872,7 +892,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
+            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, false);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
 
             window.setScene(optionsScreen);
@@ -881,19 +901,112 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
+    private void addToInventoryScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see deposit?");
+        TextField itemCheck = new TextField();
+
+        Label itemForAmount = new Label("How much of it would you like to add? (in grams)");
+        TextField itemAmount = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Deposit");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(itemForAmount, 0, 1);
+        gridPane.add(itemAmount, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            Integer amount = Integer.valueOf(itemAmount.getText());
+            Customer current_customer = (Customer) user;
+            current_customer.getGoods().depositItem(item, amount);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added to inventory");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void removeFromInventoryScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to withdraw?");
+        TextField itemCheck = new TextField();
+
+        Label itemForAmount = new Label("How much of it would you like to remove? (in grams)");
+        TextField itemAmount = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Withdraw");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(itemForAmount, 0, 1);
+        gridPane.add(itemAmount, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            Integer amount = Integer.valueOf(itemAmount.getText());
+            Customer current_customer = (Customer) user;
+            current_customer.getGoods().withdrawItem(item, amount);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been withdrawn from inventory");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void viewInventoryScreen() {
+        Customer current_customer = (Customer) user;
+        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", inventory.toString());
+        window.setScene(optionsScreen);
+    }
+
     public class AccountSummary {
         private String isPrimary;
         private String accountType;
         private String creationDate;
         private double balance;
         private String mostRecent;
+        private String id;
+        private List<String> owners;
 
-        AccountSummary(String p, String t, String d, double b, String r) {
+        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
             this.isPrimary = p;
             this.accountType = t;
             this.creationDate = d;
             this.balance = b;
             this.mostRecent = r;
+            this.id = i;
+            this.owners = o;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public List<String> getOwners() {
+            return owners;
         }
 
         public String getIsPrimary() {

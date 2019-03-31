@@ -87,7 +87,9 @@ class EmployeeOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            typeChoice.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                typeChoice.getItems().add(type);
+            }
         }
 
         HBox hbox = new HBox(typeChoice);
@@ -335,7 +337,9 @@ class EmployeeOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            choices.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                choices.getItems().add(type);
+            }
         }
 
         Button cancel = new Button("Cancel");
@@ -358,16 +362,14 @@ class EmployeeOptionsGUI extends OptionsGUI {
             String primary = primaryTextField.getText();
             String secondary = secondaryTextField.getText();
             if (ATM.userManager.isCustomer(secondary) && ATM.userManager.isCustomer(primary)) {
-                User user1 = ATM.userManager.getUser(primary);
-                User user2 = ATM.userManager.getUser(secondary);
-                int age1 = ((Customer) user1).getAge();
-                int age2 = ((Customer) user2).getAge();
+                Customer user1 = (Customer) ATM.userManager.getUser(primary);
+                Customer user2 = (Customer) ATM.userManager.getUser(secondary);
                 List<String> ownersUsername = new ArrayList<>();
                 ownersUsername.add(primary);
                 ownersUsername.add(secondary);
                 String type = choices.getValue();
                 if (type.equals("Youth")) {
-                    if (age1 < 20 && age2 < 20) {
+                    if (user1.isAdult() && user2.isAdult()) {
                         ATM.accountManager.addAccount(type, ownersUsername);
                         showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
                         window.setScene(optionsScreen);

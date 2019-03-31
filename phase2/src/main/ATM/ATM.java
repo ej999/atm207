@@ -22,6 +22,7 @@ public class ATM extends Observable {
     static AccountManager accountManager;
     static BanknoteManager banknoteManager;
     static ETransferManager eTransferManager;
+    static TradingSystem tradingsystem;
 
     static {
         ATM.serialization = new ManagersSerialization();
@@ -29,21 +30,21 @@ public class ATM extends Observable {
         ATM.accountManager = new AccountManager();
         ATM.banknoteManager = new BanknoteManager();
         ATM.eTransferManager = new ETransferManager();
+        ATM.tradingsystem = new TradingSystem();
     }
 
     public static void main(String[] args) {
         // Comment out the following to disable java.util.logging for debugging.
 //        Logger.getLogger("").setLevel(Level.OFF);
 
-        serialization.deserializeAll();
-
-        createDemoData();
-
         // Java FX -> invoke start method
         new Thread(() -> Application.launch(ATMFrame.class)).start();
         ATMFrame atmFrame = new ATMFrame();
         // do something with atmFrame...
 
+        serialization.deserializeAll();
+
+        createDemoData();
 
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
