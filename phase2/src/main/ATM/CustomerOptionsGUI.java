@@ -109,6 +109,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
+            ((Customer) user).setNetTotal();
             String netTotal = "Your net total is $" + ((Customer) user).getNetTotal();
             showAlert(Alert.AlertType.INFORMATION, window, "NetTotal", netTotal);
             window.setScene(optionsScreen);
@@ -311,7 +312,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Account account = ATM.accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
-            if (ATM.userManager.isPresent(otherAccount)) {
+            if (ATM.userManager.isCustomer(otherAccount)) {
                 if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {

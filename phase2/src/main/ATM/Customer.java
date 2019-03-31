@@ -120,6 +120,7 @@ class Customer extends User implements Observer {
         if (primaryAccount == null && account instanceof Chequing) {
             primaryAccount = account.getId();
         }
+        setNetTotal();
     }
 
     @SuppressWarnings("WeakerAccess")
