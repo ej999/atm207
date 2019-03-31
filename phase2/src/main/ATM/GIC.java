@@ -22,7 +22,7 @@ class GIC extends AccountAsset {
     @SuppressWarnings({"WeakerAccess"})
     public GIC(String id, double rate, int p, List<String> owners) {
         super(id, owners);
-        this.rate = rate;
+        this.rate = rate / 100;
         this.period = Period.ofMonths(p);
         LocalDate startDate = LocalDate.now();
         endDate = startDate.plus(period);
@@ -76,7 +76,16 @@ class GIC extends AccountAsset {
         super.deposit(depositAmount);
         this.endDate = LocalDate.now().plus(period);
     }
+    @Override
+    // when transfer money with GIC account it reset the time of the period
 
+    public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
+        boolean end = super.transferToAnotherUser(transferAmount, username, account);
+        if (end){
+            this.endDate = LocalDate.now().plus(period);
+        }
+        return end;
+    }
     // need to call this everyday
     public void update() {
         if (checkToday()) {
