@@ -13,11 +13,6 @@ public class Teller extends UserEmployee {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return "Teller with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
-    }
-
 //    void undoMostRecentTransaction(Account account) {
 //        account.undoMostRecentTransaction();
 //    }

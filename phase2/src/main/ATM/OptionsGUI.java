@@ -23,8 +23,8 @@ import java.util.List;
 public abstract class OptionsGUI {
     Stage window;
     Scene optionsScreen;
-    private Scene welcomeScreen;
     User user;
+    private Scene welcomeScreen;
     private ArrayList<Button> options = new ArrayList<>();
     private ArrayList<String> optionsText = new ArrayList<>();
 //    private ArrayList<Method> handlers = new ArrayList<>();

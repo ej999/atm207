@@ -1,12 +1,11 @@
 package ATM;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 final public class ETransferManager {
     private static List<ETransfer> allTransfers = new ArrayList<>();
     private static HashMap<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: requestee, amount pair
+    private static HashMap<String, List<String>> contancts = new HashMap<>(); //maps customer to their added contacts
 
     static void send(Customer sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount){
         User re = ATM.userManager.getUser(recipient);
@@ -15,7 +14,6 @@ final public class ETransferManager {
         allTransfers.add(transfer);
     }
 
-    //TODO: implement following
     static void send(Customer sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount){
         // same as above except send same amount to multiple users
         for (String r: recipient) {
@@ -23,12 +21,12 @@ final public class ETransferManager {
         }
     }
 
-    static HashMap<String, Double> getAll(String recipient){
+    static HashMap<String, Double> getAll(String recipient) {
         //return all the transfers for this recipient that are not verified yet. keys: sender usernames, items: amount
         //each key-value pair represents an ETransfer
         HashMap<String, Double> transfers = new HashMap<>();
-        for (ETransfer e: allTransfers){
-            if (!e.hasBeenDeposited() && e.getRecipient().equals(recipient)){
+        for (ETransfer e : allTransfers) {
+            if (!e.hasBeenDeposited() && e.getRecipient().equals(recipient)) {
                 transfers.put(e.sender.getUsername(), e.getAmount());
             }
         }
@@ -64,7 +62,7 @@ final public class ETransferManager {
         // precondition: responses.size() == getAll.size()
         List<ETransfer> transfers = new ArrayList<>();
         for (ETransfer e: allTransfers){
-            if (e.getRecipient().equals(recipient)){
+            if (e.getRecipient().getUsername().equals(recipient)){
                 transfers.add(e);
             }
         }
@@ -97,12 +95,27 @@ final public class ETransferManager {
 
     static void request(String requester, String requestee, Double amount){
         // record the fact that <requester> has requested <amount> from <requestee>
+        HashMap<String, Double> request = new HashMap<>();
+        request.put(requestee, amount);
+        requests.put(requester, request);
     }
 
     static HashMap<String, Double> readRequests(String requestee){
         // return all requests for <requestee>
-        return null;
-
+//        Iterator<Map.Entry<String, HashMap<String, Double>>> it = requests.entrySet().iterator();
+//        while (it.hasNext()){
+//            Map.Entry<String, HashMap<String, Double>> pair = it.next();
+//        }
+        HashMap<String, Double> ret = new HashMap<>();
+        for (Map.Entry<String, HashMap<String, Double>> pair: requests.entrySet()){
+            String requester = pair.getKey();
+            HashMap<String, Double> nameAndAmount = pair.getValue();
+            if (nameAndAmount.containsKey(requestee)){
+                ret.put(requester, nameAndAmount.get(requestee));
+            }
+        }
+        return ret;
     }
+    //TODO: implement methods for adding contacts and deleting requests
 
 }

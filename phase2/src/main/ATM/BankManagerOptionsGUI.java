@@ -92,12 +92,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = Options.class.getPackage().getName() + "." + choiceBox.getValue();
+            String typeSimpleName = choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
-            boolean created = ATM.userManager.createAccount(type, username, password);
+            boolean created = ATM.userManager.createAccount(typeSimpleName, username, password);
 
-            if (created && type.equals(Customer.class.getName())) {
+            if (created && typeSimpleName.equals(Customer.class.getSimpleName())) {
                 createDOBScreen(username);
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created");
@@ -251,7 +251,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setMaxTransactions((Youth) youth,amount);
+                    ((BankManager) this.user).setMaxTransactions((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit failed");
@@ -293,7 +293,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setTransferLimit((Youth) youth,amount);
+                    ((BankManager) this.user).setTransferLimit((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transfer Limit failed");
