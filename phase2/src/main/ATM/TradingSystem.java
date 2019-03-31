@@ -36,6 +36,9 @@ public class TradingSystem {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, true)) {
+                if (!sell_offers.containsKey(item)) {
+                    sell_offers.put(item, new ArrayList<>());
+                }
                 sell_offers.get(item).add(tradeoffer);
             }
 
@@ -54,6 +57,9 @@ public class TradingSystem {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
             if (!makeTrade(item, tradeoffer, false)) {
+                if (!buy_offers.containsKey(item)) {
+                    buy_offers.put(item, new ArrayList<>());
+                }
                 buy_offers.get(item).add(tradeoffer);
             }
 
@@ -124,8 +130,8 @@ public class TradingSystem {
 
             if (other_quantity == quantity && buy_price >= sell_price
             ) {
-                //AccountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-                // AccountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+//                AccountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
+//                 AccountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
                 //buyer.getGoods().addItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
@@ -144,9 +150,11 @@ public class TradingSystem {
         } else {
             offers_map = buy_offers;
         }
-        ArrayList<TradeOffer> offers = offers_map.get(item);
-        for (int i = 0; i < offers.size(); i++) {
-            returned.add(offers.get(i).toString());
+        if (offers_map.containsKey(item)) {
+            ArrayList<TradeOffer> offers = offers_map.get(item);
+            for (int i = 0; i < offers.size(); i++) {
+                returned.add(offers.get(i).toString());
+            }
         }
         return returned;
     }
