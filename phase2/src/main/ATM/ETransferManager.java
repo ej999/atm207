@@ -34,16 +34,33 @@ final public class ETransferManager {
 
     }
 
-    static boolean validate(String response, Account account, String recipient) {
-        // verifies most oldest unverified transfer and deposits the amount into recipient's account
-        // returns true if successful
+    static ETransfer getOldestTransfer(String recipient){
+        // returns oldest undeposited etransfer to <recipient>
         ETransfer oldest = null;
-        for (ETransfer e: allTransfers){
-            if (e.getRecipient().equals(recipient) && !e.hasBeenDeposited()){
+        for (ETransfer e: allTransfers) {
+            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()) {
                 oldest = e;
                 break;
             }
         }
+        return oldest;
+    }
+
+    static List<ETransfer> getAllTransfers(String recipient){
+        List<ETransfer> transfers = new ArrayList<>();
+        for (ETransfer e: allTransfers){
+            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()){
+                transfers.add(e);
+            }
+        }
+        return transfers;
+    }
+
+    static boolean validate(String response, Account account, String recipient) {
+        // verifies most oldest unverified transfer and deposits the amount into recipient's account
+        // returns true if successful
+        ETransfer oldest = getOldestTransfer(recipient);
+
         if (oldest != null && oldest.verifyQuestion(response)){
             if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), (Customer)ATM.userManager.getUser(recipient), account)){
                 oldest.deposit();
@@ -60,12 +77,8 @@ final public class ETransferManager {
         // verifies from most oldest to newest unverified transfers and deposits all amounts into recipient's account
         // deposits only when all of the responses are verified and correct
         // precondition: responses.size() == getAll.size()
-        List<ETransfer> transfers = new ArrayList<>();
-        for (ETransfer e: allTransfers){
-            if (e.getRecipient().getUsername().equals(recipient)){
-                transfers.add(e);
-            }
-        }
+        List<ETransfer> transfers = getAllTransfers(recipient);
+
         for (int i = 0; i < responses.size(); i++){
             boolean verified;
             try{
@@ -117,5 +130,6 @@ final public class ETransferManager {
         return ret;
     }
     //TODO: implement methods for adding contacts and deleting requests
+
 
 }
