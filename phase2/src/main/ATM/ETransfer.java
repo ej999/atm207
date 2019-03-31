@@ -6,7 +6,7 @@ import java.io.Serializable;
  * A instance of a ETransfer
  **/
 public class ETransfer extends Transaction implements Serializable {
-    Customer sender;
+    String sender;
     AccountTransferable senderAccount;
     private String question;
     private String answer;
@@ -14,7 +14,7 @@ public class ETransfer extends Transaction implements Serializable {
     private String recipient;
 
 
-    public ETransfer(Customer sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
+    public ETransfer(String sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
         //recipientAccount just for placeholder; receiver can choose which account to deposit to
         super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName());
         this.senderAccount = senderAccount;
@@ -49,6 +49,15 @@ public class ETransfer extends Transaction implements Serializable {
 
     public void unDeposit() {
         this.deposited = false;
+    }
+
+    public String getSender(){
+        return this.sender;
+    }
+
+    @Override
+    public String toString(){
+        return "eTransfer of $" + getAmount() + "from " + sender + "on " + getDate();
     }
 
 }
