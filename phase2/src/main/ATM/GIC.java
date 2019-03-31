@@ -9,6 +9,7 @@ import java.util.List;
  * GIC account.
  * Money is locked up in this account for a period of time with high interest.
  * Withdrawing before the end of a period will result in the endDate being reset.
+ * customer should choose the period and the bank manager give the correct rate when creating the account.
  */
 class GIC extends AccountAsset {
 
@@ -16,15 +17,22 @@ class GIC extends AccountAsset {
     private double rate;
     private Period period;// in months
     // period = Period.ofMonths(12)
-    private LocalDate startDate;
     private LocalDate endDate;
+
+    public void setPeriod(int month) {
+        this.period = Period.ofMonths(month);
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
 
     @SuppressWarnings({"WeakerAccess"})
     public GIC(String id, double rate, int p, List<Customer> owners) {
         super(id, owners);
         this.rate = rate;
         this.period = Period.ofMonths(p);
-        startDate = LocalDate.now();
+        LocalDate startDate = LocalDate.now();
         endDate = startDate.plus(period);
     }
 
@@ -62,8 +70,13 @@ class GIC extends AccountAsset {
             endDate = endDate.plus(period);
         }
     }
+    @Override
+    void deposit(double depositAmount){
+        super.deposit(depositAmount);
+        this.endDate = LocalDate.now().plus(period);
+    }
 
-    // not finish
+    // need to call this everyday
     public void update() {
         if (checkToday()) {
             setBalance(getBalance() + rate * getBalance());
