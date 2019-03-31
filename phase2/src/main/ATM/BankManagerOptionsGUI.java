@@ -126,6 +126,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         no.setOnAction(event -> window.setScene(optionsScreen));
         yes.setOnAction(event -> {
+            gridPane.getChildren().remove(question);
             actionTarget.setFill(Color.BLACK);
             actionTarget.setText("Enter Date of Birth (YYYY-MM-DD):");
             gridPane.add(dobInput, 1, 3);

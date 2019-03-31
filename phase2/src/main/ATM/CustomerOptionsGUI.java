@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -75,7 +76,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         typeCol.setMinWidth(150);
         typeCol.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
-        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("CREATION DATE");
+        TableColumn<AccountSummary, String> idCol = new TableColumn<>("ID");
+        typeCol.setMinWidth(100);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("DATE CREATED");
         dateCol.setMinWidth(150);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
 
@@ -83,13 +88,17 @@ public class CustomerOptionsGUI extends OptionsGUI {
         balCol.setMinWidth(100);
         balCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
+        TableColumn<AccountSummary, List<String>> ownerCol = new TableColumn<>("ACCOUNT HOLDERS");
+        balCol.setMinWidth(400);
+        balCol.setCellValueFactory(new PropertyValueFactory<>("owners"));
+
         TableColumn<AccountSummary, String> recCol = new TableColumn<>("MOST RECENT TRANSACTION");
         recCol.setMinWidth(300);
         recCol.setCellValueFactory(new PropertyValueFactory<>("mostRecent"));
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(Arrays.asList(primCol, typeCol, dateCol, balCol, recCol));
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, idCol, dateCol, balCol, ownerCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
@@ -118,11 +127,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
 
             if (a.getID().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent);
+                sum = new AccountSummary("X", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
             } else {
                 sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent);
+                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
             }
             summaries.add(sum);
         }
@@ -887,13 +896,25 @@ public class CustomerOptionsGUI extends OptionsGUI {
         private String creationDate;
         private double balance;
         private String mostRecent;
+        private String id;
+        private List<String> owners;
 
-        AccountSummary(String p, String t, String d, double b, String r) {
+        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
             this.isPrimary = p;
             this.accountType = t;
             this.creationDate = d;
             this.balance = b;
             this.mostRecent = r;
+            this.id = i;
+            this.owners = o;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public List<String> getOwners() {
+            return owners;
         }
 
         public String getIsPrimary() {

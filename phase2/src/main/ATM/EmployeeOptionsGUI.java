@@ -107,15 +107,27 @@ class EmployeeOptionsGUI extends OptionsGUI {
         create.setOnAction(event -> {
             String username = usernameInput.getText();
             String accountType = typeChoice.getValue();
-            System.out.println("Customer wants a " + accountType + " account");
 
-            if (ATM.userManager.isPresent(username)) {
-                ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
+            if (ATM.userManager.isCustomer(username)) {
+                User user = ATM.userManager.getUser(username);
+                int age = ((Customer) user).getAge();
+                if (accountType.equals("Youth")) {
+                    if (age < 20) {
+                        ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
+                        showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
+                        window.setScene(optionsScreen);
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, window, "Error", "You are not eligible for a Youth account.");
+                    }
+                } else {
+                    ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
+                    window.setScene(optionsScreen);
+                }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
             }
-            window.setScene(optionsScreen);
+
         });
 
         window.setScene(new Scene(gridPane));
@@ -274,12 +286,27 @@ class EmployeeOptionsGUI extends OptionsGUI {
             if (ATM.userManager.isCustomer(secondary)) {
                 String id = choices.getValue().split("\\w+")[1];
                 Account account = ATM.accountManager.getAccount(id);
-                account.addOwner(secondary);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
+                User user = ATM.userManager.getUser(secondary);
+                int age = ((Customer) user).getAge();
+
+                if (account.getType().equals("ATM.Youth")) {
+                    if (age < 20) {
+                        account.addOwner(secondary);
+                        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
+                        window.setScene(optionsScreen);
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, window, "Error", secondary + " is not eligible for a Youth account.");
+                    }
+                } else {
+                    account.addOwner(secondary);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
+                    window.setScene(optionsScreen);
+                }
+
             } else {
                 showAlert(Alert.AlertType.WARNING, window, "Warning", secondary + " doesn't exist in our system.");
             }
-            window.setScene(optionsScreen);
+
         });
 
         window.setScene(new Scene(gridPane));
@@ -329,16 +356,30 @@ class EmployeeOptionsGUI extends OptionsGUI {
             String primary = primaryTextField.getText();
             String secondary = secondaryTextField.getText();
             if (ATM.userManager.isCustomer(secondary) && ATM.userManager.isCustomer(primary)) {
+                User user1 = ATM.userManager.getUser(primary);
+                User user2 = ATM.userManager.getUser(secondary);
+                int age1 = ((Customer) user1).getAge();
+                int age2 = ((Customer) user2).getAge();
                 List<String> ownersUsername = new ArrayList<>();
                 ownersUsername.add(primary);
                 ownersUsername.add(secondary);
                 String type = choices.getValue();
-                ATM.accountManager.addAccount(type, ownersUsername);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
+                if (type.equals("Youth")) {
+                    if (age1 < 20 && age2 < 20) {
+                        ATM.accountManager.addAccount(type, ownersUsername);
+                        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
+                        window.setScene(optionsScreen);
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid age.");
+                    }
+                } else {
+                    ATM.accountManager.addAccount(type, ownersUsername);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
+                    window.setScene(optionsScreen);
+                }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid username");
             }
-            window.setScene(optionsScreen);
         });
 
         window.setScene(new Scene(gridPane));
