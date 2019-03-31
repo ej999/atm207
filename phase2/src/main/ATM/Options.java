@@ -92,6 +92,8 @@ class Options {
 
             options.put("See offers", new Thread(this::seeOffers));
 
+            options.put("ETransfers", new Thread(this::eTransferPrompt));
+
             options.put("Logout", new Thread(this::logoutPrompt));
 
         }
@@ -507,6 +509,65 @@ class Options {
         Customer current_customer = (Customer) current_user;
         ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
         System.out.println(inventory);
+    }
+
+    private void eTransferPrompt(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("[1] Make an eTransfer");
+        System.out.println("[2] Accept incoming eTransfers");
+        System.out.println("[3] View requests");
+        System.out.println("[4] Make a request");
+        System.out.println("[5] Return to main menu");
+        int choice = reader.nextInt();
+        switch (choice){
+            case 1:
+                makeEtransferPrompt();
+                break;
+            case 2:
+                acceptTransfersPrompt();
+                break;
+            case 3:
+                viewRequestsPrompt();
+                break;
+            case 4:
+                makeResquestPrompt();
+                break;
+            case 5:
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
+    }
+    private void makeEtransferPrompt(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Select account you would like to transfer from");
+        Account senderAccount = selectAccountPrompt((Customer) current_user, "CreditCard");
+        System.out.println("Enter recipient username");
+        String user = reader.next();
+        if (!ATM.userManager.isCustomer(user)) {
+            System.out.println("invalid username");
+            return;
+        }
+        System.out.println("Enter amount you want to send: ");
+        double amount = reader.nextDouble();
+        reader.nextLine();
+        System.out.println("Enter security question: ");
+        String q = reader.nextLine();
+        System.out.println("Enter answer to question: ");
+        String a;
+        a = reader.next();
+        if (a != null)
+            ATM.eTransferManager.send((Customer) current_user, (AccountTransferable)senderAccount, user, q, a, amount);
+        System.out.println("sent eTransfer to: " + user);
+    }
+    private void acceptTransfersPrompt(){
+
+    }
+    private void viewRequestsPrompt(){
+
+    }
+    private void makeResquestPrompt(){
+
     }
 
 }
