@@ -100,6 +100,9 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
             if (created && typeSimpleName.equals(Customer.class.getSimpleName())) {
                 createDOBScreen(username);
+            } else if (created) {
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new user has been created.");
+                window.setScene(optionsScreen);
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created");
                 window.setScene(optionsScreen);
