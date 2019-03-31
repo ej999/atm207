@@ -131,7 +131,7 @@ class Options {
             for (String key : options.keySet()) {
                 if (selected == i) {
                     options.get(key).start();
-                    // Waits for this thread to die. Check isJoint() method in Thread for more details.
+                    // Waits for this thread to die. Check isNotJoint() method in Thread for more details.
                     try {
                         options.get(key).join();
                     } catch (InterruptedException e) {
@@ -526,7 +526,7 @@ class Options {
         int choice = reader.nextInt();
         switch (choice) {
             case 1:
-                makeEtransferPrompt();
+                makeETransferPrompt();
                 break;
             case 2:
                 acceptTransfersPrompt();
@@ -535,7 +535,7 @@ class Options {
                 viewRequestsPrompt();
                 break;
             case 4:
-                makeResquestPrompt();
+                makeRequestPrompt();
                 break;
             case 5:
                 break;
@@ -546,7 +546,7 @@ class Options {
         reader.next();
     }
 
-    private void makeEtransferPrompt() {
+    private void makeETransferPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Select account you would like to transfer from");
         Account senderAccount = selectAccountPrompt((Customer) current_user, "CreditCard");
@@ -609,7 +609,7 @@ class Options {
         }
     }
 
-    private void makeResquestPrompt() {
+    private void makeRequestPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter username you would like to send request to");
         String user = reader.next();

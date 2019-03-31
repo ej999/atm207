@@ -275,7 +275,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
             if (ATM.userManager.isCustomer(username)) {
                 List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
-                    if (!a.isJoint()) {
+                    if (a.isNotJoint()) {
                         choices.getItems().add(a.getType() + " " + a.getId());
                     }
                 }
