@@ -126,7 +126,7 @@ public class TradingSystem {
 
             ) {
                 ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-                //ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
                 buyer.getGoods().depositItem(item, quantity);
                 seller.getGoods().withdrawItem(item, quantity);
                 System.out.println("Offer made");
