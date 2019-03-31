@@ -29,4 +29,9 @@ abstract class User {
             System.out.println("Password is set successfully");
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + getUsername();
+    }
 }
