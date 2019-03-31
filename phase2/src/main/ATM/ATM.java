@@ -3,8 +3,6 @@ package ATM;
 import javafx.application.Application;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An ATM that allows customers and employees to conduct a range of financial transactions and operations.
@@ -33,9 +31,9 @@ public class ATM extends Observable {
 
     public static void main(String[] args) {
         // Comment out the following to disable java.util.logging for debugging.
-        Logger.getLogger("").setLevel(Level.OFF);
+//        Logger.getLogger("").setLevel(Level.OFF);
 
-        serialization.deserialize();
+        serialization.deserializeAll();
 
         createDemoData();
 

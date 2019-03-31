@@ -1,9 +1,11 @@
 package ATM;
 
+import java.io.Serializable;
+
 /**
  * a single instance of an etransfer
  **/
-public class ETransfer extends Transaction {
+public class ETransfer extends Transaction implements Serializable {
     Customer sender;
     AccountTransferable senderAccount;
     private String question;

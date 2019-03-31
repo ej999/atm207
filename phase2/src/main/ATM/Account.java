@@ -1,10 +1,11 @@
 package ATM;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-abstract class Account {
+abstract class Account implements Serializable {
     // payment and transfer to non-user is written in following path.
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private final String type = this.getClass().getName();

@@ -1,10 +1,13 @@
 package ATM;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class ETransferManager {
     List<ETransfer> allTransfers = new ArrayList<>();
-    HashMap<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: requestee, amount pair
+    Map<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: requestee, amount pair
     private static HashMap<String, List<String>> contancts = new HashMap<>(); //maps customer to their added contacts
     //maybe move this parameter to customer class?
 
