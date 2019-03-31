@@ -2,8 +2,7 @@ package ATM;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+
 
 //Where users can store non-money goods. Stored in a HashMap with the string name of the good (Steel, Copper,
 //etc.), with its value being the amount of it.
@@ -40,6 +39,8 @@ public class Inventory {
         } else {
             storage.put(item, amount);
         }
+        String returned = "Deposited " + amount + " grams of " + item;
+        System.out.println(returned);
     }
 
     void withdrawItem(String item, Integer amount) {
@@ -49,10 +50,10 @@ public class Inventory {
         }
     }
 
-    public ArrayList<String> viewInventory(){
+     ArrayList<String> viewInventory(){
         ArrayList<String> returned = new ArrayList<>();
-        Set<String> keys = storage.keySet();
-        for (String key: keys){
+
+        for (String key: storage.keySet()){
             returned.add("Item: " + key + " Amount: " + storage.get(key));
         }
         return returned;

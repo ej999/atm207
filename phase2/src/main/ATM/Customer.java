@@ -198,7 +198,7 @@ class Customer extends User implements Observer {
         this.creditScore = creditScore;
     }
 
-    public Inventory getGoods() {
-        return goods;
+     public Inventory getGoods() {
+        return this.goods;
     }
 }
