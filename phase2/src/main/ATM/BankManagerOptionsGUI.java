@@ -346,7 +346,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         create.setOnAction(event -> {
             int id = Integer.valueOf(index.getText());
             int month = Integer.valueOf(period.getText());
-            int interest = Integer.valueOf(rate.getText());
+            double interest = Double.valueOf(rate.getText());
             GICDeals deals= new GICDeals(month,interest,id);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "New GIC deal created");
             window.setScene(optionsScreen);
@@ -357,6 +357,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
+
+        window.setScene(new Scene(grid));
     }
     void viewGICDeals() {
         ListView<String> listView = new ListView<>();

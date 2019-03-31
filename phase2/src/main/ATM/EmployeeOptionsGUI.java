@@ -414,7 +414,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         create.setOnAction(event -> {
             String username = usernameInput.getText();
             int month = Integer.valueOf(period.getText());
-            double interest = Integer.valueOf(rate.getText());
+            double interest = Double.valueOf(rate.getText());
 
             if (ATM.userManager.isPresent(username)) {
                 ATM.accountManager.addGICAccount(interest, month, Collections.singletonList(username));
