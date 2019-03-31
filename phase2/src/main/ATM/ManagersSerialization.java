@@ -21,12 +21,11 @@ final class ManagersSerialization {
     private FireBaseDBAccess fbDb;
 
     ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess("/" +
-                "");
+        this.fbDb = new FireBaseDBAccess("/");
     }
 
     void deleteDatabase() {
-        fbDb.save(0, "", "");
+        fbDb.delete("");
         Logger.getLogger("").info("FireBase database is set to empty");
     }
 
@@ -97,6 +96,8 @@ final class ManagersSerialization {
         fbDb.saveMap(ATM.userManager.user_map, "Users");
         fbDb.saveMap(ATM.accountManager.account_map, "Accounts");
         fbDb.saveMap(ATM.banknoteManager.banknotes, "Bills");
+        // Remove the current List before pushing a new one.
+        fbDb.delete("ETransfers");
         fbDb.saveList(ATM.eTransferManager.allTransfers, "ETransfers");
         fbDb.saveMap(ATM.eTransferManager.requests, "Requests");
     }
@@ -131,21 +132,21 @@ final class ManagersSerialization {
             }
         }
 
-        // To serialize and save a single T
-        <T extends Serializable> void save(T item, String child, String key) {
+        // To remove a child reference.
+        <T extends Serializable> void delete(String child) {
             CountDownLatch latch = new CountDownLatch(1);
-            if (item != null) {
-                // Get existing child or new child will be created.
-                DatabaseReference childRef = databaseRef.child(child).child(key);
 
-                childRef.setValue(item, (error, ref) -> latch.countDown());
-                Logger.getLogger("").info(key + " of " + child + " is serialized and saved");
-                try {
-                    // Wait for FireBase to save record.
-                    latch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            // Get existing child or new child will be created.
+            DatabaseReference childRef = databaseRef.child(child);
+            childRef.removeValueAsync();
+            Logger.getLogger("").info(child + " is removed");
+
+            latch.countDown();
+            try {
+                // Wait for FireBase to save record.
+                latch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
