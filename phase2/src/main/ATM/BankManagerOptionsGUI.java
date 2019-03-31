@@ -15,18 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * GUI for Bank Manager.
- * //TODO: refactor
+ * A GUI for Bank Manager.
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
-    /**
-     * Constructor should take in main window, welcome screen, user? from ATM
-     * Let's think of some methods...
-     * - createBMOptionsScreen
-     * - createAlerts
-     */
 
-    public BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 
@@ -35,25 +28,30 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Read alerts");
         addOptionText("Create user");
         addOptionText("Create bank account for user");
+        addOptionText("Create joint account");
         addOptionText("Restock ATM");
         addOptionText("Undo transactions");
         addOptionText("Change password");
         addOptionText("Clear all bank data");
         addOptionText("Set youth max transactions");
         addOptionText("Set youth max transfers");
+        addOptionText("Manage GIC");
         addOptionText("Logout");
+
         addOptions();
 
         getOption(0).setOnAction(event -> readAlertsScreen());
         getOption(1).setOnAction(event -> createUserScreen());
         getOption(2).setOnAction(event -> createBankAccountScreen());
-        getOption(3).setOnAction(event -> restockATMScreen());
-        getOption(4).setOnAction(event -> undoTransactionsScreen());
-        getOption(6).setOnAction(event -> clearBankDataScreen());
-        getOption(7).setOnAction(event -> setYouthTransactionsScreen());
-        getOption(8).setOnAction(event -> setYouthTransfersScreen());
+        getOption(3).setOnAction(event -> createJointAccountScreen());
+        getOption(4).setOnAction(event -> restockATMScreen());
+        getOption(5).setOnAction(event -> undoTransactionsScreen());
+        getOption(7).setOnAction(event -> clearBankDataScreen());
+        getOption(8).setOnAction(event -> setYouthTransactionsScreen());
+        getOption(9).setOnAction(event -> setYouthTransfersScreen());
+        getOption(10).setOnAction(event -> ManageGICScreen());
 
-        return generateOptionsScreen(325, 450);
+        return generateOptionsScreen();
     }
 
     private void createUserScreen() {
@@ -91,12 +89,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = Options.class.getPackage().getName() + "." + choiceBox.getValue();
+            String typeSimpleName = choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
-            boolean created = ATM.userManager.createAccount(type, username, password);
+            boolean created = ATM.userManager.createAccount(typeSimpleName, username, password);
 
-            if (created && type.equals(Customer.class.getName())) {
+            if (created && typeSimpleName.equals(Customer.class.getSimpleName())) {
                 createDOBScreen(username);
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created");
@@ -128,6 +126,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         no.setOnAction(event -> window.setScene(optionsScreen));
         yes.setOnAction(event -> {
+            gridPane.getChildren().remove(question);
             actionTarget.setFill(Color.BLACK);
             actionTarget.setText("Enter Date of Birth (YYYY-MM-DD):");
             gridPane.add(dobInput, 1, 3);
@@ -167,7 +166,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         HashMap<Integer, TextField> textField = new HashMap<>();
 
-        for (Integer d : Cash.DENOMINATIONS) {
+        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Enter amount of $" + d + " dollar bill: ");
             grid.add(dLabel, 0, rowIndex);
@@ -191,7 +190,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + Cash.ATMBills);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + ATM.banknoteManager.banknotes);
             window.setScene(optionsScreen);
         });
 
@@ -201,7 +200,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     private void clearBankDataScreen() {
         GridPane grid = createFormPane();
 
-        Label warningLbl = new Label("\"WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");
+        Label warningLbl = new Label("WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");
         Button proceed = new Button("Proceed");
         Button cancel = new Button("Cancel");
         HBox hbBtn = new HBox(10);
@@ -214,7 +213,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         proceed.setOnAction(event -> {
-            ManagersSerialization.deleteDatabase();
+            ATM.serialization.deleteDatabase();
             showAlert(Alert.AlertType.CONFIRMATION, window, "Cleared", "Data has been cleared. Good Luck!");
             window.close();
             System.exit(0);
@@ -250,10 +249,10 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setMaxTransactions((Youth) youth,amount);
+                    ((BankManager) this.user).setMaxTransactions((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit failed");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit failed");
                 }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit has been set");
@@ -292,10 +291,10 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             if (ATM.userManager.isPresent(youthAccount)) {
                 Account youth = (ATM.accountManager.getAccount(youthAccount));
                 if (youth instanceof Youth) {
-                    ((BankManager) this.user).setTransferLimit((Youth) youth,amount);
+                    ((BankManager) this.user).setTransferLimit((Youth) youth, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit failed");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transfer Limit failed");
                 }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit has been set");
@@ -306,5 +305,23 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         window.setScene(new Scene(grid));
     }
 
+    private void ManageGICScreen() {
+        GridPane gridPane = createFormPane();
+        Button remove = new Button("Remove GIC");
+        Button create = new Button("Create GIC");
+        Button cancel = new Button("Cancel");
+        Button oldest = new Button("Oldest");
+        Button newest = new Button("Newest");
+        Label periodLabel = new Label("Period In Months");
+        TextField period = new TextField();
+        Label rateLabel = new Label("Rate after the Period in Percentage");
+        TextField rate = new TextField();
+
+//        remove.setOnAction();
+//        create.setOnAction();
+
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+    }
 
 }

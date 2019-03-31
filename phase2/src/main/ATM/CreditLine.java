@@ -16,12 +16,12 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      * Balance is set to 0.00 as default if an initial balance is not provided.
      */
     @SuppressWarnings({"unused"})
-    public CreditLine(String id, List<Customer> owners) {
+    public CreditLine(String id, List<String> owners) {
         super(id, owners);
     }
 
     @SuppressWarnings({"unused"})
-    public CreditLine(String id, Customer owner) {
+    public CreditLine(String id, String owner) {
         super(id, owner);
     }
 
@@ -71,12 +71,12 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      * Transfer money to another user's account. This also increases the balance.
      *
      * @param transferAmount transfer amount
-     * @param user           receiver of amount
+     * @param username           receiver of amount
      * @param account        user account
      * @return true iff transfer was a success
      */
-    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
-        if (validTransfer(transferAmount, user, account)) {
+    public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
+        if (validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
                 account.setBalance(getBalance() + transferAmount);
@@ -98,8 +98,9 @@ class CreditLine extends AccountDebt implements AccountTransferable {
         }
     }
 
-    private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return validWithdrawal(transferAmount) && user.hasAccount(account);
+    private boolean validTransfer(double transferAmount, String username, Account account) {
+        Customer customer = (Customer) ATM.userManager.getUser(username);
+        return validWithdrawal(transferAmount) && customer.hasAccount(account);
     }
 
 //    @Override

@@ -1,20 +1,22 @@
 package ATM;
 
+import java.io.Serializable;
+
 /**
- * a single instance of an etransfer
+ * A instance of a ETransfer
  **/
-public class ETransfer extends Transaction {
+public class ETransfer extends Transaction implements Serializable {
     Customer sender;
     AccountTransferable senderAccount;
     private String question;
     private String answer;
     private boolean deposited = false;
-    private Customer recipient;
+    private String recipient;
 
 
     public ETransfer(Customer sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
-        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName()); //recipientAccount just for placedholder; receiver can
-        //choose which account to deposit to
+        //recipientAccount just for placeholder; receiver can choose which account to deposit to
+        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName());
         this.senderAccount = senderAccount;
         this.question = q;
         this.answer = a;
@@ -23,10 +25,7 @@ public class ETransfer extends Transaction {
     }
 
     public boolean verifyQuestion(String input) {
-        if (this.answer.equals(input)) {
-            return true;
-        }
-        return false;
+        return this.answer.equals(input);
     }
 
     public String getQuestion() {
@@ -37,14 +36,15 @@ public class ETransfer extends Transaction {
         return this.deposited;
     }
 
-    public Customer getRecipient() {
+    public String getRecipient() {
         return this.recipient;
     }
 
-    public void deposit(){
+    public void deposit() {
         this.deposited = true;
     }
-    public void undeposit(){
+
+    public void unDeposit() {
         this.deposited = false;
     }
 

@@ -7,5 +7,5 @@ interface AccountTransferable {
 
     boolean transferBetweenAccounts(double transferAmount, Account account);
 
-    boolean transferToAnotherUser(double transferAmount, Customer user, Account account);
+    boolean transferToAnotherUser(double transferAmount, String username, Account account);
 }

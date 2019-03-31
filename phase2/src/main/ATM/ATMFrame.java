@@ -14,8 +14,7 @@ import javafx.stage.Window;
 public class ATMFrame extends Application {
 
     private Stage window;
-    private Scene welcomeScreen, BMOptions, tellerOptions, customerOptions;
-    private User user;
+    private Scene welcomeScreen;
 
     /**
      * Main entry point of a JavaFX application. This is where the user interface is created and made visible.
@@ -47,28 +46,6 @@ public class ATMFrame extends Application {
 
     }
 
-    //    @Override
-//    public void stop() throws Exception {
-//        super.stop();
-//        System.err.println("Inside stop() method! Destroy resources. Perform Cleanup");
-//    }
-
-
-    private void createBMOptionsScreen() {
-        BankManagerOptionsGUI gui = new BankManagerOptionsGUI(window, welcomeScreen, user);
-        BMOptions = gui.createOptionsScreen();
-    }
-
-    private void createTellerOptionsScreen() {
-        EmployeeOptionsGUI gui = new EmployeeOptionsGUI(window, welcomeScreen, user);
-        tellerOptions = gui.createOptionsScreen();
-    }
-
-    private void createCustomerOptionsScreen() {
-        CustomerOptionsGUI gui = new CustomerOptionsGUI(window, welcomeScreen, user);
-        customerOptions = gui.createOptionsScreen();
-    }
-
     private GridPane createUserFormPane() {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -80,10 +57,15 @@ public class ATMFrame extends Application {
         return grid;
     }
 
+    /**
+     * Add controls to the grid (e.g. labels, textFields, buttons).
+     *
+     * @param grid layout
+     */
     private void addUIControls(GridPane grid) {
-        Text scenetitle = new Text("Welcome");
-        grid.add(scenetitle, 0, 0, 2, 1);
-        scenetitle.setId("welcome-text");
+        Text sceneTitle = new Text("Welcome");
+        grid.add(sceneTitle, 0, 0, 2, 1);
+        sceneTitle.setId("welcome-text");
 
         Label userName = new Label("Username:");
         grid.add(userName, 0, 1);
@@ -105,50 +87,35 @@ public class ATMFrame extends Application {
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
-        actionTarget.setId("actiontarget");
+        actionTarget.setId("actionTarget");
 
         btn.setOnAction(event -> {
-            String username = userTextField.getText();
-            String password = pwBox.getText();
-
-            if (username.isEmpty()) {
-                actionTarget.setText("Please enter your username");
-            } else if (password.isEmpty()) {
-                actionTarget.setText("Please enter your password");
-            } else {
-
-                boolean authResult = ATM.userManager.auth(username, password);
-
-                if (!authResult) {
-                    actionTarget.setText("Login attempt failed");
-                } else {
-                    user = ATM.userManager.getUser(username);
-                    showAlert(Alert.AlertType.CONFIRMATION, grid.getScene().getWindow(), "Login Successful!",
-                            "Hi " + username);
-
-
-                    // At this point the user has been created so we can create the options screen
-
-                    if (user instanceof BankManager) {
-                        createBMOptionsScreen();
-                        window.setScene(BMOptions);
-                    } else if (user instanceof Teller) {
-                        createTellerOptionsScreen();
-                        window.setScene(tellerOptions);
-                    } else if (user instanceof Customer) {
-                        createCustomerOptionsScreen();
-                        window.setScene(customerOptions);
-                    }
-                }
-            }
+            buttonHandler(userTextField, pwBox, actionTarget);
         });
 
     }
 
-    @Override
-    public void init() throws Exception {
-        super.init();
-//        System.err.println("Inside init() method! Perform necessary initializations here");
+    private void buttonHandler(TextField userTextField, PasswordField pwBox, Text actionTarget) {
+        String username = userTextField.getText();
+        String password = pwBox.getText();
+
+        if (username.isEmpty()) {
+            actionTarget.setText("Please enter your username");
+        } else if (password.isEmpty()) {
+            actionTarget.setText("Please enter your password");
+        } else {
+
+            boolean authResult = ATM.userManager.auth(username, password);
+
+            if (!authResult) {
+                actionTarget.setText("Login attempt failed");
+            } else {
+                User user = ATM.userManager.getUser(username);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Login Successful!",
+                        "Hi " + username);
+                window.setScene(user.createOptionsScreen(window, welcomeScreen));
+            }
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {

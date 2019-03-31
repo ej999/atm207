@@ -1,9 +1,14 @@
 package ATM;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.Serializable;
+
 /**
  * User with username and password.
  */
-abstract class User {
+abstract class User implements Serializable {
     private final String username;
     private String password;
 
@@ -29,4 +34,11 @@ abstract class User {
             System.out.println("Password is set successfully");
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " " + getUsername();
+    }
+
+    abstract Scene createOptionsScreen(Stage window, Scene welcomeScreen);
 }

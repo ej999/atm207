@@ -13,13 +13,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
- * GUI for customer options.
- * TODO: some methods contain duplicate code.
+ * A GUI for customer options.
  */
 public class CustomerOptionsGUI extends OptionsGUI {
 
@@ -34,14 +32,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Pay a Bill");
         addOptionText("Make a Transfer between my Accounts");
         addOptionText("Make a Transfer to another User");
-        addOptionText("Cash/Cheque Deposit");
-        addOptionText("Cash Withdrawal");
+        addOptionText("Banknote/Cheque Deposit");
+        addOptionText("Banknote Withdrawal");
         addOptionText("Request Creating an Account");
         addOptionText("Make a Preexisting Account Joint");
         addOptionText("Add an item for Sale");
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
         // eTransfers // TODO
+//        addOptionText("Investing in GIC");
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -62,8 +61,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(12).setOnAction(event -> changePrimaryScreen());
         getOption(13).setOnAction(event -> changePasswordScreen());
         getOption(14).setOnAction(event -> logoutHandler());
+//        getOption(15).setOnAction(event -> InvestGICScreen);
 
-        return generateOptionsScreen(500, 350);
+        return generateOptionsScreen();
     }
 
     private void showAccountSummaryScreen() {
@@ -76,7 +76,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         typeCol.setMinWidth(150);
         typeCol.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
-        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("CREATION DATE");
+        TableColumn<AccountSummary, String> idCol = new TableColumn<>("ID");
+        typeCol.setMinWidth(100);
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("DATE CREATED");
         dateCol.setMinWidth(150);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
 
@@ -84,13 +88,17 @@ public class CustomerOptionsGUI extends OptionsGUI {
         balCol.setMinWidth(100);
         balCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
+        TableColumn<AccountSummary, List<String>> ownerCol = new TableColumn<>("ACCOUNT HOLDERS");
+        balCol.setMinWidth(400);
+        balCol.setCellValueFactory(new PropertyValueFactory<>("owners"));
+
         TableColumn<AccountSummary, String> recCol = new TableColumn<>("MOST RECENT TRANSACTION");
         recCol.setMinWidth(300);
         recCol.setCellValueFactory(new PropertyValueFactory<>("mostRecent"));
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(primCol, typeCol, dateCol, balCol, recCol);
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, idCol, dateCol, balCol, ownerCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
@@ -111,21 +119,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<AccountSummary> getSummary() {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
+
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date_ = new Date(a.getDateOfCreation());
-            String date = dateFormat.format(date_);
 
-            if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getName(), date,
-                        a.getBalance(), recent);
+            if (a.getID().equals(((Customer) user).getPrimaryAccount())) {
+                sum = new AccountSummary("X", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
             } else {
-                sum = new AccountSummary("", a.getClass().getName(), date,
-                        a.getBalance(), recent);
+                sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
             }
             summaries.add(sum);
         }
@@ -138,14 +144,16 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
             }
         }
+
+        System.out.println(accounts);
 
         Label amountLbl = new Label("Amount:");
         TextField amountInput = new TextField(); // assume user enters a number
@@ -198,15 +206,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> otherChoiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
             } else {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 otherChoiceBox.getItems().add(choice);
             }
         }
@@ -258,11 +266,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
             }
         }
@@ -297,7 +305,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
             if (ATM.userManager.isPresent(otherAccount)) {
-                if (((AccountTransferable) account).transferToAnotherUser(amount, (Customer) user, ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
@@ -311,7 +319,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void depoCashScreen() {
+    private void depositBanknoteScreen() {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane grid = createFormPane();
 
@@ -327,7 +335,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // This part is very similar to restockingScreen
         // Adding all labels and text fields
-        for (Integer d : Cash.DENOMINATIONS) {
+        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Amount of $" + d + " dollar bills:");
             grid.add(dLabel, 0, rowIndex);
@@ -343,7 +351,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         grid.add(hbBtn, 1, 4);
 
         // Handlers
-        goBack.setOnAction(event -> depoCashScreen());
+        goBack.setOnAction(event -> depositScreen());
         deposit.setOnAction(event -> {
             // d -> quantity
             Map<Integer, Integer> depositedBills = new HashMap<>();
@@ -364,16 +372,16 @@ public class CustomerOptionsGUI extends OptionsGUI {
         GridPane gridPane = createFormPane();
 
         Button cancel = new Button("Cancel");
-        Button depoCash = new Button("Deposit Cash");
-        Button depoCheque = new Button("Deposit Cheque");
+        Button depositBanknote = new Button("Deposit Banknote");
+        Button depositCheque = new Button("Deposit Cheque");
 
         gridPane.add(cancel, 0, 0);
-        gridPane.add(depoCash, 1, 0);
-        gridPane.add(depoCheque, 2, 0);
+        gridPane.add(depositBanknote, 1, 0);
+        gridPane.add(depositCheque, 2, 0);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        depoCash.setOnAction(event -> depoCashScreen());
-        depoCheque.setOnAction(event -> depoChequeScreen());
+        depositBanknote.setOnAction(event -> depositBanknoteScreen());
+        depositCheque.setOnAction(event -> depositChequeScreen());
 
         if (!((Customer) user).hasPrimary()) {
             window.setScene(optionsScreen);
@@ -384,7 +392,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void depoChequeScreen() {
+    private void depositChequeScreen() {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane gridPane = createFormPane();
 
@@ -424,7 +432,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         TextField input = new TextField();
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);
@@ -536,10 +544,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select new primary account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a instanceof Chequing) {
-                choiceBox.getItems().add(a.getType() + " " + a.getId());
+                choiceBox.getItems().add(a.getType() + " " + a.getID());
             }
         }
 
@@ -579,7 +587,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label accountTypeLbl = new Label("Select account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        List<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
             accountTypeDropDown.getItems().add(type);
@@ -610,7 +618,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<Transaction> getTransaction() {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             transactions.addAll(a.getTransactionHistory());
         }
@@ -650,7 +658,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableView<Transaction> table = new TableView<>();
         table.setItems(getTransaction());
-        table.getColumns().addAll(dateCol, typeCol, amountCol, bnkAcc);
+        table.getColumns().addAll(Arrays.asList(dateCol, typeCol, amountCol, bnkAcc));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> window.setScene(optionsScreen));
@@ -674,10 +682,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select non-joint account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (!a.isJoint()) {
-                choiceBox.getItems().add(a.getType() + " " + a.getId());
+                choiceBox.getItems().add(a.getType() + " " + a.getID());
             }
         }
 
@@ -760,43 +768,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-
-        AccountSummary(String p, String t, String d, double b, String r) {
-            this.isPrimary = p;
-            this.accountType = t;
-            this.creationDate = d;
-            this.balance = b;
-            this.mostRecent = r;
-        }
-
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
-
-        public String getAccountType() {
-            return this.accountType;
-        }
-
-        public String getCreationDate() {
-            return this.creationDate;
-        }
-
-        public double getBalance() {
-            return this.balance;
-        }
-
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
-
-    }
-
     private void addBuyOfferScreen() {
         GridPane gridPane = createFormPane();
 
@@ -840,7 +811,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void seeOffersScreen() {
-        //TODO: Jason
         GridPane gridPane = createFormPane();
 
         Label itemOffers = new Label("Would you like to see sell offers of buy offers?");
@@ -848,9 +818,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Button buy = new Button("Buy");
         Button sell = new Button("Sell");
 
-        gridPane.add(cancel, 0, 0);
-        gridPane.add(buy, 1, 0);
-        gridPane.add(sell, 2, 0);
+        gridPane.add(itemOffers, 0, 0);
+        gridPane.add(cancel, 1, 1);
+        gridPane.add(buy, 2, 1);
+        gridPane.add(sell, 3, 1);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         buy.setOnAction(event -> seeOffersBuyScreen());
@@ -860,12 +831,118 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void seeOffersSellScreen() {
-        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see offers for?");
+        TextField itemCheck = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Check");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> seeOffersScreen());
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void seeOffersBuyScreen() {
-        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see offers for?");
+        TextField itemCheck = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Check");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> seeOffersScreen());
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
+
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+        private String id;
+        private List<String> owners;
+
+        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+            this.id = i;
+            this.owners = o;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public List<String> getOwners() {
+            return owners;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
+    }
+//    private void InvestGICScreen(){
+//        Label DealsLabel = new Label("Choose a Deal");
+//        ChoiceBox<String> typeChoice = new ChoiceBox<>();
+//
+//    }
 
 }
 

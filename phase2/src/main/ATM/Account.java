@@ -1,32 +1,36 @@
 package ATM;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-abstract class Account {
+abstract class Account implements Serializable {
     // payment and transfer to non-user is written in following path.
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
-
-    private final String id;
-    private final long dateOfCreation;
-    private final List<Customer> owners;
-    private final Customer primaryOwner;
+    private final String type = this.getClass().getName();
+    private final String ID;
+    private final long dateCreated;
+    private final List<String> ownersUsername;
+    private final String primaryOwner;
 
     private Stack<Transaction> transactionHistory;
 
     private double balance;
 
-    Account(String id, List<Customer> owners) {
-        this.id = id;
-        this.dateOfCreation = new Date().getTime();
-        this.owners = owners;
+    Account(String ID, List<String> ownersUsername) {
+        this.ID = ID;
+        // We store the timestamp as a immutable long.
+        this.dateCreated = new Date().getTime();
+        this.ownersUsername = ownersUsername;
         // First customer in the list is set to be the primary owner of this account.
-        this.primaryOwner = owners.get(0);
+        this.primaryOwner = ownersUsername.get(0);
         this.transactionHistory = new Stack<Transaction>();
         this.balance = 0;
     }
 
-    Account(String id, Customer owner) {
-        this(id, Collections.singletonList(owner));
+    Account(String ID, String owner) {
+        this(ID, Collections.singletonList(owner));
     }
 
 
@@ -41,7 +45,7 @@ abstract class Account {
         if (depositAmount > 0) {
             balance += depositAmount;
             transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
-            new Cash().cashDeposit(depositedBills);
+            ATM.banknoteManager.banknoteDeposit(depositedBills);
         } else {
             System.out.println("invalid deposit");
         }
@@ -51,15 +55,17 @@ abstract class Account {
         return transactionHistory;
     }
 
-    public void setTransactionHistory(Stack<Transaction> transactionHistory) {
+    void setTransactionHistory(Stack<Transaction> transactionHistory) {
         this.transactionHistory = transactionHistory;
     }
 
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
-    public abstract String getType();
+    public String getType() {
+        return type;
+    }
 
     Transaction getMostRecentTransaction() {
         Transaction mostRecentTransaction;
@@ -85,9 +91,15 @@ abstract class Account {
 //        }
 //    }
 
-    //TODO see if it's needed
-    Long getDateOfCreation() {
-        return dateOfCreation;
+    @SuppressWarnings("WeakerAccess")
+    public Long getDateCreated() {
+        return dateCreated;
+    }
+
+    // Return dateCreated as String in a readable format.
+    String getDateCreatedReadable() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        return dateFormat.format(new Date(dateCreated));
     }
 
     /**
@@ -128,15 +140,20 @@ abstract class Account {
         this.balance = balance;
     }
 
-    //    @Override
-//    public abstract String toString();
-
-    Customer getPrimaryOwner() {
+    String getPrimaryOwner() {
         // Assuming primary account owner.
         return primaryOwner;
     }
 
-    public List<Customer> getOwners() {
+    public List<String> getOwnersUsername() {
+        return ownersUsername;
+    }
+
+    List<Customer> getOwners() {
+        ArrayList<Customer> owners = new ArrayList<>();
+        for (String username : ownersUsername) {
+            owners.add((Customer) ATM.userManager.getUser(username));
+        }
         return owners;
     }
 
@@ -146,31 +163,37 @@ abstract class Account {
      * @param newOwner account owner
      * @return true iff newOwner is distinct
      */
-    public boolean addOwner(Customer newOwner) {
-        if (!owners.contains(newOwner)) {
-            owners.add(newOwner);
+    boolean addOwner(String newOwner) {
+        if (!ownersUsername.contains(newOwner)) {
+            ownersUsername.add(newOwner);
             return true;
         }
         return false;
     }
 
-    public boolean isJoint() {
-        return owners.size() > 1;
+    boolean isJoint() {
+        return ownersUsername.size() > 1;
     }
 
     public boolean removeOwner(Customer owner) {
         // An account has to have at least one owner.
-        if (isJoint() && owners.contains(owner)) {
-            owners.remove(owner);
+        if (isJoint() && ownersUsername.contains(owner.getUsername())) {
+            ownersUsername.remove(owner.getUsername());
             return true;
         }
         return false;
     }
 
-
     @Override
     public String toString() {
-        return this.getClass().getName() + "\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t";
-    }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(dateCreated);
 
+        return this.getClass().getSimpleName() +
+                " [ID='" + ID + '\'' +
+                ", balance=" + balance +
+                ", ownersUsername=" + ownersUsername +
+                ", dateCreated=" + dateFormat.format(date) +
+                ']';
+    }
 }

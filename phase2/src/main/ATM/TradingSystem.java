@@ -26,8 +26,8 @@ import java.util.HashMap;
  */
 
 public class TradingSystem {
-    static HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
-    static HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
+    private static HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
+    private static HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
 
     TradingSystem() {
     }
@@ -39,6 +39,7 @@ public class TradingSystem {
                 if (!sell_offers.containsKey(item)) {
                     sell_offers.put(item, new ArrayList<>());
                 }
+
                 sell_offers.get(item).add(tradeoffer);
             }
 
@@ -60,6 +61,7 @@ public class TradingSystem {
                 if (!buy_offers.containsKey(item)) {
                     buy_offers.put(item, new ArrayList<>());
                 }
+
                 buy_offers.get(item).add(tradeoffer);
             }
 
@@ -95,7 +97,9 @@ public class TradingSystem {
                 }
             }
 
+
      public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
+
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         //default values, but these will never get used
         Customer seller = tradeoffer.getTradeUser();
@@ -135,14 +139,16 @@ public class TradingSystem {
                 //buyer.getGoods().addItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
 
     }
 
+
      public ArrayList<String> seeOffers(String item, boolean selling) {
+
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         ArrayList<String> returned = new ArrayList<>();
         if (selling) {
@@ -155,6 +161,7 @@ public class TradingSystem {
             for (int i = 0; i < offers.size(); i++) {
                 returned.add(offers.get(i).toString());
             }
+
         }
         return returned;
     }

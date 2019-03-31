@@ -5,10 +5,7 @@ import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class that manage all Bank Accounts.
@@ -18,9 +15,9 @@ import java.util.Set;
  */
 final class AccountManager {
     // List of the simple names of Account types.
-    final List<String> TYPES_OF_ACCOUNTS;
+    final Collection<String> TYPES_OF_ACCOUNTS;
 
-    // A mapping of id to the Bank Account
+    // A mapping of id to the bank account
     HashMap<String, Account> account_map = new HashMap<>();
 
     AccountManager() {
@@ -28,7 +25,7 @@ final class AccountManager {
         String packageName = AccountManager.class.getPackage().getName();
         Set<Class<? extends Account>> subType = new Reflections(packageName).getSubTypesOf(Account.class);
 
-        List<String> types_of_accounts = new ArrayList<>();
+        Collection<String> types_of_accounts = new ArrayList<>();
         for (Class<? extends Account> type : subType) {
             // Check if the subclass is abstract.
             if (!Modifier.isAbstract(type.getModifiers())) {
@@ -38,24 +35,29 @@ final class AccountManager {
         TYPES_OF_ACCOUNTS = types_of_accounts;
     }
 
+    /**
+     * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving
+     * @param ownersUsername list of username of owners
+     */
     //TODO GIC has unique parameter
-    private Account createAccount(String type, List<Customer> owners) {
+    private Account createAccount(String typeSimpleName, List<String> ownersUsername) {
         try {
-            // Creating a new instance by getting the proper constructor; instead of using switch cases.
-            Class<?> clazz = Class.forName(type);
+            // Creating a new instance by getting the proper constructor
+            String className = AccountManager.class.getPackage().getName() + "." + typeSimpleName;
+            Class<?> clazz = Class.forName(className);
             // The constructor has to be declared public, otherwise ...........
             // TODO: 2019-03-30 overloading constructor
             Constructor<?> cTor = clazz.getConstructor(String.class, List.class);
 
             String id = idGenerator();
-            Account newAccount = (Account) cTor.newInstance(id, owners);
-            account_map.put(newAccount.getId(), newAccount);
+            Account newAccount = (Account) cTor.newInstance(id, ownersUsername);
+            account_map.put(newAccount.getID(), newAccount);
             //TODO observer
 //            if (newAccount instanceof Saving) {
 //                ATM.addObserver((Saving) newAccount);
 //            }
 
-            System.out.println("An account: \"" + newAccount + "\", is successfully created");
+            System.out.println("A " + typeSimpleName + " is successfully created: \"" + newAccount + "\"");
             return newAccount;
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                 InstantiationException | InvocationTargetException e) {
@@ -68,10 +70,10 @@ final class AccountManager {
         return account_map.get(id);
     }
 
-    List<Account> getListOfAccounts(Customer customer) {
+    List<Account> getListOfAccounts(String username) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (String key : account_map.keySet()) {
-            if (account_map.get(key).getOwners().contains(customer)) {
+            if (account_map.get(key).getOwnersUsername().contains(username)) {
                 accountsOwned.add(account_map.get(key));
             }
         }
@@ -83,13 +85,13 @@ final class AccountManager {
         return account != null;
     }
 
-    void addAccount(String accountType, List<Customer> users) {
-        Account account = createAccount(accountType, users);
-        System.out.println(account);
+    void addAccount(String accountType, List<String> ownersUsername) {
+        Account account = createAccount(accountType, ownersUsername);
         if (account != null) {
-            for (Customer user : users) {
-                user.addAccount(account);
-                System.out.println("A " + accountType + " account is successfully created for " + user);
+            for (String username : ownersUsername) {
+                Customer owner = (Customer) ATM.userManager.getUser(username);
+                owner.addAccount(account);
+                System.out.println("A " + accountType + " account is successfully created for " + username);
             }
         }
     }
@@ -101,7 +103,7 @@ final class AccountManager {
             id = String.valueOf((int) ((Math.random() * 9000000) + 1000000));
             validId = true;
             for (String key : account_map.keySet()) {
-                if (account_map.get(key).getId().equals(id)) {
+                if (account_map.get(key).getID().equals(id)) {
                     validId = false;
                 }
             }

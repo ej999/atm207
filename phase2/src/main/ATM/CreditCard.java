@@ -6,12 +6,12 @@ class CreditCard extends AccountDebt {
     private static final String type = CreditCard.class.getName();
 
     @SuppressWarnings("unused")
-    public CreditCard(String id, List<Customer> owners) {
+    public CreditCard(String id, List<String> owners) {
         super(id, owners);
     }
 
     @SuppressWarnings("unused")
-    public CreditCard(String id, Customer owner) {
+    public CreditCard(String id, String owner) {
         super(id, owner);
     }
 

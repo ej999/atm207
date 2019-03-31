@@ -13,26 +13,21 @@ import java.util.*;
  * At the beginning of every month, reset their transactions and transferTotal.
  */
 class Youth extends Account implements AccountTransferable, Observer {
-    private static final String type = Youth.class.getName();
     private int transactions;
     private int maxTransactions;
     private int transferLimit;
     private int transferTotal;
 
     @SuppressWarnings({"unused", "WeakerAccess"})
-    public Youth(String id, List<Customer> owners) {
-        super(id, owners);
+    public Youth(String id, List<String> ownersUsername) {
+        super(id, ownersUsername);
         this.maxTransactions = 20;
         this.transferLimit = 250;
     }
 
     @SuppressWarnings("unused")
-    public Youth(String id, Customer owner) {
-        this(id, Collections.singletonList(owner));
-    }
-
-    public String getType() {
-        return type;
+    public Youth(String id, String username) {
+        this(id, Collections.singletonList(username));
     }
 
     private boolean makeTransfer(double amount) {
@@ -49,16 +44,16 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
-                new Cash().isThereEnoughBills(withdrawalAmount) && (transactions < maxTransactions);
+                ATM.banknoteManager.isThereEnoughBankNote(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     @Override
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             setBalance(getBalance() - withdrawalAmount);
-            new Cash().cashWithdrawal(withdrawalAmount);
+            ATM.banknoteManager.banknoteWithdrawal(withdrawalAmount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, type));
+            getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, getType()));
         }
     }
 
@@ -74,7 +69,7 @@ class Youth extends Account implements AccountTransferable, Observer {
             }
             setBalance(getBalance() - amount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("PayBill", amount, null, type));
+            getTransactionHistory().push(new Transaction("PayBill", amount, null, getType()));
             return true;
         }
         return false;
@@ -108,7 +103,7 @@ class Youth extends Account implements AccountTransferable, Observer {
     void undoWithdrawal(double withdrawalAmount) {
         setBalance(getBalance() + withdrawalAmount);
         transactions -= 1;
-        new Cash().cashWithdrawal(-withdrawalAmount);
+        ATM.banknoteManager.banknoteWithdrawal(-withdrawalAmount);
     }
 
     @Override
@@ -116,7 +111,7 @@ class Youth extends Account implements AccountTransferable, Observer {
         if ((depositAmount > 0) && (transactions < maxTransactions)) {
             setBalance(getBalance() + depositAmount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, type));
+            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, getType()));
         } else {
             System.out.println("invalid deposit");
         }
@@ -144,19 +139,19 @@ class Youth extends Account implements AccountTransferable, Observer {
      * Transfer money from this account to another user's account (this will decrease their balance)
      *
      * @param transferAmount amount to transfer
-     * @param user           receives transferAmount
+     * @param username           receives transferAmount
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
-        if (validTransfer(transferAmount, user, account)) {
+    public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
+        if (validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
                 account.setBalance(account.getBalance() + transferAmount);
             } else {
                 account.setBalance(account.getBalance() - transferAmount);
             }
-            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, type));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, getType()));
             transactions += 1;
             transferTotal += transferAmount;
             return true;
@@ -176,8 +171,9 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     }
 
-    private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && user.hasAccount(account) &&
+    private boolean validTransfer(double transferAmount, String username, Account account) {
+        Customer customer = (Customer) ATM.userManager.getUser(username);
+        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && customer.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
 
