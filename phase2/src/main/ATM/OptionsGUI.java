@@ -12,21 +12,26 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static ATM.ATM.accountManager;
+import static ATM.ATM.serialization;
 
 /**
  * A GUI for common options across all users.
  */
-public abstract class OptionsGUI {
-    Stage window;
+abstract class OptionsGUI {
+    final Stage window;
     Scene optionsScreen;
-    User user;
-    private Scene welcomeScreen;
-    private ArrayList<Button> options = new ArrayList<>();
-    private ArrayList<String> optionsText = new ArrayList<>();
+    final User user;
+    private final Scene welcomeScreen;
+    private final ArrayList<Button> options = new ArrayList<>();
+    private final ArrayList<String> optionsText = new ArrayList<>();
 
     /*
     This is the idea for options screen:
@@ -40,7 +45,7 @@ public abstract class OptionsGUI {
         this.user = user;
     }
 
-    public abstract Scene createOptionsScreen();
+    abstract Scene createOptionsScreen();
 
     void addOptionText(String text) {
         optionsText.add(text);
@@ -93,7 +98,7 @@ public abstract class OptionsGUI {
     }
 
     private void addMessageToOptionsScreen(GridPane gridPane) {
-        Text message = new Text("What can we do for you today?");
+        Text message = new Text("Hi " + user.getUsername() + "! What can we do for you today?");
         message.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         gridPane.add(message, 0, 0, 2, 1);
     }
@@ -102,10 +107,10 @@ public abstract class OptionsGUI {
      * When user selects 'logout'
      */
     void logoutHandler() {
-        ATM.serialization.serializeAll();
+        serialization.serializeAll();
 
-        showAlert(Alert.AlertType.CONFIRMATION, window, "Logout successful",
-                "Your account has been logged out. Thank you for choosing CSC207 Bank!");
+        showAlert(Alert.AlertType.INFORMATION, window, "Logout successful",
+                "Your account has been logged out. Thank you for choosing CSC-Bank!", false);
         window.setScene(welcomeScreen);
     }
 
@@ -162,9 +167,9 @@ public abstract class OptionsGUI {
             String newPassAgain = pwBox1.getText();
 
             if (!realOldPass.equals(oldPassTyped)) {
-                actionTarget.setText("Old password incorrect");
+                actionTarget.setText("Old password not valid");
             } else if (!newPass1.equals(newPassAgain)) {
-                actionTarget.setText("Check new password");
+                actionTarget.setText("Are you sure you typed the same password twice?");
             } else if (newPass1.isEmpty()) {
                 actionTarget.setText("New password cannot be empty");
             } else {
@@ -179,38 +184,41 @@ public abstract class OptionsGUI {
     void changePasswordScreen() {
         GridPane grid = createFormPane();
         addUIControlsToPasswordScreen(grid);
-        window.setScene(new Scene(grid, 400, 275));
+        Scene scene = new Scene(grid, 400, 275);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void setPasswordHandler() {
-        showAlert(Alert.AlertType.CONFIRMATION, window, "Password changed",
-                "Your password has been changed");
+        showAlert(Alert.AlertType.INFORMATION, window, "Password changed", "Your password has been changed", true);
         window.setScene(optionsScreen);
     }
 
     /**
      * A pop-up alert window
      *
-     * @param alertType e.g. CONFIRMATION, ERROR
+     * @param alertType e.g. INFORMATION, ERROR
      * @param owner     window
      * @param title     title of window
      * @param message   alert message
      */
-    void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+    Optional<ButtonType> showAlert(Alert.AlertType alertType, Window owner, String title, String message, boolean wait) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(owner);
-        alert.show();
+        alert.initStyle(StageStyle.UTILITY);
+        if (wait) {
+            return alert.showAndWait();
+        } else {
+            alert.show();
+            return Optional.empty();
+        }
     }
 
-    HBox getTwoButtons(String first, String second) {
-        /*
-        first | second
-        e.g. Cancel | Submit
-         */
-        Button firstBtn = new Button(first);
+    HBox getTwoButtons(String second) {
+        Button firstBtn = new Button("Cancel");
         Button secondBtn = new Button(second);
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
@@ -219,16 +227,16 @@ public abstract class OptionsGUI {
         return hbBtn;
     }
 
-    ChoiceBox<String> getBankAccounts(String exclusion) {
+    ChoiceBox<String> getBankAccounts() {
         /*
         drop-down of this user's accounts, excluding account <exclusion>
          */
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getSimpleName();
-            if (!accountName.equals(exclusion)) {
+            if (!accountName.equals("no exclusion")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }

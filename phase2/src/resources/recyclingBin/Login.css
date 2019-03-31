@@ -3,37 +3,10 @@
     -fx-background-color: #e9ebee;
     -fx-background-radius: 0;
     -fx-background-repeat: stretch;
-    -fx-background-size: 1000 600;
+    -fx-background-size: 900 506;
     -fx-background-position: center center;
 }
-
 .label {
-    -fx-font-size: 12px;
-    -fx-text-fill: #1d2129;
-}
-
-.button {
-    -fx-text-fill: white;
-    -fx-font-family: "Arial";
-    -fx-font-weight: bold;
-    -fx-background-color: #3e7782;
-    -fx-border-color: #213f45;
-    -fx-background-radius: 0;
-}
-
-#alert {
-  -fx-background-color: black;
-}
-
-.button:hover {
-    -fx-background-color: #325e67;
-}
-
-.button:pressed {
-    -fx-background-color: #213f45;
-}
-
-#login {
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-text-fill: #1d2129;
@@ -49,4 +22,21 @@
 #actionTarget {
     -fx-fill: FIREBRICK;
     -fx-font-weight: bold;
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-background-color: #3e7782;
+    -fx-border-color: #213f45;
+    -fx-background-radius: 0;
+}
+
+.button:hover {
+    -fx-background-color: #325e67;
+}
+
+.button:pressed {
+    -fx-background-color: #213f45;
 }

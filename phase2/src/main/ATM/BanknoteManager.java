@@ -8,7 +8,6 @@ import java.util.*;
 
 /**
  * A utility class that handles storage, withdrawal, deposit of banknotes.
- * TODO optimize the usage of methods
  */
 final class BanknoteManager {
     private static final String OUTPUT_FILE_PATH = "phase2/src/resources/alerts.txt";
@@ -71,7 +70,9 @@ final class BanknoteManager {
         for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
             Integer denominator = DENOMINATIONS.get(d);
 
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator), this.banknotes.get(String.valueOf(denominator)));
+            String b = String.valueOf(this.banknotes.get(String.valueOf(denominator)));
+
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denominator), Integer.valueOf(b));
             banknotes.put(DENOMINATIONS.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }
@@ -107,7 +108,9 @@ final class BanknoteManager {
         for (int denominator : numOfBanknotes.keySet()) {
             int numOfBanknote = numOfBanknotes.get(denominator);
 
-            banknotes.put(String.valueOf(denominator), banknotes.get(String.valueOf(denominator)) - numOfBanknote);
+            String n = String.valueOf(banknotes.get(String.valueOf(denominator)));
+
+            banknotes.put(String.valueOf(denominator), Integer.valueOf(n) - numOfBanknote);
             total += denominator * numOfBanknote;
 
             print.append(numOfBanknote).append(" of $").append(denominator).append("-bill, ");

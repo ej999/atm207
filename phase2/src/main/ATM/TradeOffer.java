@@ -1,9 +1,9 @@
 package ATM;
 
-public class TradeOffer {
-    private int quantity;
-    private int price;
-    private Customer tradeUser;
+class TradeOffer {
+    private final int quantity;
+    private final int price;
+    private final Customer tradeUser;
 
     TradeOffer(int quantity, int price, Customer tradeUser) {
         this.quantity = quantity;
@@ -11,15 +11,18 @@ public class TradeOffer {
         this.tradeUser = tradeUser;
     }
 
-    int getQuantity() {
+    @SuppressWarnings("WeakerAccess")
+    public int getQuantity() {
         return this.quantity;
     }
 
-    int getPrice() {
+    @SuppressWarnings("WeakerAccess")
+    public int getPrice() {
         return this.price;
     }
 
-    Customer getTradeUser() {
+    @SuppressWarnings("WeakerAccess")
+    public Customer getTradeUser() {
         return this.tradeUser;
     }
 

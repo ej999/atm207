@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.EmptyStackException;
 import java.util.List;
 
+import static ATM.ATM.accountManager;
+import static ATM.ATM.userManager;
+
 class CreditLine extends AccountDebt implements AccountTransferable {
 
     private static final String type = CreditLine.class.getName();
@@ -76,7 +79,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
      * @return true iff transfer was a success
      */
     public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
-        if (validTransfer(transferAmount, username, account)) {
+        if (checkDebtCapacity(transferAmount) && validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
                 account.setBalance(getBalance() + transferAmount);
@@ -99,7 +102,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
     }
 
     private boolean validTransfer(double transferAmount, String username, Account account) {
-        Customer customer = (Customer) ATM.userManager.getUser(username);
+        Customer customer = (Customer) userManager.getUser(username);
         return validWithdrawal(transferAmount) && customer.hasAccount(account);
     }
 
@@ -133,7 +136,7 @@ class CreditLine extends AccountDebt implements AccountTransferable {
                     } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
                     } else if (transaction.getTransactionType().equals("Transfer")) {
-                        undoTransfer(transaction.getAmount(), ATM.accountManager.getAccount(transaction.getAccountId()));
+                        undoTransfer(transaction.getAmount(), accountManager.getAccount(transaction.getAccountId()));
                     } else if (type.equals("PayBill")) {
                         undoPayBill(transaction.getAmount());
                     }

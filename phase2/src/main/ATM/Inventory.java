@@ -6,16 +6,14 @@ import java.util.HashMap;
 
 //Where users can store non-money goods. Stored in a HashMap with the string name of the good (Steel, Copper,
 //etc.), with its value being the amount of it.
-public class Inventory {
-    private HashMap<String, Integer> storage = new HashMap<>();
+class Inventory {
+    private final HashMap<String, Integer> storage;
 
     Inventory() {
+        this.storage = new HashMap<>();
     }
 
-    Inventory(HashMap<String, Integer> storage) {
-        this.storage = storage;
-    }
-
+    @SuppressWarnings("unused") // serialization property
     public HashMap<String, Integer> getStorage() {
         return storage;
     }
@@ -39,7 +37,7 @@ public class Inventory {
         } else {
             storage.put(item, amount);
         }
-        String returned = "Deposited " + amount + " grams of " + item;
+        String returned = "Deposited " + amount + " integer unit of " + item;
         System.out.println(returned);
     }
 
@@ -54,7 +52,7 @@ public class Inventory {
         ArrayList<String> returned = new ArrayList<>();
 
         for (String key : storage.keySet()) {
-            returned.add("Item: " + key + " Amount: " + storage.get(key));
+            returned.add(storage.get(key) + " unit of " + key);
         }
         return returned;
     }

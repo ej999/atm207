@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static ATM.ATM.banknoteManager;
+import static ATM.ATM.userManager;
+
 abstract class Account implements Serializable {
     // payment and transfer to non-user is written in following path.
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
@@ -29,12 +32,10 @@ abstract class Account implements Serializable {
         this.balance = 0;
     }
 
-    Account(String id, String owner) {
+    public Account(String id, String owner) {
         this(id, Collections.singletonList(owner));
     }
 
-
-    // TODO may need to make abstract and move it to another hierarchy
 
     void depositBill(Map<Integer, Integer> depositedBills) {
         int depositAmount = 0;
@@ -45,18 +46,19 @@ abstract class Account implements Serializable {
         if (depositAmount > 0) {
             balance += depositAmount;
             transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
-            ATM.banknoteManager.banknoteDeposit(depositedBills);
+            banknoteManager.banknoteDeposit(depositedBills);
         } else {
             System.out.println("invalid deposit");
         }
 
         for (String username : ownersUsername) {
-            Customer customer = (Customer) ATM.userManager.getUser(username);
+            Customer customer = (Customer) userManager.getUser(username);
             customer.setNetTotal();
         }
     }
 
-    Stack<Transaction> getTransactionHistory() {
+    @SuppressWarnings("WeakerAccess") // serialization property
+    public Stack<Transaction> getTransactionHistory() {
         return transactionHistory;
     }
 
@@ -141,7 +143,7 @@ abstract class Account implements Serializable {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    void setBalance(double balance) {
         this.balance = balance;
     }
 
@@ -174,7 +176,7 @@ abstract class Account implements Serializable {
 //    List<Customer> getOwners() {
 //        ArrayList<Customer> owners = new ArrayList<>();
 //        for (String username : ownersUsername) {
-//            owners.add((Customer) ATM.userManager.getUser(username));
+//            owners.add((Customer) userManager.getUser(username));
 //        }
 //        return owners;
 //    }
