@@ -15,18 +15,25 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 /**
- * An observer class that operate serialization in real-time, save and retrieve data to FireBase database.
+ * An class that operate serialization in JSON, save and retrieve data to FireBase real-time database.
+ * To import or export JSON.
  */
 final class ManagersSerialization {
-    static void deleteDatabase() {
-        FireBaseDBAccess.save(0, "", "");
+    FireBaseDBAccess fbDb;
+
+    public ManagersSerialization() {
+        this.fbDb = new FireBaseDBAccess();
+    }
+
+    void deleteDatabase() {
+        fbDb.save(0, "", "");
 
         Logger.getLogger("Custom").info("FireBase database is set to empty");
     }
 
     void deserialize() {
         // Deserialize JSON from /Users directory in FireBase to a HashMap of User, and assign it to user_map in ATM.userManager.
-        HashMap<String, Object> user_map_temp = FireBaseDBAccess.retrieveAll("Users", true);
+        HashMap<String, Object> user_map_temp = fbDb.retrieveAll("Users", true);
         HashMap<String, User> user_map = new HashMap<>();
         for (String username : user_map_temp.keySet()) {
             Object object = user_map_temp.get(username);
@@ -34,25 +41,21 @@ final class ManagersSerialization {
         }
         ATM.userManager.user_map = user_map;
 
+        for (String username : ATM.userManager.user_map.keySet()) {
+            User user = ATM.userManager.getUser(username);
+            if (user instanceof Customer && ((Customer) user).getAccounts() == null) {
+                ((Customer) user).accounts = new ArrayList<>();
+            }
+        }
+
         // Deserialize JSON from /Accounts directory in FireBase to a HashMap of Account, and assign it to account_map in ATM.accountManager.
-        HashMap<String, Object> account_list_temp = FireBaseDBAccess.retrieveAll("Accounts", true);
+        HashMap<String, Object> account_list_temp = fbDb.retrieveAll("Accounts", true);
         HashMap<String, Account> account_map = new HashMap<>();
         for (String n : account_list_temp.keySet()) {
             Object object = account_list_temp.get(n);
             account_map.put(n, (Account) object);
         }
         ATM.accountManager.account_map = account_map;
-
-        // Deserialize JSON from /Bills directory in FireBase to a HashMap of Integer, and assign it to ATMBills in Cash.
-        HashMap<String, Object> bills_temp = FireBaseDBAccess.retrieveAll("Bills", false);
-        // Downcast Object value to Integer value.
-        HashMap<String, Integer> bills = new HashMap<>();
-        for (String n : bills_temp.keySet()) {
-            Object object = bills_temp.get(n);
-            bills.put(n, Math.toIntExact((Long) object));
-        }
-        Cash.ATMBills = bills;
-
 
         // FireBase has no native support for arrays, so we re-create these variables: https://firebase.googleblog.com/2014/04/best-practices-arrays-in-firebase.html
         for (String id : ATM.accountManager.account_map.keySet()) {
@@ -63,12 +66,17 @@ final class ManagersSerialization {
             }
         }
 
-        for (String username : ATM.userManager.user_map.keySet()) {
-            User user = ATM.userManager.getUser(username);
-            if (user instanceof Customer && ((Customer) user).getAccounts() == null) {
-                ((Customer) user).accounts = new ArrayList<>();
-            }
+
+        // Deserialize JSON from /Bills directory in FireBase to a HashMap of Integer, and assign it to ATMBills in Cash.
+        HashMap<String, Object> bills_temp = fbDb.retrieveAll("Bills", false);
+        // Downcast Object value to Integer value.
+        HashMap<String, Integer> bills = new HashMap<>();
+        for (String n : bills_temp.keySet()) {
+            Object object = bills_temp.get(n);
+            bills.put(n, Math.toIntExact((Long) object));
         }
+        Cash.ATMBills = bills;
+
 
         Logger.getLogger("Custom").info("Deserialize ATM.userManager.user_map = " + ATM.userManager.user_map);
         Logger.getLogger("Custom").info("Deserialize ATM.accountManager.account_map = " + ATM.accountManager.account_map);
@@ -76,40 +84,25 @@ final class ManagersSerialization {
     }
 
     void serializeAll() {
-        FireBaseDBAccess.saveAll(ATM.userManager.user_map, "Users");
-        FireBaseDBAccess.saveAll(ATM.accountManager.account_map, "Accounts");
-        FireBaseDBAccess.saveAll(Cash.ATMBills, "Bills");
+        fbDb.saveAll(ATM.userManager.user_map, "Users");
+        fbDb.saveAll(ATM.accountManager.account_map, "Accounts");
+        fbDb.saveAll(Cash.ATMBills, "Bills");
 
         Logger.getLogger("Custom").info("ATMBills is serialized and saved");
     }
 
-//    HashMap<String, User> loadCustom(String filename) {
-//        try {
-//            FileInputStream file = new FileInputStream("phase2/src/resources/" + filename + ".txt");
-//            ObjectInputStream object = new ObjectInputStream(file);
-//            ManagersSerialization backup = (ManagersSerialization) object.readObject();
-//            object.close();
-//            file.close();
-//            return backup.user_map;
-//        } catch (IOException | ClassNotFoundException f) {
-//            //f.printStackTrace();
-//            return ATM.userManager.user_map;
-//        }
-//
-//    }
-
     /**
      * A helper class that allow read and write to FireBase project.
      */
-    static final class FireBaseDBAccess {
-        static private DatabaseReference databaseRef;
+    final class FireBaseDBAccess {
+        private DatabaseReference databaseRef;
 
 
-        static {
+        FireBaseDBAccess() {
             initFireBase();
         }
 
-        static private void initFireBase() {
+        private void initFireBase() {
             try {
                 // FireBase private key generated when creating service account.
                 FileInputStream serviceAccount = new FileInputStream("./phase2/src/resources/serviceAccountKey.json");
@@ -129,7 +122,7 @@ final class ManagersSerialization {
             }
         }
 
-        static void save(Object item, String child, String key) {
+        void save(Object item, String child, String key) {
             CountDownLatch latch = new CountDownLatch(1);
             if (item != null) {
                 // Get existing child or new child will be created.
@@ -147,7 +140,7 @@ final class ManagersSerialization {
             }
         }
 
-        static void saveAll(HashMap item_map, String child) {
+        void saveAll(HashMap item_map, String child) {
             CountDownLatch latch = new CountDownLatch(1);
             if (item_map != null) {
                 // Get existing child or new child will be created.
@@ -168,7 +161,7 @@ final class ManagersSerialization {
         /**
          * Return a HashMap of all the child items as their objects in database.
          */
-        static HashMap<String, Object> retrieveAll(String child, boolean toClass) {
+        HashMap<String, Object> retrieveAll(String child, boolean toClass) {
             CountDownLatch latch = new CountDownLatch(1);
             // Get existing child or will bee created new child.
             DatabaseReference childRef = databaseRef.child(child);

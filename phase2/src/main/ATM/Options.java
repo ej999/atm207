@@ -50,9 +50,7 @@ class Options {
 
             options.put("Change password", new Thread(this::setPasswordPrompt));
 
-//            options.put("Load custom bank data", new Thread(this::loadCustomPrompt));
-
-            options.put("Clear all bank data", new Thread(this::clearDataPrompt));
+//            options.put("Clear all bank data", new Thread(this::clearDataPrompt));
 
             options.put("Logout", new Thread(this::logoutPrompt));
 
@@ -236,16 +234,16 @@ class Options {
         this.current_user = null;
     }
 
-    private void clearDataPrompt() {
-        System.out.print("WARNING: Committing a fraud with value exceeding one million dollars might result in 14 year jail sentence! (Y/N): ");
-        Scanner reader2 = new Scanner(System.in);
-        String answer = reader2.nextLine();
-        if (answer.equals("Y")) {
-            ManagersSerialization.deleteDatabase();
-            System.out.println("Data has been cleared. Good Luck!");
-            System.exit(0);
-        }
-    }
+//    private void clearDataPrompt() {
+//        System.out.print("WARNING: Committing a fraud with value exceeding one million dollars might result in 14 year jail sentence! (Y/N): ");
+//        Scanner reader2 = new Scanner(System.in);
+//        String answer = reader2.nextLine();
+//        if (answer.equals("Y")) {
+//            ManagersSerialization.deleteDatabase();
+//            System.out.println("Data has been cleared. Good Luck!");
+//            System.exit(0);
+//        }
+//    }
 
     private Account selectAccountPrompt(Customer customer) {
         return selectAccountPrompt(customer, "no_exclusion");

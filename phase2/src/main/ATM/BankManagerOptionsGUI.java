@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
-    public BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
+    BankManagerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
     }
 
@@ -199,7 +199,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     private void clearBankDataScreen() {
         GridPane grid = createFormPane();
 
-        Label warningLbl = new Label("\"WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");
+        Label warningLbl = new Label("WARNING: Committing a fraud with value exceeding one million dollars\nmight result in 14 year jail sentence!");
         Button proceed = new Button("Proceed");
         Button cancel = new Button("Cancel");
         HBox hbBtn = new HBox(10);
@@ -212,7 +212,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         proceed.setOnAction(event -> {
-            ManagersSerialization.deleteDatabase();
+            ATM.serialization.deleteDatabase();
             showAlert(Alert.AlertType.CONFIRMATION, window, "Cleared", "Data has been cleared. Good Luck!");
             window.close();
             System.exit(0);
