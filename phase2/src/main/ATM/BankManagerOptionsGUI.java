@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -307,22 +308,78 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     }
 
     private void ManageGICScreen() {
-        GridPane gridPane = createFormPane();
+        GridPane grid = createFormPane();
+
         Button remove = new Button("Remove GIC");
+        Button view = new Button("view GIC");
         Button create = new Button("Create GIC");
         Button cancel = new Button("Cancel");
-        Button oldest = new Button("Oldest");
-        Button newest = new Button("Newest");
+        Label indexLabel = new Label("id of GIC");
+        TextField index = new TextField();
         Label periodLabel = new Label("Period In Months");
         TextField period = new TextField();
         Label rateLabel = new Label("Rate after the Period in Percentage");
         TextField rate = new TextField();
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(remove);
+        hbBtn.getChildren().add(create);
+        hbBtn.getChildren().add(view);
 
-//        remove.setOnAction();
-//        create.setOnAction();
+        grid.add(indexLabel, 0, 0);
+        grid.add(index, 1, 0);
+        grid.add(periodLabel, 0, 1);
+        grid.add(period, 1, 1);
+        grid.add(rateLabel,0,2);
+        grid.add(rate,1,2);
+        grid.add(hbBtn, 1, 3);
+
+        remove.setOnAction(event -> {
+            int id = Integer.valueOf(index.getText());
+            if (GICDeals.gicDeals.size() - 1 >= id && GICDeals.gicDeals.get(id) != null){
+            GICDeals.removeDeal(id);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "GIC deal removed");
+                window.setScene(optionsScreen);
+            }
+        });
+        create.setOnAction(event -> {
+            int id = Integer.valueOf(index.getText());
+            int month = Integer.valueOf(period.getText());
+            double interest = Double.valueOf(rate.getText());
+            GICDeals deals= new GICDeals(month,interest,id);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "New GIC deal created");
+            window.setScene(optionsScreen);
+        });
+        view.setOnAction(event -> {
+            viewGICDeals();
+        });
 
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
+
+        window.setScene(new Scene(grid));
+    }
+    void viewGICDeals() {
+        ListView<String> listView = new ListView<>();
+
+        Button goBack = new Button("Go Back");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(goBack);
+
+        goBack.setOnAction(event -> ManageGICScreen());
+
+        for (GICDeals deal : GICDeals.gicDeals){
+            listView.getItems().add(deal.toString());
+        }
+
+
+
+        VBox vBox = new VBox();
+        vBox.getChildren().add(listView);
+        vBox.getChildren().add(hbBtn);
+        window.setScene(new Scene(vBox, 400, 350));
     }
 
 }

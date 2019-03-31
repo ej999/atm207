@@ -3,14 +3,14 @@ package ATM;
 import java.util.ArrayList;
 
 public class GICDeals {
-    private static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
+    public static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
     private final int period;
     private final double rate;
 
-    public GICDeals(int p, double r) {
+    public GICDeals(int p, double r,int id) {
         this.period = p;
         this.rate = r;
-        gicDeals.add(this);
+        gicDeals.add(id,this);
     }
 
     public int getPeriod() {
@@ -21,20 +21,13 @@ public class GICDeals {
         return rate;
     }
 
-    void removeOldestDeal() {
-        if (gicDeals.size() != 0) {
-            gicDeals.remove(0);
+    static void removeDeal(int index) {
+            gicDeals.remove(index);
         }
-    }
 
-    void removeNewestDeal() {
-        if (gicDeals.size() != 0) {
-            gicDeals.remove(gicDeals.size() - 1);
-        }
-    }
 
     @Override
     public String toString() {
-        return "You will get" + this.rate * 100. + " percent interest in" + this.period + "Months";
+        return GICDeals.gicDeals.indexOf(this) + " You will get " + this.rate  + " percent interest in " + this.period + " Months";
     }
 }

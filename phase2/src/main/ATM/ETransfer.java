@@ -31,6 +31,9 @@ public class ETransfer extends Transaction implements Serializable {
     public String getQuestion() {
         return this.question;
     }
+    public String getAnswer(){
+        return this.answer;
+    }
 
     public boolean hasBeenDeposited() {
         return this.deposited;

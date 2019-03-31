@@ -96,6 +96,18 @@ final class AccountManager {
         }
     }
 
+    // Overloading method for GIC
+    void addGICAccount(double rate, int months, List<String> ownersUsername) {
+        String id = idGenerator();
+
+        Account account = new GIC (id, rate, months, ownersUsername);
+        account_map.put(account.getId(), account);
+        System.out.println("A GIC is successfully created: \"" + account + "\"");
+
+    }
+
+
+
     private String idGenerator() {
         boolean validId = false;
         String id = null;

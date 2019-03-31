@@ -140,11 +140,13 @@ abstract class Account implements Serializable {
         this.balance = balance;
     }
 
-    String getPrimaryOwner() {
+    @SuppressWarnings("WeakerAccess")
+    public String getPrimaryOwner() {
         // Assuming primary account owner.
         return primaryOwner;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public List<String> getOwnersUsername() {
         return ownersUsername;
     }

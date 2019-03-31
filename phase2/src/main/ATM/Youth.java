@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * Youth account is qualified to people under 20 years old.
+ * Youth account is qualified to people under 20 years old (age 19 or below).
  * A youth account has a limited number of transactions of 20 and a transfer limit of $250.
  * At the beginning of every month, reset their transactions and transferTotal.
  */

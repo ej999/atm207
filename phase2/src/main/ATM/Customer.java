@@ -46,6 +46,7 @@ class Customer extends User implements Observer {
         this.creditScore = 100;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String getDob() {
         return dob;
     }
@@ -54,8 +55,27 @@ class Customer extends User implements Observer {
         this.dob = dob;
     }
 
-    int getAge() {
-        return (int) LocalDate.parse(dob).until(LocalDate.now(), ChronoUnit.YEARS);
+
+    /**
+     * @return the age according to the dob; if dob is null, return 0.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public int getAge() {
+        if (dob != null) {
+            return (int) LocalDate.parse(dob).until(LocalDate.now(), ChronoUnit.YEARS);
+        } else {
+            return 0;
+        }
+    }
+
+    // An adult is considered as age 20 or above.
+    boolean isAdult() {
+        if (age != 0) {
+            return age >= 20;
+        } else {
+            System.err.println("We cannot verity your age. Please contact your BankManager to set your DoB");
+            return false;
+        }
     }
 
     public String getType() {
@@ -102,6 +122,7 @@ class Customer extends User implements Observer {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public List<String> getAccountIDs() {
         return accountIDs;
     }
@@ -141,6 +162,7 @@ class Customer extends User implements Observer {
         netTotal = sum;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public double getNetTotal() {
         return netTotal;
     }
@@ -172,8 +194,13 @@ class Customer extends User implements Observer {
                 this.getUsername() + " to a joint account with secondary owner " + username;
         requestHelp(request);
     }
+    void requestGICAccount(int month, double rate) throws IOException {
+        String request = new Date() + ": Requesting to create GIC account from " + this.getUsername() +
+                " with interest rate" + rate + "period " + month + "month";
+        requestHelp(request);
+    }
 
-    public String getPrimaryAccount() {
+    String getPrimaryAccount() {
         return primaryAccount;
     }
 
@@ -186,7 +213,7 @@ class Customer extends User implements Observer {
         }
     }
 
-    public boolean hasPrimary() {
+    boolean hasPrimary() {
         return primaryAccount != null;
     }
 
