@@ -167,18 +167,18 @@ public class TradingSystem {
         }
         return returned;
     }
-
-    static public boolean seeItems(boolean selling){
-        HashMap<String, ArrayList<TradeOffer>> offers_map;
-        ArrayList<String> returned = new ArrayList<>();
-        if (selling) {
-            offers_map = sell_offers;
-        } else {
-            offers_map = buy_offers;
-        }
-
-
-    }
+//
+//    static public boolean seeItems(boolean selling){
+//        HashMap<String, ArrayList<TradeOffer>> offers_map;
+//        ArrayList<String> returned = new ArrayList<>();
+//        if (selling) {
+//            offers_map = sell_offers;
+//        } else {
+//            offers_map = buy_offers;
+//        }
+//
+//
+//    }
 
      public boolean sellPossible(Customer seller, int sell_amount, String item) {
         return seller.getGoods().itemAmount(item) >= sell_amount;
