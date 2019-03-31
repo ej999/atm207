@@ -363,29 +363,29 @@ class Options {
     }
 
     private void depositPrompt() {
-        if (!((Customer) current_user).hasPrimary()) {
-            System.out.println("Deposit cannot be made since you have no primary accounts. Request a new account in the main menu.");
-            return;
-        }
+        if (((Customer) current_user).hasPrimary()) {
+            Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
+            Scanner reader = new Scanner(System.in);
 
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
-        Scanner reader = new Scanner(System.in);
+            System.out.print("Are you depositing [1] banknote or [2] cheque? ");
+            int option = 0;
+            while (option > 3 || option < 1) {
+                option = reader.nextInt();
+            }
 
-        System.out.print("Are you depositing [1] banknote or [2] cheque? ");
-        int option = 0;
-        while (option > 3 || option < 1) {
-            option = reader.nextInt();
-        }
+            if (option == 1) {
+                Map<Integer, Integer> depositedBills = selectBillsPrompt();
+                primary.depositBill(depositedBills);
 
-        if (option == 1) {
-            Map<Integer, Integer> depositedBills = selectBillsPrompt();
-            primary.depositBill(depositedBills);
-
+            } else {
+                System.out.print("How much would you like to deposit? ");
+                double amount = Double.valueOf(reader.next());
+                primary.deposit(amount);
+            }
         } else {
-            System.out.print("How much would you like to deposit? ");
-            double amount = Double.valueOf(reader.next());
-            primary.deposit(amount);
+            System.err.println("Deposit cannot be made since you have no primary accounts. Request a new account in the main menu.");
         }
+
     }
 
     private void payBillPrompt() {
