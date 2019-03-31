@@ -273,7 +273,7 @@ class Options {
             System.out.print("Please select an account: ");
             option = reader.nextInt();
         }
-        return ATM.accountManager.getAccount(accounts.get(option - 1));
+        return ATM.accountManager.getAccount(accounts.get(option));
     }
 
     /**
