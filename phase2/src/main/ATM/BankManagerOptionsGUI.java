@@ -41,7 +41,9 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Clear all bank data");
         addOptionText("Set youth max transactions");
         addOptionText("Set youth max transfers");
+        addOptionText("Manage GIC");
         addOptionText("Logout");
+
         addOptions();
 
         getOption(0).setOnAction(event -> readAlertsScreen());
@@ -53,6 +55,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(7).setOnAction(event -> clearBankDataScreen());
         getOption(8).setOnAction(event -> setYouthTransactionsScreen());
         getOption(9).setOnAction(event -> setYouthTransfersScreen());
+        getOption(10).setOnAction(event -> ManageGICScreen());
 
         return generateOptionsScreen(325, 450);
     }
@@ -306,6 +309,27 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         window.setScene(new Scene(grid));
     }
+    private void ManageGICScreen() {
+        GridPane gridPane = createFormPane();
+        Button remove = new Button("Remove GIC");
+        Button create = new Button("Create GIC");
+        Button cancel = new Button("Cancel");
+        Button oldest = new Button("Oldest");
+        Button newest = new Button("Newest");
+        Label periodLabel = new Label("Period In Months");
+        TextField period = new TextField();
+        Label rateLabel = new Label("Rate after the Period in Percentage");
+        TextField rate = new TextField();
+
+//        remove.setOnAction();
+//        create.setOnAction();
+
+
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        }
+
+
 
 
 }

@@ -1,6 +1,6 @@
 package ATM;
 
-        import java.util.ArrayList;
+import java.util.ArrayList;
 
 public class GICDeals {
     static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();;
@@ -29,5 +29,10 @@ public class GICDeals {
         if (gicDeals.size() != 0) {
             gicDeals.remove(gicDeals.size() - 1);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "You will get" + this.rate*100. + " percent interest in" + this.period + "Months";
     }
 }

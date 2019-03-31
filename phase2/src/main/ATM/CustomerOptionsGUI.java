@@ -40,6 +40,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
         // eTransfers // TODO
+//        addOptionText("Investing in GIC");
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -60,6 +61,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(12).setOnAction(event -> changePrimaryScreen());
         getOption(13).setOnAction(event -> changePasswordScreen());
         getOption(14).setOnAction(event -> logoutHandler());
+//        getOption(15).setOnAction(event -> InvestGICScreen);
 
         return generateOptionsScreen(500, 350);
     }
@@ -915,6 +917,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         }
 
     }
+//    private void InvestGICScreen(){
+//        Label DealsLabel = new Label("Choose a Deal");
+//        ChoiceBox<String> typeChoice = new ChoiceBox<>();
+//
+//    }
 
 }
 
