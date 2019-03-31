@@ -21,12 +21,12 @@ final public class ETransferManager {
         }
     }
 
-    static HashMap<String, Double> getAll(String recipient){
+    static HashMap<String, Double> getAll(String recipient) {
         //return all the transfers for this recipient that are not verified yet. keys: sender usernames, items: amount
         //each key-value pair represents an ETransfer
         HashMap<String, Double> transfers = new HashMap<>();
-        for (ETransfer e: allTransfers){
-            if (!e.hasBeenDeposited() && e.getRecipient().equals(recipient)){
+        for (ETransfer e : allTransfers) {
+            if (!e.hasBeenDeposited() && e.getRecipient().equals(recipient)) {
                 transfers.put(e.sender.getUsername(), e.getAmount());
             }
         }

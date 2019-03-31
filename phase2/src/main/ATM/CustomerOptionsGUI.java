@@ -13,8 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -90,7 +88,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(primCol, typeCol, dateCol, balCol, recCol);
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, dateCol, balCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
@@ -116,15 +114,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date_ = new Date(a.getDateOfCreation());
-            String date = dateFormat.format(date_);
 
             if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getName(), date,
+                sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
                         a.getBalance(), recent);
             } else {
-                sum = new AccountSummary("", a.getClass().getName(), date,
+                sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
                         a.getBalance(), recent);
             }
             summaries.add(sum);
@@ -652,7 +647,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableView<Transaction> table = new TableView<>();
         table.setItems(getTransaction());
-        table.getColumns().addAll(dateCol, typeCol, amountCol, bnkAcc);
+        table.getColumns().addAll(Arrays.asList(dateCol, typeCol, amountCol, bnkAcc));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> window.setScene(optionsScreen));
@@ -762,43 +757,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-
-        AccountSummary(String p, String t, String d, double b, String r) {
-            this.isPrimary = p;
-            this.accountType = t;
-            this.creationDate = d;
-            this.balance = b;
-            this.mostRecent = r;
-        }
-
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
-
-        public String getAccountType() {
-            return this.accountType;
-        }
-
-        public String getCreationDate() {
-            return this.creationDate;
-        }
-
-        public double getBalance() {
-            return this.balance;
-        }
-
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
-
-    }
-
     private void addBuyOfferScreen() {
         GridPane gridPane = createFormPane();
 
@@ -879,7 +837,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
@@ -909,7 +867,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
@@ -919,6 +877,43 @@ public class CustomerOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
+    }
+
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+
+        AccountSummary(String p, String t, String d, double b, String r) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
     }
 
 }

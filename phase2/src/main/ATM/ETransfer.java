@@ -23,10 +23,7 @@ public class ETransfer extends Transaction {
     }
 
     public boolean verifyQuestion(String input) {
-        if (this.answer.equals(input)) {
-            return true;
-        }
-        return false;
+        return this.answer.equals(input);
     }
 
     public String getQuestion() {
@@ -41,10 +38,11 @@ public class ETransfer extends Transaction {
         return this.recipient;
     }
 
-    public void deposit(){
+    public void deposit() {
         this.deposited = true;
     }
-    public void undeposit(){
+
+    public void undeposit() {
         this.deposited = false;
     }
 

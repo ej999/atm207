@@ -150,14 +150,14 @@ class Options {
     private void createUserPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.print("Creating User... Enter user type " + ATM.userManager.USER_TYPE_NAMES + ": ");
-        String type = Options.class.getPackage().getName() + "." + reader.next();
+        String typeSimpleName = reader.next();
         System.out.print("Enter username: ");
         String username = reader.next();
         System.out.print("Enter password: ");
         String password = reader.next();
-        boolean created = ATM.userManager.createAccount(type, username, password);
+        boolean created = ATM.userManager.createAccount(typeSimpleName, username, password);
 
-        if (created && type.equals(Customer.class.getName())) {
+        if (created && typeSimpleName.equals(Customer.class.getName())) {
             setDobPrompt(username);
         }
     }

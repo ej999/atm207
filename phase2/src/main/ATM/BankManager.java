@@ -68,10 +68,4 @@ class BankManager extends UserEmployee {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public String toString() {
-        return "Bank Manager with username \"" + getUsername() + "\" and password \"" + getPassword() + "\"";
-    }
-
 }

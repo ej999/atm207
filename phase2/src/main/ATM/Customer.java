@@ -160,31 +160,6 @@ class Customer extends User implements Observer {
         requestHelp(request);
     }
 
-    //TODO truman: causing issue when deserializing from Firebase.
-//    @Override
-//    public String toString() {
-//        StringBuilder returnMessage = new StringBuilder();
-//        returnMessage.append("\n\u001B[1mPrimary\t\tAccount Type\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
-//                "\u001B[0m");
-//        for (String id : getAccounts()) {
-//            if (ATM.accountManager.getAccount(id).equals(primaryAccount)) {
-//                returnMessage.append("\nX\t\t\t").append(ATM.accountManager.getAccount(id));
-//            } else {
-//                returnMessage.append("\n\t\t\t").append(ATM.accountManager.getAccount(id));
-//            }
-//
-//        }
-//
-//        returnMessage.append("\n\n\u001B[1mYour net total is \u001B[0m$").append(netTotal);
-//
-//        return returnMessage.toString();
-//    }
-
-    @Override
-    public String toString() {
-        return "Customer " + getUsername() + " has a net total of " + getNetTotal();
-    }
-
     public String getPrimaryAccount() {
         return primaryAccount;
     }
