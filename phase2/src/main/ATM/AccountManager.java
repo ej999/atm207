@@ -103,8 +103,10 @@ final class AccountManager {
             id = String.valueOf((int) ((Math.random() * 9000000) + 1000000));
             validId = true;
             for (String key : account_map.keySet()) {
-                if (account_map.get(key).getId().equals(id)) {
-                    validId = false;
+                if (account_map.get(key).getId() != null) {
+                    if (account_map.get(key).getId().equals(id)) {
+                        validId = false;
+                    }
                 }
             }
         }
