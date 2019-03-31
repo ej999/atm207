@@ -253,7 +253,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                     ((BankManager) this.user).setMaxTransactions((Youth) youth,amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit failed");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit failed");
                 }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit has been set");
@@ -295,7 +295,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                     ((BankManager) this.user).setTransferLimit((Youth) youth,amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit failed");
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transfer Limit failed");
                 }
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit has been set");
