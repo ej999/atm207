@@ -34,12 +34,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Banknote/Cheque Deposit");
         addOptionText("Banknote Withdrawal");
         addOptionText("Request Creating an Account");
+        addOptionText("Investing in GIC");
         addOptionText("Make a Preexisting Account Joint");
         addOptionText("Add an item for Sale");
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
         // eTransfers // TODO
-//        addOptionText("Investing in GIC");
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -53,14 +53,14 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(5).setOnAction(event -> depositScreen());
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
-        getOption(8).setOnAction(event -> accountToJointScreen());
-        getOption(9).setOnAction(event -> addSellOfferScreen());
-        getOption(10).setOnAction(event -> addBuyOfferScreen());
-        getOption(11).setOnAction(event -> seeOffersScreen());
-        getOption(12).setOnAction(event -> changePrimaryScreen());
-        getOption(13).setOnAction(event -> changePasswordScreen());
-        getOption(14).setOnAction(event -> logoutHandler());
-//        getOption(15).setOnAction(event -> InvestGICScreen);
+        getOption(9).setOnAction(event -> accountToJointScreen());
+        getOption(10).setOnAction(event -> addSellOfferScreen());
+        getOption(11).setOnAction(event -> addBuyOfferScreen());
+        getOption(12).setOnAction(event -> seeOffersScreen());
+        getOption(13).setOnAction(event -> changePrimaryScreen());
+        getOption(14).setOnAction(event -> changePasswordScreen());
+        getOption(15).setOnAction(event -> logoutHandler());
+        getOption(8).setOnAction(event -> InvestGICScreen());
 
         return generateOptionsScreen();
     }
@@ -75,11 +75,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         typeCol.setMinWidth(150);
         typeCol.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
-        TableColumn<AccountSummary, String> idCol = new TableColumn<>("ID");
-        typeCol.setMinWidth(100);
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("DATE CREATED");
+        TableColumn<AccountSummary, String> dateCol = new TableColumn<>("CREATION DATE");
         dateCol.setMinWidth(150);
         dateCol.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
 
@@ -87,17 +83,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
         balCol.setMinWidth(100);
         balCol.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
-        TableColumn<AccountSummary, List<String>> ownerCol = new TableColumn<>("ACCOUNT HOLDERS");
-        balCol.setMinWidth(400);
-        balCol.setCellValueFactory(new PropertyValueFactory<>("owners"));
-
         TableColumn<AccountSummary, String> recCol = new TableColumn<>("MOST RECENT TRANSACTION");
         recCol.setMinWidth(300);
         recCol.setCellValueFactory(new PropertyValueFactory<>("mostRecent"));
 
         TableView<AccountSummary> table = new TableView<>();
         table.setItems(getSummary());
-        table.getColumns().addAll(Arrays.asList(primCol, typeCol, idCol, dateCol, balCol, ownerCol, recCol));
+        table.getColumns().addAll(Arrays.asList(primCol, typeCol, dateCol, balCol, recCol));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> {
@@ -126,11 +118,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
 
             if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
+                sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
+                        a.getBalance(), recent);
             } else {
                 sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
+                        a.getBalance(), recent);
             }
             summaries.add(sum);
         }
@@ -895,25 +887,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
         private String creationDate;
         private double balance;
         private String mostRecent;
-        private String id;
-        private List<String> owners;
 
-        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
+        AccountSummary(String p, String t, String d, double b, String r) {
             this.isPrimary = p;
             this.accountType = t;
             this.creationDate = d;
             this.balance = b;
             this.mostRecent = r;
-            this.id = i;
-            this.owners = o;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public List<String> getOwners() {
-            return owners;
         }
 
         public String getIsPrimary() {
@@ -937,18 +917,42 @@ public class CustomerOptionsGUI extends OptionsGUI {
         }
 
     }
-//    private void InvestGICScreen(){
-//        Label DealsLabel = new Label("Choose a Deal");
-//        ChoiceBox<String> typeChoice = new ChoiceBox<>();
+    private void InvestGICScreen(){
+        GridPane gridPane= createFormPane();
 
-        /*
-        Choose a Deal: drop-down
+        Label chooseLbl = new Label("Choose a Deal:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        for (GICDeals deal : GICDeals.gicDeals) {
+            choiceBox.getItems().add(deal.toString());
+        }
 
+        Button cancel = new Button("Cancel");
+        Button confirm = new Button("Confirm");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(confirm);
 
-        Cancel | Confirm
-         */
-//
-//    }
+        gridPane.add(chooseLbl,0,0);
+        gridPane.add(choiceBox,1,0);
+        gridPane.add(hbBtn, 1,1);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        confirm.setOnAction(event -> {
+            int id = Integer.valueOf(choiceBox.getValue().split("\\s+")[0]);
+            GICDeals deal = GICDeals.gicDeals.get(id);
+            try {
+                ((Customer) user).requestGICAccount(deal.getPeriod(), deal.getRate());
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "GIC has been requested.");
+        });
+
+        window.setScene(new Scene(gridPane));
+
+    }
 
 }
 

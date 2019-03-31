@@ -32,6 +32,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         addOptionText("Read alerts");
         addOptionText("Create bank account for user");
         addOptionText("Create joint account");
+        addOptionText("Create GIC account");
         addOptionText("Change password");
         addOptionText("Undo transactions");
         addOptionText("Logout");
@@ -383,5 +384,48 @@ class EmployeeOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
+    }
+    void  createGICScreen(){GridPane gridPane = createFormPane();
+
+        Label usernameLbl = new Label("Username of Customer:");
+        TextField usernameInput = new TextField();
+        Label periodLabel = new Label("Months");
+        TextField period = new TextField();
+        Label rateLabel = new Label("Interest Rate");
+        TextField rate = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button create = new Button("Create");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(create);
+
+        gridPane.add(usernameLbl, 0, 0);
+        gridPane.add(usernameInput, 1, 0);
+        gridPane.add(periodLabel, 0, 1);
+        gridPane.add(period, 1, 1);
+        gridPane.add(rateLabel, 0, 2);
+        gridPane.add(rate, 1, 2);
+        gridPane.add(hbBtn, 1, 3);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        create.setOnAction(event -> {
+            String username = usernameInput.getText();
+            int month = Integer.valueOf(period.getText());
+            double interest = Integer.valueOf(rate.getText());
+
+            if (ATM.userManager.isPresent(username)) {
+                ATM.accountManager.addGICAccount(interest, month, Collections.singletonList(username));
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new GIC account has been created");
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+
     }
 }

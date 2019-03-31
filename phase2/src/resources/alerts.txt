@@ -9,4 +9,3 @@ Fri Mar 29 00:11:02 EDT 2019: Requesting to create CreditLine account from steve
 Fri Mar 29 00:15:21 EDT 2019: Requesting to create an GIC joint account from steveand steve.
 Fri Mar 29 19:18:27 EDT 2019: Requesting to create Chequing account from leon
 Fri Mar 29 22:19:07 EDT 2019: Requesting to create Chequing joint account from leon and steve
-Sun Mar 31 09:44:36 EDT 2019: Requesting to create Chequing joint account from truman and steve
