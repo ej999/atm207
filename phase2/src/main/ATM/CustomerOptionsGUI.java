@@ -647,7 +647,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableView<Transaction> table = new TableView<>();
         table.setItems(getTransaction());
-        table.getColumns().addAll(dateCol, typeCol, amountCol, bnkAcc);
+        table.getColumns().addAll(Arrays.asList(dateCol, typeCol, amountCol, bnkAcc));
 
         Button goBack = new Button("Go Back");
         goBack.setOnAction(event -> window.setScene(optionsScreen));
