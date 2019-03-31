@@ -86,7 +86,9 @@ class EmployeeOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            typeChoice.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                typeChoice.getItems().add(type);
+            }
         }
 
         HBox hbox = new HBox(typeChoice);
@@ -334,7 +336,9 @@ class EmployeeOptionsGUI extends OptionsGUI {
         Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
         for (String type : accountTypes) {
-            choices.getItems().add(type);
+            if (!type.equalsIgnoreCase("GIC")) {
+                choices.getItems().add(type);
+            }
         }
 
         Button cancel = new Button("Cancel");
