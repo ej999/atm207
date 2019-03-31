@@ -22,11 +22,13 @@ public class ATM extends Observable {
     static ManagersSerialization serialization;
     static UserManager userManager;
     static AccountManager accountManager;
+    static ETransferManager eTransferManager;
 
     static {
         ATM.serialization = new ManagersSerialization();
         ATM.userManager = new UserManager();
         ATM.accountManager = new AccountManager();
+        ATM.eTransferManager = new ETransferManager();
     }
 
     public static void main(String[] args) {
