@@ -1,5 +1,8 @@
 package ATM;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,15 +29,11 @@ class BankManager extends UserEmployee {
         new Cash().cashDeposit(deposits);
     }
 
-//    /**
-//     * The Bank Manager has the ability to undo the most recent transaction on any asset or debt account,
-//     * except for paying bill.
-//     *
-//     * @param account account involved
-//     */
-//    void undoMostRecentTransaction(Account account) {
-//        account.undoMostRecentTransaction();
-//    }
+    @Override
+    Scene createOptionsScreen(Stage window, Scene welcomeScreen) {
+        BankManagerOptionsGUI gui = new BankManagerOptionsGUI(window, welcomeScreen, this);
+        return gui.createOptionsScreen();
+    }
 
     /**
      * Undo the n most recent transactions

@@ -1,5 +1,8 @@
 package ATM;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -53,6 +56,12 @@ class Customer extends User implements Observer {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    Scene createOptionsScreen(Stage window, Scene welcomeScreen) {
+        CustomerOptionsGUI gui = new CustomerOptionsGUI(window, welcomeScreen, this);
+        return gui.createOptionsScreen();
     }
 
 

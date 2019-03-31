@@ -1,5 +1,8 @@
 package ATM;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 /**
  * User with username and password.
  */
@@ -34,4 +37,6 @@ abstract class User {
     public String toString() {
         return this.getClass().getSimpleName() + " " + getUsername();
     }
+
+    abstract Scene createOptionsScreen(Stage window, Scene welcomeScreen);
 }
