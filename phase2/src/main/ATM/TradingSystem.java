@@ -43,7 +43,7 @@ public class TradingSystem {
                 sell_offers.get(item).add(tradeoffer);
             }
 
-       // }
+       }
         //Else check for if key exists, append trade offer to list.
         else {
             if (!sell_offers.containsKey(item)) {
@@ -52,7 +52,7 @@ public class TradingSystem {
             sell_offers.get(item).add(tradeoffer);
         }
 
-    }}
+    }
 
      static public void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
@@ -65,7 +65,7 @@ public class TradingSystem {
                 buy_offers.get(item).add(tradeoffer);
             }
 
-        //}
+        }
         //Else check for if key exists, append trade offer to list.
         else {
             if (!buy_offers.containsKey(item)) {
@@ -74,7 +74,7 @@ public class TradingSystem {
             buy_offers.get(item).add(tradeoffer);
         }
 
-    }}
+    }
 
     //Note: This method will remove all buy or sell offers of a user for a certain item
      static public void removeOffer(String item, Customer user, boolean selling){
@@ -129,22 +129,22 @@ public class TradingSystem {
                 seller = offers.get(i).getTradeUser();
             }
             int other_quantity = offers.get(i).getQuantity();
-// add in later
+// && ATM.accountManager.getAccount(buyer.getPrimaryAccount()).getBalance() > buy_priceadd in later
             //
 
             if (other_quantity == quantity && buy_price >= sell_price
-                    && ATM.accountManager.getAccount(buyer.getPrimaryAccount()).getBalance() > buy_price
+
             ) {
-                ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
-                buyer.getGoods().depositItem(item, quantity);
+//                ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
+//                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+                //buyer.getGoods().depositItem(item, quantity);
                 //seller.getGoods().withdrawItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
 
     }
 

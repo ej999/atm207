@@ -477,7 +477,7 @@ class Options {
         if (choice.equals("S")) {
             choice_bool = true;
         }
-        System.out.println("Which item would you like to see offers for?)");
+        System.out.println("Which item would you like to see offers for?");
         String item = reader.nextLine();
         ArrayList<String> sell_offers = TradingSystem.seeOffers(item, choice_bool);
         System.out.println(sell_offers);
