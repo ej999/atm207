@@ -38,11 +38,15 @@ final class AccountManager {
         TYPES_OF_ACCOUNTS = types_of_accounts;
     }
 
+    /**
+     * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving.
+     */
     //TODO GIC has unique parameter
-    private Account createAccount(String type, List<Customer> owners) {
+    private Account createAccount(String typeSimpleName, List<Customer> owners) {
         try {
-            // Creating a new instance by getting the proper constructor; instead of using switch cases.
-            Class<?> clazz = Class.forName(type);
+            // Creating a new instance by getting the proper constructor
+            String className = AccountManager.class.getPackage().getName() + "." + typeSimpleName;
+            Class<?> clazz = Class.forName(className);
             // The constructor has to be declared public, otherwise ...........
             // TODO: 2019-03-30 overloading constructor
             Constructor<?> cTor = clazz.getConstructor(String.class, List.class);
@@ -55,7 +59,7 @@ final class AccountManager {
 //                ATM.addObserver((Saving) newAccount);
 //            }
 
-            System.out.println("An account: \"" + newAccount + "\", is successfully created");
+            System.out.println("A " + typeSimpleName + " is successfully created: \"" + newAccount + "\"");
             return newAccount;
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                 InstantiationException | InvocationTargetException e) {

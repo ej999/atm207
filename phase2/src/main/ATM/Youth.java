@@ -13,7 +13,6 @@ import java.util.*;
  * At the beginning of every month, reset their transactions and transferTotal.
  */
 class Youth extends Account implements AccountTransferable, Observer {
-    private static final String type = Youth.class.getName();
     private int transactions;
     private int maxTransactions;
     private int transferLimit;
@@ -29,10 +28,6 @@ class Youth extends Account implements AccountTransferable, Observer {
     @SuppressWarnings("unused")
     public Youth(String id, Customer owner) {
         this(id, Collections.singletonList(owner));
-    }
-
-    public String getType() {
-        return type;
     }
 
     private boolean makeTransfer(double amount) {
@@ -58,7 +53,7 @@ class Youth extends Account implements AccountTransferable, Observer {
             setBalance(getBalance() - withdrawalAmount);
             new Cash().cashWithdrawal(withdrawalAmount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, type));
+            getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, getType()));
         }
     }
 
@@ -74,7 +69,7 @@ class Youth extends Account implements AccountTransferable, Observer {
             }
             setBalance(getBalance() - amount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("PayBill", amount, null, type));
+            getTransactionHistory().push(new Transaction("PayBill", amount, null, getType()));
             return true;
         }
         return false;
@@ -116,7 +111,7 @@ class Youth extends Account implements AccountTransferable, Observer {
         if ((depositAmount > 0) && (transactions < maxTransactions)) {
             setBalance(getBalance() + depositAmount);
             transactions += 1;
-            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, type));
+            getTransactionHistory().push(new Transaction("Deposit", depositAmount, null, getType()));
         } else {
             System.out.println("invalid deposit");
         }
@@ -156,7 +151,7 @@ class Youth extends Account implements AccountTransferable, Observer {
             } else {
                 account.setBalance(account.getBalance() - transferAmount);
             }
-            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, type));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, getType()));
             transactions += 1;
             transferTotal += transferAmount;
             return true;

@@ -91,12 +91,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
-            String type = Options.class.getPackage().getName() + "." + choiceBox.getValue();
+            String typeSimpleName = choiceBox.getValue();
             String username = usernameInput.getText();
             String password = passwordField.getText();
-            boolean created = ATM.userManager.createAccount(type, username, password);
+            boolean created = ATM.userManager.createAccount(typeSimpleName, username, password);
 
-            if (created && type.equals(Customer.class.getName())) {
+            if (created && typeSimpleName.equals(Customer.class.getSimpleName())) {
                 createDOBScreen(username);
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry user couldn't be created");

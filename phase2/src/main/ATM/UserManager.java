@@ -38,19 +38,23 @@ final class UserManager {
         USER_TYPE_NAMES = types_of_users;
     }
 
-    boolean createAccount(String type, String username, String password) {
+    /**
+     * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving.
+     */
+    boolean createAccount(String typeSimpleName, String username, String password) {
         if (isPresent(username)) {
             System.err.println("Username already exists. Please try again");
             return false;
         } else {
             try {
-                // Creating a new instance by getting the proper constructor; instead of using switch cases.
-                Class<?> clazz = Class.forName(type);
+                // Creating a new instance by getting the proper constructor
+                String className = UserManager.class.getPackage().getName() + "." + typeSimpleName;
+                Class<?> clazz = Class.forName(className);
                 Constructor<?> cTor = clazz.getConstructor(String.class, String.class);
                 User newUser = (User) cTor.newInstance(username, password);
 
                 user_map.putIfAbsent(newUser.getUsername(), newUser);
-                System.out.println("A User: \"" + newUser + "\", is successfully created");
+                System.out.println("A " + typeSimpleName + " is successfully created: \"" + newUser + "\"");
                 return true;
             } catch (NoClassDefFoundError | NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 System.err.println("Invalid user type. Please try again");

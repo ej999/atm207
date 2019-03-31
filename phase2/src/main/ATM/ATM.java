@@ -64,17 +64,17 @@ public class ATM extends Observable {
         // If the any of the following groups of objects is empty or deleted, then create a demo and save it .
         if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || Cash.ATMBills.isEmpty()) {
             if (userManager.user_map.isEmpty()) {
-                userManager.createAccount(BankManager.class.getName(), "jen", "1234");
-                userManager.createAccount(Teller.class.getName(), "pete", "1234");
-                userManager.createAccount(Customer.class.getName(), "steve", "1234");
+                userManager.createAccount(BankManager.class.getSimpleName(), "jen", "1234");
+                userManager.createAccount(Teller.class.getSimpleName(), "pete", "1234");
+                userManager.createAccount(Customer.class.getSimpleName(), "steve", "1234");
             }
 
             if (accountManager.account_map.isEmpty()) {
-                accountManager.addAccount(CreditCard.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
-                accountManager.addAccount(Youth.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
-                accountManager.addAccount(Saving.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
-                accountManager.addAccount(Chequing.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
-                accountManager.addAccount(CreditLine.class.getName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(CreditCard.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(Youth.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(Saving.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(Chequing.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
+                accountManager.addAccount(CreditLine.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
             }
 
             if (Cash.ATMBills.isEmpty()) {

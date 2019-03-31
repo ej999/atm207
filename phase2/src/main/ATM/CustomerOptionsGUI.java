@@ -13,9 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * GUI for customer options.
@@ -116,15 +117,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            Date date_ = new Date(a.getDateOfCreation());
-            String date = dateFormat.format(date_);
 
             if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
-                sum = new AccountSummary("X", a.getClass().getName(), date,
+                sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
                         a.getBalance(), recent);
             } else {
-                sum = new AccountSummary("", a.getClass().getName(), date,
+                sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
                         a.getBalance(), recent);
             }
             summaries.add(sum);
