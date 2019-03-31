@@ -28,6 +28,6 @@ public class GICDeals {
 
     @Override
     public String toString() {
-        return "id" + GICDeals.gicDeals.indexOf(this) + " You will get" + this.rate  + " percent interest in" + this.period + "Months";
+        return GICDeals.gicDeals.indexOf(this) + " You will get " + this.rate  + " percent interest in " + this.period + " Months";
     }
 }
