@@ -461,7 +461,7 @@ class Options {
         System.out.println("How much are you selling it for? (in dollars)");
         int price = reader.nextInt();
         TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) current_user);
-        TradingSystem.addSellOffer(item, tradeoffer);
+        ATM.tradingsystem.addSellOffer(item, tradeoffer);
     }
 
     private void addBuyOffer() {
@@ -473,7 +473,7 @@ class Options {
         System.out.println("How much are you buying it for? (in dollars)");
         int price = reader.nextInt();
         TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) current_user);
-        TradingSystem.addBuyOffer(item, tradeoffer);
+        ATM.tradingsystem.addBuyOffer(item, tradeoffer);
     }
 
     private void seeOffers() {
@@ -486,7 +486,7 @@ class Options {
         }
         System.out.println("Which item would you like to see offers for?");
         String item = reader.nextLine();
-        ArrayList<String> sell_offers = TradingSystem.seeOffers(item, choice_bool);
+        ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, choice_bool);
         System.out.println(sell_offers);
     }
 

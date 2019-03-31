@@ -22,6 +22,7 @@ public class ATM extends Observable {
     static AccountManager accountManager;
     static BanknoteManager banknoteManager;
     static ETransferManager eTransferManager;
+    static TradingSystem tradingsystem;
 
     static {
         ATM.serialization = new ManagersSerialization();
@@ -29,6 +30,7 @@ public class ATM extends Observable {
         ATM.accountManager = new AccountManager();
         ATM.banknoteManager = new BanknoteManager();
         ATM.eTransferManager = new ETransferManager();
+        ATM.tradingsystem = new TradingSystem();
     }
 
     public static void main(String[] args) {
