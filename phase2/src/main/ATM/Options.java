@@ -503,6 +503,12 @@ class Options {
         current_customer.getGoods().withdrawItem(item, amount);
     }
 
+    private void viewInventoryPrompt(){
+        Customer current_customer = (Customer) current_user;
+        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        System.out.println(inventory);
+    }
+
 }
 
 
