@@ -770,7 +770,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) user);
-            TradingSystem.addSellOffer(item, tradeoffer);
+            ATM.tradingsystem.addSellOffer(item, tradeoffer);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added");
 
             window.setScene(optionsScreen);
@@ -812,7 +812,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer buyOffer = new TradeOffer(quantity, price, (Customer) user);
-            TradingSystem.addBuyOffer(item, buyOffer);
+            ATM.tradingsystem.addBuyOffer(item, buyOffer);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been requested");
 
             window.setScene(optionsScreen);
@@ -862,7 +862,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
+            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, true);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
 
             window.setScene(optionsScreen);
@@ -892,7 +892,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
+            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, false);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
 
             window.setScene(optionsScreen);
