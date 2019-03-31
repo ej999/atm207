@@ -133,12 +133,14 @@ public class TradingSystem {
             //
 
             if (other_quantity == quantity && buy_price >= sell_price
+                    && ATM.accountManager.getAccount(buyer.getPrimaryAccount()).getBalance() >= buy_price
+                    && seller.getGoods().itemAmount(item) >= quantity
 
             ) {
-//                ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-//                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
-                //buyer.getGoods().depositItem(item, quantity);
-                //seller.getGoods().withdrawItem(item, quantity);
+                ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
+                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+                buyer.getGoods().depositItem(item, quantity);
+                seller.getGoods().withdrawItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
                 return true;
