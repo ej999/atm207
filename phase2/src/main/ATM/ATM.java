@@ -20,12 +20,14 @@ public class ATM extends Observable {
     static ManagersSerialization serialization;
     static UserManager userManager;
     static AccountManager accountManager;
+    static BanknoteManager banknoteManager;
     static ETransferManager eTransferManager;
 
     static {
         ATM.serialization = new ManagersSerialization();
         ATM.userManager = new UserManager();
         ATM.accountManager = new AccountManager();
+        ATM.banknoteManager = new BanknoteManager();
         ATM.eTransferManager = new ETransferManager();
     }
 
@@ -62,7 +64,7 @@ public class ATM extends Observable {
 
     private static void createDemoData() {
         // If the any of the following groups of objects is empty or deleted, then create a demo and save it .
-        if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || BanknoteManager.banknotes.isEmpty()) {
+        if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || ATM.banknoteManager.banknotes.isEmpty()) {
             if (userManager.user_map.isEmpty()) {
                 userManager.createAccount(BankManager.class.getSimpleName(), "jen", "1234");
                 userManager.createAccount(Teller.class.getSimpleName(), "pete", "1234");
@@ -77,10 +79,10 @@ public class ATM extends Observable {
                 accountManager.addAccount(CreditLine.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
             }
 
-            if (BanknoteManager.banknotes.isEmpty()) {
-                BanknoteManager.banknotes = new HashMap<>();
-                for (int d : BanknoteManager.DENOMINATIONS) {
-                    BanknoteManager.banknotes.put(String.valueOf(d), 50);
+            if (ATM.banknoteManager.banknotes.isEmpty()) {
+                ATM.banknoteManager.banknotes = new HashMap<>();
+                for (int d : ATM.banknoteManager.DENOMINATIONS) {
+                    ATM.banknoteManager.banknotes.put(String.valueOf(d), 50);
                 }
             }
         }

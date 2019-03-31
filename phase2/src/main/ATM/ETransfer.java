@@ -15,8 +15,8 @@ public class ETransfer extends Transaction implements Serializable {
 
 
     public ETransfer(Customer sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
-        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName()); //recipientAccount just for placedholder; receiver can
-        //choose which account to deposit to
+        //recipientAccount just for placeholder; receiver can choose which account to deposit to
+        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName());
         this.senderAccount = senderAccount;
         this.question = q;
         this.answer = a;
@@ -44,7 +44,7 @@ public class ETransfer extends Transaction implements Serializable {
         this.deposited = true;
     }
 
-    public void undeposit() {
+    public void unDeposit() {
         this.deposited = false;
     }
 

@@ -44,14 +44,14 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     private boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 && withdrawalAmount % 5 == 0 && getBalance() > 0 &&
-                new BanknoteManager().isThereEnoughBankNote(withdrawalAmount) && (transactions < maxTransactions);
+                ATM.banknoteManager.isThereEnoughBankNote(withdrawalAmount) && (transactions < maxTransactions);
     }
 
     @Override
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             setBalance(getBalance() - withdrawalAmount);
-            new BanknoteManager().banknoteWithdrawal(withdrawalAmount);
+            ATM.banknoteManager.banknoteWithdrawal(withdrawalAmount);
             transactions += 1;
             getTransactionHistory().push(new Transaction("Withdraw", withdrawalAmount, null, getType()));
         }
@@ -103,7 +103,7 @@ class Youth extends Account implements AccountTransferable, Observer {
     void undoWithdrawal(double withdrawalAmount) {
         setBalance(getBalance() + withdrawalAmount);
         transactions -= 1;
-        new BanknoteManager().banknoteWithdrawal(-withdrawalAmount);
+        ATM.banknoteManager.banknoteWithdrawal(-withdrawalAmount);
     }
 
     @Override

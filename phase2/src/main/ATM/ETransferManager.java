@@ -6,27 +6,27 @@ import java.util.List;
 import java.util.Map;
 
 final class ETransferManager {
+    private static HashMap<String, List<String>> contacts = new HashMap<>(); //maps customer to their added contacts
     List<ETransfer> allTransfers = new ArrayList<>();
-    Map<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: requestee, amount pair
-    private static HashMap<String, List<String>> contancts = new HashMap<>(); //maps customer to their added contacts
+    Map<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: responder, amount pair
     //maybe move this parameter to customer class?
 
-    void send(Customer sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount){
+    void send(Customer sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount) {
         User re = ATM.userManager.getUser(recipient);
         Account recipientAccount = ATM.accountManager.getAccount(((Customer) re).getPrimaryAccount());
         ETransfer transfer = new ETransfer(sender, senderAccount, recipientAccount, q, a, amount);
         allTransfers.add(transfer);
     }
 
-    void send(Customer sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount){
+    void send(Customer sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount) {
         // same as above except send same amount to multiple users
-        for (String r: recipient) {
+        for (String r : recipient) {
             send(sender, senderAccount, r, q, a, amount);
         }
     }
 
     HashMap<String, Double> getAll(String recipient) {
-        //return all the transfers for this recipient that are not verified yet. keys: sender usernames, items: amount
+        //return all the transfers for this recipient that are not verified yet. keys: senders username, items: amount
         //each key-value pair represents an ETransfer
         HashMap<String, Double> transfers = new HashMap<>();
         for (ETransfer e : allTransfers) {
@@ -38,10 +38,10 @@ final class ETransferManager {
 
     }
 
-    ETransfer getOldestTransfer(String recipient){
-        // returns oldest undeposited etransfer to <recipient>
+    ETransfer getOldestTransfer(String recipient) {
+        // returns oldest unDeposited eTransfer to <recipient>
         ETransfer oldest = null;
-        for (ETransfer e: allTransfers) {
+        for (ETransfer e : allTransfers) {
             if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()) {
                 oldest = e;
                 break;
@@ -50,11 +50,11 @@ final class ETransferManager {
         return oldest;
     }
 
-    List<ETransfer> getAllTransfers(String recipient){
-        // returns all undeposited etransfer to <recipient>
+    List<ETransfer> getAllTransfers(String recipient) {
+        // returns all unDeposited eTransfer to <recipient>
         List<ETransfer> transfers = new ArrayList<>();
-        for (ETransfer e: allTransfers){
-            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()){
+        for (ETransfer e : allTransfers) {
+            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()) {
                 transfers.add(e);
             }
         }
@@ -66,76 +66,74 @@ final class ETransferManager {
         // returns true if successful
         ETransfer oldest = getOldestTransfer(recipient);
 
-        if (oldest != null && oldest.verifyQuestion(response)){
-            if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), (Customer)ATM.userManager.getUser(recipient), account)){
+        if (oldest != null && oldest.verifyQuestion(response)) {
+            if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), (Customer) ATM.userManager.getUser(recipient), account)) {
                 oldest.deposit();
                 return true;
-            }
-            else{
-                //oldest.undeposit();
+            } else {
+                //oldest.unDeposit();
             }
         }
         return false;
     }
 
-    boolean validateAll(List<String> responses, Account account, String recipient){
+    boolean validateAll(List<String> responses, Account account, String recipient) {
         // verifies from most oldest to newest unverified transfers and deposits all amounts into recipient's account
         // deposits only when all of the responses are verified and correct
         // precondition: responses.size() == getAll.size()
         List<ETransfer> transfers = getAllTransfers(recipient);
 
-        for (int i = 0; i < responses.size(); i++){
+        for (int i = 0; i < responses.size(); i++) {
             boolean verified;
-            try{
+            try {
                 verified = transfers.get(i).verifyQuestion(responses.get(i));
-            }
-            catch(IndexOutOfBoundsException iloveit){
-                iloveit.printStackTrace();
+            } catch (IndexOutOfBoundsException imLovingIt) {
+                imLovingIt.printStackTrace();
                 return false;
             }
-            if (!verified){
+            if (!verified) {
 //                for (ETransfer e: transfers)
-//                    e.undeposit();
+//                    e.unDeposit();
                 return false;
             }
         }
-        for (ETransfer e: transfers){
-            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), (Customer)ATM.userManager.getUser(recipient), account);
-            if (successful){
+        for (ETransfer e : transfers) {
+            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), (Customer) ATM.userManager.getUser(recipient), account);
+            if (successful) {
                 e.deposit();
-            }
-            else{
+            } else {
                 return false;
             }
         }
         return true;
     }
 
-    void request(String requester, String requestee, Double amount){
-        // record the fact that <requester> has requested <amount> from <requestee>
+    void request(String requester, String responder, Double amount) {
+        // record the fact that <requester> has requested <amount> from <responder>
         HashMap<String, Double> request = new HashMap<>();
-        request.put(requestee, amount);
+        request.put(responder, amount);
         requests.put(requester, request);
     }
 
-    HashMap<String, Double> readRequests(String requestee){
-        // return all requests for <requestee>
+    HashMap<String, Double> readRequests(String responder) {
+        // return all requests for <responder>
 //        Iterator<Map.Entry<String, HashMap<String, Double>>> it = requests.entrySet().iterator();
 //        while (it.hasNext()){
 //            Map.Entry<String, HashMap<String, Double>> pair = it.next();
 //        }
         HashMap<String, Double> ret = new HashMap<>();
-        for (Map.Entry<String, HashMap<String, Double>> pair: requests.entrySet()){
+        for (Map.Entry<String, HashMap<String, Double>> pair : requests.entrySet()) {
             String requester = pair.getKey();
             HashMap<String, Double> nameAndAmount = pair.getValue();
-            if (nameAndAmount.containsKey(requestee)){
-                ret.put(requester, nameAndAmount.get(requestee));
+            if (nameAndAmount.containsKey(responder)) {
+                ret.put(requester, nameAndAmount.get(responder));
             }
         }
         return ret;
     }
+
     //TODO: implement methods for adding contacts and deleting requests
-    void updateContacts(String key, String value){
+    void updateContacts(String key, String value) {
 
     }
 }

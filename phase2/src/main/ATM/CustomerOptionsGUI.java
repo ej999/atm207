@@ -310,7 +310,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void depoBanknoteScreen() {
+    private void depositBanknoteScreen() {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane grid = createFormPane();
 
@@ -326,7 +326,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // This part is very similar to restockingScreen
         // Adding all labels and text fields
-        for (Integer d : BanknoteManager.DENOMINATIONS) {
+        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Amount of $" + d + " dollar bills:");
             grid.add(dLabel, 0, rowIndex);
@@ -363,16 +363,16 @@ public class CustomerOptionsGUI extends OptionsGUI {
         GridPane gridPane = createFormPane();
 
         Button cancel = new Button("Cancel");
-        Button depoBanknote = new Button("Deposit Banknote");
-        Button depoCheque = new Button("Deposit Cheque");
+        Button depositBanknote = new Button("Deposit Banknote");
+        Button depositCheque = new Button("Deposit Cheque");
 
         gridPane.add(cancel, 0, 0);
-        gridPane.add(depoBanknote, 1, 0);
-        gridPane.add(depoCheque, 2, 0);
+        gridPane.add(depositBanknote, 1, 0);
+        gridPane.add(depositCheque, 2, 0);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        depoBanknote.setOnAction(event -> depoBanknoteScreen());
-        depoCheque.setOnAction(event -> depoChequeScreen());
+        depositBanknote.setOnAction(event -> depositBanknoteScreen());
+        depositCheque.setOnAction(event -> depositChequeScreen());
 
         if (!((Customer) user).hasPrimary()) {
             window.setScene(optionsScreen);
@@ -383,7 +383,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void depoChequeScreen() {
+    private void depositChequeScreen() {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane gridPane = createFormPane();
 

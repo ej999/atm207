@@ -17,7 +17,7 @@ final class AccountManager {
     // List of the simple names of Account types.
     final Collection<String> TYPES_OF_ACCOUNTS;
 
-    // A mapping of id to the Bank Account
+    // A mapping of id to the bank account
     HashMap<String, Account> account_map = new HashMap<>();
 
     AccountManager() {

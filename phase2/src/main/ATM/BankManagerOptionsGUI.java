@@ -165,7 +165,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         HashMap<Integer, TextField> textField = new HashMap<>();
 
-        for (Integer d : BanknoteManager.DENOMINATIONS) {
+        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Enter amount of $" + d + " dollar bill: ");
             grid.add(dLabel, 0, rowIndex);
@@ -189,7 +189,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             }
 
             ((BankManager) user).restockMachine(restock);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + BanknoteManager.banknotes);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Restocking success! The current stock is " + ATM.banknoteManager.banknotes);
             window.setScene(optionsScreen);
         });
 
@@ -303,6 +303,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         window.setScene(new Scene(grid));
     }
+
     private void ManageGICScreen() {
         GridPane gridPane = createFormPane();
         Button remove = new Button("Remove GIC");
@@ -319,8 +320,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 //        create.setOnAction();
 
 
-
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        }
+    }
 
 }

@@ -19,14 +19,6 @@ class GIC extends AccountAsset {
     // period = Period.ofMonths(12)
     private LocalDate endDate;
 
-    public void setPeriod(int month) {
-        this.period = Period.ofMonths(month);
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
-
     @SuppressWarnings({"WeakerAccess"})
     public GIC(String id, double rate, int p, List<Customer> owners) {
         super(id, owners);
@@ -39,6 +31,14 @@ class GIC extends AccountAsset {
     @SuppressWarnings({"unused"})
     public GIC(String id, double rate, int p, Customer owner) {
         this(id, rate, p, Collections.singletonList(owner));
+    }
+
+    public void setPeriod(int month) {
+        this.period = Period.ofMonths(month);
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
     }
 
     public String getType() {
@@ -70,8 +70,9 @@ class GIC extends AccountAsset {
             endDate = endDate.plus(period);
         }
     }
+
     @Override
-    void deposit(double depositAmount){
+    void deposit(double depositAmount) {
         super.deposit(depositAmount);
         this.endDate = LocalDate.now().plus(period);
     }

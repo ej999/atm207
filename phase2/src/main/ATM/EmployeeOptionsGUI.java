@@ -342,7 +342,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
                 ATM.accountManager.addAccount(type, owners);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid usernames");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid username");
             }
             window.setScene(optionsScreen);
         });

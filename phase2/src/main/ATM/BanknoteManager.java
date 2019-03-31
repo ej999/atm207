@@ -9,15 +9,15 @@ import java.util.*;
 /**
  * A utility class that handles storage, withdrawal, deposit of banknotes.
  * TODO optimize the usage of methods
- * // TODO: 2019-03-30 nonstatic
  */
 final class BanknoteManager {
-    static final List<Integer> DENOMINATIONS;
-    private static final String outputFilePath = "phase2/src/resources/alerts.txt";
-    // Mapping denomination to quantity
-    static HashMap<String, Integer> banknotes;
+    private static final String OUTPUT_FILE_PATH = "phase2/src/resources/alerts.txt";
+    final List<Integer> DENOMINATIONS;
 
-    static {
+    // A mapping of denomination to quantity
+    HashMap<String, Integer> banknotes;
+
+    BanknoteManager() {
         // To implement new denominations, edit the list below. No change of other code is needed.
         List<Integer> denominations = Arrays.asList(5, 20, 10, 50);
 
@@ -55,7 +55,7 @@ final class BanknoteManager {
 
     private void sendAlert(String message) throws IOException {
         // Open the file for writing and write to it.
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFilePath, true)))) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(OUTPUT_FILE_PATH, true)))) {
             out.println(message);
         }
     }
@@ -69,7 +69,7 @@ final class BanknoteManager {
         SortedMap<Integer, Integer> banknotes = new TreeMap<>();
 
         for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), BanknoteManager.banknotes.get(String.valueOf(DENOMINATIONS.get(d))));
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), banknotes.get(String.valueOf(DENOMINATIONS.get(d))));
             banknotes.put(DENOMINATIONS.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }

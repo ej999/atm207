@@ -58,14 +58,14 @@ public class ATMFrame extends Application {
     }
 
     /**
-     * Add controls to the grid (e.g. labels, textfields, buttons).
+     * Add controls to the grid (e.g. labels, textFields, buttons).
      *
      * @param grid layout
      */
     private void addUIControls(GridPane grid) {
-        Text scenetitle = new Text("Welcome");
-        grid.add(scenetitle, 0, 0, 2, 1);
-        scenetitle.setId("welcome-text");
+        Text sceneTitle = new Text("Welcome");
+        grid.add(sceneTitle, 0, 0, 2, 1);
+        sceneTitle.setId("welcome-text");
 
         Label userName = new Label("Username:");
         grid.add(userName, 0, 1);
@@ -87,7 +87,7 @@ public class ATMFrame extends Application {
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
-        actionTarget.setId("actiontarget");
+        actionTarget.setId("actionTarget");
 
         btn.setOnAction(event -> {
             buttonHandler(userTextField, pwBox, actionTarget);

@@ -26,7 +26,7 @@ class BankManager extends UserEmployee {
     }
 
     void restockMachine(Map<Integer, Integer> deposits) {
-        new BanknoteManager().banknoteDeposit(deposits);
+        ATM.banknoteManager.banknoteDeposit(deposits);
     }
 
     @Override

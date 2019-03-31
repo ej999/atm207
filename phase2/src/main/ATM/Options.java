@@ -215,7 +215,7 @@ class Options {
 
         StringBuilder print = new StringBuilder();
         Map<Integer, Integer> selectedBills = new HashMap<>();
-        for (Integer d : BanknoteManager.DENOMINATIONS) {
+        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
             System.out.print("Enter amount of $" + d + " dollar bill: ");
             int amount = reader.nextInt();
 
