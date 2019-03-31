@@ -803,7 +803,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void seeOffersScreen() {
-        //TODO: Jason
         GridPane gridPane = createFormPane();
 
         Label itemOffers = new Label("Would you like to see sell offers of buy offers?");
@@ -811,9 +810,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Button buy = new Button("Buy");
         Button sell = new Button("Sell");
 
-        gridPane.add(cancel, 0, 0);
-        gridPane.add(buy, 1, 0);
-        gridPane.add(sell, 2, 0);
+        gridPane.add(itemOffers, 0, 0);
+        gridPane.add(cancel, 1, 1);
+        gridPane.add(buy, 2, 1);
+        gridPane.add(sell, 3, 1);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         buy.setOnAction(event -> seeOffersBuyScreen());
@@ -823,11 +823,63 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void seeOffersSellScreen() {
-        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see offers for?");
+        TextField itemCheck = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Check");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     private void seeOffersBuyScreen() {
-        //TODO: Jason
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see offers for?");
+        TextField itemCheck = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Check");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
     }
 
     public class AccountSummary {
