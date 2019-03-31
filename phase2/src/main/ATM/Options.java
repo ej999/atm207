@@ -76,9 +76,9 @@ class Options {
 
             options.put("Make a Transfer to another User", new Thread(this::transferToAnotherUserPrompt));
 
-            options.put("Cash/Cheque Deposit", new Thread(this::depositPrompt));
+            options.put("Banknote/Cheque Deposit", new Thread(this::depositPrompt));
 
-            options.put("Cash Withdrawal", new Thread(this::withdrawalPrompt));
+            options.put("Banknote Withdrawal", new Thread(this::withdrawalPrompt));
 
             options.put("Request Creating an Account", new Thread(this::requestAccountPrompt));
 
@@ -215,7 +215,7 @@ class Options {
 
         StringBuilder print = new StringBuilder();
         Map<Integer, Integer> selectedBills = new HashMap<>();
-        for (Integer d : Cash.DENOMINATIONS) {
+        for (Integer d : BanknoteManager.DENOMINATIONS) {
             System.out.print("Enter amount of $" + d + " dollar bill: ");
             int amount = reader.nextInt();
 
@@ -365,7 +365,7 @@ class Options {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
         Scanner reader = new Scanner(System.in);
 
-        System.out.print("Are you depositing [1] cash or [2] cheque? ");
+        System.out.print("Are you depositing [1] banknote or [2] cheque? ");
         int option = 0;
         while (option > 3 || option < 1) {
             option = reader.nextInt();

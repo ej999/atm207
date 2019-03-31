@@ -31,8 +31,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Pay a Bill");
         addOptionText("Make a Transfer between my Accounts");
         addOptionText("Make a Transfer to another User");
-        addOptionText("Cash/Cheque Deposit");
-        addOptionText("Cash Withdrawal");
+        addOptionText("Banknote/Cheque Deposit");
+        addOptionText("Banknote Withdrawal");
         addOptionText("Request Creating an Account");
         addOptionText("Make a Preexisting Account Joint");
         addOptionText("Add an item for Sale");
@@ -310,7 +310,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void depoCashScreen() {
+    private void depoBanknoteScreen() {
         Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane grid = createFormPane();
 
@@ -326,7 +326,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // This part is very similar to restockingScreen
         // Adding all labels and text fields
-        for (Integer d : Cash.DENOMINATIONS) {
+        for (Integer d : BanknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Amount of $" + d + " dollar bills:");
             grid.add(dLabel, 0, rowIndex);
@@ -363,15 +363,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         GridPane gridPane = createFormPane();
 
         Button cancel = new Button("Cancel");
-        Button depoCash = new Button("Deposit Cash");
+        Button depoBanknote = new Button("Deposit Banknote");
         Button depoCheque = new Button("Deposit Cheque");
 
         gridPane.add(cancel, 0, 0);
-        gridPane.add(depoCash, 1, 0);
+        gridPane.add(depoBanknote, 1, 0);
         gridPane.add(depoCheque, 2, 0);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        depoCash.setOnAction(event -> depoCashScreen());
+        depoBanknote.setOnAction(event -> depoBanknoteScreen());
         depoCheque.setOnAction(event -> depoChequeScreen());
 
         if (!((Customer) user).hasPrimary()) {

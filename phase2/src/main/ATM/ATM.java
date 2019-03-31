@@ -62,7 +62,7 @@ public class ATM extends Observable {
 
     private static void createDemoData() {
         // If the any of the following groups of objects is empty or deleted, then create a demo and save it .
-        if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || Cash.ATMBills.isEmpty()) {
+        if (userManager.user_map.isEmpty() || accountManager.account_map.isEmpty() || BanknoteManager.banknotes.isEmpty()) {
             if (userManager.user_map.isEmpty()) {
                 userManager.createAccount(BankManager.class.getSimpleName(), "jen", "1234");
                 userManager.createAccount(Teller.class.getSimpleName(), "pete", "1234");
@@ -77,10 +77,10 @@ public class ATM extends Observable {
                 accountManager.addAccount(CreditLine.class.getSimpleName(), Collections.singletonList(((Customer) userManager.getUser("steve"))));
             }
 
-            if (Cash.ATMBills.isEmpty()) {
-                Cash.ATMBills = new HashMap<>();
-                for (int d : Cash.DENOMINATIONS) {
-                    Cash.ATMBills.put(String.valueOf(d), 50);
+            if (BanknoteManager.banknotes.isEmpty()) {
+                BanknoteManager.banknotes = new HashMap<>();
+                for (int d : BanknoteManager.DENOMINATIONS) {
+                    BanknoteManager.banknotes.put(String.valueOf(d), 50);
                 }
             }
         }

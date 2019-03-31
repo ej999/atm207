@@ -45,7 +45,7 @@ abstract class Account implements Serializable {
         if (depositAmount > 0) {
             balance += depositAmount;
             transactionHistory.push(new Transaction("Deposit", depositAmount, null, this.getClass().getName()));
-            new Cash().cashDeposit(depositedBills);
+            new BanknoteManager().banknoteDeposit(depositedBills);
         } else {
             System.out.println("invalid deposit");
         }

@@ -3,7 +3,7 @@ package ATM;
 import java.io.Serializable;
 
 /**
- * a single instance of an etransfer
+ * A instance of a ETransfer
  **/
 public class ETransfer extends Transaction implements Serializable {
     Customer sender;

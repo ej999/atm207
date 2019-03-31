@@ -31,10 +31,15 @@ final class ManagersSerialization {
 
     void deserializeAll() {
         deserializeUsers();
+        System.out.println(ATM.userManager.user_map);
         deserializeAccounts();
+        System.out.println(ATM.accountManager.account_map);
         deserializeBills();
+        System.out.println(BanknoteManager.banknotes);
         deserializeETransfers();
+        System.out.println(ATM.eTransferManager.allTransfers);
         deserializeRequests();
+        System.out.println(ATM.eTransferManager.requests);
     }
 
     // Deserialize JSON from FireBase /Users directory, and assign it to ATM.userManager.user_map
@@ -70,11 +75,11 @@ final class ManagersSerialization {
         Logger.getLogger("").info("Deserialize ATM.accountManager.account_map = " + ATM.accountManager.account_map);
     }
 
-    // Deserialize JSON from FireBase /Bills directory, and assign it to ATM.cash.ATMBills
+    // Deserialize JSON from FireBase /Bills directory, and assign it to ATM.banknoteManager.banknotes
     private void deserializeBills() {
-        Cash.ATMBills = fbDb.retrieveMap("Bills", false);
+        BanknoteManager.banknotes = fbDb.retrieveMap("Bills", false);
 
-        Logger.getLogger("").info("Deserialize ATM.cash.ATMBills = " + Cash.ATMBills);
+        Logger.getLogger("").info("Deserialize ATM.banknoteManager.banknotes = " + BanknoteManager.banknotes);
     }
 
     // Deserialize JSON from FireBase /ETransfers directory to a List of Integer, and assign it to ATM.eTransferManager.allTransfers
@@ -95,7 +100,7 @@ final class ManagersSerialization {
     void serializeAll() {
         fbDb.saveMap(ATM.userManager.user_map, "Users");
         fbDb.saveMap(ATM.accountManager.account_map, "Accounts");
-        fbDb.saveMap(Cash.ATMBills, "Bills");
+        fbDb.saveMap(BanknoteManager.banknotes, "Bills");
         fbDb.saveList(ATM.eTransferManager.allTransfers, "ETransfers");
         fbDb.saveMap(ATM.eTransferManager.requests, "Requests");
     }
