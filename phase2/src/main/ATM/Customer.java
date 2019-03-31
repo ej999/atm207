@@ -200,7 +200,8 @@ class Customer extends User implements Observer {
         requestHelp(request);
     }
 
-    String getPrimaryAccount() {
+    @SuppressWarnings("WeakerAccess")
+    public String getPrimaryAccount() {
         return primaryAccount;
     }
 
