@@ -21,7 +21,7 @@ final class ManagersSerialization {
     private FireBaseDBAccess fbDb;
 
     ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess("/debugging");
+        this.fbDb = new FireBaseDBAccess("/debugging_truman");
     }
 
     void deleteDatabase() {

@@ -95,10 +95,10 @@ class Customer extends User implements Observer {
      * @param account to be added
      */
     void addAccount(Account account) {
-        accountIDs.add(account.getID());
+        accountIDs.add(account.getId());
         // If a user has only one checking account, it will be the default destination for any deposits.
         if (primaryAccount == null && account instanceof Chequing) {
-            primaryAccount = account.getID();
+            primaryAccount = account.getId();
         }
     }
 
@@ -179,7 +179,7 @@ class Customer extends User implements Observer {
 
     void setPrimaryAccount(Account primaryAccount) {
         if (primaryAccount instanceof Chequing) {
-            this.primaryAccount = primaryAccount.getID();
+            this.primaryAccount = primaryAccount.getId();
             System.out.println("Account is successfully set to primary");
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary");
