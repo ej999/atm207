@@ -17,7 +17,11 @@ import java.util.*;
 class Customer extends User implements Observer {
 
     private static final String type = Customer.class.getName();
-    List<String> accounts;
+    /*
+     * We store account info by its unique IDs. Note that we cannot store Customer object here,
+     * otherwise JSON will be nested recursively and infinitely. https://imgur.com/a/5mxY6Yf
+     */
+    List<String> accountIDs;
     private String primaryAccount;
     private Inventory goods = new Inventory();
     private double netTotal;
@@ -31,7 +35,7 @@ class Customer extends User implements Observer {
 
     public Customer(String username, String password) {
         super(username, password);
-        this.accounts = new ArrayList<>();
+        this.accountIDs = new ArrayList<>();
         this.creditScore = 100;
     }
 
@@ -91,19 +95,19 @@ class Customer extends User implements Observer {
      * @param account to be added
      */
     void addAccount(Account account) {
-        accounts.add(account.getId());
+        accountIDs.add(account.getID());
         // If a user has only one checking account, it will be the default destination for any deposits.
         if (primaryAccount == null && account instanceof Chequing) {
-            primaryAccount = account.getId();
+            primaryAccount = account.getID();
         }
     }
 
-    public List<String> getAccounts() {
-        return accounts;
+    public List<String> getAccountIDs() {
+        return accountIDs;
     }
 
     boolean hasAccount(Account account) {
-        for (String a : this.accounts) {
+        for (String a : this.accountIDs) {
             if (ATM.accountManager.getAccount(a).equals(account)) {
                 return true;
             }
@@ -114,7 +118,7 @@ class Customer extends User implements Observer {
 
     boolean hasMoreThanOneChequing() {
         int i = 0;
-        for (String a : this.accounts) {
+        for (String a : this.accountIDs) {
             if (ATM.accountManager.getAccount(a) instanceof Chequing) {
                 i++;
             }
@@ -126,7 +130,7 @@ class Customer extends User implements Observer {
     // The total of their debt account balances subtracted from the total of their asset account balances.
     public void setNetTotal() {
         double sum = 0;
-        for (String a : this.accounts) {
+        for (String a : this.accountIDs) {
             Account acc = ATM.accountManager.getAccount(a);
             if (acc instanceof AccountDebt) {
                 sum -= acc.getBalance();
@@ -175,7 +179,7 @@ class Customer extends User implements Observer {
 
     void setPrimaryAccount(Account primaryAccount) {
         if (primaryAccount instanceof Chequing) {
-            this.primaryAccount = primaryAccount.getId();
+            this.primaryAccount = primaryAccount.getID();
             System.out.println("Account is successfully set to primary");
         } else {
             throw new IllegalArgumentException("Only chequing account can be set to primary");

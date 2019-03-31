@@ -36,10 +36,11 @@ final class AccountManager {
     }
 
     /**
-     * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving.
+     * @param typeSimpleName the simple name of the subclass of Account represented by this Class object, for example, CreditCard, CreditLine, Saving
+     * @param ownersUsername list of username of owners
      */
     //TODO GIC has unique parameter
-    private Account createAccount(String typeSimpleName, List<Customer> owners) {
+    private Account createAccount(String typeSimpleName, List<String> ownersUsername) {
         try {
             // Creating a new instance by getting the proper constructor
             String className = AccountManager.class.getPackage().getName() + "." + typeSimpleName;
@@ -49,8 +50,8 @@ final class AccountManager {
             Constructor<?> cTor = clazz.getConstructor(String.class, List.class);
 
             String id = idGenerator();
-            Account newAccount = (Account) cTor.newInstance(id, owners);
-            account_map.put(newAccount.getId(), newAccount);
+            Account newAccount = (Account) cTor.newInstance(id, ownersUsername);
+            account_map.put(newAccount.getID(), newAccount);
             //TODO observer
 //            if (newAccount instanceof Saving) {
 //                ATM.addObserver((Saving) newAccount);
@@ -69,10 +70,10 @@ final class AccountManager {
         return account_map.get(id);
     }
 
-    List<Account> getListOfAccounts(Customer customer) {
+    List<Account> getListOfAccounts(String username) {
         ArrayList<Account> accountsOwned = new ArrayList<>();
         for (String key : account_map.keySet()) {
-            if (account_map.get(key).getOwners().contains(customer)) {
+            if (account_map.get(key).getOwnersUsername().contains(username)) {
                 accountsOwned.add(account_map.get(key));
             }
         }
@@ -84,13 +85,13 @@ final class AccountManager {
         return account != null;
     }
 
-    void addAccount(String accountType, List<Customer> users) {
-        Account account = createAccount(accountType, users);
-        System.out.println(account);
+    void addAccount(String accountType, List<String> ownersUsername) {
+        Account account = createAccount(accountType, ownersUsername);
         if (account != null) {
-            for (Customer user : users) {
-                user.addAccount(account);
-                System.out.println("A " + accountType + " account is successfully created for " + user);
+            for (String username : ownersUsername) {
+                Customer owner = (Customer) ATM.userManager.getUser(username);
+                owner.addAccount(account);
+                System.out.println("A " + accountType + " account is successfully created for " + username);
             }
         }
     }
@@ -102,7 +103,7 @@ final class AccountManager {
             id = String.valueOf((int) ((Math.random() * 9000000) + 1000000));
             validId = true;
             for (String key : account_map.keySet()) {
-                if (account_map.get(key).getId().equals(id)) {
+                if (account_map.get(key).getID().equals(id)) {
                     validId = false;
                 }
             }

@@ -3,9 +3,9 @@ package ATM;
 import java.util.ArrayList;
 
 public class GICDeals {
-    static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
-    final int period;
-    final double rate;
+    private static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
+    private final int period;
+    private final double rate;
 
     public GICDeals(int p, double r) {
         this.period = p;

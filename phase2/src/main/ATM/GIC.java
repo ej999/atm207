@@ -20,7 +20,7 @@ class GIC extends AccountAsset {
     private LocalDate endDate;
 
     @SuppressWarnings({"WeakerAccess"})
-    public GIC(String id, double rate, int p, List<Customer> owners) {
+    public GIC(String id, double rate, int p, List<String> owners) {
         super(id, owners);
         this.rate = rate;
         this.period = Period.ofMonths(p);
@@ -29,7 +29,7 @@ class GIC extends AccountAsset {
     }
 
     @SuppressWarnings({"unused"})
-    public GIC(String id, double rate, int p, Customer owner) {
+    public GIC(String id, double rate, int p, String owner) {
         this(id, rate, p, Collections.singletonList(owner));
     }
 

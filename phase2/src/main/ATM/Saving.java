@@ -11,12 +11,12 @@ class Saving extends AccountAsset implements Observer {
     private static final String type = Saving.class.getName();
 
     @SuppressWarnings({"unused"})
-    public Saving(String id, List<Customer> owners) {
+    public Saving(String id, List<String> owners) {
         super(id, owners);
     }
 
     @SuppressWarnings({"unused"})
-    public Saving(String id, Customer owner) {
+    public Saving(String id, String owner) {
         super(id, owner);
     }
 

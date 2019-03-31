@@ -19,15 +19,15 @@ class Youth extends Account implements AccountTransferable, Observer {
     private int transferTotal;
 
     @SuppressWarnings({"unused", "WeakerAccess"})
-    public Youth(String id, List<Customer> owners) {
-        super(id, owners);
+    public Youth(String id, List<String> ownersUsername) {
+        super(id, ownersUsername);
         this.maxTransactions = 20;
         this.transferLimit = 250;
     }
 
     @SuppressWarnings("unused")
-    public Youth(String id, Customer owner) {
-        this(id, Collections.singletonList(owner));
+    public Youth(String id, String username) {
+        this(id, Collections.singletonList(username));
     }
 
     private boolean makeTransfer(double amount) {
@@ -139,12 +139,12 @@ class Youth extends Account implements AccountTransferable, Observer {
      * Transfer money from this account to another user's account (this will decrease their balance)
      *
      * @param transferAmount amount to transfer
-     * @param user           receives transferAmount
+     * @param username           receives transferAmount
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
-        if (validTransfer(transferAmount, user, account)) {
+    public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
+        if (validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
                 account.setBalance(account.getBalance() + transferAmount);
@@ -171,8 +171,9 @@ class Youth extends Account implements AccountTransferable, Observer {
 
     }
 
-    private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && user.hasAccount(account) &&
+    private boolean validTransfer(double transferAmount, String username, Account account) {
+        Customer customer = (Customer) ATM.userManager.getUser(username);
+        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && customer.hasAccount(account) &&
                 (transactions < maxTransactions) && (transferAmount + transferTotal < transferLimit);
     }
 

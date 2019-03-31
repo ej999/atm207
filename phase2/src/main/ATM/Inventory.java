@@ -5,9 +5,9 @@ import java.util.HashMap;
 //Where users can store non-money goods. Stored in a HashMap with the string name of the good (Steel, Copper,
 //etc.), with its value being the amount of it.
 public class Inventory {
-    HashMap<String, Integer> storage = new HashMap<>();
+    private HashMap<String, Integer> storage = new HashMap<>();
 
-    public Inventory() {
+    Inventory() {
     }
 
     Inventory(HashMap<String, Integer> storage) {
@@ -18,7 +18,7 @@ public class Inventory {
         return storage;
     }
 
-    boolean itemExists(String item) {
+    private boolean itemExists(String item) {
         return storage.containsKey(item);
     }
 

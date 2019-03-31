@@ -69,7 +69,7 @@ final class BanknoteManager {
         SortedMap<Integer, Integer> banknotes = new TreeMap<>();
 
         for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), banknotes.get(String.valueOf(DENOMINATIONS.get(d))));
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), banknotes.get(DENOMINATIONS.get(d)));
             banknotes.put(DENOMINATIONS.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }

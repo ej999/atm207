@@ -11,7 +11,7 @@ public class ETransfer extends Transaction implements Serializable {
     private String question;
     private String answer;
     private boolean deposited = false;
-    private Customer recipient;
+    private String recipient;
 
 
     public ETransfer(Customer sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
@@ -36,7 +36,7 @@ public class ETransfer extends Transaction implements Serializable {
         return this.deposited;
     }
 
-    public Customer getRecipient() {
+    public String getRecipient() {
         return this.recipient;
     }
 

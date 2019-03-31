@@ -110,14 +110,14 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<AccountSummary> getSummary() {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
 
             AccountSummary sum;
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
 
-            if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
+            if (a.getID().equals(((Customer) user).getPrimaryAccount())) {
                 sum = new AccountSummary("X", a.getClass().getName(), a.getDateCreatedReadable(),
                         a.getBalance(), recent);
             } else {
@@ -135,11 +135,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
             }
         }
@@ -197,15 +197,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> otherChoiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
             } else {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 otherChoiceBox.getItems().add(choice);
             }
         }
@@ -257,11 +257,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getId();
+                String choice = accountName + " " + a.getID();
                 choiceBox.getItems().add(choice);
             }
         }
@@ -296,7 +296,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
             if (ATM.userManager.isPresent(otherAccount)) {
-                if (((AccountTransferable) account).transferToAnotherUser(amount, (Customer) user, ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
@@ -535,10 +535,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select new primary account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a instanceof Chequing) {
-                choiceBox.getItems().add(a.getType() + " " + a.getId());
+                choiceBox.getItems().add(a.getType() + " " + a.getID());
             }
         }
 
@@ -609,7 +609,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<Transaction> getTransaction() {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             transactions.addAll(a.getTransactionHistory());
         }
@@ -673,10 +673,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select non-joint account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts((Customer) user);
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (!a.isJoint()) {
-                choiceBox.getItems().add(a.getType() + " " + a.getId());
+                choiceBox.getItems().add(a.getType() + " " + a.getID());
             }
         }
 

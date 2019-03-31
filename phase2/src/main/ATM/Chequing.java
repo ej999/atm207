@@ -9,12 +9,12 @@ class Chequing extends AccountAsset {
     private static final String type = Chequing.class.getName();
 
     @SuppressWarnings("unused")
-    public Chequing(String id, List<Customer> owners) {
+    public Chequing(String id, List<String> owners) {
         super(id, owners);
     }
 
     @SuppressWarnings("unused")
-    public Chequing(String id, Customer owner) {
+    public Chequing(String id, String owner) {
         super(id, owner);
     }
 

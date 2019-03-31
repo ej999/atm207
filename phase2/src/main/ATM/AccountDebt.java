@@ -5,11 +5,11 @@ import java.util.List;
 abstract class AccountDebt extends Account {
     private static final double DEBT_CAPACITY = 10000;
 
-    AccountDebt(String id, List<Customer> owners) {
+    AccountDebt(String id, List<String> owners) {
         super(id, owners);
     }
 
-    AccountDebt(String id, Customer owner) {
+    AccountDebt(String id, String owner) {
         super(id, owner);
     }
 

@@ -26,16 +26,16 @@ import java.util.HashMap;
  */
 
 public class TradingSystem {
-    static HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
-    static HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
+    private static HashMap<String, ArrayList<TradeOffer>> sell_offers = new HashMap<>();
+    private static HashMap<String, ArrayList<TradeOffer>> buy_offers = new HashMap<>();
 
     TradingSystem() {
     }
 
-    static public void addSellOffer(String item, TradeOffer tradeoffer) {
+    static void addSellOffer(String item, TradeOffer tradeoffer) {
         //If equal or better buy offer exists, make trade
         if (buy_offers.containsKey(item)) {
-            if (!makeTrade(item, tradeoffer, true)) {
+            if (makeTrade(item, tradeoffer, true)) {
                 sell_offers.get(item).add(tradeoffer);
             }
 
@@ -50,10 +50,10 @@ public class TradingSystem {
 
     }
 
-    static public void addBuyOffer(String item, TradeOffer tradeoffer) {
+    static void addBuyOffer(String item, TradeOffer tradeoffer) {
         //If equal or better sell offer exists, make trade
         if (sell_offers.containsKey(item)) {
-            if (!makeTrade(item, tradeoffer, false)) {
+            if (makeTrade(item, tradeoffer, false)) {
                 buy_offers.get(item).add(tradeoffer);
             }
 
@@ -89,7 +89,7 @@ public class TradingSystem {
         }
     }
 
-    static public boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
+    private static boolean makeTrade(String item, TradeOffer tradeoffer, boolean selling) {
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         //default values, but these will never get used
         Customer seller = tradeoffer.getTradeUser();
@@ -129,14 +129,14 @@ public class TradingSystem {
                 //buyer.getGoods().addItem(item, quantity);
                 System.out.println("Offer made");
                 offers.remove(i);
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
 
     }
 
-    static public ArrayList<String> seeOffers(String item, boolean selling) {
+    static ArrayList<String> seeOffers(String item, boolean selling) {
         HashMap<String, ArrayList<TradeOffer>> offers_map;
         ArrayList<String> returned = new ArrayList<>();
         if (selling) {
@@ -145,8 +145,8 @@ public class TradingSystem {
             offers_map = buy_offers;
         }
         ArrayList<TradeOffer> offers = offers_map.get(item);
-        for (int i = 0; i < offers.size(); i++) {
-            returned.add(offers.get(i).toString());
+        for (TradeOffer offer : offers) {
+            returned.add(offer.toString());
         }
         return returned;
     }

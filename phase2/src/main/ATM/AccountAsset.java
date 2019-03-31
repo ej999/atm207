@@ -12,11 +12,11 @@ import java.util.List;
  * Asset accounts include Chequing and Savings Accounts.
  */
 abstract class AccountAsset extends Account implements AccountTransferable {
-    AccountAsset(String id, List<Customer> owners) {
+    AccountAsset(String id, List<String> owners) {
         super(id, owners);
     }
 
-    AccountAsset(String id, Customer owner) {
+    AccountAsset(String id, String owner) {
         super(id, owner);
     }
 
@@ -101,12 +101,12 @@ abstract class AccountAsset extends Account implements AccountTransferable {
      * Transfer money from this account to another user's account (this will decrease their getBalance())
      *
      * @param transferAmount amount to transfer
-     * @param user           receives transferAmount
+     * @param username       receives transferAmount
      * @param account        of user
      * @return true iff transfer is valid
      */
-    public boolean transferToAnotherUser(double transferAmount, Customer user, Account account) {
-        if (validTransfer(transferAmount, user, account)) {
+    public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
+        if (validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
             if (account instanceof AccountAsset) {
                 account.setBalance(account.getBalance() + transferAmount);
@@ -135,8 +135,9 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 
     }
 
-    private boolean validTransfer(double transferAmount, Customer user, Account account) {
-        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && user.hasAccount(account);
+    private boolean validTransfer(double transferAmount, String username, Account account) {
+        Customer customer = (Customer) ATM.userManager.getUser(username);
+        return transferAmount > 0 && (getBalance() - transferAmount) >= 0 && customer.hasAccount(account);
     }
 
 //    @Override

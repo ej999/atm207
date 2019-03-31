@@ -106,12 +106,11 @@ class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         create.setOnAction(event -> {
             String username = usernameInput.getText();
-            User user = ATM.userManager.getUser(username);
             String accountType = typeChoice.getValue();
             System.out.println("Customer wants a " + accountType + " account");
 
             if (ATM.userManager.isPresent(username)) {
-                ATM.accountManager.addAccount(accountType, Collections.singletonList((Customer) user));
+                ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid customer. Please try again");
@@ -158,11 +157,10 @@ class EmployeeOptionsGUI extends OptionsGUI {
             actionTarget.setFill(Color.FIREBRICK);
             // Add user's account entries to ComboBox
             String username = usernameInput.getText();
-            Customer user = (Customer) ATM.userManager.getUser(username);
             if (ATM.userManager.isPresent(username)) {
-                List<Account> accounts = ATM.accountManager.getListOfAccounts(user);
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
-                    String choice = a.getClass().getName() + " " + a.getId();
+                    String choice = a.getClass().getName() + " " + a.getID();
                     choiceBox.getItems().add(choice);
                 }
             } else {
@@ -229,7 +227,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    void makePreexistingJointAccountScreen() {
+    private void makePreexistingJointAccountScreen() {
         GridPane gridPane = createFormPane();
 
         Label primaryLbl = new Label("Enter username of primary holder");
@@ -258,12 +256,11 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
         select.setOnAction(event -> {
             String username = primaryTextField.getText();
-            Customer customer = (Customer) ATM.userManager.getUser(username);
             if (ATM.userManager.isCustomer(username)) {
-                List<Account> accounts = ATM.accountManager.getListOfAccounts(customer);
+                List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
                     if (!a.isJoint()) {
-                        choices.getItems().add(a.getType() + " " + a.getId());
+                        choices.getItems().add(a.getType() + " " + a.getID());
                     }
                 }
             } else {
@@ -274,11 +271,10 @@ class EmployeeOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         make.setOnAction(event -> {
             String secondary = secondaryTextField.getText();
-            Customer secondaryHolder = (Customer) ATM.userManager.getUser(secondary);
             if (ATM.userManager.isCustomer(secondary)) {
                 String id = choices.getValue().split("\\w+")[1];
                 Account account = ATM.accountManager.getAccount(id);
-                account.addOwner(secondaryHolder);
+                account.addOwner(secondary);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Your account has been made joint.");
             } else {
                 showAlert(Alert.AlertType.WARNING, window, "Warning", secondary + " doesn't exist in our system.");
@@ -289,7 +285,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    void openNewBankAccountScreen() {
+    private void openNewBankAccountScreen() {
         /*
         Enter username of primary holder:
         Enter username of secondary holder:
@@ -333,13 +329,11 @@ class EmployeeOptionsGUI extends OptionsGUI {
             String primary = primaryTextField.getText();
             String secondary = secondaryTextField.getText();
             if (ATM.userManager.isCustomer(secondary) && ATM.userManager.isCustomer(primary)) {
-                User primaryUser = ATM.userManager.getUser(primary);
-                User secondaryUser = ATM.userManager.getUser(secondary);
-                List<Customer> owners = new ArrayList<>();
-                owners.add((Customer) primaryUser);
-                owners.add((Customer) secondaryUser);
+                List<String> ownersUsername = new ArrayList<>();
+                ownersUsername.add(primary);
+                ownersUsername.add(secondary);
                 String type = choices.getValue();
-                ATM.accountManager.addAccount(type, owners);
+                ATM.accountManager.addAccount(type, ownersUsername);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid username");

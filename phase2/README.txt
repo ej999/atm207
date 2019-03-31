@@ -8,8 +8,3 @@ Please note that
 - more customer login can be created by a Bank Manager
 - Please set group_0339 as source root.
 - UML Design: https://drive.google.com/file/d/1Ym8iKNHoR71ByJTUye7vVPqT4yh8b3sn/view
-
-
-
-
-https://imgur.com/a/5mxY6Yf

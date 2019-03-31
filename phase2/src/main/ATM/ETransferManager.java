@@ -42,7 +42,7 @@ final class ETransferManager {
         // returns oldest unDeposited eTransfer to <recipient>
         ETransfer oldest = null;
         for (ETransfer e : allTransfers) {
-            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()) {
+            if (e.getRecipient().equals(recipient) && !e.hasBeenDeposited()) {
                 oldest = e;
                 break;
             }
@@ -54,7 +54,7 @@ final class ETransferManager {
         // returns all unDeposited eTransfer to <recipient>
         List<ETransfer> transfers = new ArrayList<>();
         for (ETransfer e : allTransfers) {
-            if (e.getRecipient().getUsername().equals(recipient) && !e.hasBeenDeposited()) {
+            if (e.getRecipient().equals(recipient) && !e.hasBeenDeposited()) {
                 transfers.add(e);
             }
         }
@@ -67,7 +67,7 @@ final class ETransferManager {
         ETransfer oldest = getOldestTransfer(recipient);
 
         if (oldest != null && oldest.verifyQuestion(response)) {
-            if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), (Customer) ATM.userManager.getUser(recipient), account)) {
+            if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), recipient, account)) {
                 oldest.deposit();
                 return true;
             } else {
@@ -98,7 +98,7 @@ final class ETransferManager {
             }
         }
         for (ETransfer e : transfers) {
-            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), (Customer) ATM.userManager.getUser(recipient), account);
+            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), recipient, account);
             if (successful) {
                 e.deposit();
             } else {

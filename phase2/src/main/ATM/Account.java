@@ -9,28 +9,28 @@ abstract class Account implements Serializable {
     // payment and transfer to non-user is written in following path.
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private final String type = this.getClass().getName();
-    private final String id;
+    private final String ID;
     private final long dateCreated;
-    private final List<Customer> owners;
-    private final Customer primaryOwner;
+    private final List<String> ownersUsername;
+    private final String primaryOwner;
 
     private Stack<Transaction> transactionHistory;
 
     private double balance;
 
-    Account(String id, List<Customer> owners) {
-        this.id = id;
+    Account(String ID, List<String> ownersUsername) {
+        this.ID = ID;
         // We store the timestamp as a immutable long.
         this.dateCreated = new Date().getTime();
-        this.owners = owners;
+        this.ownersUsername = ownersUsername;
         // First customer in the list is set to be the primary owner of this account.
-        this.primaryOwner = owners.get(0);
+        this.primaryOwner = ownersUsername.get(0);
         this.transactionHistory = new Stack<Transaction>();
         this.balance = 0;
     }
 
-    Account(String id, Customer owner) {
-        this(id, Collections.singletonList(owner));
+    Account(String ID, String owner) {
+        this(ID, Collections.singletonList(owner));
     }
 
 
@@ -55,12 +55,12 @@ abstract class Account implements Serializable {
         return transactionHistory;
     }
 
-    public void setTransactionHistory(Stack<Transaction> transactionHistory) {
+    void setTransactionHistory(Stack<Transaction> transactionHistory) {
         this.transactionHistory = transactionHistory;
     }
 
-    public String getId() {
-        return id;
+    public String getID() {
+        return ID;
     }
 
     public String getType() {
@@ -140,12 +140,20 @@ abstract class Account implements Serializable {
         this.balance = balance;
     }
 
-    Customer getPrimaryOwner() {
+    String getPrimaryOwner() {
         // Assuming primary account owner.
         return primaryOwner;
     }
 
-    public List<Customer> getOwners() {
+    public List<String> getOwnersUsername() {
+        return ownersUsername;
+    }
+
+    List<Customer> getOwners() {
+        ArrayList<Customer> owners = new ArrayList<>();
+        for (String username : ownersUsername) {
+            owners.add((Customer) ATM.userManager.getUser(username));
+        }
         return owners;
     }
 
@@ -155,22 +163,22 @@ abstract class Account implements Serializable {
      * @param newOwner account owner
      * @return true iff newOwner is distinct
      */
-    public boolean addOwner(Customer newOwner) {
-        if (!owners.contains(newOwner)) {
-            owners.add(newOwner);
+    boolean addOwner(String newOwner) {
+        if (!ownersUsername.contains(newOwner)) {
+            ownersUsername.add(newOwner);
             return true;
         }
         return false;
     }
 
     boolean isJoint() {
-        return owners.size() > 1;
+        return ownersUsername.size() > 1;
     }
 
     public boolean removeOwner(Customer owner) {
         // An account has to have at least one owner.
-        if (isJoint() && owners.contains(owner)) {
-            owners.remove(owner);
+        if (isJoint() && ownersUsername.contains(owner.getUsername())) {
+            ownersUsername.remove(owner.getUsername());
             return true;
         }
         return false;
@@ -182,9 +190,9 @@ abstract class Account implements Serializable {
         Date date = new Date(dateCreated);
 
         return this.getClass().getSimpleName() +
-                " [id='" + id + '\'' +
+                " [ID='" + ID + '\'' +
                 ", balance=" + balance +
-                ", owners=" + owners +
+                ", ownersUsername=" + ownersUsername +
                 ", dateCreated=" + dateFormat.format(date) +
                 ']';
     }

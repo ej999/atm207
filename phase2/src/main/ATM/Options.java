@@ -190,10 +190,9 @@ class Options {
         Scanner reader = new Scanner(System.in);
         System.out.print("Please enter username: ");
         String username = reader.next();
-        Customer customer = (Customer) ATM.userManager.getUser(username);
         if (ATM.userManager.isPresent(username) && ATM.userManager.isCustomer(username)) {
             String accountType = selectAccountTypePrompt();
-            ATM.accountManager.addAccount(accountType, Collections.singletonList(customer));
+            ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
         } else {
             System.err.println("Invalid customer. Please try again");
         }
@@ -253,7 +252,7 @@ class Options {
         Scanner reader = new Scanner(System.in);
 
         System.out.println();
-        List<String> accounts = customer.getAccounts();
+        List<String> accounts = customer.getAccountIDs();
         int i = 1;
         for (String a : accounts) {
             if (!ATM.accountManager.getAccount(a).getClass().getName().contains(exclusion)) {
@@ -314,7 +313,7 @@ class Options {
             System.out.println("\n\u001B[1mAccount Type\t\t\tCreation Date\t\t\t\t\tBalance\t\tMost Recent Transaction" +
                     "\u001B[0m");
             int i = 1;
-            for (String a : ((Customer) current_user).getAccounts()) {
+            for (String a : ((Customer) current_user).getAccountIDs()) {
                 if (ATM.accountManager.getAccount(a) instanceof Chequing) {
                     System.out.println("[" + i + "] " + ATM.accountManager.getAccount(a));
                 }
@@ -324,7 +323,7 @@ class Options {
             System.out.print("Please choose the account you would like to set as Primary by entering the corresponding number: ");
             Scanner reader = new Scanner(System.in);
             int selected = reader.nextInt();
-            ((Customer) current_user).setPrimaryAccount(ATM.accountManager.getAccount(((Customer) current_user).getAccounts().get(selected - 1)));
+            ((Customer) current_user).setPrimaryAccount(ATM.accountManager.getAccount(((Customer) current_user).getAccountIDs().get(selected - 1)));
         } else {
             //TODO create custom exception
             System.err.println("Sorry, you can only change your primary account if you have more than one chequing " +
@@ -434,7 +433,7 @@ class Options {
 
         if (ATM.userManager.isPresent(username)) {
             Customer user = (Customer) ATM.userManager.getUser(username);
-            ((AccountTransferable) from).transferToAnotherUser(amount, user, ATM.accountManager.getAccount(user.getPrimaryAccount()));
+            ((AccountTransferable) from).transferToAnotherUser(amount, username, ATM.accountManager.getAccount(user.getPrimaryAccount()));
             System.out.println("Transfer is successful");
         } else {
             System.err.println("The username does not exist. Transfer is cancelled");

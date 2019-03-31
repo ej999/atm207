@@ -48,8 +48,8 @@ final class ManagersSerialization {
         */
         for (String username : ATM.userManager.user_map.keySet()) {
             User user = ATM.userManager.getUser(username);
-            if (user instanceof Customer && ((Customer) user).getAccounts() == null) {
-                ((Customer) user).accounts = new ArrayList<>();
+            if (user instanceof Customer && ((Customer) user).getAccountIDs() == null) {
+                ((Customer) user).accountIDs = new ArrayList<>();
             }
         }
 
