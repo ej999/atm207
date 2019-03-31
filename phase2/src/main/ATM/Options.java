@@ -92,7 +92,12 @@ class Options {
 
             options.put("See offers", new Thread(this::seeOffers));
 
+            options.put("Deposit item to inventory", new Thread(this::addToInventory));
+
+            options.put("View inventory", new Thread(this::viewInventoryPrompt));
+
             options.put("ETransfers", new Thread(this::eTransferPrompt));
+
 
             options.put("Logout", new Thread(this::logoutPrompt));
 
