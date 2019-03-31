@@ -13,12 +13,12 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * GUI for employee options.
- * //TODO: refactor
  */
 class EmployeeOptionsGUI extends OptionsGUI {
 
@@ -30,7 +30,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
     public Scene createOptionsScreen() {
         addOptionText("Read alerts");
         addOptionText("Create bank account for user");
-//        addOptionText("Create joint account"); // TODO
+        addOptionText("Create joint account");
         addOptionText("Change password");
         addOptionText("Undo transactions");
         addOptionText("Logout");
@@ -38,7 +38,8 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
         getOption(0).setOnAction(event -> readAlertsScreen());
         getOption(1).setOnAction(event -> createBankAccountScreen());
-        getOption(3).setOnAction(event -> undoTransactionsScreen());
+        getOption(2).setOnAction(event -> createJointAccountScreen());
+        getOption(4).setOnAction(event -> undoTransactionsScreen());
 
         return generateOptionsScreen(325, 300);
     }
@@ -195,7 +196,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(grid));
     }
 
-    private void createJointAccountScreen() {
+    void createJointAccountScreen() {
         /*
         Would you like to make a preexisting account joint or open a new one?
 
@@ -233,7 +234,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void makePreexistingJointAccountScreen() {
+    void makePreexistingJointAccountScreen() {
         GridPane gridPane = createFormPane();
 
         Label primaryLbl = new Label("Enter username of primary holder");
@@ -293,7 +294,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void openNewBankAccountScreen() {
+    void openNewBankAccountScreen() {
         /*
         Enter username of primary holder:
         Enter username of secondary holder:
@@ -339,9 +340,11 @@ class EmployeeOptionsGUI extends OptionsGUI {
             if (ATM.userManager.isCustomer(secondary) && ATM.userManager.isCustomer(primary)) {
                 User primaryUser = ATM.userManager.getUser(primary);
                 User secondaryUser = ATM.userManager.getUser(secondary);
+                List<Customer> owners = new ArrayList<>();
+                owners.add((Customer) primaryUser);
+                owners.add((Customer) secondaryUser);
                 String type = choices.getValue();
-//                ATM.accountManager.addAccount(type, (Customer) primaryUser);
-                // TODO: add joint account to both users
+                ATM.accountManager.addAccount(type, owners);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "A new joint account has been made.");
             } else {
                 showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid usernames");

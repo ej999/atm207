@@ -16,7 +16,6 @@ import java.util.Map;
 
 /**
  * GUI for Bank Manager.
- * //TODO: refactor
  */
 public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
     /**
@@ -35,6 +34,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Read alerts");
         addOptionText("Create user");
         addOptionText("Create bank account for user");
+        addOptionText("Create joint account");
         addOptionText("Restock ATM");
         addOptionText("Undo transactions");
         addOptionText("Change password");
@@ -47,11 +47,12 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(0).setOnAction(event -> readAlertsScreen());
         getOption(1).setOnAction(event -> createUserScreen());
         getOption(2).setOnAction(event -> createBankAccountScreen());
-        getOption(3).setOnAction(event -> restockATMScreen());
-        getOption(4).setOnAction(event -> undoTransactionsScreen());
-        getOption(6).setOnAction(event -> clearBankDataScreen());
-        getOption(7).setOnAction(event -> setYouthTransactionsScreen());
-        getOption(8).setOnAction(event -> setYouthTransfersScreen());
+        getOption(3).setOnAction(event -> createJointAccountScreen());
+        getOption(4).setOnAction(event -> restockATMScreen());
+        getOption(5).setOnAction(event -> undoTransactionsScreen());
+        getOption(7).setOnAction(event -> clearBankDataScreen());
+        getOption(8).setOnAction(event -> setYouthTransactionsScreen());
+        getOption(9).setOnAction(event -> setYouthTransfersScreen());
 
         return generateOptionsScreen(325, 450);
     }

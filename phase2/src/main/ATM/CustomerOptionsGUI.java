@@ -145,6 +145,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
             }
         }
 
+        System.out.println(accounts);
+
         Label amountLbl = new Label("Amount:");
         TextField amountInput = new TextField(); // assume user enters a number
 
@@ -341,7 +343,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         grid.add(hbBtn, 1, 4);
 
         // Handlers
-        goBack.setOnAction(event -> depoCashScreen());
+        goBack.setOnAction(event -> depositScreen());
         deposit.setOnAction(event -> {
             // d -> quantity
             Map<Integer, Integer> depositedBills = new HashMap<>();
@@ -838,7 +840,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, true);
@@ -868,7 +870,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(itemCheck, 1, 0);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
             ArrayList<String> sell_offers = TradingSystem.seeOffers(item, false);
