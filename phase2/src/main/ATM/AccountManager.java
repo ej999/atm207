@@ -51,7 +51,7 @@ final class AccountManager {
 
             String id = idGenerator();
             Account newAccount = (Account) cTor.newInstance(id, ownersUsername);
-            account_map.put(newAccount.getID(), newAccount);
+            account_map.put(newAccount.getId(), newAccount);
             //TODO observer
 //            if (newAccount instanceof Saving) {
 //                ATM.addObserver((Saving) newAccount);
@@ -103,8 +103,8 @@ final class AccountManager {
             id = String.valueOf((int) ((Math.random() * 9000000) + 1000000));
             validId = true;
             for (String key : account_map.keySet()) {
-                if (account_map.get(key).getID() != null) {
-                    if (account_map.get(key).getID().equals(id)) {
+                if (account_map.get(key).getId() != null) {
+                    if (account_map.get(key).getId().equals(id)) {
                         validId = false;
                     }
                 }

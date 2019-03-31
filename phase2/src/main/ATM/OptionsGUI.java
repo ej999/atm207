@@ -230,7 +230,7 @@ public abstract class OptionsGUI {
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(exclusion)) {
-                String choice = accountName + " " + a.getID();
+                String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
         }

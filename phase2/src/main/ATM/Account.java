@@ -9,7 +9,7 @@ abstract class Account implements Serializable {
     // payment and transfer to non-user is written in following path.
     static final String outputFilePath = "phase2/src/resources/outgoing.txt";
     private final String type = this.getClass().getName();
-    private final String ID;
+    private final String id;
     private final long dateCreated;
     private final List<String> ownersUsername;
     private final String primaryOwner;
@@ -18,8 +18,8 @@ abstract class Account implements Serializable {
 
     private double balance;
 
-    Account(String ID, List<String> ownersUsername) {
-        this.ID = ID;
+    Account(String id, List<String> ownersUsername) {
+        this.id = id;
         // We store the timestamp as a immutable long.
         this.dateCreated = new Date().getTime();
         this.ownersUsername = ownersUsername;
@@ -29,8 +29,8 @@ abstract class Account implements Serializable {
         this.balance = 0;
     }
 
-    Account(String ID, String owner) {
-        this(ID, Collections.singletonList(owner));
+    Account(String id, String owner) {
+        this(id, Collections.singletonList(owner));
     }
 
 
@@ -59,8 +59,8 @@ abstract class Account implements Serializable {
         this.transactionHistory = transactionHistory;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public String getType() {
@@ -190,7 +190,7 @@ abstract class Account implements Serializable {
         Date date = new Date(dateCreated);
 
         return this.getClass().getSimpleName() +
-                " [ID='" + ID + '\'' +
+                " [id='" + id + '\'' +
                 ", balance=" + balance +
                 ", ownersUsername=" + ownersUsername +
                 ", dateCreated=" + dateFormat.format(date) +

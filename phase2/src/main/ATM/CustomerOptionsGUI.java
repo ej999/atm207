@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -126,12 +125,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Transaction mostRecent = a.getMostRecentTransaction();
             String recent = (mostRecent == null) ? "N/A" : mostRecent.toString();
 
-            if (a.getID().equals(((Customer) user).getPrimaryAccount())) {
+            if (a.getId().equals(((Customer) user).getPrimaryAccount())) {
                 sum = new AccountSummary("X", a.getClass().getSimpleName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
+                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
             } else {
                 sum = new AccountSummary("", a.getClass().getName(), a.getDateCreatedReadable(),
-                        a.getBalance(), recent, a.getID(), a.getOwnersUsername());
+                        a.getBalance(), recent, a.getId(), a.getOwnersUsername());
             }
             summaries.add(sum);
         }
@@ -148,7 +147,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getID();
+                String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
         }
@@ -210,11 +209,11 @@ public class CustomerOptionsGUI extends OptionsGUI {
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getID();
+                String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
             } else {
-                String choice = accountName + " " + a.getID();
+                String choice = accountName + " " + a.getId();
                 otherChoiceBox.getItems().add(choice);
             }
         }
@@ -270,7 +269,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
             if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
-                String choice = accountName + " " + a.getID();
+                String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
         }
@@ -547,7 +546,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a instanceof Chequing) {
-                choiceBox.getItems().add(a.getType() + " " + a.getID());
+                choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
 
@@ -685,7 +684,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (!a.isJoint()) {
-                choiceBox.getItems().add(a.getType() + " " + a.getID());
+                choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
 

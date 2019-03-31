@@ -13,6 +13,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * A GUI for Bank Manager.
@@ -248,15 +249,15 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
             if (ATM.userManager.isPresent(youthAccount)) {
-                Account youth = (ATM.accountManager.getAccount(youthAccount));
-                if (youth instanceof Youth) {
-                    ((BankManager) this.user).setMaxTransactions((Youth) youth, amount);
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transaction Limit has been set");
-                } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit failed");
+                List<Account> AccountIDList = ATM.accountManager.getListOfAccounts(youthAccount);
+                for (Account accounts: AccountIDList) {
+                    if (accounts instanceof Youth) {
+                        ((BankManager) this.user).setMaxTransactions((Youth) accounts, amount);
+                        showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit Set");
+                    }
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit has been set");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transaction Limit Failed: No Youth Account Found");
             }
             window.setScene(optionsScreen);
         });
@@ -290,19 +291,18 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
             if (ATM.userManager.isPresent(youthAccount)) {
-                Account youth = (ATM.accountManager.getAccount(youthAccount));
-                if (youth instanceof Youth) {
-                    ((BankManager) this.user).setTransferLimit((Youth) youth, amount);
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
-                } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transfer Limit failed");
+                List<Account> AccountIDList = ATM.accountManager.getListOfAccounts(youthAccount);
+                for (Account accounts: AccountIDList) {
+                    if (accounts instanceof Youth) {
+                        ((BankManager) this.user).setTransferLimit((Youth) accounts, amount);
+                        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
+                    }
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit has been set");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer Limit failed: No Youth Account Found");
             }
             window.setScene(optionsScreen);
         });
-
         window.setScene(new Scene(grid));
     }
 

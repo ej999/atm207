@@ -172,7 +172,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
             if (ATM.userManager.isPresent(username)) {
                 List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
-                    String choice = a.getClass().getName() + " " + a.getID();
+                    String choice = a.getClass().getName() + " " + a.getId();
                     choiceBox.getItems().add(choice);
                 }
             } else {
@@ -272,7 +272,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
                 List<Account> accounts = ATM.accountManager.getListOfAccounts(username);
                 for (Account a : accounts) {
                     if (!a.isJoint()) {
-                        choices.getItems().add(a.getType() + " " + a.getID());
+                        choices.getItems().add(a.getType() + " " + a.getId());
                     }
                 }
             } else {
