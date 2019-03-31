@@ -39,6 +39,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Add an item for Sale");
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
+        addOptionText("Add to Inventory");
+        addOptionText("Remove from Inventory");
+        addOptionText("View Inventory");
         // eTransfers // TODO
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
@@ -53,14 +56,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(5).setOnAction(event -> depositScreen());
         getOption(6).setOnAction(event -> withdrawalScreen());
         getOption(7).setOnAction(event -> requestAccountScreen());
+        getOption(8).setOnAction(event -> InvestGICScreen());
         getOption(9).setOnAction(event -> accountToJointScreen());
         getOption(10).setOnAction(event -> addSellOfferScreen());
         getOption(11).setOnAction(event -> addBuyOfferScreen());
         getOption(12).setOnAction(event -> seeOffersScreen());
-        getOption(13).setOnAction(event -> changePrimaryScreen());
-        getOption(14).setOnAction(event -> changePasswordScreen());
-        getOption(15).setOnAction(event -> logoutHandler());
-        getOption(8).setOnAction(event -> InvestGICScreen());
+        getOption(13).setOnAction(event -> addToInventoryScreen());
+        getOption(14).setOnAction(event -> removeFromInventoryScreen());
+        getOption(15).setOnAction(event -> viewInventoryScreen());
+        getOption(16).setOnAction(event -> changePrimaryScreen());
+        getOption(17).setOnAction(event -> changePasswordScreen());
+        getOption(18).setOnAction(event -> logoutHandler());
+
+//        getOption(15).setOnAction(event -> InvestGICScreen);
 
         return generateOptionsScreen();
     }
@@ -891,6 +899,87 @@ public class CustomerOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
+    }
+
+    private void addToInventoryScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to see deposit?");
+        TextField itemCheck = new TextField();
+
+        Label itemForAmount = new Label("How much of it would you like to add? (in grams)");
+        TextField itemAmount = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Deposit");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(itemForAmount, 0, 1);
+        gridPane.add(itemAmount, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            Integer amount = Integer.valueOf(itemAmount.getText());
+            Customer current_customer = (Customer) user;
+            current_customer.getGoods().depositItem(item, amount);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added to inventory");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void removeFromInventoryScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label itemForCheck = new Label("Which item would you like to withdraw?");
+        TextField itemCheck = new TextField();
+
+        Label itemForAmount = new Label("How much of it would you like to remove? (in grams)");
+        TextField itemAmount = new TextField();
+
+
+        Button cancel = new Button("Cancel");
+        Button add = new Button("Withdraw");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(add);
+
+        gridPane.add(itemForCheck, 0, 0);
+        gridPane.add(itemCheck, 1, 0);
+        gridPane.add(itemForAmount, 0, 1);
+        gridPane.add(itemAmount, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        add.setOnAction(event -> {
+            String item = itemCheck.getText();
+            Integer amount = Integer.valueOf(itemAmount.getText());
+            Customer current_customer = (Customer) user;
+            current_customer.getGoods().withdrawItem(item, amount);
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been withdrawn from inventory");
+
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void viewInventoryScreen() {
+        Customer current_customer = (Customer) user;
+        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", inventory.toString());
+        window.setScene(optionsScreen);
     }
 
     public class AccountSummary {
