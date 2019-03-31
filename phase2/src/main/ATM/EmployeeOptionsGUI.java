@@ -42,6 +42,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         getOption(1).setOnAction(event -> createBankAccountScreen());
         getOption(2).setOnAction(event -> createJointAccountScreen());
         getOption(4).setOnAction(event -> undoTransactionsScreen());
+        getOption(3).setOnAction(event -> createGICScreen());
 
         return generateOptionsScreen();
     }
@@ -385,7 +386,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
         window.setScene(new Scene(gridPane));
     }
-    void  createGICScreen(){GridPane gridPane = createFormPane();
+    void createGICScreen(){GridPane gridPane = createFormPane();
 
         Label usernameLbl = new Label("Username of Customer:");
         TextField usernameInput = new TextField();

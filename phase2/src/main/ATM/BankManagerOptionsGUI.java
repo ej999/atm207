@@ -38,6 +38,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Set youth max transactions");
         addOptionText("Set youth max transfers");
         addOptionText("Manage GIC");
+        addOptionText("Create GIC account");
         addOptionText("Logout");
 
         addOptions();
@@ -52,6 +53,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(8).setOnAction(event -> setYouthTransactionsScreen());
         getOption(9).setOnAction(event -> setYouthTransfersScreen());
         getOption(10).setOnAction(event -> ManageGICScreen());
+        getOption(11).setOnAction(event -> createGICScreen());
 
         return generateOptionsScreen();
     }
