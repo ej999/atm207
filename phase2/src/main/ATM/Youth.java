@@ -146,7 +146,7 @@ class Youth extends Account implements AccountTransferable, Observer {
     public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
         if (validTransfer(transferAmount, username, account)) {
             setBalance(getBalance() - transferAmount);
-            if (account instanceof AccountAsset) {
+            if (account instanceof AccountAsset || account instanceof Youth) {
                 account.setBalance(account.getBalance() + transferAmount);
             } else {
                 account.setBalance(account.getBalance() - transferAmount);

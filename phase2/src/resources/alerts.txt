@@ -9,3 +9,9 @@ Fri Mar 29 00:11:02 EDT 2019: Requesting to create CreditLine account from steve
 Fri Mar 29 00:15:21 EDT 2019: Requesting to create an GIC joint account from steveand steve.
 Fri Mar 29 19:18:27 EDT 2019: Requesting to create Chequing account from leon
 Fri Mar 29 22:19:07 EDT 2019: Requesting to create Chequing joint account from leon and steve
+Sun Mar 31 21:28:32 EDT 2019: Requesting to create Chequing account from david
+Sun Mar 31 21:28:51 EDT 2019: Requesting to create CreditLine account from david
+Sun Mar 31 21:54:45 EDT 2019: Requesting to change ATM.Saving with ID 4114020 from david to a joint account with secondary owner dan
+Sun Mar 31 21:56:00 EDT 2019: Requesting to change ATM.Saving with ID 4114020 from david to a joint account with secondary owner dan
+Sun Mar 31 22:03:24 EDT 2019: Requesting to create Chequing account from dave
+Sun Mar 31 22:03:39 EDT 2019: Requesting to create CreditCard account from dave

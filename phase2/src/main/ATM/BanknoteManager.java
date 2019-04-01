@@ -71,7 +71,7 @@ final class BanknoteManager {
         for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
             Integer denom = DENOMINATIONS.get(d);
 
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denom), this.banknotes.get(denom));
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denom), this.banknotes.get(String.valueOf(denom)));
             banknotes.put(DENOMINATIONS.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }
