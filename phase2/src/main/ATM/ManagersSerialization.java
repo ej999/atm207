@@ -21,7 +21,7 @@ final class ManagersSerialization {
     private FireBaseDBAccess fbDb;
 
     ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess("/debugging_1");
+        this.fbDb = new FireBaseDBAccess("/debugging_truman");
     }
 
     void deleteDatabase() {
@@ -169,12 +169,13 @@ final class ManagersSerialization {
 
         // To serialize and save a List of T
         <T extends Serializable> void saveList(List<T> item_list, String child) {
-            CountDownLatch latch = new CountDownLatch(2);
+            CountDownLatch latch = new CountDownLatch(1);
             if (item_list != null) {
                 // Get existing child or new child will be created.
                 DatabaseReference childRef = databaseRef.child(child);
 
-                childRef.setValue("", (error, ref) -> latch.countDown());
+//                childRef.removeValueAsync();
+
                 for (T item : item_list) {
                     childRef.push().setValueAsync(item);
                 }

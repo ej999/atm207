@@ -49,6 +49,11 @@ abstract class Account implements Serializable {
         } else {
             System.out.println("invalid deposit");
         }
+
+        for (String username : ownersUsername) {
+            Customer customer = (Customer) ATM.userManager.getUser(username);
+            customer.setNetTotal();
+        }
     }
 
     Stack<Transaction> getTransactionHistory() {
