@@ -598,10 +598,25 @@ class Options {
         System.out.println("Success! $" + oldest.getAmount() + " deposited into " + account.getClass().getSimpleName());
     }
     private void viewRequestsPrompt(){
-
+        HashMap<String, Double> requests = ATM.eTransferManager.readRequests(current_user.getUsername());
+        System.out.println("You have " + requests.size() + "requests: ");
+        int i = 1;
+        for (String s: requests.keySet()){
+            System.out.println("" + i + ". " + s + " requested $" + requests.get(s));
+        }
     }
     private void makeResquestPrompt(){
-
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Enter username you would like to send request to");
+        String user = reader.next();
+        if (!ATM.userManager.isCustomer(user)) {
+            System.out.println("invalid username");
+            return;
+        }
+        System.out.println("Enter amount you wish to request");
+        double amount = reader.nextDouble();
+        reader.nextLine();
+        ATM.eTransferManager.request(current_user.getUsername(), user, amount);
     }
 
 }

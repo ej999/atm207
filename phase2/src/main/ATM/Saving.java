@@ -1,5 +1,6 @@
 package ATM;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -7,7 +8,7 @@ import java.util.Observer;
 /**
  * A savings account.
  */
-class Saving extends AccountAsset implements Observer {
+class Saving extends AccountAsset {
     private static final String type = Saving.class.getName();
 
     @SuppressWarnings({"unused"})
@@ -33,12 +34,22 @@ class Saving extends AccountAsset implements Observer {
     /**
      * It should observe today's date and get called when necessary.
      */
-    @Override
-    public void update(Observable o, Object arg) {
-        if ((boolean) arg) {
+
+    public void newDay() {
+        if (checkToday()) {
             setBalance(getBalance() + 0.001 * getBalance());
         }
     }
+    private boolean checkToday() {
+        LocalDate today = LocalDate.now();
+        return today.getDayOfMonth() == 1;}
+
+
+    public void timeSkipTo(int year, int month, int day) {
+        LocalDate skipTo = LocalDate.of(year, month, day);
+        if (skipTo.getDayOfMonth() == 1) {
+            setBalance(getBalance() + 0.001 * getBalance());
+        }
 
 //    @Override
 //    public String toString() {
@@ -57,3 +68,5 @@ class Saving extends AccountAsset implements Observer {
 //    }
 
 }
+}
+
