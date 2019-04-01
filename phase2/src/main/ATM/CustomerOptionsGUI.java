@@ -1170,16 +1170,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String aID = aInfo[1];
             Account account = ATM.accountManager.getAccount(aID);
             String answer = answerInput.getText();
-            int tries = 1;
-            while (!ATM.eTransferManager.validate(answer, account, user.getUsername())) {
-                if (tries > 5) {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Exceeded maximum attempts");
-                    window.setScene(optionsScreen);
-                }
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again (" + (5 - tries) + ") tries remaining");
-                tries++;
+            boolean successful = ATM.eTransferManager.validate(answer, account, user.getUsername());
+            if (!successful) {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again later.");
             }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
+            else {
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
+            }
             window.setScene(optionsScreen);
         });
 
