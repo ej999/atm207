@@ -314,13 +314,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String otherAccount = otherNameInput.getText();
             if (ATM.userManager.isCustomer(otherAccount)) {
                 User otherUser = ATM.userManager.getUser(otherAccount);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
+                if (((AccountTransferable) account).transferToAnotherUser(amount, otherUser.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "User is not a customer");
             }
             window.setScene(optionsScreen);
         });
