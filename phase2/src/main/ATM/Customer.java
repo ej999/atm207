@@ -27,7 +27,6 @@ class Customer extends User implements Observer {
     private double netTotal;
 
     private String dob;
-    //TODO make age useful
     private int age;
     private int creditScore;
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
@@ -68,6 +67,35 @@ class Customer extends User implements Observer {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public List<String> getAccountIDs() {
+        return accountIDs;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public double getNetTotal() {
+        return netTotal;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public String getPrimaryAccount() {
+        return primaryAccount;
+    }
+
+    void setPrimaryAccount(Account primaryAccount) {
+        if (primaryAccount instanceof Chequing) {
+            this.primaryAccount = primaryAccount.getId();
+            System.out.println("Account is successfully set to primary");
+        } else {
+            throw new IllegalArgumentException("Only chequing account can be set to primary");
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public Inventory getGoods() {
+        return goods;
+    }
+
     // An adult is considered as age 20 or above.
     boolean isAdult() {
         if (age != 0) {
@@ -87,7 +115,6 @@ class Customer extends User implements Observer {
         CustomerOptionsGUI gui = new CustomerOptionsGUI(window, welcomeScreen, this);
         return gui.createOptionsScreen();
     }
-
 
     /**
      * It should observe today's date and get called when necessary.
@@ -123,11 +150,6 @@ class Customer extends User implements Observer {
         setNetTotal();
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public List<String> getAccountIDs() {
-        return accountIDs;
-    }
-
     boolean hasAccount(Account account) {
         for (String a : this.accountIDs) {
             if (ATM.accountManager.getAccount(a).equals(account)) {
@@ -147,9 +169,9 @@ class Customer extends User implements Observer {
         }
         return i > 1;
     }
-
     // TODO: 2019-03-30 add observer to setNetTotal
     // The total of their debt account balances subtracted from the total of their asset account balances.
+
     public void setNetTotal() {
         double sum = 0;
         for (String a : this.accountIDs) {
@@ -163,11 +185,6 @@ class Customer extends User implements Observer {
         netTotal = sum;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public double getNetTotal() {
-        return netTotal;
-    }
-
     // add a line of request in the alerts.text
     private void requestHelp(String s) throws IOException {
         String content = s + "\n";
@@ -179,6 +196,7 @@ class Customer extends User implements Observer {
     }
 
     // add a line of string in alert that request for new account
+
     void requestAccount(String accountType) throws IOException {
         String n = new Date() + ": Requesting to create " + accountType + " account from " + this.getUsername();
         requestHelp(n);
@@ -195,24 +213,11 @@ class Customer extends User implements Observer {
                 this.getUsername() + " to a joint account with secondary owner " + username;
         requestHelp(request);
     }
+
     void requestGICAccount(int month, double rate) throws IOException {
         String request = new Date() + ": Requesting to create GIC account from " + this.getUsername() +
                 " with interest rate" + rate + "period " + month + "month";
         requestHelp(request);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public String getPrimaryAccount() {
-        return primaryAccount;
-    }
-
-    void setPrimaryAccount(Account primaryAccount) {
-        if (primaryAccount instanceof Chequing) {
-            this.primaryAccount = primaryAccount.getId();
-            System.out.println("Account is successfully set to primary");
-        } else {
-            throw new IllegalArgumentException("Only chequing account can be set to primary");
-        }
     }
 
     boolean hasPrimary() {
@@ -225,9 +230,5 @@ class Customer extends User implements Observer {
 
     public void setCreditScore(int creditScore) {
         this.creditScore = creditScore;
-    }
-
-     public Inventory getGoods() {
-        return this.goods;
     }
 }

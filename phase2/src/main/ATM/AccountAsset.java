@@ -119,7 +119,7 @@ abstract class AccountAsset extends Account implements AccountTransferable {
 //                getTransactionHistory().push(new Transaction("TransferToAnotherUser", transferAmount, account));
 //            }
             // Simplify things
-            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, this.getClass().getName()));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account.getId(), this.getClass().getName()));
             return true;
         }
         return false;
@@ -156,14 +156,14 @@ abstract class AccountAsset extends Account implements AccountTransferable {
             for (int i = 0; i < n; i++) {
                 try {
                     Transaction transaction = getTransactionHistory().pop();
-                    String type = transaction.getType();
+                    String type = transaction.getTransactionType();
 
-                    if (transaction.getType().equals("Withdrawal")) {
+                    if (transaction.getTransactionType().equals("Withdrawal")) {
                         undoWithdrawal(transaction.getAmount());
-                    } else if (transaction.getType().equals("Deposit")) {
+                    } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
-                    } else if (transaction.getType().equals("Transfer")) {
-                        undoTransfer(transaction.getAmount(), transaction.getAccount());
+                    } else if (transaction.getTransactionType().equals("Transfer")) {
+                        undoTransfer(transaction.getAmount(), ATM.accountManager.getAccount(transaction.getAccountId()));
                     } else if (type.equals("PayBill")) {
                         undoPayBill(transaction.getAmount());
                     }

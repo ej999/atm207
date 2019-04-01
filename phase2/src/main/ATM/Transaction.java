@@ -9,32 +9,32 @@ import java.util.Date;
  * Possible transactions include: Withdrawal, Deposit, Transfer, PayBill, ETransfer
  */
 public class Transaction {
-    private String type;
+    private String TransactionType;
     private double amount;
-    private Account account; // the account involved in transfer
+    private String accountId; // the id of account involved in transfer
     private String date;
     private String accountType; // the account type involved in transaction
 
-    public Transaction(String type, double amount, Account account, String accountType) {
-        this.type = type;
+    public Transaction(String TransactionType, double amount, String accountId, String accountType) {
+        this.TransactionType = TransactionType;
         this.amount = amount;
-        this.account = account;
+        this.accountId = accountId;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         this.date = dateFormat.format(date);
         this.accountType = accountType;
     }
 
-    public String getType() {
-        return this.type;
+    public String getTransactionType() {
+        return this.TransactionType;
     }
 
     public double getAmount() {
         return this.amount;
     }
 
-    public Account getAccount() {
-        return this.account;
+    public String getAccountId() {
+        return this.accountId;
     }
 
     public String getDate() {
@@ -47,7 +47,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return this.type + " of $" + this.amount;
+        return this.TransactionType + " of $" + this.amount;
     }
 
 

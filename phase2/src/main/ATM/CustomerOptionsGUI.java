@@ -1155,7 +1155,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
             if (ATM.userManager.isPresent(otherAccount)) {
                 if (question != null && answer != null) {
-                    ATM.eTransferManager.send(user.getUsername(), (AccountTransferable) account, otherAccount, question, answer, amount);
+                    ATM.eTransferManager.send(user.getUsername(), account.getId(), otherAccount, question, answer, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been made");
                 }
                 else {

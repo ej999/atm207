@@ -569,7 +569,7 @@ class Options {
         String a;
         a = reader.nextLine();
         if (a != null)
-            ATM.eTransferManager.send(current_user.getUsername(), (AccountTransferable)senderAccount, user, q, a, amount);
+            ATM.eTransferManager.send(current_user.getUsername(), senderAccount.getId(), user, q, a, amount);
         System.out.println("sent eTransfer to: " + user);
     }
     private void acceptTransfersPrompt(){

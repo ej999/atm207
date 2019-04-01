@@ -33,13 +33,13 @@ class Chequing extends AccountAsset {
 //        String mostRecentTransactionString;
 //        if (getMostRecentTransaction() == null) {
 //            mostRecentTransactionString = "n/a";
-//        } else if (getMostRecentTransaction().getType().equals("Withdrawal")) {
+//        } else if (getMostRecentTransaction().getTransactionType().equals("Withdrawal")) {
 //            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn";
-//        } else if (getMostRecentTransaction().getType().equals("Deposit")) {
+//        } else if (getMostRecentTransaction().getTransactionType().equals("Deposit")) {
 //            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited";
-//        } else if (getMostRecentTransaction().getType().equals("Transfer")) {
+//        } else if (getMostRecentTransaction().getTransactionType().equals("Transfer")) {
 //            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred";
-//        } else if (getMostRecentTransaction().getType().equals("PayBill")) {
+//        } else if (getMostRecentTransaction().getTransactionType().equals("PayBill")) {
 //            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment";
 //        } else {
 //            mostRecentTransactionString = "n/a";

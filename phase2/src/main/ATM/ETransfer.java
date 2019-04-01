@@ -6,22 +6,24 @@ import java.io.Serializable;
  * A instance of a ETransfer
  **/
 public class ETransfer extends Transaction implements Serializable {
+    private final String type = this.getClass().getName();
     String sender;
-    AccountTransferable senderAccount;
+    // TODO: 2019-03-31 cheeck Transferable
+    String senderAccount;
     private String question;
     private String answer;
     private boolean deposited = false;
     private String recipient;
 
 
-    public ETransfer(String sender, AccountTransferable senderAccount, Account recipientAccount, String q, String a, double amount) {
+    public ETransfer(String sender, String senderAccount, String recipientAccountId, String q, String a, double amount) {
         //recipientAccount just for placeholder; receiver can choose which account to deposit to
-        super("ETransfer", amount, recipientAccount, senderAccount.getClass().getName());
+        super("ETransfer", amount, recipientAccountId, senderAccount.getClass().getName());
         this.senderAccount = senderAccount;
         this.question = q;
         this.answer = a;
         this.sender = sender;
-        this.recipient = recipientAccount.getPrimaryOwner();
+        this.recipient = ATM.accountManager.getAccount(recipientAccountId).getPrimaryOwner();
     }
 
     public boolean verifyQuestion(String input) {
@@ -31,7 +33,8 @@ public class ETransfer extends Transaction implements Serializable {
     public String getQuestion() {
         return this.question;
     }
-    public String getAnswer(){
+
+    public String getAnswer() {
         return this.answer;
     }
 
@@ -51,13 +54,16 @@ public class ETransfer extends Transaction implements Serializable {
         this.deposited = false;
     }
 
-    public String getSender(){
+    public String getSender() {
         return this.sender;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "eTransfer of $" + getAmount() + "from " + sender + "on " + getDate();
     }
 
+    public String getType() {
+        return type;
+    }
 }

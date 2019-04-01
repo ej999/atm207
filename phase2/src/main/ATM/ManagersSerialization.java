@@ -79,7 +79,7 @@ final class ManagersSerialization {
 
     // Deserialize JSON from FireBase /ETransfers directory to a List of Integer, and assign it to ATM.eTransferManager.allTransfers
     private void deserializeETransfers() {
-        ATM.eTransferManager.allTransfers = fbDb.retrieveList("ETransfers", false);
+        ATM.eTransferManager.allTransfers = fbDb.retrieveList("ETransfers", true);
 
         Logger.getLogger("").info("Deserialize ATM.eTransferManager.allTransfers = " + ATM.eTransferManager.allTransfers);
     }
@@ -236,10 +236,9 @@ final class ManagersSerialization {
 
         // Return a List of all the child items as T in database
         <T extends Serializable> List<T> retrieveList(String child, boolean toClass) {
-            CountDownLatch latch = new CountDownLatch(1);
             // Get existing child or will bee created new child.
             DatabaseReference childRef = databaseRef.child(child);
-
+            CountDownLatch latch = new CountDownLatch(1);
             List<T> t_list = new ArrayList<>();
 
             childRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -254,10 +253,12 @@ final class ManagersSerialization {
                             } else {
                                 @SuppressWarnings("unchecked")
                                 T t = (T) childSnapshot.getValue();
+                                System.out.println("OUCH");
                                 t_list.add(t);
                             }
                         } catch (ClassNotFoundException e) {
                             e.getStackTrace();
+                            System.out.println("OUTH");
                         }
                     }
                     latch.countDown();
