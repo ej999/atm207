@@ -60,7 +60,7 @@ public class ETransfer extends Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return "eTransfer of $" + getAmount() + "from " + sender + "on " + getDate();
+        return "eTransfer of $" + getAmount() + "from " + sender + " on " + getDateCreatedReadable();
     }
 
     public String getType() {
