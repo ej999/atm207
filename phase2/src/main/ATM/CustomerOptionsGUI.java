@@ -1090,7 +1090,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         makeTransfer.setOnAction(event -> makeEtransferScreen());
-        accept.setOnAction(event -> makeEtransferScreen());
+        accept.setOnAction(event -> acceptEtransferScreen());
         view.setOnAction(event -> makeEtransferScreen());
         makeRequest.setOnAction(event -> makeEtransferScreen());
 
@@ -1119,10 +1119,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         TextField amountInput = new TextField(); // assume user enters a number
 
         Label questionLbl = new Label("Enter security question: ");
-        TextField questionInput = new TextField(); // assume user enters a number
+        TextField questionInput = new TextField();
 
         Label answerLbl = new Label("Enter answer to question: ");
-        TextField answerInput = new TextField(); // assume user enters a number
+        TextField answerInput = new TextField();
 
         Button cancel = new Button("Cancel");
         Button pay = new Button("Transfer");
@@ -1169,6 +1169,74 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         window.setScene(new Scene(gridPane));
     }
+
+    private void acceptEtransferScreen() {
+        GridPane gridPane = createFormPane();
+        ETransfer oldest = ATM.eTransferManager.getOldestTransfer(user.getUsername());
+        if (oldest == null){
+            showAlert(Alert.AlertType.ERROR, window, "Error", "You have no incoming eTransfers");
+            window.setScene(optionsScreen);
+        }
+        Label chooseLbl = new Label("Select account to deposit to");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        // Add user's accounts as entries to ComboBox
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            } else {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
+
+        Label oldestLbl = new Label(oldest.toString());
+        Label questionLbl = new Label("Security question: " + oldest.getQuestion() + "?");
+        TextField questionInput = new TextField();
+
+        Label answerLbl = new Label("Enter answer: ");
+        TextField answerInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Transfer");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(oldestLbl, 0, 2);
+        gridPane.add(questionLbl, 0, 3);
+        gridPane.add(answerLbl, 0, 4);
+        gridPane.add(answerInput, 1, 4);
+        gridPane.add(hbBtn, 1, 5);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            Account account = ATM.accountManager.getAccount(aID);
+            String answer = answerInput.getText();
+            int tries = 1;
+            while (!ATM.eTransferManager.validate(answer, account, user.getUsername())){
+                if (tries > 5){
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Exceeded maximum attempts");
+                    window.setScene(optionsScreen);
+                }
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again (" + (5-tries) + ") tries remaining");
+                tries++;
+            }
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
 
 
 }
