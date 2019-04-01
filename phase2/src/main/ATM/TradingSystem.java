@@ -17,8 +17,8 @@ import java.util.HashMap;
  * TODO:
  * - After successful trade, remove money from one person's account and add to other. DONE
  * - Check if a user has enough money before you can withdraw DONE
- * - Add inventory functionality to users
- * - Check if user has enough things in inventory,
+ * - Add inventory functionality to users DONE
+ * - Check if user has enough things in inventory, DONE
  * - Cumulative offers
  * - Commission fee for bank
  * - Add forex functionality
@@ -138,7 +138,7 @@ public class TradingSystem {
 
             ) {
                 ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+                //ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
                 buyer.getGoods().depositItem(item, quantity);
                 seller.getGoods().withdrawItem(item, quantity);
                 System.out.println("Offer made");
