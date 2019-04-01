@@ -431,6 +431,9 @@ class BankManagerOptionsGUI extends EmployeeOptionsGUI {
                 if (a instanceof Saving) {
                     ((Saving) a).timeSkipTo(y, m, d);
                 }
+                if (a instanceof Youth) {
+                    ((Youth) a).timeSkipTo(y, m, d);
+                }
             }
             showAlert(Alert.AlertType.INFORMATION, window, "Success", "You successfully time skipped", true);
         });

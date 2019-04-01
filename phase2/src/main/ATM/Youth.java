@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -14,7 +15,7 @@ import static ATM.ATM.*;
  * A youth account has a limited number of transactions of 20 and a transfer limit of $250.
  * At the beginning of every month, reset their transactions and transferTotal.
  */
-class Youth extends Account implements AccountTransferable, Observer {
+class Youth extends Account implements AccountTransferable {
     private int transactions;
     private int maxTransactions;
     private int transferLimit;
@@ -74,9 +75,29 @@ class Youth extends Account implements AccountTransferable, Observer {
         return transferTotal;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if ((boolean) arg) {
+//    @Override
+//    public void update(Observable o, Object arg) {
+//        if ((boolean) arg) {
+//            transferTotal = 0;
+//            transactions = 0;
+//        }
+//    }
+
+    public void newDay() {
+        if (checkToday()) {
+            transferTotal = 0;
+            transactions = 0;
+        }
+    }
+
+    private boolean checkToday() {
+        LocalDate today = LocalDate.now();
+        return today.getDayOfMonth() == 1;
+    }
+
+    public void timeSkipTo(int year, int month, int day) {
+        LocalDate skipTo = LocalDate.of(year, month, day);
+        if (skipTo.getDayOfMonth() == 1) {
             transferTotal = 0;
             transactions = 0;
         }

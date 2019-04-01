@@ -28,3 +28,4 @@ Mon Apr 01 08:36:43 EDT 2019: Requesting to create Saving joint account from tru
 Mon Apr 01 08:36:47 EDT 2019: Requesting to create Saving account from truman
 Mon Apr 01 08:36:54 EDT 2019: Requesting to change ATM.Chequing with ID 2389830 from truman to a joint account with secondary owner truman
 Mon Apr 01 08:37:55 EDT 2019: Requesting to change ATM.Chequing with ID 8857499 from steve to a joint account with secondary owner steve
+Mon Apr 01 13:52:46 EDT 2019: Requesting to create GIC account from dave with interest rate0.5period 2month

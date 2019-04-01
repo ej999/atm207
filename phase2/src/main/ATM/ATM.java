@@ -45,7 +45,9 @@ public class ATM extends Observable {
             }
             if (a instanceof Saving) {
                 ((Saving) a).newDay();
-
+            }
+            if (a instanceof Youth) {
+                ((Youth) a).newDay();
             }
         }
     }
