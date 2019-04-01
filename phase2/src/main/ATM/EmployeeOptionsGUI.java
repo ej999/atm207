@@ -41,7 +41,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
         getOption(0).setOnAction(event -> readAlertsScreen());
         getOption(1).setOnAction(event -> createBankAccountScreen());
         getOption(2).setOnAction(event -> createJointAccountScreen());
-        getOption(4).setOnAction(event -> undoTransactionsScreen());
+        getOption(5).setOnAction(event -> undoTransactionsScreen());
         getOption(3).setOnAction(event -> createGICScreen());
 
         return generateOptionsScreen();
