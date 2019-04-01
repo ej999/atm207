@@ -21,7 +21,7 @@ final class ManagersSerialization {
     private FireBaseDBAccess fbDb;
 
     ManagersSerialization() {
-        this.fbDb = new FireBaseDBAccess("/debugging_truman");
+        this.fbDb = new FireBaseDBAccess("/");
     }
 
     void deleteDatabase() {
@@ -250,7 +250,7 @@ final class ManagersSerialization {
                             if (toClass) {
                                 @SuppressWarnings("unchecked")
                                 Class<T> classOfT = (Class<T>) Class.forName((String) ((HashMap) childSnapshot.getValue()).get("type"));
-                                t_list.add(Json2Object(childSnapshot.getValue().toString(), classOfT));
+                                t_list.add(Json2Object(childSnapshot.getValue().toString().replace(" ", ""), classOfT));
                             } else {
                                 @SuppressWarnings("unchecked")
                                 T t = (T) childSnapshot.getValue();
