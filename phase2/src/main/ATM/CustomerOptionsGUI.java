@@ -660,7 +660,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         TableColumn<Transaction, String> typeCol = new TableColumn<>("TYPE");
         typeCol.setMinWidth(100);
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("TransactionType"));
 
         TableColumn<Transaction, Double> amountCol = new TableColumn<>("AMOUNT");
         amountCol.setMinWidth(100);
