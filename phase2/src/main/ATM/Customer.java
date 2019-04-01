@@ -29,21 +29,21 @@ class Customer extends User implements Observer {
     private String dob;
     //TODO make age useful
     private int age;
-    private int creditScore;
+//    private int creditScore;
     // if credit score is bellow a threshold the costumer wont be able to use certain credit base function
 
 
     public Customer(String username, String password) {
         super(username, password);
         this.accountIDs = new ArrayList<>();
-        this.creditScore = 100;
+//        this.creditScore = 100;
     }
 
     public Customer(String username, String password, LocalDate dob) {
         this(username, password);
         this.dob = dob.toString();
         this.age = (int) dob.until(LocalDate.now(), ChronoUnit.YEARS);
-        this.creditScore = 100;
+//        this.creditScore = 100;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -219,13 +219,13 @@ class Customer extends User implements Observer {
         return primaryAccount != null;
     }
 
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
+//    public int getCreditScore() {
+//        return creditScore;
+//    }
+//
+//    public void setCreditScore(int creditScore) {
+//        this.creditScore = creditScore;
+//    }
 
      public Inventory getGoods() {
         return this.goods;
