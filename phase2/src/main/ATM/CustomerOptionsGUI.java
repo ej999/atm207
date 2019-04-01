@@ -1091,7 +1091,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         makeTransfer.setOnAction(event -> makeEtransferScreen());
         accept.setOnAction(event -> acceptEtransferScreen());
-        view.setOnAction(event -> makeEtransferScreen());
+        view.setOnAction(event -> viewRequestScreen());
         makeRequest.setOnAction(event -> makeRequestScreen());
 
         window.setScene(new Scene(gridPane));
@@ -1195,7 +1195,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label oldestLbl = new Label(oldest.toString());
         Label questionLbl = new Label("Security question: " + oldest.getQuestion() + "?");
-        TextField questionInput = new TextField();
 
         Label answerLbl = new Label("Enter answer: ");
         TextField answerInput = new TextField();
@@ -1277,6 +1276,23 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     }
 
+    private void viewRequestScreen(){
+        GridPane gridPane = createFormPane();
+
+        HashMap<String, Double> requests = ATM.eTransferManager.readRequests(user.getUsername());
+        int i = 1;
+        String list = "";
+        for (String s: requests.keySet()){
+            list += "" + i + ". " + s + " requested $" + requests.get(s) + "\n" ;
+            i++;
+        }
+        showAlert(Alert.AlertType.CONFIRMATION, window, "You have " + requests.size() + " requests: ",
+                list);
+
+        window.setScene(new Scene(gridPane));
+        window.setScene(optionsScreen);
+
+    }
 
 
 }
