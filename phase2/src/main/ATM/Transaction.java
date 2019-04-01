@@ -12,7 +12,7 @@ public class Transaction {
     private String TransactionType;
     private double amount;
     private String accountId; // the id of account involved in transfer
-    private String date;
+    private long date;
     private String accountType; // the account type involved in transaction
 
     public Transaction(String TransactionType, double amount, String accountId, String accountType) {
@@ -20,8 +20,7 @@ public class Transaction {
         this.amount = amount;
         this.accountId = accountId;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        this.date = dateFormat.format(date);
+        this.date = new Date().getTime();
         this.accountType = accountType;
     }
 
@@ -37,8 +36,14 @@ public class Transaction {
         return this.accountId;
     }
 
-    public String getDate() {
+    public long getDate() {
         return this.date;
+    }
+
+    // Return dateCreated as String in a readable format.
+    String getDateCreatedReadable() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        return dateFormat.format(new Date(date));
     }
 
     public String getAccountType() {
