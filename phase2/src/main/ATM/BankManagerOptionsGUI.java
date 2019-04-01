@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import static ATM.ATM.accountManager;
+
 /**
  * A GUI for Bank Manager.
  */
@@ -39,6 +41,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         addOptionText("Set youth max transfers");
         addOptionText("Manage GIC");
         addOptionText("Create GIC account");
+        addOptionText("Skip Time");
         addOptionText("Logout");
 
         addOptions();
@@ -54,6 +57,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         getOption(9).setOnAction(event -> setYouthTransfersScreen());
         getOption(10).setOnAction(event -> ManageGICScreen());
         getOption(11).setOnAction(event -> createGICScreen());
+        getOption(12).setOnAction(event -> skipTimeScreen());
 
         return generateOptionsScreen();
     }
@@ -252,8 +256,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
             if (ATM.userManager.isPresent(youthAccount)) {
-                List<Account> AccountIDList = ATM.accountManager.getListOfAccounts(youthAccount);
-                for (Account accounts: AccountIDList) {
+                List<Account> AccountIDList = accountManager.getListOfAccounts(youthAccount);
+                for (Account accounts : AccountIDList) {
                     if (accounts instanceof Youth) {
                         ((BankManager) this.user).setMaxTransactions((Youth) accounts, amount);
                         showAlert(Alert.AlertType.CONFIRMATION, window, "Error", "Transaction Limit Set");
@@ -294,8 +298,8 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int amount = Integer.valueOf(transactions.getText());
             String youthAccount = youthUser.getText();
             if (ATM.userManager.isPresent(youthAccount)) {
-                List<Account> AccountIDList = ATM.accountManager.getListOfAccounts(youthAccount);
-                for (Account accounts: AccountIDList) {
+                List<Account> AccountIDList = accountManager.getListOfAccounts(youthAccount);
+                for (Account accounts : AccountIDList) {
                     if (accounts instanceof Youth) {
                         ((BankManager) this.user).setTransferLimit((Youth) accounts, amount);
                         showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer Limit has been set");
@@ -333,14 +337,14 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         grid.add(index, 1, 0);
         grid.add(periodLabel, 0, 1);
         grid.add(period, 1, 1);
-        grid.add(rateLabel,0,2);
-        grid.add(rate,1,2);
+        grid.add(rateLabel, 0, 2);
+        grid.add(rate, 1, 2);
         grid.add(hbBtn, 1, 3);
 
         remove.setOnAction(event -> {
             int id = Integer.valueOf(index.getText());
-            if (GICDeals.gicDeals.size() - 1 >= id && GICDeals.gicDeals.get(id) != null){
-            GICDeals.removeDeal(id);
+            if (GICDeals.gicDeals.size() - 1 >= id && GICDeals.gicDeals.get(id) != null) {
+                GICDeals.removeDeal(id);
                 showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "GIC deal removed");
                 window.setScene(optionsScreen);
             }
@@ -349,7 +353,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
             int id = Integer.valueOf(index.getText());
             int month = Integer.valueOf(period.getText());
             double interest = Double.valueOf(rate.getText());
-            GICDeals deals= new GICDeals(month,interest,id);
+            GICDeals deals = new GICDeals(month, interest, id);
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "New GIC deal created");
             window.setScene(optionsScreen);
         });
@@ -362,6 +366,7 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         window.setScene(new Scene(grid));
     }
+
     void viewGICDeals() {
         ListView<String> listView = new ListView<>();
 
@@ -372,10 +377,9 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
 
         goBack.setOnAction(event -> ManageGICScreen());
 
-        for (GICDeals deal : GICDeals.gicDeals){
+        for (GICDeals deal : GICDeals.gicDeals) {
             listView.getItems().add(deal.toString());
         }
-
 
 
         VBox vBox = new VBox();
@@ -383,5 +387,49 @@ public class BankManagerOptionsGUI extends EmployeeOptionsGUI {
         vBox.getChildren().add(hbBtn);
         window.setScene(new Scene(vBox, 400, 350));
     }
+
+    private void skipTimeScreen() {
+        GridPane grid = createFormPane();
+        Label yearLabel = new Label("Year");
+        TextField year = new TextField();
+        Label monthLabel = new Label("Month");
+        TextField month = new TextField();
+        Label dayLabel = new Label("Day");
+        TextField day = new TextField();
+        Button confirm = new Button("Confirm");
+        Button cancel = new Button("Cancel");
+
+
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(confirm);
+
+        grid.add(yearLabel, 0, 0);
+        grid.add(year, 1, 0);
+        grid.add(monthLabel, 0, 1);
+        grid.add(month, 1, 1);
+        grid.add(dayLabel, 0, 2);
+        grid.add(day, 1, 2);
+        grid.add(hbBtn, 1, 3);
+
+        confirm.setOnAction(event -> {
+            int y = Integer.valueOf(year.getText());
+            int m = Integer.valueOf(month.getText());
+            int d = Integer.valueOf(day.getText());
+            for (Account a : accountManager.account_map.values()) {
+                if (a instanceof GIC) {
+                    ((GIC) a).timeSkipTo(y, m, d);
+                }
+                if (a instanceof Saving) {
+                    ((Saving) a).timeSkipTo(y, m, d);
+                }
+            }
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "You successfully time skipped");
+        });
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        window.setScene(new Scene(grid));
+    }
+
 
 }

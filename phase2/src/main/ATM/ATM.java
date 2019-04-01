@@ -46,6 +46,18 @@ public class ATM extends Observable {
 
         createDemoData();
 
+        for (Account a : accountManager.account_map.values()){
+            if (a instanceof GIC ){
+                ((GIC)a).newDay();
+            }
+            if (a instanceof Saving ){
+                ((Saving)a).newDay();
+
+        }
+        }
+
+
+
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);

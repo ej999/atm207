@@ -86,8 +86,8 @@ class GIC extends AccountAsset {
         }
         return end;
     }
-    // need to call this everyday
-    public void update() {
+    // need to call this everyday for all GIC accounts
+    public void newDay() {
         if (checkToday()) {
             setBalance(getBalance() + rate * getBalance());
             this.endDate = endDate.plus(period);

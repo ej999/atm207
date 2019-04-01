@@ -124,4 +124,8 @@ final class AccountManager {
         }
         return id;
     }
+    public Collection<Account> allAccounts(){
+        return this.account_map.values();
+
+    }
 }
