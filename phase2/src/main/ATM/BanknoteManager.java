@@ -69,7 +69,9 @@ final class BanknoteManager {
         SortedMap<Integer, Integer> banknotes = new TreeMap<>();
 
         for (int d = DENOMINATIONS.size() - 1; d >= 0; d--) {
-            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / DENOMINATIONS.get(d)), banknotes.get(DENOMINATIONS.get(d)));
+            Integer denom = DENOMINATIONS.get(d);
+
+            int denominatorWithdrawn = Math.min((int) Math.floor(remainder / denom), this.banknotes.get(denom));
             banknotes.put(DENOMINATIONS.get(d), denominatorWithdrawn);
             remainder -= denominatorWithdrawn * DENOMINATIONS.get(d);
         }
@@ -116,7 +118,7 @@ final class BanknoteManager {
 
     void banknoteDeposit(Map<Integer, Integer> deposits) {
         for (Integer d : deposits.keySet()) {
-            banknotes.put(d.toString(), banknotes.get(String.valueOf(d)) + deposits.get(d));
+            banknotes.put(d.toString(), banknotes.get(d.toString() + deposits.get(d)));
         }
     }
 

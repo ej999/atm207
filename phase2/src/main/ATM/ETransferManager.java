@@ -11,14 +11,14 @@ final class ETransferManager {
     Map<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: responder, amount pair
     //maybe move this parameter to customer class?
 
-    void send(Customer sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount) {
+    void send(String sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount) {
         User re = ATM.userManager.getUser(recipient);
         Account recipientAccount = ATM.accountManager.getAccount(((Customer) re).getPrimaryAccount());
         ETransfer transfer = new ETransfer(sender, senderAccount, recipientAccount, q, a, amount);
         allTransfers.add(transfer);
     }
 
-    void send(Customer sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount) {
+    void send(String sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount) {
         // same as above except send same amount to multiple users
         for (String r : recipient) {
             send(sender, senderAccount, r, q, a, amount);
@@ -31,7 +31,7 @@ final class ETransferManager {
         HashMap<String, Double> transfers = new HashMap<>();
         for (ETransfer e : allTransfers) {
             if (!e.hasBeenDeposited() && e.getRecipient().equals(recipient)) {
-                transfers.put(e.sender.getUsername(), e.getAmount());
+                transfers.put(e.getSender(), e.getAmount());
             }
         }
         return transfers;

@@ -225,7 +225,6 @@ public abstract class OptionsGUI {
          */
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        // TODO: accounts = []
         List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getSimpleName();
