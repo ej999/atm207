@@ -2,8 +2,6 @@ package ATM;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * A savings account.
@@ -40,9 +38,11 @@ class Saving extends AccountAsset {
             setBalance(getBalance() + 0.001 * getBalance());
         }
     }
+
     private boolean checkToday() {
         LocalDate today = LocalDate.now();
-        return today.getDayOfMonth() == 1;}
+        return today.getDayOfMonth() == 1;
+    }
 
 
     public void timeSkipTo(int year, int month, int day) {
@@ -67,6 +67,6 @@ class Saving extends AccountAsset {
 //        return "Saving\t\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
 //    }
 
-}
+    }
 }
 

@@ -942,7 +942,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void removeFromInventoryScreen() {
-            GridPane gridPane = createFormPane();
+        GridPane gridPane = createFormPane();
 
         Label itemForCheck = new Label("Which item would you like to withdraw?");
         TextField itemCheck = new TextField();
@@ -1018,55 +1018,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
-
-    }
-
-    public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-        private String id;
-        private List<String> owners;
-
-        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
-            this.isPrimary = p;
-            this.accountType = t;
-            this.creationDate = d;
-            this.balance = b;
-            this.mostRecent = r;
-            this.id = i;
-            this.owners = o;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public List<String> getOwners() {
-            return owners;
-        }
-
-        public String getIsPrimary() {
-            return this.isPrimary;
-        }
-
-        public String getAccountType() {
-            return this.accountType;
-        }
-
-        public String getCreationDate() {
-            return this.creationDate;
-        }
-
-        public double getBalance() {
-            return this.balance;
-        }
-
-        public String getMostRecent() {
-            return this.mostRecent;
-        }
 
     }
 
@@ -1157,8 +1108,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 if (question != null && answer != null) {
                     ATM.eTransferManager.send(user.getUsername(), account.getId(), otherAccount, question, answer, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been made");
-                }
-                else {
+                } else {
                     showAlert(Alert.AlertType.ERROR, window, "Error", "Question or Answer is null");
                 }
             } else {
@@ -1173,7 +1123,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     private void acceptEtransferScreen() {
         GridPane gridPane = createFormPane();
         ETransfer oldest = ATM.eTransferManager.getOldestTransfer(user.getUsername());
-        if (oldest == null){
+        if (oldest == null) {
             showAlert(Alert.AlertType.ERROR, window, "Error", "You have no incoming eTransfers");
             window.setScene(optionsScreen);
         }
@@ -1222,12 +1172,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Account account = ATM.accountManager.getAccount(aID);
             String answer = answerInput.getText();
             int tries = 1;
-            while (!ATM.eTransferManager.validate(answer, account, user.getUsername())){
-                if (tries > 5){
+            while (!ATM.eTransferManager.validate(answer, account, user.getUsername())) {
+                if (tries > 5) {
                     showAlert(Alert.AlertType.ERROR, window, "Error", "Exceeded maximum attempts");
                     window.setScene(optionsScreen);
                 }
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again (" + (5-tries) + ") tries remaining");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again (" + (5 - tries) + ") tries remaining");
                 tries++;
             }
             showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
@@ -1237,7 +1187,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void makeRequestScreen(){
+    private void makeRequestScreen() {
         GridPane gridPane = createFormPane();
 
         Label user = new Label("Enter username you would like to request from");
@@ -1277,6 +1227,54 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     }
 
+    public class AccountSummary {
+        private String isPrimary;
+        private String accountType;
+        private String creationDate;
+        private double balance;
+        private String mostRecent;
+        private String id;
+        private List<String> owners;
+
+        AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
+            this.isPrimary = p;
+            this.accountType = t;
+            this.creationDate = d;
+            this.balance = b;
+            this.mostRecent = r;
+            this.id = i;
+            this.owners = o;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public List<String> getOwners() {
+            return owners;
+        }
+
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
+
+        public String getAccountType() {
+            return this.accountType;
+        }
+
+        public String getCreationDate() {
+            return this.creationDate;
+        }
+
+        public double getBalance() {
+            return this.balance;
+        }
+
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
+
+    }
 
 
 }

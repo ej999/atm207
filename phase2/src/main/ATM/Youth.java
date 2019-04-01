@@ -139,7 +139,7 @@ class Youth extends Account implements AccountTransferable, Observer {
      * Transfer money from this account to another user's account (this will decrease their balance)
      *
      * @param transferAmount amount to transfer
-     * @param username           receives transferAmount
+     * @param username       receives transferAmount
      * @param account        of user
      * @return true iff transfer is valid
      */

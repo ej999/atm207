@@ -510,13 +510,13 @@ class Options {
         current_customer.getGoods().withdrawItem(item, amount);
     }
 
-    private void viewInventoryPrompt(){
+    private void viewInventoryPrompt() {
         Customer current_customer = (Customer) current_user;
-        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        ArrayList<String> inventory = current_customer.getGoods().viewInventory();
         System.out.println(inventory);
     }
 
-    private void eTransferPrompt(){
+    private void eTransferPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("[1] Make an eTransfer");
         System.out.println("[2] Accept incoming eTransfers");
@@ -524,7 +524,7 @@ class Options {
         System.out.println("[4] Make a request");
         System.out.println("[5] Return to main menu");
         int choice = reader.nextInt();
-        switch (choice){
+        switch (choice) {
             case 1:
                 makeEtransferPrompt();
                 break;
@@ -545,7 +545,8 @@ class Options {
         System.out.println("press any key to return");
         reader.next();
     }
-    private void makeEtransferPrompt(){
+
+    private void makeEtransferPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Select account you would like to transfer from");
         Account senderAccount = selectAccountPrompt((Customer) current_user, "CreditCard");
@@ -558,7 +559,7 @@ class Options {
         System.out.println("Enter amount you want to send: ");
         double amount = reader.nextDouble();
         reader.nextLine();
-        while (amount > senderAccount.getBalance() || amount <= 0.0){
+        while (amount > senderAccount.getBalance() || amount <= 0.0) {
             System.out.println("You have entered an amount exceeding your balance or an invalid amount. Try again");
             amount = reader.nextDouble();
             reader.nextLine();
@@ -572,9 +573,10 @@ class Options {
             ATM.eTransferManager.send(current_user.getUsername(), senderAccount.getId(), user, q, a, amount);
         System.out.println("sent eTransfer to: " + user);
     }
-    private void acceptTransfersPrompt(){
+
+    private void acceptTransfersPrompt() {
         ETransfer oldest = ATM.eTransferManager.getOldestTransfer(current_user.getUsername());
-        if (oldest == null){
+        if (oldest == null) {
             System.out.println("you have no incoming eTransfers :(");
             return;
         }
@@ -586,26 +588,28 @@ class Options {
         Scanner reader = new Scanner(System.in);
         String response = reader.nextLine();
         int tries = 1;
-        while (!ATM.eTransferManager.validate(response, account, current_user.getUsername())){
-            if (tries > 5){
+        while (!ATM.eTransferManager.validate(response, account, current_user.getUsername())) {
+            if (tries > 5) {
                 System.out.println("Exceeded maximum attempts");
                 return;
             }
-            System.out.println("Incorrect answer, try again (" + (5-tries) + ") tries remaining");
+            System.out.println("Incorrect answer, try again (" + (5 - tries) + ") tries remaining");
             response = reader.nextLine();
             tries++;
         }
         System.out.println("Success! $" + oldest.getAmount() + " deposited into " + account.getClass().getSimpleName());
     }
-    private void viewRequestsPrompt(){
+
+    private void viewRequestsPrompt() {
         HashMap<String, Double> requests = ATM.eTransferManager.readRequests(current_user.getUsername());
         System.out.println("You have " + requests.size() + "requests: ");
         int i = 1;
-        for (String s: requests.keySet()){
+        for (String s : requests.keySet()) {
             System.out.println("" + i + ". " + s + " requested $" + requests.get(s));
         }
     }
-    private void makeResquestPrompt(){
+
+    private void makeResquestPrompt() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter username you would like to send request to");
         String user = reader.next();

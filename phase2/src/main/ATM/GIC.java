@@ -76,16 +76,18 @@ class GIC extends AccountAsset {
         super.deposit(depositAmount);
         this.endDate = LocalDate.now().plus(period);
     }
+
     @Override
     // when transfer money with GIC account it reset the time of the period
 
     public boolean transferToAnotherUser(double transferAmount, String username, Account account) {
         boolean end = super.transferToAnotherUser(transferAmount, username, account);
-        if (end){
+        if (end) {
             this.endDate = LocalDate.now().plus(period);
         }
         return end;
     }
+
     // need to call this everyday for all GIC accounts
     public void newDay() {
         if (checkToday()) {

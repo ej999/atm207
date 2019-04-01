@@ -50,10 +50,10 @@ public class Inventory {
         }
     }
 
-     ArrayList<String> viewInventory(){
+    ArrayList<String> viewInventory() {
         ArrayList<String> returned = new ArrayList<>();
 
-        for (String key: storage.keySet()){
+        for (String key : storage.keySet()) {
             returned.add("Item: " + key + " Amount: " + storage.get(key));
         }
         return returned;

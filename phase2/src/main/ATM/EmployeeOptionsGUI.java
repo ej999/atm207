@@ -388,7 +388,9 @@ class EmployeeOptionsGUI extends OptionsGUI {
 
         window.setScene(new Scene(gridPane));
     }
-    void createGICScreen(){GridPane gridPane = createFormPane();
+
+    void createGICScreen() {
+        GridPane gridPane = createFormPane();
 
         Label usernameLbl = new Label("Username of Customer:");
         TextField usernameInput = new TextField();
