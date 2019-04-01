@@ -39,23 +39,19 @@ public class ATM extends Observable {
 
         // Java FX -> invoke start method
         new Thread(() -> Application.launch(ATMFrame.class)).start();
-        ATMFrame atmFrame = new ATMFrame();
-        // do something with atmFrame...
 
         serialization.deserializeAll();
-
         createDemoData();
 
-        for (Account a : accountManager.account_map.values()){
-            if (a instanceof GIC ){
-                ((GIC)a).newDay();
+        for (Account a : accountManager.account_map.values()) {
+            if (a instanceof GIC) {
+                ((GIC) a).newDay();
             }
-            if (a instanceof Saving ){
-                ((Saving)a).newDay();
+            if (a instanceof Saving) {
+                ((Saving) a).newDay();
 
+            }
         }
-        }
-
 
 
         Date today = new Date();
@@ -68,10 +64,10 @@ public class ATM extends Observable {
         while (true) {
             // Constantly checking if now is the start of the month.
 //            now = isNewMonth(now);
-
-            // A login session.
-            User user = authPrompt();
-            new Options(user);
+//
+//            // A login session.
+//            User user = authPrompt();
+//            new Options(user);
         }
     }
 

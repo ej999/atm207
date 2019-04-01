@@ -363,29 +363,29 @@ class Options {
     }
 
     private void depositPrompt() {
-        if (!((Customer) current_user).hasPrimary()) {
-            System.out.println("Deposit cannot be made since you have no primary accounts. Request a new account in the main menu.");
-            return;
-        }
+        if (((Customer) current_user).hasPrimary()) {
+            Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
+            Scanner reader = new Scanner(System.in);
 
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) current_user).getPrimaryAccount());
-        Scanner reader = new Scanner(System.in);
+            System.out.print("Are you depositing [1] banknote or [2] cheque? ");
+            int option = 0;
+            while (option > 3 || option < 1) {
+                option = reader.nextInt();
+            }
 
-        System.out.print("Are you depositing [1] banknote or [2] cheque? ");
-        int option = 0;
-        while (option > 3 || option < 1) {
-            option = reader.nextInt();
-        }
+            if (option == 1) {
+                Map<Integer, Integer> depositedBills = selectBillsPrompt();
+                primary.depositBill(depositedBills);
 
-        if (option == 1) {
-            Map<Integer, Integer> depositedBills = selectBillsPrompt();
-            primary.depositBill(depositedBills);
-
+            } else {
+                System.out.print("How much would you like to deposit? ");
+                double amount = Double.valueOf(reader.next());
+                primary.deposit(amount);
+            }
         } else {
-            System.out.print("How much would you like to deposit? ");
-            double amount = Double.valueOf(reader.next());
-            primary.deposit(amount);
+            System.err.println("Deposit cannot be made since you have no primary accounts. Request a new account in the main menu.");
         }
+
     }
 
     private void payBillPrompt() {
@@ -569,7 +569,7 @@ class Options {
         String a;
         a = reader.nextLine();
         if (a != null)
-            ATM.eTransferManager.send(current_user.getUsername(), (AccountTransferable)senderAccount, user, q, a, amount);
+            ATM.eTransferManager.send(current_user.getUsername(), senderAccount.getId(), user, q, a, amount);
         System.out.println("sent eTransfer to: " + user);
     }
     private void acceptTransfersPrompt(){
@@ -598,10 +598,25 @@ class Options {
         System.out.println("Success! $" + oldest.getAmount() + " deposited into " + account.getClass().getSimpleName());
     }
     private void viewRequestsPrompt(){
-
+        HashMap<String, Double> requests = ATM.eTransferManager.readRequests(current_user.getUsername());
+        System.out.println("You have " + requests.size() + "requests: ");
+        int i = 1;
+        for (String s: requests.keySet()){
+            System.out.println("" + i + ". " + s + " requested $" + requests.get(s));
+        }
     }
     private void makeResquestPrompt(){
-
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Enter username you would like to send request to");
+        String user = reader.next();
+        if (!ATM.userManager.isCustomer(user)) {
+            System.out.println("invalid username");
+            return;
+        }
+        System.out.println("Enter amount you wish to request");
+        double amount = reader.nextDouble();
+        reader.nextLine();
+        ATM.eTransferManager.request(current_user.getUsername(), user, amount);
     }
 
 }

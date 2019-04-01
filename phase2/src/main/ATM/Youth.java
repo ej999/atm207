@@ -151,7 +151,7 @@ class Youth extends Account implements AccountTransferable, Observer {
             } else {
                 account.setBalance(account.getBalance() - transferAmount);
             }
-            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account, getType()));
+            getTransactionHistory().push(new Transaction("Transfer", transferAmount, account.getId(), getType()));
             transactions += 1;
             transferTotal += transferAmount;
             return true;
@@ -198,14 +198,14 @@ class Youth extends Account implements AccountTransferable, Observer {
             for (int i = 0; i < n; i++) {
                 try {
                     Transaction transaction = getTransactionHistory().pop();
-                    String type = transaction.getType();
+                    String type = transaction.getTransactionType();
 
-                    if (transaction.getType().equals("Withdrawal")) {
+                    if (transaction.getTransactionType().equals("Withdrawal")) {
                         undoWithdrawal(transaction.getAmount());
-                    } else if (transaction.getType().equals("Deposit")) {
+                    } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
-                    } else if (transaction.getType().equals("Transfer")) {
-                        undoTransfer(transaction.getAmount(), transaction.getAccount());
+                    } else if (transaction.getTransactionType().equals("Transfer")) {
+                        undoTransfer(transaction.getAmount(), ATM.accountManager.getAccount(transaction.getAccountId()));
                     } else if (type.equals("PayBill")) {
                         undoPayBill(transaction.getAmount());
                     }

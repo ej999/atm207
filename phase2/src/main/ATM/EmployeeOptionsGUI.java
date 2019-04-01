@@ -123,7 +123,7 @@ class EmployeeOptionsGUI extends OptionsGUI {
                     } else {
                         showAlert(Alert.AlertType.ERROR, window, "Error", "You are not eligible for a Youth account.");
                     }
-                } else if (!accountType.equals("Youth")) {
+                } else {
                     ATM.accountManager.addAccount(accountType, Collections.singletonList(username));
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A new bank account has been created");
                     window.setScene(optionsScreen);

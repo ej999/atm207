@@ -11,14 +11,14 @@ final class ETransferManager {
     Map<String, HashMap<String, Double>> requests = new HashMap<>(); //keys: username of requester, item: responder, amount pair
     //maybe move this parameter to customer class?
 
-    void send(String sender, AccountTransferable senderAccount, String recipient, String q, String a, double amount) {
+    void send(String sender, String senderAccount, String recipient, String q, String a, double amount) {
         User re = ATM.userManager.getUser(recipient);
         Account recipientAccount = ATM.accountManager.getAccount(((Customer) re).getPrimaryAccount());
-        ETransfer transfer = new ETransfer(sender, senderAccount, recipientAccount, q, a, amount);
+        ETransfer transfer = new ETransfer(sender, senderAccount, recipientAccount.getId(), q, a, amount);
         allTransfers.add(transfer);
     }
 
-    void send(String sender, AccountTransferable senderAccount, List<String> recipient, String q, String a, double amount) {
+    void send(String sender, String senderAccount, List<String> recipient, String q, String a, double amount) {
         // same as above except send same amount to multiple users
         for (String r : recipient) {
             send(sender, senderAccount, r, q, a, amount);
@@ -67,7 +67,7 @@ final class ETransferManager {
         ETransfer oldest = getOldestTransfer(recipient);
 
         if (oldest != null && oldest.verifyQuestion(response)) {
-            if (oldest.senderAccount.transferToAnotherUser(oldest.getAmount(), recipient, account)) {
+            if (((AccountTransferable) ATM.accountManager.getAccount(oldest.senderAccount)).transferToAnotherUser(oldest.getAmount(), recipient, account)) {
                 oldest.deposit();
                 return true;
             } else {
@@ -98,7 +98,7 @@ final class ETransferManager {
             }
         }
         for (ETransfer e : transfers) {
-            boolean successful = e.senderAccount.transferToAnotherUser(e.getAmount(), recipient, account);
+            boolean successful = ((AccountTransferable) ATM.accountManager.getAccount(e.senderAccount)).transferToAnotherUser(e.getAmount(), recipient, account);
             if (successful) {
                 e.deposit();
             } else {

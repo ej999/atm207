@@ -378,27 +378,28 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
 
     private void depositScreen() {
-        GridPane gridPane = createFormPane();
+        if (((Customer) user).hasPrimary()) {
+            GridPane gridPane = createFormPane();
 
-        Button cancel = new Button("Cancel");
-        Button depositBanknote = new Button("Deposit Banknote");
-        Button depositCheque = new Button("Deposit Cheque");
+            Button cancel = new Button("Cancel");
+            Button depositBanknote = new Button("Deposit Banknote");
+            Button depositCheque = new Button("Deposit Cheque");
 
-        gridPane.add(cancel, 0, 0);
-        gridPane.add(depositBanknote, 1, 0);
-        gridPane.add(depositCheque, 2, 0);
+            gridPane.add(cancel, 0, 0);
+            gridPane.add(depositBanknote, 1, 0);
+            gridPane.add(depositCheque, 2, 0);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        depositBanknote.setOnAction(event -> depositBanknoteScreen());
-        depositCheque.setOnAction(event -> depositChequeScreen());
+            cancel.setOnAction(event -> window.setScene(optionsScreen));
+            depositBanknote.setOnAction(event -> depositBanknoteScreen());
+            depositCheque.setOnAction(event -> depositChequeScreen());
 
-        if (!((Customer) user).hasPrimary()) {
+            window.setScene(new Scene(gridPane));
+        } else {
             window.setScene(optionsScreen);
             showAlert(Alert.AlertType.ERROR, window, "Error", "Deposit cannot be made since you have no primary accounts. " +
                     "Request a new account in the main menu.");
         }
 
-        window.setScene(new Scene(gridPane));
     }
 
     private void depositChequeScreen() {
@@ -979,9 +980,45 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private void viewInventoryScreen() {
         Customer current_customer = (Customer) user;
-        ArrayList<String> inventory =  current_customer.getGoods().viewInventory();
+        ArrayList<String> inventory = current_customer.getGoods().viewInventory();
         showAlert(Alert.AlertType.CONFIRMATION, window, "Success", inventory.toString());
         window.setScene(optionsScreen);
+    }
+
+    private void InvestGICScreen() {
+        GridPane gridPane = createFormPane();
+
+        Label chooseLbl = new Label("Choose a Deal:");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        for (GICDeals deal : GICDeals.gicDeals) {
+            choiceBox.getItems().add(deal.toString());
+        }
+
+        Button cancel = new Button("Cancel");
+        Button confirm = new Button("Confirm");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(confirm);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(hbBtn, 1, 1);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        confirm.setOnAction(event -> {
+            int id = Integer.valueOf(choiceBox.getValue().split("\\s+")[0]);
+            GICDeals deal = GICDeals.gicDeals.get(id);
+            try {
+                ((Customer) user).requestGICAccount(deal.getPeriod(), deal.getRate());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "GIC has been requested.");
+        });
+
+        window.setScene(new Scene(gridPane));
+
     }
 
     public class AccountSummary {
@@ -1030,42 +1067,6 @@ public class CustomerOptionsGUI extends OptionsGUI {
         public String getMostRecent() {
             return this.mostRecent;
         }
-
-    }
-    private void InvestGICScreen(){
-        GridPane gridPane= createFormPane();
-
-        Label chooseLbl = new Label("Choose a Deal:");
-        ChoiceBox<String> choiceBox = new ChoiceBox<>();
-        for (GICDeals deal : GICDeals.gicDeals) {
-            choiceBox.getItems().add(deal.toString());
-        }
-
-        Button cancel = new Button("Cancel");
-        Button confirm = new Button("Confirm");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(cancel);
-        hbBtn.getChildren().add(confirm);
-
-        gridPane.add(chooseLbl,0,0);
-        gridPane.add(choiceBox,1,0);
-        gridPane.add(hbBtn, 1,1);
-
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
-        confirm.setOnAction(event -> {
-            int id = Integer.valueOf(choiceBox.getValue().split("\\s+")[0]);
-            GICDeals deal = GICDeals.gicDeals.get(id);
-            try {
-                ((Customer) user).requestGICAccount(deal.getPeriod(), deal.getRate());
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "GIC has been requested.");
-        });
-
-        window.setScene(new Scene(gridPane));
 
     }
 
@@ -1154,7 +1155,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
             if (ATM.userManager.isPresent(otherAccount)) {
                 if (question != null && answer != null) {
-                    ATM.eTransferManager.send(user.getUsername(), (AccountTransferable) account, otherAccount, question, answer, amount);
+                    ATM.eTransferManager.send(user.getUsername(), account.getId(), otherAccount, question, answer, amount);
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been made");
                 }
                 else {

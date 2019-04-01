@@ -91,7 +91,7 @@ abstract class Account implements Serializable {
 //        }
 //    }
 
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"unused"})
     public Long getDateCreated() {
         return dateCreated;
     }
@@ -112,9 +112,9 @@ abstract class Account implements Serializable {
             for (int i = 0; i < n; i++) {
                 try {
                     Transaction transaction = transactionHistory.pop();
-                    if (transaction.getType().equals("Withdrawal")) {
+                    if (transaction.getTransactionType().equals("Withdrawal")) {
                         undoWithdrawal(transaction.getAmount());
-                    } else if (transaction.getType().equals("Deposit")) {
+                    } else if (transaction.getTransactionType().equals("Deposit")) {
                         undoDeposit(transaction.getAmount());
                     }
                 } catch (EmptyStackException e) {
