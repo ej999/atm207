@@ -70,6 +70,7 @@ class Customer extends User implements Observer {
 
     @SuppressWarnings("WeakerAccess")
     public double getNetTotal() {
+        setNetTotal();
         return netTotal;
     }
 

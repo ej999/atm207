@@ -13,16 +13,6 @@ import java.util.HashMap;
  * When an offer is added, the system first checks if there exists a viable offer in the other HashMap, by
  * iterating through the ArrayList and first checking the quantities, and then the prices.
  * If no viable offers, it gets added to its HashMap.
- * <p>
- * TODO:
- * - After successful trade, remove money from one person's account and add to other. DONE
- * - Check if a user has enough money before you can withdraw DONE
- * - Add inventory functionality to users
- * - Check if user has enough things in inventory,
- * - Cumulative offers
- * - Commission fee for bank
- * - Add forex functionality
- * - Add classes and sub-classes of items that can be traded (precious metals, jewels, foreign exchange)
  */
 
 public class TradingSystem {
@@ -129,8 +119,6 @@ public class TradingSystem {
                 seller = offers.get(i).getTradeUser();
             }
             int other_quantity = offers.get(i).getQuantity();
-// && ATM.accountManager.getAccount(buyer.getPrimaryAccount()).getBalance() > buy_priceadd in later
-            //
 
             if (other_quantity == quantity && buy_price >= sell_price
                     && ATM.accountManager.getAccount(buyer.getPrimaryAccount()).getBalance() >= buy_price
@@ -138,7 +126,7 @@ public class TradingSystem {
 
             ) {
                 ATM.accountManager.getAccount(seller.getPrimaryAccount()).deposit(buy_price);
-                ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
+                //ATM.accountManager.getAccount(buyer.getPrimaryAccount()).withdraw(buy_price);
                 buyer.getGoods().depositItem(item, quantity);
                 seller.getGoods().withdrawItem(item, quantity);
                 System.out.println("Offer made");
@@ -168,22 +156,6 @@ public class TradingSystem {
 
         }
         return returned;
-    }
-//
-//    static public boolean seeItems(boolean selling){
-//        HashMap<String, ArrayList<TradeOffer>> offers_map;
-//        ArrayList<String> returned = new ArrayList<>();
-//        if (selling) {
-//            offers_map = sell_offers;
-//        } else {
-//            offers_map = buy_offers;
-//        }
-//
-//
-//    }
-
-     public boolean sellPossible(Customer seller, int sell_amount, String item) {
-        return seller.getGoods().itemAmount(item) >= sell_amount;
     }
 
 
