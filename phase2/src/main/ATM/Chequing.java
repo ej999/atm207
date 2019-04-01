@@ -27,24 +27,4 @@ class Chequing extends AccountAsset {
     void withdraw(double withdrawalAmount) {
         super.withdraw(withdrawalAmount, getBalance() > 0 & (getBalance() - withdrawalAmount >= -100));
     }
-
-//    @Override
-//    public String toString() {
-//        String mostRecentTransactionString;
-//        if (getMostRecentTransaction() == null) {
-//            mostRecentTransactionString = "n/a";
-//        } else if (getMostRecentTransaction().getTransactionType().equals("Withdrawal")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " withdrawn";
-//        } else if (getMostRecentTransaction().getTransactionType().equals("Deposit")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " deposited";
-//        } else if (getMostRecentTransaction().getTransactionType().equals("Transfer")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " transferred";
-//        } else if (getMostRecentTransaction().getTransactionType().equals("PayBill")) {
-//            mostRecentTransactionString = "$" + getMostRecentTransaction().getAmount() + " bill payment";
-//        } else {
-//            mostRecentTransactionString = "n/a";
-//        }
-//
-//        return "Chequing\t\t\t" + new Date(dateOfCreation) + "\t" + balance + "\t\t" + mostRecentTransactionString;
-//    }
 }
