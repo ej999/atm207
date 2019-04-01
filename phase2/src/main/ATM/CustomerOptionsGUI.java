@@ -42,7 +42,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Add to Inventory");
         addOptionText("Remove from Inventory");
         addOptionText("View Inventory");
-        // eTransfers // TODO
+        addOptionText("eTransfers");
         addOptionText("Change Primary Account");
         addOptionText("Change Password");
         addOptionText("Logout");
@@ -64,9 +64,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         getOption(13).setOnAction(event -> addToInventoryScreen());
         getOption(14).setOnAction(event -> removeFromInventoryScreen());
         getOption(15).setOnAction(event -> viewInventoryScreen());
-        getOption(16).setOnAction(event -> changePrimaryScreen());
-        getOption(17).setOnAction(event -> changePasswordScreen());
-        getOption(18).setOnAction(event -> logoutHandler());
+        getOption(16).setOnAction(event -> eTransferPromptScreen());
+        getOption(17).setOnAction(event -> changePrimaryScreen());
+        getOption(18).setOnAction(event -> changePasswordScreen());
+        getOption(19).setOnAction(event -> logoutHandler());
 
 //        getOption(15).setOnAction(event -> InvestGICScreen);
 
@@ -311,8 +312,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Account account = ATM.accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
-            if (ATM.userManager.isPresent(otherAccount)) {
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount()))) {
+            if (ATM.userManager.isCustomer(otherAccount)) {
+                User otherUser = ATM.userManager.getUser(otherAccount);
+                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
@@ -940,7 +942,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void removeFromInventoryScreen() {
-        GridPane gridPane = createFormPane();
+            GridPane gridPane = createFormPane();
 
         Label itemForCheck = new Label("Which item would you like to withdraw?");
         TextField itemCheck = new TextField();
@@ -1067,6 +1069,107 @@ public class CustomerOptionsGUI extends OptionsGUI {
         }
 
     }
+
+    private void eTransferPromptScreen() {
+        GridPane gridPane = createFormPane();
+        Label selectLbl = new Label("Select eTransfer Options");
+
+        Button makeTransfer = new Button("Make an eTransfer");
+        Button accept = new Button("Accept incoming eTransfers");
+        Button view = new Button("View requests");
+        Button makeRequest = new Button("Make a request");
+        Button cancel = new Button("Return to main menu");
+
+        gridPane.add(selectLbl, 0, 0);
+        gridPane.add(makeTransfer, 1, 0);
+        gridPane.add(accept, 1, 1);
+        gridPane.add(view, 1, 2);
+        gridPane.add(makeRequest, 1, 3);
+        gridPane.add(cancel, 1, 4);
+
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        makeTransfer.setOnAction(event -> makeEtransferScreen());
+        accept.setOnAction(event -> makeEtransferScreen());
+        view.setOnAction(event -> makeEtransferScreen());
+        makeRequest.setOnAction(event -> makeEtransferScreen());
+
+        window.setScene(new Scene(gridPane));
+    }
+
+    private void makeEtransferScreen() {
+        GridPane gridPane = createFormPane();
+        Label chooseLbl = new Label("Select account you would like to transfer from");
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
+
+        // Add user's accounts as entries to ComboBox
+        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        for (Account a : accounts) {
+            String accountName = a.getClass().getName();
+            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+                String choice = accountName + " " + a.getId();
+                choiceBox.getItems().add(choice);
+            }
+        }
+
+        Label otherName = new Label("Enter recipient username");
+        TextField otherNameInput = new TextField();
+
+        Label amountLbl = new Label("Enter amount you want to send:");
+        TextField amountInput = new TextField(); // assume user enters a number
+
+        Label questionLbl = new Label("Enter security question: ");
+        TextField questionInput = new TextField(); // assume user enters a number
+
+        Label answerLbl = new Label("Enter answer to question: ");
+        TextField answerInput = new TextField(); // assume user enters a number
+
+        Button cancel = new Button("Cancel");
+        Button pay = new Button("Transfer");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(pay);
+
+        gridPane.add(chooseLbl, 0, 0);
+        gridPane.add(choiceBox, 1, 0);
+        gridPane.add(otherName, 0, 1);
+        gridPane.add(otherNameInput, 1, 1);
+        gridPane.add(amountLbl, 0, 2);
+        gridPane.add(amountInput, 1, 2);
+        gridPane.add(questionLbl, 0, 3);
+        gridPane.add(questionInput, 1, 3);
+        gridPane.add(answerLbl, 0, 4);
+        gridPane.add(answerInput, 1, 4);
+        gridPane.add(hbBtn, 1, 5);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        pay.setOnAction(event -> {
+            String[] aInfo = choiceBox.getValue().split("\\s+");
+            String aID = aInfo[1];
+            Account account = ATM.accountManager.getAccount(aID);
+            double amount = Double.valueOf(amountInput.getText());
+            String otherAccount = otherNameInput.getText();
+            String question = questionInput.getText();
+            String answer = answerInput.getText();
+
+            if (ATM.userManager.isPresent(otherAccount)) {
+                if (question != null && answer != null) {
+                    ATM.eTransferManager.send(user.getUsername(), (AccountTransferable) account, otherAccount, question, answer, amount);
+                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been made");
+                }
+                else {
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Question or Answer is null");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "eTransfer is unsuccessful");
+            }
+            window.setScene(optionsScreen);
+        });
+
+        window.setScene(new Scene(gridPane));
+    }
+
 
 }
 

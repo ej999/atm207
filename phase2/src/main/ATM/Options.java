@@ -273,7 +273,7 @@ class Options {
             System.out.print("Please select an account: ");
             option = reader.nextInt();
         }
-        return ATM.accountManager.getAccount(accounts.get(option - 1));
+        return ATM.accountManager.getAccount(accounts.get(option));
     }
 
     /**
@@ -542,6 +542,8 @@ class Options {
             default:
                 System.out.println("Invalid choice");
         }
+        System.out.println("press any key to return");
+        reader.next();
     }
     private void makeEtransferPrompt(){
         Scanner reader = new Scanner(System.in);
@@ -556,17 +558,44 @@ class Options {
         System.out.println("Enter amount you want to send: ");
         double amount = reader.nextDouble();
         reader.nextLine();
+        while (amount > senderAccount.getBalance() || amount <= 0.0){
+            System.out.println("You have entered an amount exceeding your balance or an invalid amount. Try again");
+            amount = reader.nextDouble();
+            reader.nextLine();
+        }
         System.out.println("Enter security question: ");
         String q = reader.nextLine();
         System.out.println("Enter answer to question: ");
         String a;
-        a = reader.next();
+        a = reader.nextLine();
         if (a != null)
-            ATM.eTransferManager.send((Customer) current_user, (AccountTransferable)senderAccount, user, q, a, amount);
+            ATM.eTransferManager.send(current_user.getUsername(), (AccountTransferable)senderAccount, user, q, a, amount);
         System.out.println("sent eTransfer to: " + user);
     }
     private void acceptTransfersPrompt(){
-
+        ETransfer oldest = ATM.eTransferManager.getOldestTransfer(current_user.getUsername());
+        if (oldest == null){
+            System.out.println("you have no incoming eTransfers :(");
+            return;
+        }
+        System.out.println("Choose an account to deposit into");
+        Account account = selectAccountPrompt((Customer) current_user);
+        System.out.println(oldest);
+        System.out.println("Security question: " + oldest.getQuestion() + "?");
+        System.out.println("Enter answer: ");
+        Scanner reader = new Scanner(System.in);
+        String response = reader.nextLine();
+        int tries = 1;
+        while (!ATM.eTransferManager.validate(response, account, current_user.getUsername())){
+            if (tries > 5){
+                System.out.println("Exceeded maximum attempts");
+                return;
+            }
+            System.out.println("Incorrect answer, try again (" + (5-tries) + ") tries remaining");
+            response = reader.nextLine();
+            tries++;
+        }
+        System.out.println("Success! $" + oldest.getAmount() + " deposited into " + account.getClass().getSimpleName());
     }
     private void viewRequestsPrompt(){
 
