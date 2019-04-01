@@ -2,12 +2,12 @@ package ATM;
 
 import java.util.ArrayList;
 
-public class GICDeals {
-    public static ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
+class GICDeals {
+    static final ArrayList<GICDeals> gicDeals = new ArrayList<GICDeals>();
     private final int period;
     private final double rate;
 
-    public GICDeals(int p, double r, int id) {
+    GICDeals(int p, double r, int id) {
         this.period = p;
         this.rate = r;
         gicDeals.add(id, this);
@@ -17,11 +17,11 @@ public class GICDeals {
         gicDeals.remove(index);
     }
 
-    public int getPeriod() {
+    int getPeriod() {
         return period;
     }
 
-    public double getRate() {
+    double getRate() {
         return rate;
     }
 

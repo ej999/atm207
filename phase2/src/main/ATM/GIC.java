@@ -14,8 +14,8 @@ import java.util.List;
 class GIC extends AccountAsset {
 
     private static final String type = GIC.class.getName();
-    private double rate;
-    private Period period;// in months
+    private final double rate;
+    private final Period period;// in months
     // period = Period.ofMonths(12)
     private LocalDate endDate;
 
@@ -31,14 +31,6 @@ class GIC extends AccountAsset {
     @SuppressWarnings({"unused"})
     public GIC(String id, double rate, int p, String owner) {
         this(id, rate, p, Collections.singletonList(owner));
-    }
-
-    public void setPeriod(int month) {
-        this.period = Period.ofMonths(month);
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
     }
 
     public String getType() {
@@ -63,7 +55,7 @@ class GIC extends AccountAsset {
 
     }
 
-    public void timeSkipTo(int year, int month, int day) {
+    void timeSkipTo(int year, int month, int day) {
         LocalDate skipTo = LocalDate.of(year, month, day);
         if (endDate.equals(skipTo) || endDate.isBefore(skipTo)) {
             setBalance(getBalance() + rate * getBalance());
@@ -89,7 +81,7 @@ class GIC extends AccountAsset {
     }
 
     // need to call this everyday for all GIC accounts
-    public void newDay() {
+    void newDay() {
         if (checkToday()) {
             setBalance(getBalance() + rate * getBalance());
             this.endDate = endDate.plus(period);

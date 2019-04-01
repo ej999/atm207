@@ -2,6 +2,8 @@ package ATM;
 
 import java.util.List;
 
+import static ATM.ATM.banknoteManager;
+
 abstract class AccountDebt extends Account {
     private static final double DEBT_CAPACITY = 10000;
 
@@ -16,7 +18,7 @@ abstract class AccountDebt extends Account {
     boolean validWithdrawal(double withdrawalAmount) {
         return withdrawalAmount > 0 &&
                 withdrawalAmount % 5 == 0 &&
-                ATM.banknoteManager.isThereEnoughBankNote(withdrawalAmount) &&
+                banknoteManager.isThereEnoughBankNote(withdrawalAmount) &&
                 checkDebtCapacity(withdrawalAmount);
     }
 
@@ -39,7 +41,7 @@ abstract class AccountDebt extends Account {
     void withdraw(double withdrawalAmount) {
         if (validWithdrawal(withdrawalAmount)) {
             setBalance(getBalance() + withdrawalAmount);
-            ATM.banknoteManager.banknoteWithdrawal(withdrawalAmount);
+            banknoteManager.banknoteWithdrawal(withdrawalAmount);
             getTransactionHistory().push(new Transaction("Withdrawal", withdrawalAmount, null, this.getClass().getName()));
         }
     }
@@ -47,7 +49,7 @@ abstract class AccountDebt extends Account {
     @Override
     void undoWithdrawal(double amount) {
         setBalance(getBalance() - amount);
-        ATM.banknoteManager.banknoteWithdrawal(-amount);
+        banknoteManager.banknoteWithdrawal(-amount);
     }
 
     /*

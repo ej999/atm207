@@ -11,14 +11,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
+
+import static ATM.ATM.*;
 
 /**
  * A GUI for customer options.
  */
-public class CustomerOptionsGUI extends OptionsGUI {
+class CustomerOptionsGUI extends OptionsGUI {
 
     CustomerOptionsGUI(Stage mainWindow, Scene welcomeScreen, User user) {
         super(mainWindow, welcomeScreen, user);
@@ -35,7 +39,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         addOptionText("Banknote Withdrawal");
         addOptionText("Request Creating an Account");
         addOptionText("Investing in GIC");
-        addOptionText("Make a Preexisting Account Joint");
+        addOptionText("Request Making Preexisting Account Joint");
         addOptionText("Add an item for Sale");
         addOptionText("Request an item for Sale");
         addOptionText("See Offers");
@@ -75,6 +79,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
     }
 
     private void showAccountSummaryScreen() {
+        String netTotal = "Your net total is $" + ((Customer) user).getNetTotal();
+        showAlert(Alert.AlertType.INFORMATION, window, "NetTotal", netTotal, false);
+
         // Start with the columns
         TableColumn<AccountSummary, String> primCol = new TableColumn<>("PRIMARY");
         primCol.setMinWidth(50);
@@ -109,11 +116,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         table.getColumns().addAll(Arrays.asList(primCol, typeCol, idCol, dateCol, balCol, ownerCol, recCol));
 
         Button goBack = new Button("Go Back");
-        goBack.setOnAction(event -> {
-            String netTotal = "Your net total is $" + ((Customer) user).getNetTotal();
-            showAlert(Alert.AlertType.INFORMATION, window, "NetTotal", netTotal);
-            window.setScene(optionsScreen);
-        });
+        goBack.setOnAction(event -> window.setScene(optionsScreen));
         HBox hbBtn = new HBox(10);
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn.getChildren().add(goBack);
@@ -127,7 +130,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
     private ObservableList<AccountSummary> getSummary() {
         ObservableList<AccountSummary> summaries = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
 
             AccountSummary sum;
@@ -150,12 +153,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        choiceBox.getSelectionModel().selectFirst();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+            if (!accountName.equals(CustomerOptionsGUI.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
@@ -189,14 +193,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
             // [type, id] -> id -> account with id <id>
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = ATM.accountManager.getAccount(aID);
+            Account account = accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String payee = nameInput.getText();
             try {
+                assert account != null;
                 if (((AccountTransferable) account).payBill(amount, payee)) {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Bill has been paid");
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success", "Bill has been paid", true);
                 } else {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Payment is unsuccessful");
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Payment is unsuccessful", true);
                 }
             } catch (IOException e) {
                 // do nothing?
@@ -204,7 +209,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void makeTransferBetweenScreen() {
@@ -214,10 +221,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ChoiceBox<String> otherChoiceBox = new ChoiceBox<>();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+            if (!accountName.equals(CustomerOptionsGUI.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
                 otherChoiceBox.getItems().add(choice);
@@ -226,6 +233,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 otherChoiceBox.getItems().add(choice);
             }
         }
+        choiceBox.getSelectionModel().selectFirst();
+        otherChoiceBox.getSelectionModel().selectFirst();
 
         Label amountLbl = new Label("Amount:");
         TextField amountInput = new TextField(); // assume user enters a number
@@ -254,30 +263,34 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String aID = aInfo[1];
             String[] oInfo = otherChoiceBox.getValue().split("\\s+");
             String oID = oInfo[1];
-            Account account = ATM.accountManager.getAccount(aID);
-            Account otherAccount = ATM.accountManager.getAccount(oID);
+            Account account = accountManager.getAccount(aID);
+            Account otherAccount = accountManager.getAccount(oID);
             double amount = Double.valueOf(amountInput.getText());
+            assert account != null;
             if (((AccountTransferable) account).transferBetweenAccounts(amount, otherAccount)) {
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
+                showAlert(Alert.AlertType.INFORMATION, window, "Success", "Transfer has been made", true);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful", true);
             }
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void makeTransferAnotherScreen() {
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Choose account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        choiceBox.getSelectionModel().selectFirst();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             String accountName = a.getClass().getName();
-            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+            if (!accountName.equals(CustomerOptionsGUI.class.getPackage().getName() + ".CreditCard")) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
@@ -285,6 +298,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label otherName = new Label("User to transfer to");
         TextField otherNameInput = new TextField();
+        TextFields.bindAutoCompletion(otherNameInput, userManager.getSubType_map().keySet());
 
         Label amountLbl = new Label("Amount:");
         TextField amountInput = new TextField(); // assume user enters a number
@@ -300,7 +314,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(choiceBox, 1, 0);
         gridPane.add(amountLbl, 0, 1);
         gridPane.add(amountInput, 1, 1);
-        gridPane.add(otherName, 1, 2);
+        gridPane.add(otherName, 0, 2);
         gridPane.add(otherNameInput, 1, 3);
         gridPane.add(hbBtn, 1, 4);
 
@@ -309,27 +323,30 @@ public class CustomerOptionsGUI extends OptionsGUI {
             // [type, id] -> id -> account with id <id>
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = ATM.accountManager.getAccount(aID);
+            Account account = accountManager.getAccount(aID);
             double amount = Double.valueOf(amountInput.getText());
             String otherAccount = otherNameInput.getText();
-            if (ATM.userManager.isCustomer(otherAccount)) {
-                User otherUser = ATM.userManager.getUser(otherAccount);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, otherUser.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
+            if (userManager.isCustomer(otherAccount)) {
+                User otherUser = userManager.getUser(otherAccount);
+                assert account != null;
+                if (((AccountTransferable) account).transferToAnotherUser(amount, otherUser.getUsername(), accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success", "Transfer has been made", true);
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success", "Transfer is unsuccessful", true);
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "User is not a customer");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "User is not a customer", true);
             }
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void depositBanknoteScreen() {
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
+        Chequing primary = (Chequing) accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane grid = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -344,7 +361,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         // This part is very similar to restockingScreen
         // Adding all labels and text fields
-        for (Integer d : ATM.banknoteManager.DENOMINATIONS) {
+        for (Integer d : banknoteManager.DENOMINATIONS) {
             // Label
             Label dLabel = new Label("Amount of $" + d + " dollar bills:");
             grid.add(dLabel, 0, rowIndex);
@@ -368,12 +385,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
             for (Integer d : textField.keySet()) {
                 depositedBills.put(d, Integer.valueOf(textField.get(d).getText()));
             }
+            assert primary != null;
             primary.depositBill(depositedBills);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Amount successfully deposited");
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Amount successfully deposited", true);
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(grid));
+        Scene scene = new Scene(grid);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
 
@@ -393,17 +413,19 @@ public class CustomerOptionsGUI extends OptionsGUI {
             depositBanknote.setOnAction(event -> depositBanknoteScreen());
             depositCheque.setOnAction(event -> depositChequeScreen());
 
-            window.setScene(new Scene(gridPane));
+            Scene scene = new Scene(gridPane);
+            scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+            window.setScene(scene);
         } else {
             window.setScene(optionsScreen);
             showAlert(Alert.AlertType.ERROR, window, "Error", "Deposit cannot be made since you have no primary accounts. " +
-                    "Request a new account in the main menu.");
+                    "Request a new account in the main menu.", true);
         }
 
     }
 
     private void depositChequeScreen() {
-        Chequing primary = (Chequing) ATM.accountManager.getAccount(((Customer) user).getPrimaryAccount());
+        Chequing primary = (Chequing) accountManager.getAccount(((Customer) user).getPrimaryAccount());
         GridPane gridPane = createFormPane();
 
         Button goBack = new Button("Go Back");
@@ -422,75 +444,93 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         goBack.setOnAction(event -> depositScreen());
         deposit.setOnAction(event -> {
-            primary.deposit(Double.valueOf(amountInput.getText()));
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "Amount successfully deposited");
-            window.setScene(optionsScreen);
+            if (amountInput.getText() != null) {
+                double amount = Double.parseDouble(amountInput.getText());
+                assert primary != null;
+                primary.deposit(amount);
+                showAlert(Alert.AlertType.INFORMATION, window, "Success!", "Amount successfully deposited", true);
+                window.setScene(optionsScreen);
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter a valid amount.", true);
+            }
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void requestJointAccountScreen() {
         /*
         Enter username of secondary owner:
-        Select account type picker drop-down CHOICE-BOX control element
+        Select an account type picker drop-down CHOICE-BOX control element
         Cancel | Request
          */
         GridPane gridPane = createFormPane();
 
         Label usernameSecondary = new Label("Enter username of secondary owner:");
-        TextField input = new TextField();
-        Label accountTypeLbl = new Label("Select account type:");
-        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
+        TextField secondaryUsername = new TextField();
+        TextFields.bindAutoCompletion(secondaryUsername, userManager.getSubType_map().keySet());
 
+        Label accountTypeLbl = new Label("Select an account type:");
+        ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
+
+        Collection<String> accountTypes = accountManager.TYPES_OF_ACCOUNTS;
         for (String type : accountTypes) {
             if (!type.equalsIgnoreCase("GIC")) {
                 accountTypeDropDown.getItems().add(type);
             }
         }
+        accountTypeDropDown.getSelectionModel().selectFirst();
 
-        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        HBox hbBtn = getTwoButtons("Request");
         Button cancel = (Button) hbBtn.getChildren().get(0);
         Button request = (Button) hbBtn.getChildren().get(1);
 
         gridPane.add(usernameSecondary, 0, 0);
-        gridPane.add(input, 1, 0);
+        gridPane.add(secondaryUsername, 1, 0);
         gridPane.add(accountTypeLbl, 0, 1);
         gridPane.add(accountTypeDropDown, 1, 1);
         gridPane.add(hbBtn, 1, 2);
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         request.setOnAction(event -> {
-            String username = input.getText();
-            String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
-            if (!username.equals(user.getUsername()) && ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
-                try {
-                    ((Customer) user).requestJointAccount(accountType, username);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            String username = secondaryUsername.getText();
+            if (username != null && userManager.getUser(username) instanceof Customer) {
+                String accountType = accountTypeDropDown.getValue().split("\\s+")[0];
+                if (!username.equals(user.getUsername()) && userManager.isPresent(username)) {
+                    try {
+                        ((Customer) user).requestJointAccount(accountType, username);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success!", "A request for " + accountType + " has been made", true);
+                    window.setScene(optionsScreen);
+                } else {
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong", true);
                 }
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
-                window.setScene(optionsScreen);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "We are sorry. Something went wrong");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter a valid secondary owner.", true);
             }
 
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void withdrawalScreen() {
         GridPane gridPane = createFormPane();
 
         Label chooseLbl = new Label("Choose account:");
-        ChoiceBox<String> choiceBox = getBankAccounts("no exclusion");
+        ChoiceBox<String> choiceBox = getBankAccounts();
+        choiceBox.getSelectionModel().selectFirst();
 
         Label amountLbl = new Label("Amount to Withdraw:");
         TextField amountInput = new TextField(); // assume user enters a number
 
-        HBox hbBtn = getTwoButtons("Cancel", "Withdraw");
+        HBox hbBtn = getTwoButtons("Withdraw");
 
         List<Label> labels = new ArrayList<>();
         labels.add(chooseLbl);
@@ -504,15 +544,21 @@ public class CustomerOptionsGUI extends OptionsGUI {
         ((Button) hbBtn.getChildren().get(0)).setOnAction(event -> window.setScene(optionsScreen));
         ((Button) hbBtn.getChildren().get(1)).setOnAction(event -> {
             Account account = getAccountFromChoiceBox(choiceBox);
-            double amount = Double.valueOf(amountInput.getText());
-            double actualAmount = amount - amount % 5;
-            account.withdraw(actualAmount);
-            String message = "$" + actualAmount + " withdrawn";
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", message);
-            window.setScene(optionsScreen);
+            if (!amountInput.getText().equals("") && Pattern.compile("^[0-9]*$").matcher(amountInput.getText()).find()) {
+                double amount = Double.valueOf(amountInput.getText());
+                double actualAmount = amount - amount % 5;
+                account.withdraw(actualAmount);
+                String message = "$" + actualAmount + " withdrawn";
+                showAlert(Alert.AlertType.INFORMATION, window, "Success!", message, true);
+                window.setScene(optionsScreen);
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter a valid amount.", true);
+            }
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void requestAccountScreen() {
@@ -521,12 +567,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Yes | No | Cancel
 
         If No...
-        Select account type picker drop-down CHOICE-BOX control element
+        Select an account type picker drop-down CHOICE-BOX control element
         Cancel | Request
 
         If Yes...
         Enter username of secondary holder:
-        Select account type picker drop-down CHOICE-BOX control element
+        Select an account type picker drop-down CHOICE-BOX control element
         Cancel | Request
          */
         GridPane gridPane = createFormPane();
@@ -548,22 +594,25 @@ public class CustomerOptionsGUI extends OptionsGUI {
         no.setOnAction(event -> requestNonJointAccountScreen());
         cancel.setOnAction(event -> window.setScene(optionsScreen));
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void changePrimaryScreen() {
         GridPane gridPane = createFormPane();
-        Label selectLbl = new Label("Select new primary account:");
+        Label selectLbl = new Label("Select a new primary account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a instanceof Chequing) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
+        choiceBox.getSelectionModel().selectFirst();
 
-        HBox hbBtn = getTwoButtons("Cancel", "Change Primary Account");
+        HBox hbBtn = getTwoButtons("Change Primary Account");
         Button cancel = (Button) hbBtn.getChildren().get(0);
         Button change = (Button) hbBtn.getChildren().get(1);
 
@@ -573,41 +622,37 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         change.setOnAction(event -> {
-            if (!((Customer) user).hasMoreThanOneChequing()) {
-                String message = "Sorry, you can only change your primary account if you have more than one chequing " +
-                        "account.\nHowever, you are welcome to request creating a new chequing account in the main menu.";
-                showAlert(Alert.AlertType.INFORMATION, window, "Info", message);
-            } else {
-                String id = choiceBox.getValue().split("\\s+")[1];
-                Account newPrime = ATM.accountManager.getAccount(id);
-                ((Customer) user).setPrimaryAccount(newPrime);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Confirmation", "Your primary account has been changed.");
-            }
-
+            String id = choiceBox.getValue().split("\\s+")[1];
+            Account newPrime = accountManager.getAccount(id);
+            ((Customer) user).setPrimaryAccount(newPrime);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success!", "Your primary account has been changed.", true);
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void requestNonJointAccountScreen() {
         /*
-        Select account type using picker drop-down CHOICE-BOX control element
+        Select an account type using picker drop-down CHOICE-BOX control element
         Cancel | Request
          */
         GridPane gridPane = createFormPane();
 
-        Label accountTypeLbl = new Label("Select account type:");
+        Label accountTypeLbl = new Label("Select an account type:");
         ChoiceBox<String> accountTypeDropDown = new ChoiceBox<>();
-        Collection<String> accountTypes = ATM.accountManager.TYPES_OF_ACCOUNTS;
 
+        Collection<String> accountTypes = accountManager.TYPES_OF_ACCOUNTS;
         for (String type : accountTypes) {
             if (!type.equalsIgnoreCase("GIC")) {
                 accountTypeDropDown.getItems().add(type);
             }
         }
+        accountTypeDropDown.getSelectionModel().selectFirst();
 
-        HBox hbBtn = getTwoButtons("Cancel", "Request");
+        HBox hbBtn = getTwoButtons("Request");
         Button cancel = (Button) hbBtn.getChildren().get(0);
         Button request = (Button) hbBtn.getChildren().get(1);
 
@@ -623,16 +668,18 @@ public class CustomerOptionsGUI extends OptionsGUI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made");
+            showAlert(Alert.AlertType.INFORMATION, window, "Success!", "A request for " + accountType + " has been made", true);
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private ObservableList<Transaction> getTransaction() {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             transactions.addAll(a.getTransactionHistory());
         }
@@ -642,14 +689,14 @@ public class CustomerOptionsGUI extends OptionsGUI {
     private Account getAccountFromChoiceBox(ChoiceBox<String> choiceBox) {
         /*
         choiceBox like this ->
-        ATM.<account> <id>
+        <account> <id>
             .
             .
             .
          */
         String[] aInfo = choiceBox.getValue().split("\\s+");
         String aID = aInfo[1];
-        return ATM.accountManager.getAccount(aID);
+        return accountManager.getAccount(aID);
     }
 
     private void showTransactionHistory() {
@@ -696,15 +743,17 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label selectLbl = new Label("Select non-joint account:");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
             if (a.isNotJoint()) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
+        choiceBox.getSelectionModel().selectFirst();
 
         Label usernameLbl = new Label("Enter username of secondary owner:");
         TextField input = new TextField();
+        TextFields.bindAutoCompletion(input, userManager.getSubType_map().keySet());
 
         Button cancel = new Button("Cancel");
         Button request = new Button("Request joint account");
@@ -722,7 +771,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> window.setScene(optionsScreen));
         request.setOnAction(event -> {
             String username = input.getText();
-            if (ATM.userManager.isPresent(username) && ATM.userManager.getUser(username) instanceof Customer) {
+            if (userManager.isPresent(username) && userManager.getUser(username) instanceof Customer) {
                 String accountType = choiceBox.getValue().split("\\s+")[0];
                 String accountID = choiceBox.getValue().split("\\s+")[1];
                 try {
@@ -730,14 +779,16 @@ public class CustomerOptionsGUI extends OptionsGUI {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success!", "A request for " + accountType + " has been made.");
-            } else {
-                showAlert(Alert.AlertType.WARNING, window, "Warning", "Cannot find user " + username + " in our system.");
+                showAlert(Alert.AlertType.INFORMATION, window, "Success!", "A request for " + accountType + " has been made.", true);
                 window.setScene(optionsScreen);
+            } else {
+                showAlert(Alert.AlertType.WARNING, window, "Warning", "Cannot find user " + username + " in our system.", true);
             }
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void addSellOfferScreen() {
@@ -746,7 +797,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label itemForSale = new Label("What item would you like to sell?");
         TextField itemInput = new TextField();
 
-        Label itemQuantity = new Label("How much do you have? (in grams)");
+        Label itemQuantity = new Label("How much do you have? (in integer unit)");
         TextField quantityInput = new TextField();
 
         Label itemPricing = new Label("How much are you selling it for? (in dollars)");
@@ -773,13 +824,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer tradeoffer = new TradeOffer(quantity, price, (Customer) user);
-            ATM.tradingsystem.addSellOffer(item, tradeoffer);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added");
+            tradingSystem.addSellOffer(item, tradeoffer);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Item has been added", true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void addBuyOfferScreen() {
@@ -788,7 +841,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label itemForBuy = new Label("What item would you like to buy");
         TextField itemInput = new TextField();
 
-        Label itemQuantityBuy = new Label("How much do you want? (in grams)");
+        Label itemQuantityBuy = new Label("How much do you want? (in integer unit)");
         TextField quantityInput = new TextField();
 
         Label itemPricingBuy = new Label("How much are you buying it for? (in dollars)");
@@ -815,13 +868,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
             int quantity = Integer.valueOf(quantityInput.getText());
             int price = Integer.valueOf(priceInput.getText());
             TradeOffer buyOffer = new TradeOffer(quantity, price, (Customer) user);
-            ATM.tradingsystem.addBuyOffer(item, buyOffer);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been requested");
+            tradingSystem.addBuyOffer(item, buyOffer);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Item has been requested", true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void seeOffersScreen() {
@@ -841,7 +896,9 @@ public class CustomerOptionsGUI extends OptionsGUI {
         buy.setOnAction(event -> seeOffersBuyScreen());
         sell.setOnAction(event -> seeOffersSellScreen());
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void seeOffersSellScreen() {
@@ -849,6 +906,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label itemForCheck = new Label("Which item would you like to see offers for?");
         TextField itemCheck = new TextField();
+        TextFields.bindAutoCompletion(itemCheck, tradingSystem.sell_offers.keySet());
 
 
         Button cancel = new Button("Cancel");
@@ -865,13 +923,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, true);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+            ArrayList<String> sell_offers = tradingSystem.seeOffers(item, true);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", sell_offers.toString(), true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void seeOffersBuyScreen() {
@@ -879,6 +939,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label itemForCheck = new Label("Which item would you like to see offers for?");
         TextField itemCheck = new TextField();
+        TextFields.bindAutoCompletion(itemCheck, tradingSystem.buy_offers.keySet());
 
 
         Button cancel = new Button("Cancel");
@@ -895,13 +956,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
         cancel.setOnAction(event -> seeOffersScreen());
         add.setOnAction(event -> {
             String item = itemCheck.getText();
-            ArrayList<String> sell_offers = ATM.tradingsystem.seeOffers(item, false);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", sell_offers.toString());
+            ArrayList<String> sell_offers = tradingSystem.seeOffers(item, false);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", sell_offers.toString(), true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void addToInventoryScreen() {
@@ -910,7 +973,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label itemForCheck = new Label("Which item would you like to see deposit?");
         TextField itemCheck = new TextField();
 
-        Label itemForAmount = new Label("How much of it would you like to add? (in grams)");
+        Label itemForAmount = new Label("How much of it would you like to add? (in integer unit)");
         TextField itemAmount = new TextField();
 
 
@@ -932,13 +995,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String item = itemCheck.getText();
             Integer amount = Integer.valueOf(itemAmount.getText());
             Customer current_customer = (Customer) user;
-            current_customer.getGoods().depositItem(item, amount);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been added to inventory");
+            current_customer.getInventory().depositItem(item, amount);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Item has been added to inventory", true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void removeFromInventoryScreen() {
@@ -947,7 +1012,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label itemForCheck = new Label("Which item would you like to withdraw?");
         TextField itemCheck = new TextField();
 
-        Label itemForAmount = new Label("How much of it would you like to remove? (in grams)");
+        Label itemForAmount = new Label("How much of it would you like to remove? (in integer unit)");
         TextField itemAmount = new TextField();
 
 
@@ -969,19 +1034,21 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String item = itemCheck.getText();
             Integer amount = Integer.valueOf(itemAmount.getText());
             Customer current_customer = (Customer) user;
-            current_customer.getGoods().withdrawItem(item, amount);
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Item has been withdrawn from inventory");
+            current_customer.getInventory().withdrawItem(item, amount);
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "Item has been withdrawn from inventory", true);
 
             window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void viewInventoryScreen() {
         Customer current_customer = (Customer) user;
-        ArrayList<String> inventory = current_customer.getGoods().viewInventory();
-        showAlert(Alert.AlertType.CONFIRMATION, window, "Success", inventory.toString());
+        ArrayList<String> inventory = current_customer.getInventory().viewInventory();
+        showAlert(Alert.AlertType.INFORMATION, window, "Success", "Inventory: " + inventory.toString(), true);
         window.setScene(optionsScreen);
     }
 
@@ -993,6 +1060,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         for (GICDeals deal : GICDeals.gicDeals) {
             choiceBox.getItems().add(deal.toString());
         }
+        choiceBox.getSelectionModel().selectFirst();
 
         Button cancel = new Button("Cancel");
         Button confirm = new Button("Confirm");
@@ -1014,10 +1082,12 @@ public class CustomerOptionsGUI extends OptionsGUI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "GIC has been requested.");
+            showAlert(Alert.AlertType.INFORMATION, window, "Success", "GIC has been requested.", true);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
 
     }
 
@@ -1033,10 +1103,10 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         gridPane.add(selectLbl, 0, 0);
         gridPane.add(makeTransfer, 1, 0);
-        gridPane.add(accept, 1, 1);
-        gridPane.add(view, 1, 2);
-        gridPane.add(makeRequest, 1, 3);
-        gridPane.add(cancel, 1, 4);
+        gridPane.add(accept, 2, 0);
+        gridPane.add(makeRequest, 1, 1);
+        gridPane.add(view, 2, 1);
+        gridPane.add(cancel, 0, 4);
 
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
@@ -1045,26 +1115,31 @@ public class CustomerOptionsGUI extends OptionsGUI {
         view.setOnAction(event -> viewRequestScreen());
         makeRequest.setOnAction(event -> makeRequestScreen());
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void makeETransferScreen() {
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Select account you would like to transfer from");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        choiceBox.getSelectionModel().selectFirst();
 
         // Add user's accounts as entries to ComboBox
-        List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+        List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
-            String accountName = a.getClass().getName();
-            if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+            String accountName = a.getClass().getSimpleName();
+            if (!accountName.equals(CreditCard.class.getSimpleName())) {
                 String choice = accountName + " " + a.getId();
                 choiceBox.getItems().add(choice);
             }
         }
+        choiceBox.getSelectionModel().selectFirst();
 
         Label otherName = new Label("Enter recipient username");
         TextField otherNameInput = new TextField();
+        TextFields.bindAutoCompletion(otherNameInput, userManager.getSubType_map().keySet());
 
         Label amountLbl = new Label("Enter amount you want to send:");
         TextField amountInput = new TextField(); // assume user enters a number
@@ -1072,8 +1147,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
         Label questionLbl = new Label("Enter security question: ");
         TextField questionInput = new TextField();
 
-        Label answerLbl = new Label("Enter answer to question: ");
-        TextField answerInput = new TextField();
+        Label responseLbl = new Label("Enter response to question: ");
+        TextField responseInput = new TextField();
 
         Button cancel = new Button("Cancel");
         Button pay = new Button("Transfer");
@@ -1090,51 +1165,54 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(amountInput, 1, 2);
         gridPane.add(questionLbl, 0, 3);
         gridPane.add(questionInput, 1, 3);
-        gridPane.add(answerLbl, 0, 4);
-        gridPane.add(answerInput, 1, 4);
+        gridPane.add(responseLbl, 0, 4);
+        gridPane.add(responseInput, 1, 4);
         gridPane.add(hbBtn, 1, 5);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> eTransferPromptScreen());
         pay.setOnAction(event -> {
             String[] aInfo = choiceBox.getValue().split("\\s+");
             String aID = aInfo[1];
-            Account account = ATM.accountManager.getAccount(aID);
-            double amount = Double.valueOf(amountInput.getText());
+            Account account = accountManager.getAccount(aID);
             String otherAccount = otherNameInput.getText();
             String question = questionInput.getText();
-            String answer = answerInput.getText();
+            String response = responseInput.getText();
 
-            if (ATM.userManager.isPresent(otherAccount)) {
-                if (question != null && answer != null) {
-                    ATM.eTransferManager.send(user.getUsername(), account.getId(), otherAccount, question, answer, amount);
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been made");
-                } else {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Question or Answer is null");
-                }
+            if (otherAccount.equals("") || !userManager.isPresent(otherAccount)) {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter the valid recipient username.", true);
+            } else if (amountInput.getText().equals("")) {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter the amount.", true);
+            } else if (question == null || response == null) {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "Please enter the question and response.", true);
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "eTransfer is unsuccessful");
+                double amount = Double.valueOf(amountInput.getText());
+                assert account != null;
+                eTransferManager.send(user.getUsername(), account.getId(), otherAccount, question, response, amount);
+                showAlert(Alert.AlertType.INFORMATION, window, "Success", "eTransfer has been made", true);
+                window.setScene(optionsScreen);
             }
-            window.setScene(optionsScreen);
         });
 
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
     }
 
     private void acceptETransferScreen() {
         GridPane gridPane = createFormPane();
-        ETransfer oldest = ATM.eTransferManager.getOldestTransfer(user.getUsername());
+        ETransfer oldest = eTransferManager.getOldestTransfer(user.getUsername());
         if (oldest == null) {
-            showAlert(Alert.AlertType.ERROR, window, "Error", "You have no incoming eTransfers");
+            showAlert(Alert.AlertType.INFORMATION, window, "No Incoming eTransfer", "There is no incoming eTransfer to date", true);
             window.setScene(optionsScreen);
         } else {
             Label chooseLbl = new Label("Select account to deposit to");
             ChoiceBox<String> choiceBox = new ChoiceBox<>();
 
             // Add user's accounts as entries to ComboBox
-            List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
+            List<Account> accounts = accountManager.getListOfAccounts(user.getUsername());
             for (Account a : accounts) {
                 String accountName = a.getClass().getName();
-                if (!accountName.equals(Options.class.getPackage().getName() + ".CreditCard")) {
+                if (!accountName.equals(CustomerOptionsGUI.class.getPackage().getName() + ".CreditCard")) {
                     String choice = accountName + " " + a.getId();
                     choiceBox.getItems().add(choice);
                 } else {
@@ -1146,8 +1224,8 @@ public class CustomerOptionsGUI extends OptionsGUI {
             Label oldestLbl = new Label(oldest.toString());
             Label questionLbl = new Label("Security question: " + oldest.getQuestion() + "?");
 
-            Label answerLbl = new Label("Enter answer: ");
-            TextField answerInput = new TextField();
+            Label responseLbl = new Label("Enter response: ");
+            TextField responseInput = new TextField();
 
             Button cancel = new Button("Cancel");
             Button pay = new Button("Transfer");
@@ -1160,26 +1238,28 @@ public class CustomerOptionsGUI extends OptionsGUI {
             gridPane.add(choiceBox, 1, 0);
             gridPane.add(oldestLbl, 0, 2);
             gridPane.add(questionLbl, 0, 3);
-            gridPane.add(answerLbl, 0, 4);
-            gridPane.add(answerInput, 1, 4);
+            gridPane.add(responseLbl, 0, 4);
+            gridPane.add(responseInput, 1, 4);
             gridPane.add(hbBtn, 1, 5);
 
-            cancel.setOnAction(event -> window.setScene(optionsScreen));
+            cancel.setOnAction(event -> eTransferPromptScreen());
             pay.setOnAction(event -> {
                 String[] aInfo = choiceBox.getValue().split("\\s+");
                 String aID = aInfo[1];
-                Account account = ATM.accountManager.getAccount(aID);
-                String answer = answerInput.getText();
-                boolean successful = ATM.eTransferManager.validate(answer, account, user.getUsername());
+                Account account = accountManager.getAccount(aID);
+                String response = responseInput.getText();
+                boolean successful = eTransferManager.validate(response, account, user.getUsername());
                 if (!successful) {
-                    showAlert(Alert.AlertType.ERROR, window, "Error", "Incorrect answer, try again later.");
+                    showAlert(Alert.AlertType.ERROR, window, "Error", "Invalid response, try again later.", true);
                 } else {
-                    showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "eTransfer has been accepted");
+                    showAlert(Alert.AlertType.INFORMATION, window, "Success", "eTransfer has been accepted", true);
                 }
                 window.setScene(optionsScreen);
             });
 
-            window.setScene(new Scene(gridPane));
+            Scene scene = new Scene(gridPane);
+            scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+            window.setScene(scene);
         }
     }
 
@@ -1188,6 +1268,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         Label user = new Label("Enter username you would like to request from");
         TextField userInput = new TextField();
+        TextFields.bindAutoCompletion(userInput, userManager.getSubType_map().keySet());
 
         Label amount = new Label("Enter amount you would like to request");
         TextField amountInput = new TextField();
@@ -1205,50 +1286,51 @@ public class CustomerOptionsGUI extends OptionsGUI {
         gridPane.add(amountInput, 1, 1);
         gridPane.add(hbBtn, 1, 2);
 
-        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        cancel.setOnAction(event -> eTransferPromptScreen());
         request.setOnAction(event -> {
             double amountIn = Double.valueOf(amountInput.getText());
             String username = userInput.getText();
 
-            if (ATM.userManager.isCustomer(username)) {
-                ATM.eTransferManager.request(this.user.getUsername(), username, amountIn);
-                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "request has been made");
+            if (userManager.isCustomer(username)) {
+                eTransferManager.request(this.user.getUsername(), username, amountIn);
+                showAlert(Alert.AlertType.INFORMATION, window, "Success", "request has been made", true);
 
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "request is unsuccessful");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "request is unsuccessful", true);
             }
             window.setScene(optionsScreen);
         });
-        window.setScene(new Scene(gridPane));
+        Scene scene = new Scene(gridPane);
+        scene.getStylesheets().add(ATM.class.getResource("style.css").toExternalForm());
+        window.setScene(scene);
 
     }
 
     private void viewRequestScreen() {
-        GridPane gridPane = createFormPane();
-
-        HashMap<String, Double> requests = ATM.eTransferManager.readRequests(user.getUsername());
+        HashMap<String, Double> requests = eTransferManager.readRequests(user.getUsername());
         int i = 1;
-        StringBuilder list = new StringBuilder();
+        List<String> list = new ArrayList<>();
         for (String s : requests.keySet()) {
-            list.append(i).append(". ").append(s).append(" requested $").append(requests.get(s)).append("\n");
             i++;
+            list.add(i + ". " + s + " requested $" + requests.get(s) + "\n");
         }
-        showAlert(Alert.AlertType.CONFIRMATION, window, "You have " + requests.size() + " requests: ",
-                list.toString());
 
-        window.setScene(new Scene(gridPane));
+        showAlert(Alert.AlertType.INFORMATION, window, "You have " + requests.size() + " requests: ",
+                "Request List: " + list.toString(), true);
+
         window.setScene(optionsScreen);
 
     }
 
+    // Has to be public. Variables will be used to displayed as table.
     public class AccountSummary {
-        private String isPrimary;
-        private String accountType;
-        private String creationDate;
-        private double balance;
-        private String mostRecent;
-        private String id;
-        private List<String> owners;
+        private final String isPrimary;
+        private final String accountType;
+        private final String creationDate;
+        private final double balance;
+        private final String mostRecent;
+        private final String id;
+        private final List<String> owners;
 
         AccountSummary(String p, String t, String d, double b, String r, String i, List<String> o) {
             this.isPrimary = p;
@@ -1260,33 +1342,40 @@ public class CustomerOptionsGUI extends OptionsGUI {
             this.owners = o;
         }
 
+        @SuppressWarnings("unused")
         public String getId() {
             return id;
         }
 
-//        public List<String> getOwners() {
-//            return owners;
-//        }
+        @SuppressWarnings("unused")
+        public List<String> getOwners() {
+            return owners;
+        }
 
-//        public String getIsPrimary() {
-//            return this.isPrimary;
-//        }
+        @SuppressWarnings("unused")
+        public String getIsPrimary() {
+            return this.isPrimary;
+        }
 
-//        public String getAccountType() {
-//            return this.accountType;
-//        }
+        @SuppressWarnings("unused")
+        public String getAccountType() {
+            return this.accountType;
+        }
 
-//        public String getCreationDate() {
-//            return this.creationDate;
-//        }
+        @SuppressWarnings("unused")
+        public String getCreationDate() {
+            return this.creationDate;
+        }
 
+        @SuppressWarnings("unused")
         public double getBalance() {
             return this.balance;
         }
 
-//        public String getMostRecent() {
-//            return this.mostRecent;
-//        }
+        @SuppressWarnings("unused")
+        public String getMostRecent() {
+            return this.mostRecent;
+        }
 
     }
 
