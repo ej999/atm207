@@ -118,7 +118,11 @@ final class BanknoteManager {
 
     void banknoteDeposit(Map<Integer, Integer> deposits) {
         for (Integer d : deposits.keySet()) {
-            banknotes.put(d.toString(), banknotes.get(d.toString() + deposits.get(d)));
+
+            String s = String.valueOf(banknotes.get(String.valueOf(d)));
+            Integer currentBanknote = Integer.valueOf(s);
+
+            banknotes.put(d.toString(), currentBanknote + deposits.get(d));
         }
     }
 

@@ -314,13 +314,13 @@ public class CustomerOptionsGUI extends OptionsGUI {
             String otherAccount = otherNameInput.getText();
             if (ATM.userManager.isCustomer(otherAccount)) {
                 User otherUser = ATM.userManager.getUser(otherAccount);
-                if (((AccountTransferable) account).transferToAnotherUser(amount, user.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
+                if (((AccountTransferable) account).transferToAnotherUser(amount, otherUser.getUsername(), ATM.accountManager.getAccount(((Customer) otherUser).getPrimaryAccount()))) {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer has been made");
                 } else {
                     showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "Transfer is unsuccessful");
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, window, "Error", "Transfer is unsuccessful");
+                showAlert(Alert.AlertType.ERROR, window, "Error", "User is not a customer");
             }
             window.setScene(optionsScreen);
         });
@@ -1092,7 +1092,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         makeTransfer.setOnAction(event -> makeEtransferScreen());
         accept.setOnAction(event -> acceptEtransferScreen());
         view.setOnAction(event -> makeEtransferScreen());
-        makeRequest.setOnAction(event -> makeEtransferScreen());
+        makeRequest.setOnAction(event -> makeRequestScreen());
 
         window.setScene(new Scene(gridPane));
     }
@@ -1235,6 +1235,46 @@ public class CustomerOptionsGUI extends OptionsGUI {
         });
 
         window.setScene(new Scene(gridPane));
+    }
+
+    private void makeRequestScreen(){
+        GridPane gridPane = createFormPane();
+
+        Label user = new Label("Enter username you would like to request from");
+        TextField userInput = new TextField();
+
+        Label amount = new Label("Enter amount you would like to request");
+        TextField amountInput = new TextField();
+
+        Button cancel = new Button("Cancel");
+        Button request = new Button("Request");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+        hbBtn.getChildren().add(cancel);
+        hbBtn.getChildren().add(request);
+
+        gridPane.add(user, 0, 0);
+        gridPane.add(userInput, 1, 0);
+        gridPane.add(amount, 0, 1);
+        gridPane.add(amountInput, 1, 1);
+        gridPane.add(hbBtn, 1, 2);
+
+        cancel.setOnAction(event -> window.setScene(optionsScreen));
+        request.setOnAction(event -> {
+            double amountIn = Double.valueOf(amountInput.getText());
+            String username = userInput.getText();
+
+            if (ATM.userManager.isCustomer(username)) {
+                ATM.eTransferManager.request(this.user.getUsername(), username, amountIn);
+                showAlert(Alert.AlertType.CONFIRMATION, window, "Success", "request has been made");
+
+            } else {
+                showAlert(Alert.AlertType.ERROR, window, "Error", "request is unsuccessful");
+            }
+            window.setScene(optionsScreen);
+        });
+        window.setScene(new Scene(gridPane));
+
     }
 
 
