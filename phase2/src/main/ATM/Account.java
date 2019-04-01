@@ -156,40 +156,37 @@ abstract class Account implements Serializable {
         return ownersUsername;
     }
 
-    List<Customer> getOwners() {
-        ArrayList<Customer> owners = new ArrayList<>();
-        for (String username : ownersUsername) {
-            owners.add((Customer) ATM.userManager.getUser(username));
-        }
-        return owners;
-    }
-
     /**
      * Add another owner to this account.
      *
      * @param newOwner account owner
-     * @return true iff newOwner is distinct
      */
-    boolean addOwner(String newOwner) {
+    void addOwner(String newOwner) {
         if (!ownersUsername.contains(newOwner)) {
             ownersUsername.add(newOwner);
-            return true;
         }
-        return false;
     }
 
-    boolean isJoint() {
-        return ownersUsername.size() > 1;
+    boolean isNotJoint() {
+        return ownersUsername.size() <= 1;
     }
 
-    public boolean removeOwner(Customer owner) {
-        // An account has to have at least one owner.
-        if (isJoint() && ownersUsername.contains(owner.getUsername())) {
-            ownersUsername.remove(owner.getUsername());
-            return true;
-        }
-        return false;
-    }
+//    List<Customer> getOwners() {
+//        ArrayList<Customer> owners = new ArrayList<>();
+//        for (String username : ownersUsername) {
+//            owners.add((Customer) ATM.userManager.getUser(username));
+//        }
+//        return owners;
+//    }
+
+//    public boolean removeOwner(Customer owner) {
+//        // An account has to have at least one owner.
+//        if (isNotJoint() && ownersUsername.contains(owner.getUsername())) {
+//            ownersUsername.remove(owner.getUsername());
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Override
     public String toString() {

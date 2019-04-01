@@ -78,9 +78,11 @@ final class ETransferManager {
     }
 
     boolean validateAll(List<String> responses, Account account, String recipient) {
-        // verifies from most oldest to newest unverified transfers and deposits all amounts into recipient's account
-        // deposits only when all of the responses are verified and correct
-        // preco    ndition: responses.size() == getAll.size()
+    /*
+    verifies from most oldest to newest unverified transfers and deposits all amounts into recipient's account
+    deposits only when all of the responses are verified and correct
+    precondition: responses.size() == getAll.size()
+    */
         List<ETransfer> transfers = getAllTransfers(recipient);
 
         for (int i = 0; i < responses.size(); i++) {

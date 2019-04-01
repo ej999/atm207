@@ -256,12 +256,10 @@ final class ManagersSerialization {
                             } else {
                                 @SuppressWarnings("unchecked")
                                 T t = (T) childSnapshot.getValue();
-                                System.out.println("OUCH");
                                 t_list.add(t);
                             }
                         } catch (ClassNotFoundException e) {
                             e.getStackTrace();
-                            System.out.println("OUTH");
                         }
                     }
                     latch.countDown();

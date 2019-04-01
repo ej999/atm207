@@ -698,7 +698,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
         List<Account> accounts = ATM.accountManager.getListOfAccounts(user.getUsername());
         for (Account a : accounts) {
-            if (!a.isJoint()) {
+            if (a.isNotJoint()) {
                 choiceBox.getItems().add(a.getType() + " " + a.getId());
             }
         }
@@ -1040,15 +1040,15 @@ public class CustomerOptionsGUI extends OptionsGUI {
 
 
         cancel.setOnAction(event -> window.setScene(optionsScreen));
-        makeTransfer.setOnAction(event -> makeEtransferScreen());
-        accept.setOnAction(event -> acceptEtransferScreen());
+        makeTransfer.setOnAction(event -> makeETransferScreen());
+        accept.setOnAction(event -> acceptETransferScreen());
         view.setOnAction(event -> viewRequestScreen());
         makeRequest.setOnAction(event -> makeRequestScreen());
 
         window.setScene(new Scene(gridPane));
     }
 
-    private void makeEtransferScreen() {
+    private void makeETransferScreen() {
         GridPane gridPane = createFormPane();
         Label chooseLbl = new Label("Select account you would like to transfer from");
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
@@ -1120,7 +1120,7 @@ public class CustomerOptionsGUI extends OptionsGUI {
         window.setScene(new Scene(gridPane));
     }
 
-    private void acceptEtransferScreen() {
+    private void acceptETransferScreen() {
         GridPane gridPane = createFormPane();
         ETransfer oldest = ATM.eTransferManager.getOldestTransfer(user.getUsername());
         if (oldest == null) {
