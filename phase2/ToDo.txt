@@ -1,3 +1,0 @@
-For phase two, we manage our to-do list of abstractions on Google Sheets:
-https://docs.google.com/spreadsheets/d/1Tc-MDAGkZkbqu-XdeJnUHcMKMQ-jH7GBgEAfC2D8NPI/edit?usp=sharing
-
